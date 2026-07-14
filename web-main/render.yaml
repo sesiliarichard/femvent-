@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: femvents-web
+    env: node
+    buildCommand: npm install; npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NEXT_PUBLIC_BASE_PATH
+        value: ""
+    domains:
+      - your-custom-domain.com # Replace with your domain when ready

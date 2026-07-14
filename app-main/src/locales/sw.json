@@ -1,0 +1,129 @@
+{
+    "common": {
+        "loading": "Tafadhali subiri...",
+        "error": "Kosa",
+        "success": "Imefanikiwa",
+        "save": "Hifadhi",
+        "cancel": "Ghairi",
+        "confirm": "Thibitisha",
+        "delete": "Futa",
+        "edit": "Hariri",
+        "back": "Rudi Nyuma",
+        "next": "Ifuatayo",
+        "close": "Funga",
+        "search": "Tafuta",
+        "filter": "Chuja",
+        "sort": "Panga"
+    },
+    "auth": {
+        "login": "Ingia",
+        "signup": "Jisajili",
+        "logout": "Toka",
+        "email": "Barua pepe",
+        "password": "Nenosiri",
+        "forgotPassword": "Umesahau nenosiri?",
+        "createAccount": "Fungua akaunti",
+        "alreadyHaveAccount": "Una akaunti tayari?",
+        "dontHaveAccount": "Huna akaunti?"
+    },
+    "events": {
+        "title": "Matukio",
+        "myEvents": "Matukio Yangu",
+        "browse": "Angalia Matukio",
+        "upcoming": "Yanayokuja",
+        "past": "Yaliyopita",
+        "favorites": "Vipendwa",
+        "register": "Jisajili Sasa",
+        "registered": "Umeshasajiliwa",
+        "soldOut": "Tiketi Zimeisha",
+        "free": "Bure",
+        "eventDetails": "Maelezo ya Tukio",
+        "aboutEvent": "Kuhusu Tukio",
+        "schedule": "Ratiba",
+        "speakers": "Wasemaji",
+        "venue": "Mahali",
+        "organizer": "Mpangaji",
+        "attendees": "Wahudhuria",
+        "price": "Bei",
+        "date": "Tarehe",
+        "time": "Muda",
+        "location": "Eneo"
+    },
+    "tickets": {
+        "myTickets": "Tiketi Zangu",
+        "viewTicket": "Angalia Tiketi",
+        "downloadTicket": "Pakua Tiketi",
+        "ticketDetails": "Maelezo ya Tiketi",
+        "qrCode": "Msimbo wa QR",
+        "confirmed": "Imethibitishwa",
+        "pending": "Inasubiri",
+        "cancelled": "Imeghairiwa"
+    },
+    "profile": {
+        "profile": "Wasifu",
+        "editProfile": "Hariri Wasifu",
+        "settings": "Mipangilio",
+        "preferences": "Mapendeleo",
+        "notifications": "Arifa",
+        "language": "Lugha",
+        "theme": "Mandhari",
+        "privacy": "Faragha",
+        "termsAndConditions": "Masharti na Vigezo",
+        "helpSupport": "Msaada",
+        "aboutApp": "Kuhusu Programu",
+        "version": "Toleo"
+    },
+    "reviews": {
+        "reviews": "Maoni",
+        "writeReview": "Andika Maoni",
+        "yourRating": "Ukadiriaji Wako",
+        "yourReview": "Maoni Yako",
+        "submitReview": "Wasilisha",
+        "helpful": "Inasaidia",
+        "reportReview": "Ripoti",
+        "verifiedAttendee": "Mhudhuria Aliyethibitishwa",
+        "noReviews": "Hakuna maoni",
+        "beFirstToReview": "Kuwa wa kwanza kutoa maoni!"
+    },
+    "waitlist": {
+        "joinWaitlist": "Jiunge na Orodha ya Kusubiri",
+        "leaveWaitlist": "Ondoka Orodhani",
+        "onWaitlist": "Uko orodhani ya kusubiri",
+        "positionInLine": "Nafasi katika foleni",
+        "notifyWhenAvailable": "Tutakujulisha nafasi ikitokea"
+    },
+    "chat": {
+        "chat": "Mazungumzo",
+        "sendMessage": "Tuma ujumbe",
+        "typeMessage": "Andika ujumbe...",
+        "noMessages": "Hakuna ujumbe",
+        "startConversation": "Anza mazungumzo"
+    },
+    "search": {
+        "searchEvents": "Tafuta Matukio",
+        "searchResults": "Matokeo ya Utafutaji",
+        "noResults": "Hakuna matokeo",
+        "tryDifferentKeywords": "Jaribu maneno mengine",
+        "categories": "Aina",
+        "dateRange": "Muda",
+        "priceRange": "Bei"
+    },
+    "reminders": {
+        "eventReminder": "Kikumbusho cha Tukio",
+        "tomorrow": "Kesho",
+        "today": "Leo",
+        "soon": "Hivi Karibuni",
+        "startingSoon": "Inaanza Hivi Karibuni",
+        "leaveNow": "Ondoka sasa ili ufike kwa wakati",
+        "getReady": "Jiandae",
+        "dontForget": "Usisahau"
+    },
+    "accessibility": {
+        "accessibility": "Ufikiaji",
+        "screenReader": "Kisomaji cha Skrini",
+        "highContrast": "Tofauti Kubwa",
+        "fontSize": "Ukubwa wa Herufi",
+        "colorBlindMode": "Hali ya Daltonismu",
+        "reduceMotion": "Punguza Mwendo"
+    }
+}

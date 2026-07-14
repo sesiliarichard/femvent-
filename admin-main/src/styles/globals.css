@@ -1,0 +1,99 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* FemVents Brand Colors */
+    --color-primary: 107 91 154; /* #6B5B9A - Purple */
+    --color-primary-darker: 91 75 138; /* #5B4B8A - Dark Purple */
+    --color-secondary: 201 80 123; /* #C9507B - Rose */
+    --color-secondary-darker: 180 64 108; /* #B4406C - Dark Rose */
+    --color-accent: 240 128 112; /* #F08070 - Coral */
+    --color-accent-darker: 232 116 97; /* #E87461 - Dark Coral */
+  }
+}
+
+@layer components {
+  .card-zoom {
+    @apply transition-transform duration-300 hover:scale-105;
+  }
+  
+  .primary-button {
+    @apply inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-primary-600 via-secondary-500 to-accent-600 hover:from-primary-700 hover:via-secondary-600 hover:to-accent-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500;
+  }
+  
+  .secondary-button {
+    @apply inline-flex items-center px-4 py-2 border border-secondary-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-secondary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500;
+  }
+  
+  .form-input {
+    @apply mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-secondary-500 focus:border-secondary-500 sm:text-sm;
+  }
+  
+  .category-chip {
+    @apply inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium cursor-pointer transition-colors;
+  }
+  
+  .category-chip-active {
+    @apply bg-secondary-100 text-secondary-800;
+  }
+  
+  .category-chip-inactive {
+    @apply bg-gray-100 text-gray-800 hover:bg-gray-200;
+  }
+}
+
+/* Premium Dashboard Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes growWidth {
+  from {
+    width: 0;
+  }
+  to {
+    width: var(--target-width, 100%);
+  }
+}
+
+@keyframes blob {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -50px) scale(1.1);
+  }
+  66% {
+    transform: translate(-20px, 20px) scale(0.9);
+  }
+}
+
+.animate-blob {
+  animation: blob 7s infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}

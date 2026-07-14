@@ -1,0 +1,129 @@
+{
+    "common": {
+        "loading": "Chargement...",
+        "error": "Erreur",
+        "success": "Succès",
+        "save": "Sauvegarder",
+        "cancel": "Annuler",
+        "confirm": "Confirmer",
+        "delete": "Supprimer",
+        "edit": "Modifier",
+        "back": "Retour",
+        "next": "Suivant",
+        "close": "Fermer",
+        "search": "Rechercher",
+        "filter": "Filtrer",
+        "sort": "Trier"
+    },
+    "auth": {
+        "login": "Connexion",
+        "signup": "S'inscrire",
+        "logout": "Déconnexion",
+        "email": "E-mail",
+        "password": "Mot de passe",
+        "forgotPassword": "Mot de passe oublié?",
+        "createAccount": "Créer un compte",
+        "alreadyHaveAccount": "Vous avez déjà un compte?",
+        "dontHaveAccount": "Vous n'avez pas de compte?"
+    },
+    "events": {
+        "title": "Événements",
+        "myEvents": "Mes événements",
+        "browse": "Parcourir",
+        "upcoming": "À venir",
+        "past": "Passés",
+        "favorites": "Favoris",
+        "register": "S'inscrire",
+        "registered": "Déjà inscrit",
+        "soldOut": "Complet",
+        "free": "Gratuit",
+        "eventDetails": "Détails de l'événement",
+        "aboutEvent": "À propos",
+        "schedule": "Programme",
+        "speakers": "Intervenants",
+        "venue": "Lieu",
+        "organizer": "Organisateur",
+        "attendees": "Participants",
+        "price": "Prix",
+        "date": "Date",
+        "time": "Heure",
+        "location": "Emplacement"
+    },
+    "tickets": {
+        "myTickets": "Mes billets",
+        "viewTicket": "Voir le billet",
+        "downloadTicket": "Télécharger",
+        "ticketDetails": "Détails du billet",
+        "qrCode": "Code QR",
+        "confirmed": "Confirmé",
+        "pending": "En attente",
+        "cancelled": "Annulé"
+    },
+    "profile": {
+        "profile": "Profil",
+        "editProfile": "Modifier le profil",
+        "settings": "Paramètres",
+        "preferences": "Préférences",
+        "notifications": "Notifications",
+        "language": "Langue",
+        "theme": "Thème",
+        "privacy": "Confidentialité",
+        "termsAndConditions": "Conditions d'utilisation",
+        "helpSupport": "Aide et support",
+        "aboutApp": "À propos",
+        "version": "Version"
+    },
+    "reviews": {
+        "reviews": "Avis",
+        "writeReview": "Écrire un avis",
+        "yourRating": "Votre note",
+        "yourReview": "Votre avis",
+        "submitReview": "Soumettre",
+        "helpful": "Utile",
+        "reportReview": "Signaler",
+        "verifiedAttendee": "Participant vérifié",
+        "noReviews": "Aucun avis",
+        "beFirstToReview": "Soyez le premier à donner votre avis!"
+    },
+    "waitlist": {
+        "joinWaitlist": "Rejoindre la liste d'attente",
+        "leaveWaitlist": "Quitter la liste",
+        "onWaitlist": "Sur la liste d'attente",
+        "positionInLine": "Position dans la file",
+        "notifyWhenAvailable": "Nous vous préviendrons si une place se libère"
+    },
+    "chat": {
+        "chat": "Discussion",
+        "sendMessage": "Envoyer",
+        "typeMessage": "Écrivez un message...",
+        "noMessages": "Aucun message",
+        "startConversation": "Démarrer une conversation"
+    },
+    "search": {
+        "searchEvents": "Rechercher des événements",
+        "searchResults": "Résultats de recherche",
+        "noResults": "Aucun résultat",
+        "tryDifferentKeywords": "Essayez d'autres mots-clés",
+        "categories": "Catégories",
+        "dateRange": "Période",
+        "priceRange": "Fourchette de prix"
+    },
+    "reminders": {
+        "eventReminder": "Rappel d'événement",
+        "tomorrow": "Demain",
+        "today": "Aujourd'hui",
+        "soon": "Bientôt",
+        "startingSoon": "Début imminent",
+        "leaveNow": "Partez maintenant pour arriver à l'heure",
+        "getReady": "Préparez-vous",
+        "dontForget": "N'oubliez pas"
+    },
+    "accessibility": {
+        "accessibility": "Accessibilité",
+        "screenReader": "Lecteur d'écran",
+        "highContrast": "Contraste élevé",
+        "fontSize": "Taille de police",
+        "colorBlindMode": "Mode daltonien",
+        "reduceMotion": "Réduire les animations"
+    }
+}

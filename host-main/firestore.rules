@@ -1,0 +1,284 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // --- HELPER FUNCTIONS ---
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    function isAdmin() {
+      return isAuthenticated() && 
+             get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    // --- OLD CORE RULES (Adapted) ---
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+    }
+    
+    // Events collection
+    match /events/{eventId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.hostId;
+      allow update: if isAuthenticated() && (request.auth.uid == resource.data.hostId || isAdmin());
+      allow delete: if isAuthenticated() && (request.auth.uid == resource.data.hostId || isAdmin());
+    }
+    
+    // Tickets collection
+    match /tickets/{ticketId} {
+      allow read: if isAuthenticated();
+      // Complex logic kept from original:
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
+      allow update: if isAuthenticated() && 
+        (request.auth.uid == resource.data.userId || 
+         get(/databases/$(database)/documents/events/$(resource.data.eventId)).data.hostId == request.auth.uid ||
+         isAdmin());
+    }
+    
+    // Payments collection
+    match /payments/{paymentId} {
+      allow read: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isAuthenticated() && (request.auth.uid == resource.data.userId || isAdmin());
+      allow update: if isAuthenticated() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    // Admin logs
+    match /adminLogs/{logId} {
+      allow read: if isAdmin();
+      allow write: if false; // Only cloud functions
+    }
+    
+    // Organizers
+    match /organizers/{organizerId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+    
+    // Notifications
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && resource.data.userId == request.auth.uid;
+      allow create: if isAuthenticated() && request.auth.uid == resource.data.userId;
+      allow update: if isAuthenticated() && resource.data.userId == request.auth.uid;
+    }
+    
+    // Activities
+    match /activities/{activityId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+    }
+    
+    // Registrations
+    match /registrations/{registrationId} {
+      allow read: if isAuthenticated() && 
+        (request.auth.uid == resource.data.userId || 
+         get(/databases/$(database)/documents/events/$(resource.data.eventId)).data.hostId == request.auth.uid ||
+         isAdmin());
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
+      allow update: if isAuthenticated() && 
+        (request.auth.uid == resource.data.userId || 
+         get(/databases/$(database)/documents/events/$(resource.data.eventId)).data.hostId == request.auth.uid ||
+         isAdmin());
+    }
+    
+    // Messages
+    match /messages/{messageId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
+      allow update: if false;
+      allow delete: if false;
+    }
+    
+    // Private Messages
+    match /privateMessages/{messageId} {
+      allow read: if isAuthenticated() && 
+        (request.auth.uid == resource.data.senderId || 
+         request.auth.uid == resource.data.recipientId ||
+         request.auth.uid in resource.data.participants);
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.senderId;
+      allow update: if isAuthenticated() && 
+        (request.auth.uid == resource.data.senderId || 
+         request.auth.uid == resource.data.recipientId);
+      allow delete: if false;
+    }
+    
+    // Group Messages
+    match /groupMessages/{messageId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
+      allow update: if isAuthenticated();
+      allow delete: if false;
+    }
+    
+    // Typing Indicators
+    match /typingIndicators/{indicatorId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+    
+    // Online Users
+    match /onlineUsers/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.auth.uid == request.resource.data.userId;
+    }
+
+    // --- NEW ENTERPRISE RULES ---
+
+    // === DISCOUNT CODES ===
+    match /discountCodes/{discountId} {
+      allow read: if true; // Public read for validation
+      allow write: if isAuthenticated(); // Hosts can create codes
+    }
+
+    match /discountUsage/{usageId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+    }
+
+    // === SEAT MAPS ===
+    match /seatMaps/{mapId} {
+      allow read: if true; // Public read for seat selection
+      allow write: if isAuthenticated(); // Hosts can create maps
+    }
+
+    match /seatReservations/{reservationId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isOwner(resource.data.userId);
+    }
+
+    // === TAX & INVOICES ===
+    match /taxRates/{rateId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /invoices/{invoiceId} {
+      allow read: if isAuthenticated() && 
+                     (isOwner(resource.data.customerId) || 
+                      isOwner(resource.data.hostId) ||
+                      isAdmin());
+      allow create: if isAuthenticated();
+    }
+
+    // === EMAIL WORKFLOWS ===
+    match /emailWorkflows/{workflowId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    match /emailTemplates/{templateId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    match /scheduledEmails/{emailId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // === AFFILIATES ===
+    match /affiliates/{affiliateId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isOwner(resource.data.userId) || isAdmin();
+    }
+
+    match /affiliateClicks/{clickId} {
+      allow read: if isAuthenticated();
+      allow create: if true; // Public for tracking
+    }
+
+    match /commissions/{commissionId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAdmin();
+    }
+
+    // === SEO ===
+    match /eventSEO/{seoId} {
+      allow read: if true; // Public for meta tags
+      allow write: if isAuthenticated();
+    }
+
+    // === VIRTUAL EVENTS ===
+    match /virtualEvents/{virtualEventId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    match /virtualAttendees/{attendeeId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+    }
+
+    // === MERCHANDISING ===
+    match /eventProducts/{productId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /merchOrders/{orderId} {
+      allow read: if isAuthenticated() && 
+                     (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated();
+      allow update: if isAdmin();
+    }
+
+    // === A/B TESTING ===
+    match /abTests/{testId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    match /abTestAssignments/{assignmentId} {
+      allow read: if true; // Public for variant assignment
+      allow create: if true;
+      allow update: if true;
+    }
+
+    // === CUSTOM DOMAINS ===
+    match /customDomains/{domainId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
+    }
+
+    // === RECORDINGS ===
+    match /eventRecordings/{recordingId} {
+      allow read: if true; // Access controlled in app logic
+      allow write: if isAuthenticated();
+    }
+
+    match /recordingViews/{viewId} {
+      allow create: if true;
+      allow read: if isAdmin();
+    }
+
+    // === INSURANCE ===
+    match /eventInsurance/{insuranceId} {
+      allow read: if isAuthenticated() && 
+                     (isOwner(resource.data.userId) || isAdmin());
+      allow create: if isAuthenticated();
+      allow update: if isOwner(resource.data.userId) || isAdmin();
+    }
+
+    // === OAUTH INTEGRATIONS ===
+    match /oauthConnections/{connectionId} {
+      allow read: if isOwner(resource.data.userId);
+      allow write: if isOwner(resource.data.userId);
+    }
+
+    match /integrationEvents/{eventId} {
+      allow read: if isOwner(resource.data.userId);
+      allow create: if isAuthenticated();
+    }
+  }
+}

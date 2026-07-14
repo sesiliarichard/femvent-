@@ -1,0 +1,25 @@
+﻿# Dependencies
+**/node_modules/
+
+# Next.js build output
+**/.next/
+**/out/
+
+# Env files
+**/.env
+**/.env.local
+**/.env*.local
+
+# Expo/RN
+**/.expo/
+**/expo-env.d.ts
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+
+# Netlify build cache
+**/.netlify/

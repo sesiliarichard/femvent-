@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "events-app",
+    "slug": "events-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/femvents-icon1.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/femvents-icon1.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.kuza.eventsapp"
+    },
+    "android": {
+      "package": "com.kuza.eventsapp",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/femvents-icon1.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "softwareKeyboardLayoutMode": "pan"
+    },
+    "web": {
+      "favicon": "./assets/femvents-icon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "09e8b898-a356-4a1e-b4ec-8fedc036aee4"
+      }
+    },
+    "owner": "jacksonnavigator7",
+    "plugins": []
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "cli": {
+    "version": ">= 10.0.0",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "preview": {
+      "android": {
+        "buildType": "apk",
+        "gradleCommand": ":app:assembleRelease"
+      },
+      "ios": {
+        "simulator": true
+      },
+      "env": {
+        "NODE_VERSION": "20.18.0"
+      }
+    },
+    "production": {
+      "android": {
+        "gradleCommand": ":app:bundleRelease"
+      },
+      "ios": {},
+      "env": {
+        "NODE_VERSION": "20.18.0"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}

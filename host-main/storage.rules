@@ -1,0 +1,25 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Event images - authenticated users can upload, public read for published events
+    match /events/{eventId}/{allPaths=**} {
+      allow read: if true; // Public read for event images
+      allow write: if request.auth != null && 
+        firestore.get(/databases/(default)/documents/events/$(eventId)).data.hostId == request.auth.uid;
+    }
+    
+    // User profile images - users can manage their own
+    match /users/{userId}/{allPaths=**} {
+      allow read: if true; // Public read for profile images
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // QR codes - only ticket owners and event hosts can read
+    match /qr-codes/{ticketId}/{allPaths=**} {
+      allow read: if request.auth != null && 
+        (firestore.get(/databases/(default)/documents/tickets/$(ticketId)).data.userId == request.auth.uid ||
+         firestore.get(/databases/(default)/documents/events/$(firestore.get(/databases/(default)/documents/tickets/$(ticketId)).data.eventId)).data.hostId == request.auth.uid);
+      allow write: if false; // Only cloud functions can write QR codes
+    }
+  }
+}

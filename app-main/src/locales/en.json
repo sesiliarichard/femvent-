@@ -1,0 +1,129 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Back",
+    "next": "Next",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort"
+  },
+  "auth": {
+    "login": "Login",
+    "signup": "Sign Up",
+    "logout": "Logout",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot Password?",
+    "createAccount": "Create Account",
+    "alreadyHaveAccount": "Already have an account?",
+    "dontHaveAccount": "Don't have an account?"
+  },
+  "events": {
+    "title": "Events",
+    "myEvents": "My Events",
+    "browse": "Browse Events",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "favorites": "Favorites",
+    "register": "Register Now",
+    "registered": "Already Registered",
+    "soldOut": "Sold Out",
+    "free": "Free",
+    "eventDetails": "Event Details",
+    "aboutEvent": "About Event",
+    "schedule": "Schedule",
+    "speakers": "Speakers",
+    "venue": "Venue",
+    "organizer": "Organizer",
+    "attendees": "Attendees",
+    "price": "Price",
+    "date": "Date",
+    "time": "Time",
+    "location": "Location"
+  },
+  "tickets": {
+    "myTickets": "My Tickets",
+    "viewTicket": "View Ticket",
+    "downloadTicket": "Download Ticket",
+    "ticketDetails": "Ticket Details",
+    "qrCode": "QR Code",
+    "confirmed": "Confirmed",
+    "pending": "Pending",
+    "cancelled": "Cancelled"
+  },
+  "profile": {
+    "profile": "Profile",
+    "editProfile": "Edit Profile",
+    "settings": "Settings",
+    "preferences": "Preferences",
+    "notifications": "Notifications",
+    "language": "Language",
+    "theme": "Theme",
+    "privacy": "Privacy",
+    "termsAndConditions": "Terms & Conditions",
+    "helpSupport": "Help & Support",
+    "aboutApp": "About App",
+    "version": "Version"
+  },
+  "reviews": {
+    "reviews": "Reviews",
+    "writeReview": "Write  Review",
+    "yourRating": "Your Rating",
+    "yourReview": "Your Review",
+    "submitReview": "Submit Review",
+    "helpful": "Helpful",
+    "reportReview": "Report Review",
+    "verifiedAttendee": "Verified Attendee",
+    "noReviews": "No reviews yet",
+    "beFirstToReview": "Be the first to review this event!"
+  },
+  "waitlist": {
+    "joinWaitlist": "Join Waitlist",
+    "leaveWaitlist": "Leave Waitlist",
+    "onWaitlist": "You're on the waitlist",
+    "positionInLine": "Position in line",
+    "notifyWhenAvailable": "We'll notify you if a spot opens up"
+  },
+  "chat": {
+    "chat": "Chat",
+    "sendMessage": "Send message",
+    "typeMessage": "Type a message...",
+    "noMessages": "No messages yet",
+    "startConversation": "Start a conversation"
+  },
+  "search": {
+    "searchEvents": "Search Events",
+    "searchResults": "Search Results",
+    "noResults": "No results found",
+    "tryDifferentKeywords": "Try different keywords",
+    "categories": "Categories",
+    "dateRange": "Date Range",
+    "priceRange": "Price Range"
+  },
+  "reminders": {
+    "eventReminder": "Event Reminder",
+    "tomorrow": "Tomorrow",
+    "today": "Today",
+    "soon": "Soon",
+    "startingSoon": "Starting Soon",
+    "leaveNow": "Leave now to arrive on time",
+    "getRe ady": "Get ready",
+    "dontForget": "Don't forget"
+  },
+  "accessibility": {
+    "accessibility": "Accessibility",
+    "screenReader": "Screen Reader",
+    "highContrast": "High Contrast",
+    "fontSize": "Font Size",
+    "colorBlindMode": "Color Blind Mode",
+    "reduceMotion": "Reduce Motion"
+  }
+}
