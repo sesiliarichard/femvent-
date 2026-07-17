@@ -155,7 +155,7 @@ export default function RegisterPage() {
                     templateId: "registration-confirmation",
                     templateData: {
                         recipientName: fullName,
-                        eventTitle: event.title,
+                        eventTitle: event?.title ?? '',
                         eventDate: new Date().toLocaleDateString(),
                         ticketType: selectedTicket.name,
                     },
