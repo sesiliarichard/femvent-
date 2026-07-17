@@ -170,7 +170,7 @@ export default function PrivateChatScreen({ navigation, route }: PrivateChatScre
       loadMessages();
 
       const messagesChannel = supabase
-        .channel(`private-messages-${eventId}-${user.id}-${recipientId}`)
+      .channel(`private-messages-${eventId}-${user.id}-${recipientId}-${Date.now()}-${Math.random()}`)
         .on(
           'postgres_changes',
           { event: '*', schema: 'public', table: 'private_messages', filter: `event_id=eq.${eventId}` },
@@ -193,7 +193,7 @@ export default function PrivateChatScreen({ navigation, route }: PrivateChatScre
       loadRecipientTyping();
 
       const typingChannel = supabase
-        .channel(`typing-${recipientTypingId}`)
+      .channel(`typing-${recipientTypingId}-${Date.now()}-${Math.random()}`)
         .on(
           'postgres_changes',
           { event: '*', schema: 'public', table: 'typing_indicators', filter: `id=eq.${recipientTypingId}` },
@@ -216,7 +216,7 @@ export default function PrivateChatScreen({ navigation, route }: PrivateChatScre
       loadRecipientOnline();
 
       const onlineChannel = supabase
-        .channel(`online-${recipientOnlineId}`)
+      .channel(`online-${recipientOnlineId}-${Date.now()}-${Math.random()}`)
         .on(
           'postgres_changes',
           { event: '*', schema: 'public', table: 'online_users', filter: `id=eq.${recipientOnlineId}` },

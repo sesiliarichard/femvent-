@@ -1,3 +1,5 @@
+import 'react-native-gesture-handler';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import React from 'react';
 import * as Sentry from '@sentry/react-native';
 
@@ -28,12 +30,15 @@ try {
 }
 
 import { NavigationContainer } from '@react-navigation/native';
+import { useFonts, Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold, Manrope_700Bold, Manrope_800ExtraBold } from '@expo-google-fonts/manrope';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+
 
 import { AuthProvider, useAuth } from './src/services/AuthContext';
 import { LoginScreen } from './src/screens/auth/LoginScreen';
@@ -44,6 +49,7 @@ import * as Notifications from 'expo-notifications';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
+const Drawer = createDrawerNavigator();
 
 import EventDetailScreen from './src/screens/EventDetailScreen';
 import ScheduleScreen from './src/screens/ScheduleScreen';
@@ -65,13 +71,21 @@ import { SettingsScreen } from './src/screens/main/SettingsScreen';
 import { FavoritesScreen } from './src/screens/main/FavoritesScreen';
 import { EditProfileScreen } from './src/screens/main/EditProfileScreen';
 
+import { ExhibitorsScreen } from './src/screens/main/ExhibitorsScreen';
+import { VenueMapScreen } from './src/screens/main/VenueMapScreen';
+import { AnnouncementsScreen } from './src/screens/main/AnnouncementsScreen';
+import { ResourcesScreen } from './src/screens/main/ResourcesScreen';
+import { FeedbackScreen } from './src/screens/main/FeedbackScreen';
 import { PaymentHistoryScreen } from './src/screens/PaymentHistoryScreen';
 import { HostApplicationScreen } from './src/screens/HostApplicationScreen';
 import { SelectEventToScanScreen } from './src/screens/host/SelectEventToScanScreen';
 import { ProfileScreen } from './src/screens/main/ProfileScreen';
 import { ThemeProvider, useThemeMode } from './src/services/ThemeContext';
+import { EventProvider } from './src/services/EventContext';
 import AnimatedSplash from './src/components/AnimatedSplash';
 import { ErrorBoundary } from './src/components/ErrorBoundary';
+import { CustomDrawerContent } from './src/components/CustomDrawerContent';
+import { MyEventsScreen } from './src/screens/main/MyEventsScreen';
 
 function MainTabs() {
   return (
@@ -94,11 +108,25 @@ function MainTabs() {
         tabBarInactiveTintColor: 'gray',
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Events" component={EventsScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Tickets" component={TicketsScreen} options={{ headerShown: false }} />
-      <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
+<Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+<Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
+  );
+}
+
+function MainDrawer() {
+  return (
+    <Drawer.Navigator
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      screenOptions={{
+        headerShown: false,
+        drawerType: 'front',
+        overlayColor: 'rgba(0,0,0,0.5)',
+        drawerStyle: { width: '80%' },
+      }}
+    >
+      <Drawer.Screen name="Tabs" component={MainTabs} />
+    </Drawer.Navigator>
   );
 }
 
@@ -153,7 +181,7 @@ function AppNavigator() {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {user ? (
           <>
-            <Stack.Screen name="Main" component={MainTabs} />
+            <Stack.Screen name="Main" component={MainDrawer} />
             <Stack.Screen
               name="EventDetail"
               component={EventDetailScreen}
@@ -167,6 +195,16 @@ function AppNavigator() {
             <Stack.Screen
               name="QRScanner"
               component={QRScannerScreen}
+              options={{ headerShown: false }}
+            />
+           <Stack.Screen
+              name="Events"
+              component={EventsScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Tickets"
+              component={TicketsScreen}
               options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -234,11 +272,17 @@ function AppNavigator() {
               component={FavoritesScreen}
               options={{ headerShown: false }}
             />
-            <Stack.Screen
+         <Stack.Screen
               name="EditProfile"
               component={EditProfileScreen}
               options={{ headerShown: false }}
             />
+            <Stack.Screen name="MyEvents" component={MyEventsScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Exhibitors" component={ExhibitorsScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="VenueMap" component={VenueMapScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Announcements" component={AnnouncementsScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Resources" component={ResourcesScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Feedback" component={FeedbackScreen} options={{ headerShown: false }} />
           </>
         ) : (
           <>
@@ -254,16 +298,30 @@ function AppNavigator() {
 
 function ThemedAppContainer() {
   const { paperTheme, isDark } = useThemeMode();
+  const [fontsLoaded] = useFonts({
+    Manrope_400Regular,
+    Manrope_500Medium,
+    Manrope_600SemiBold,
+    Manrope_700Bold,
+    Manrope_800ExtraBold,
+  });
   const [showSplash, setShowSplash] = React.useState(true);
   React.useEffect(() => {
     const t = setTimeout(() => setShowSplash(false), 1600);
     return () => clearTimeout(t);
   }, []);
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <PaperProvider theme={paperTheme}>
       <AuthProvider>
-        {showSplash ? <AnimatedSplash /> : <AppNavigator />}
-        <StatusBar style={isDark ? 'light' : 'dark'} />
+        <EventProvider>
+          {showSplash ? <AnimatedSplash /> : <AppNavigator />}
+          <StatusBar style={isDark ? 'light' : 'dark'} />
+        </EventProvider>
       </AuthProvider>
     </PaperProvider>
   );
@@ -271,11 +329,13 @@ function ThemedAppContainer() {
 
 export default function App() {
   return (
-    <ErrorBoundary>
-      <ThemeProvider>
-        <ThemedAppContainer />
-      </ThemeProvider>
-    </ErrorBoundary>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ErrorBoundary>
+        <ThemeProvider>
+          <ThemedAppContainer />
+        </ThemeProvider>
+      </ErrorBoundary>
+    </GestureHandlerRootView>
   );
 }
 

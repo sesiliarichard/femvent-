@@ -138,7 +138,7 @@ useEffect(() => {
   fetchEvent();
 
   const channel = supabase
-    .channel(`event-detail-${eventId}`)
+    .channel(`event-detail-${eventId}-${Date.now()}-${Math.random()}`)
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'events', filter: `id=eq.${eventId}` },
@@ -557,9 +557,49 @@ useEffect(() => {
                 </View>
                 <Text style={styles.quickNavLabel}>Chat</Text>
               </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.quickNavItem}
+                onPress={() => navigation.navigate('Announcements', { eventId: event.id })}
+              >
+                <View style={[styles.quickNavIcon, { backgroundColor: '#ede9fe' }]}>
+                  <Ionicons name="megaphone-outline" size={24} color="#7c3aed" />
+                </View>
+                <Text style={styles.quickNavLabel}>Announcements</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.quickNavItem}
+                onPress={() => navigation.navigate('Exhibitors', { eventId: event.id })}
+              >
+                <View style={[styles.quickNavIcon, { backgroundColor: '#e0f2fe' }]}>
+                  <Ionicons name="storefront-outline" size={24} color="#0284c7" />
+                </View>
+                <Text style={styles.quickNavLabel}>Exhibitors</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.quickNavItem}
+                onPress={() => navigation.navigate('VenueMap', { eventId: event.id })}
+              >
+                <View style={[styles.quickNavIcon, { backgroundColor: '#fee2e2' }]}>
+                  <Ionicons name="map-outline" size={24} color="#dc2626" />
+                </View>
+                <Text style={styles.quickNavLabel}>Venue Map</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.quickNavItem}
+                onPress={() => navigation.navigate('Feedback', { eventId: event.id })}
+              >
+                <View style={[styles.quickNavIcon, { backgroundColor: '#fef9c3' }]}>
+                  <Ionicons name="star-outline" size={24} color="#ca8a04" />
+                </View>
+                <Text style={styles.quickNavLabel}>Feedback</Text>
+              </TouchableOpacity>
             </View>
           </View>
-
+          
           {/* Event Details */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Event Information</Text>

@@ -2,31 +2,45 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { navLinks, brand } from "@/lib/content";
 
 export default function NavBar() {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const isRegistrationPage = /^\/events\/[^/]+\/register/.test(pathname);
+
+  const logo = (
+    <Link href="/" className="flex items-center gap-3">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 via-rose-500 to-orange-400 shadow-lg p-1">
+        <div className="bg-white rounded-lg w-full h-full flex items-center justify-center">
+          <img
+            src="/femvents.png"
+            alt="FemVents App"
+            className="h-7 w-7 rounded-md"
+          />
+        </div>
+      </div>
+      <span className="text-lg font-bold text-rose-600 md:text-xl hover:text-rose-700 transition-colors">
+        FemVentsApp
+      </span>
+    </Link>
+  );
+
+  if (isRegistrationPage) {
+    return (
+      <header className="fixed inset-x-0 top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur-sm shadow-sm">
+        <div className="mx-auto flex max-w-6xl items-center px-4 py-3 md:px-6 md:py-4">
+          {logo}
+        </div>
+      </header>
+    );
+  }
 
   return (
     <header className="fixed inset-x-0 top-0 z-40 border-b border-gray-200 bg-white/95 backdrop-blur-sm shadow-sm">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6 md:py-4">
-        <Link
-          href="/"
-          className="flex items-center gap-3"
-        >
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-purple-600 via-rose-500 to-orange-400 shadow-lg p-1">
-            <div className="bg-white rounded-lg w-full h-full flex items-center justify-center">
-              <img
-                src="/femvents.png"
-                alt="FemVents App"
-                className="h-7 w-7 rounded-md"
-              />
-            </div>
-          </div>
-          <span className="text-lg font-bold text-rose-600 md:text-xl hover:text-rose-700 transition-colors">
-            FemVentsApp
-          </span>
-        </Link>
+        {logo}
 
         <nav className="hidden gap-6 text-sm font-medium text-gray-600 md:flex">
           {navLinks.map((link) => (

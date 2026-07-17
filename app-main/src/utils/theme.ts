@@ -1,4 +1,6 @@
-import { MD3LightTheme, MD3DarkTheme } from 'react-native-paper';
+import { MD3LightTheme, MD3DarkTheme, configureFonts } from 'react-native-paper';
+
+const fonts = configureFonts({ config: { fontFamily: 'Manrope_400Regular' } });
 
 export const theme = {
   ...MD3LightTheme,
@@ -41,6 +43,7 @@ export const theme = {
     backdrop: 'rgba(30, 41, 59, 0.4)',
   },
   roundness: 12,
+  fonts,
 };
 
 export const darkTheme = {
@@ -84,4 +87,5 @@ export const darkTheme = {
     backdrop: 'rgba(15, 23, 42, 0.4)',
   },
   roundness: 12,
+  fonts,
 };

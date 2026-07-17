@@ -555,6 +555,13 @@ function EventsContent({ userProfile }: { userProfile: any }) {
                         </svg>
                       </a>
                       <a
+                        href={`/events/${item.id}/announcements`}
+                        className="group/btn p-3 bg-pink-100 text-purple-600 rounded-xl hover:bg-pink-200 hover:scale-110 transition-all duration-300"
+                        title="Announcements"
+                      >
+                        <span className="text-lg">📣</span>
+                      </a>
+                      <a
                         href={`/events/${item.id}/edit`}
                         className="group/btn p-3 bg-pink-100 text-purple-600 rounded-xl hover:bg-pink-200 hover:scale-110 transition-all duration-300"
                         title="Edit Event"

@@ -111,16 +111,16 @@ export const HomeScreen: React.FC = () => {
     loadAndSort();
 
     const channel = supabase
-      .channel('home-events-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => {
-        loadAndSort();
-      })
-      .subscribe();
+    .channel(`home-events-changes-${Date.now()}-${Math.random()}`)
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => {
+      loadAndSort();
+    })
+    .subscribe();
 
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+  return () => {
+    supabase.removeChannel(channel);
+  };
+}, []);
 
   useEffect(() => {
     if (!events.length) {
@@ -543,6 +543,14 @@ export const HomeScreen: React.FC = () => {
               <Text style={styles.headerTitle}>Discover Events</Text>
             </View>
             <View style={styles.headerActions}>
+              <TouchableOpacity
+                style={styles.headerIconButton}
+                onPress={() => (navigation as any).openDrawer()}
+              >
+                <View style={styles.iconButtonCircle}>
+                  <Ionicons name="menu-outline" size={22} color="#667eea" />
+                </View>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.headerIconButton}>
                 <View style={styles.iconButtonCircle}>
                   <Ionicons name="notifications-outline" size={22} color="#667eea" />

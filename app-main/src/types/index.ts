@@ -6,6 +6,11 @@ export interface User {
   role: 'attendee' | 'host' | 'admin';
   createdAt: Date;
   isSuspended: boolean;
+  bio?: string;
+  phone?: string;
+  instagram?: string;
+  twitter?: string;
+  facebook?: string;
   hostApplication?: {
     status: 'pending' | 'approved' | 'rejected';
     appliedAt: Date;
@@ -107,6 +112,12 @@ export type RootStackParamList = {
   PaymentHistory: undefined;
   Notifications: undefined;
   HostApplication: undefined;
+  MyEvents: undefined;
+  Exhibitors: undefined;
+  VenueMap: undefined;
+  Announcements: undefined;
+  Resources: undefined;
+  Feedback: undefined;
 };
 
 export type AuthStackParamList = {

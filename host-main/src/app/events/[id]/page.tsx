@@ -171,8 +171,37 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                   </div>
                 )}
               </div>
-            </div>
 
+              {isEventOwner && (
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={() => router.push(`/events/${eventId}/announcements`)}
+                    className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-slate-200/50 text-slate-700 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-white hover:shadow-md hover:scale-105 transition-all duration-300"
+                  >
+                    <span>📣</span><span>Announcements</span>
+                  </button>
+                  <button
+                    onClick={() => router.push(`/events/${eventId}/exhibitors`)}
+                    className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-slate-200/50 text-slate-700 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-white hover:shadow-md hover:scale-105 transition-all duration-300"
+                  >
+                    <span>🏢</span><span>Exhibitors</span>
+                  </button>
+                  <button
+                    onClick={() => router.push(`/events/${eventId}/venue-map`)}
+                    className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-slate-200/50 text-slate-700 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-white hover:shadow-md hover:scale-105 transition-all duration-300"
+                  >
+                    <span>🗺️</span><span>Venue Map</span>
+                  </button>
+                  <button
+                    onClick={() => router.push(`/events/${eventId}/feedback`)}
+                    className="flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-slate-200/50 text-slate-700 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-white hover:shadow-md hover:scale-105 transition-all duration-300"
+                  >
+                    <span>⭐</span><span>Feedback</span>
+                  </button>
+                </div>
+              )}
+            </div>
+            
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2 space-y-8">
                 {event.poster_url && (
@@ -255,10 +284,10 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                       Event Partners
                     </h2>
                     <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {event.partners.map((partner: any, idx: number) => (
-                        
-                          key={idx}
-                          href={partner.website}
+                    {event.partners.map((partner: any, idx: number) => (
+                        <a
+                        key={idx}
+                        href={partner.website}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="group flex flex-col items-center justify-center p-6 bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl border-2 border-amber-200 hover:border-amber-400 hover:shadow-xl transition-all duration-300 hover:scale-105"
@@ -335,10 +364,9 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                         </div>
                       </div>
                     )}
-
-                    {event.registration_url && (
-                      
-                        href={event.registration_url}
+          {event.registration_url && (
+                      <a
+                      href={event.registration_url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="group w-full flex items-center justify-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-5 rounded-2xl font-black text-lg hover:shadow-2xl hover:shadow-blue-500/40 hover:scale-105 transition-all duration-300"

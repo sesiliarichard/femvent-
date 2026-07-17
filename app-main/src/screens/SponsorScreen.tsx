@@ -177,7 +177,7 @@ useEffect(() => {
   fetchEvent();
 
   const channel = supabase
-    .channel(`sponsor-event-${eventId}`)
+  .channel(`sponsor-event-${eventId}-${Date.now()}-${Math.random()}`)
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'events', filter: `id=eq.${eventId}` },

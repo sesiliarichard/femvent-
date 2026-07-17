@@ -174,7 +174,7 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
       loadMessages();
 
       const channel = supabase
-        .channel(`messages-${eventId}`)
+        .channel(`messages-${eventId}-${Date.now()}-${Math.random()}`)
         .on(
           'postgres_changes',
           { event: '*', schema: 'public', table: 'messages', filter: `event_id=eq.${eventId}` },

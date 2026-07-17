@@ -153,7 +153,7 @@ export default function GroupChatScreen({ navigation, route }: GroupChatScreenPr
 
       // Realtime subscription for new/updated messages
       const messagesChannel = supabase
-        .channel(`group-messages-${eventId}`)
+        .channel(`group-messages-${eventId}-${Date.now()}-${Math.random()}`)
         .on(
           'postgres_changes',
           { event: '*', schema: 'public', table: 'group_messages', filter: `event_id=eq.${eventId}` },
@@ -187,7 +187,7 @@ export default function GroupChatScreen({ navigation, route }: GroupChatScreenPr
       loadTypingUsers();
 
       const typingChannel = supabase
-        .channel(`typing-indicators-${eventId}`)
+        .channel(`typing-indicators-${eventId}-${Date.now()}-${Math.random()}`)
         .on(
           'postgres_changes',
           { event: '*', schema: 'public', table: 'typing_indicators', filter: `event_id=eq.${eventId}` },

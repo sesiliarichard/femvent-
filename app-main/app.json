@@ -27,12 +27,14 @@
     "web": {
       "favicon": "./assets/femvents-icon.png"
     },
+    "plugins": [
+      "expo-font"
+    ],
     "extra": {
       "eas": {
-        "projectId": "09e8b898-a356-4a1e-b4ec-8fedc036aee4"
+        "projectId": "980cc2e4-41bd-48bc-9814-3571aaa8ddc4"
       }
     },
-    "owner": "jacksonnavigator7",
-    "plugins": []
+    "owner": "sesiliarichard"
   }
 }

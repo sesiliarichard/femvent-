@@ -14,8 +14,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-import { doc, updateDoc } from 'firebase/firestore';
-import { db } from '../../services/firebase';
+import { supabase } from '../../services/supabase';
 import { useAuth } from '../../services/AuthContext';
 import { showImagePickerOptions, uploadProfilePhoto } from '../../services/media';
 
@@ -51,15 +50,20 @@ export const EditProfileScreen: React.FC = () => {
 
         setLoading(true);
         try {
-            await updateDoc(doc(db, 'users', user.id), {
-                name,
-                bio,
-                phone,
-                instagram,
-                twitter,
-                facebook,
-                photoURL: photoUrl,
-            });
+            const { error } = await supabase
+                .from('users')
+                .update({
+                    name,
+                    bio,
+                    phone,
+                    instagram,
+                    twitter,
+                    facebook,
+                    photo_url: photoUrl,
+                })
+                .eq('id', user.id);
+
+            if (error) throw error;
 
             // Refresh user data in AuthContext
             await refreshUser();

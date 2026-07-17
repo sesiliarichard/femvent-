@@ -49,6 +49,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           createdAt: userData.created_at ? new Date(userData.created_at) : new Date(),
           isSuspended: userData.status === 'suspended',
           hostApplication: userData.host_application,
+          bio: userData.bio,
+          phone: userData.phone,
+          instagram: userData.instagram,
+          twitter: userData.twitter,
+          facebook: userData.facebook,
         };
         setUser(userObj);
         setUserContext({ id: userObj.id, email: userObj.email, name: userObj.name, role: userObj.role });
