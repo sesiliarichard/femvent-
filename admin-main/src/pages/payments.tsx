@@ -49,9 +49,11 @@ export default function PaymentsPage() {
       setPaymentStats(stats);
     });
 
-    return unsubscribe;
+    return () => {
+      unsubscribe();
+    };
   }, [user]);
-
+  
   if (loading) {
     return (
       <AdminLayout>
