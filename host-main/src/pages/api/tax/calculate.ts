@@ -4,7 +4,7 @@
  */
 
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import type { TaxCalculationRequest, TaxCalculationResult, TaxRate } from '@/types/tax';
 
 export default async function handler(

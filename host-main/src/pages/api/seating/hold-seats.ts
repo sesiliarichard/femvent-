@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { supabaseAdmin } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { SEAT_HOLD_DURATION_MS } from '@/types/seating';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
