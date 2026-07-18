@@ -59,7 +59,7 @@ export default function SetHostPage() {
         <div className="space-y-4">
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="font-semibold text-gray-900 mb-2">Current User Info:</h3>
-            <p className="text-sm text-gray-600">Name: {userProfile?.name || user.displayName || 'N/A'}</p>
+            <p className="text-sm text-gray-600">Name: {userProfile?.name || 'N/A'}</p>
             <p className="text-sm text-gray-600">Email: {user.email}</p>
             <p className="text-sm text-gray-600">Current Role: {userProfile?.role || 'attendee'}</p>
           </div>

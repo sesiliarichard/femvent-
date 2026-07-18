@@ -1017,21 +1017,31 @@ function EventAttendeesContent() {
             for (const attendee of selectedAttendeesData) {
               try {
                 // Update ticket
-                await updateDoc(doc(db, 'tickets', attendee.id), {
+                const { error: refundError } = await supabase
+                .from('tickets')
+                .update({
                   status: 'cancelled',
-                  refundReason: reason,
-                  refundedAt: new Date(),
-                  updatedAt: new Date(),
-                });
+                  refund_reason: reason,
+                  refunded_at: new Date().toISOString(),
+                  updated_at: new Date().toISOString(),
+                })
+                .eq('id', attendee.id);
+
+              if (refundError) throw refundError;
 
                 // Update payment if exists
                 if (attendee.paymentId) {
                   try {
-                    await updateDoc(doc(db, 'payments', attendee.paymentId), {
-                      status: 'refunded',
-                      refundedAt: new Date(),
-                      refundReason: reason,
-                    });
+                    const { error: paymentError } = await supabase
+                      .from('payments')
+                      .update({
+                        status: 'refunded',
+                        refunded_at: new Date().toISOString(),
+                        refund_reason: reason,
+                      })
+                      .eq('id', attendee.paymentId);
+
+                    if (paymentError) throw paymentError;
                   } catch (e) {
                     console.log('Payment record not found');
                   }
@@ -1067,14 +1077,15 @@ function EventAttendeesContent() {
           }
 
           try {
-            const updatePromises = Array.from(selectedAttendees).map(id =>
-              updateDoc(doc(db, 'tickets', id), {
-                status,
-                updatedAt: new Date(),
-              })
-            );
+            const { error: statusError } = await supabase
+            .from('tickets')
+            .update({
+              status,
+              updated_at: new Date().toISOString(),
+            })
+            .in('id', Array.from(selectedAttendees));
 
-            await Promise.all(updatePromises);
+          if (statusError) throw statusError;
 
             // Recalculate and update event's currentAttendees count if status changed to/from confirmed
             if (eventId && (status === 'confirmed' || status === 'cancelled')) {

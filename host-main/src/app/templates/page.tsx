@@ -30,14 +30,14 @@ export default function TemplatesPage() {
     const categories = ['all', 'conference', 'workshop', 'networking', 'social', 'sports', 'arts', 'other'];
 
     useEffect(() => {
-        if (user?.uid) {
+        if (user?.id) {
             fetchTemplates();
         }
     }, [user]);
 
     const fetchTemplates = async () => {
         try {
-            const response = await fetch(`/api/templates?hostId=${user?.uid}`);
+            const response = await fetch(`/api/templates?hostId=${user?.id}`);
             if (response.ok) {
                 const data = await response.json();
                 setTemplates(data);

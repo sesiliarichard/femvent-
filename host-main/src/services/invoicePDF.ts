@@ -31,8 +31,8 @@ export async function generateInvoicePDF(invoice: Invoice): Promise<string> {
     doc.setFontSize(10);
     doc.setTextColor(100, 100, 100);
     doc.text(`Invoice Number: ${invoice.invoiceNumber}`, 140, 30);
-    doc.text(`Date: ${invoice.issuedAt.toDate().toLocaleDateString()}`, 140, 36);
-    doc.text(`Due Date: ${invoice.dueAt.toDate().toLocaleDateString()}`, 140, 42);
+    doc.text(`Date: ${new Date(invoice.issuedAt).toLocaleDateString()}`, 140, 36);
+    doc.text(`Due Date: ${new Date(invoice.dueAt).toLocaleDateString()}`, 140, 42);
 
     // Customer Info
     doc.setFontSize(12);
@@ -120,7 +120,7 @@ export async function generateInvoicePDF(invoice: Invoice): Promise<string> {
     doc.setFontSize(10);
     if (invoice.paidAt) {
         doc.setTextColor(0, 150, 0);
-        doc.text(`PAID - ${invoice.paidAt.toDate().toLocaleDateString()}`, 120, yPos);
+        doc.text(`PAID - ${new Date(invoice.paidAt).toLocaleDateString()}`, 120, yPos);
     } else {
         doc.setTextColor(220, 38, 38);
         doc.text('UNPAID', 120, yPos);
