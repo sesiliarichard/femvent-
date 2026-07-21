@@ -21,6 +21,7 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
   const [loading, setLoading] = React.useState(true);
   const [showTemplateModal, setShowTemplateModal] = React.useState(false);
   const [showCloneModal, setShowCloneModal] = React.useState(false);
+  const [linkCopied, setLinkCopied] = React.useState(false);
 
   React.useEffect(() => {
     async function fetchEvent() {
@@ -101,6 +102,16 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
     return colors[type] || 'from-blue-500 to-purple-500';
   };
 
+  const registrationLink =
+    event.registration_url ||
+    `${process.env.NEXT_PUBLIC_ATTENDEE_SITE_URL || ''}/events/${eventId}/register`;
+
+  const copyRegistrationLink = () => {
+    navigator.clipboard.writeText(registrationLink);
+    setLinkCopied(true);
+    setTimeout(() => setLinkCopied(false), 2000);
+  };
+
   const isEventOwner = userProfile?.id === event.host_id;
 
   return (
@@ -141,6 +152,15 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                 </div>
                 {isEventOwner && (
                   <div className="flex gap-3">
+                    <button
+                      onClick={copyRegistrationLink}
+                      className="group flex items-center gap-3 bg-gradient-to-r from-rose-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-2xl hover:shadow-rose-500/40 hover:scale-105 transition-all duration-300"
+                    >
+                      <svg className="w-5 h-5 group-hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13.828 10.172a4 4 0 010 5.656l-3 3a4 4 0 01-5.656-5.656l1.5-1.5M10.172 13.828a4 4 0 010-5.656l3-3a4 4 0 015.656 5.656l-1.5 1.5" />
+                      </svg>
+                      <span>{linkCopied ? 'Link Copied!' : 'Copy Registration Link'}</span>
+                    </button>
                     <button
                       onClick={() => setShowTemplateModal(true)}
                       className="group flex items-center gap-3 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-2xl hover:shadow-emerald-500/40 hover:scale-105 transition-all duration-300"

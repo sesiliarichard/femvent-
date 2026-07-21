@@ -7,6 +7,7 @@ import { supabase } from "@/lib/supabase";
 interface PriceOption {
     id: string;
     name: string;
+    description?: string;
     price: number;
     currency?: string;
     isAvailable?: boolean;
@@ -27,6 +28,7 @@ export default function RegisterPage() {
 
     const [event, setEvent] = useState<EventSummary | null>(null);
     const [loadingEvent, setLoadingEvent] = useState(true);
+    const [ticketTypes, setTicketTypes] = useState<PriceOption[]>([]);
 
     const [session, setSession] = useState<any>(null);
     const [authMode, setAuthMode] = useState<AuthMode>("login");
@@ -62,19 +64,33 @@ export default function RegisterPage() {
                 .eq("id", id)
                 .single();
             setEvent(data);
+
+            const { data: tiers } = await supabase
+                .from("ticket_types")
+                .select("id, name, description, price, currency")
+                .eq("event_id", id)
+                .eq("is_active", true)
+                .order("sort_order", { ascending: true });
+
+            if (tiers && tiers.length > 0) {
+                setTicketTypes(tiers);
+            } else {
+                // Fallback for events with no configured tiers yet
+                setTicketTypes([
+                    {
+                        id: "general",
+                        name: "General Admission",
+                        price: data?.price || 0,
+                        currency: data?.currency || "USD",
+                    },
+                ]);
+            }
+
             setLoadingEvent(false);
         })();
     }, [id]);
 
-    const ticketOptions: PriceOption[] = [
-        {
-            id: "general",
-            name: "General Admission",
-            price: event?.price || 0,
-            currency: event?.currency || "USD",
-        },
-    ];
-
+    const ticketOptions = ticketTypes;
     const selectedTicket = ticketOptions.find((t) => t.id === selectedTicketId) || ticketOptions[0];
 
     const handleAuth = async (e: React.FormEvent) => {
@@ -115,15 +131,8 @@ export default function RegisterPage() {
         e.preventDefault();
         if (!session?.user) return;
         setSubmitError("");
-
-        if (selectedTicket.price > 0) {
-            setSubmitError(
-                "Paid ticket checkout isn't connected yet — payment processing is coming soon. Please select a free ticket option for now, or check back shortly."
-            );
-            return;
-        }
-
         setSubmitting(true);
+
         try {
             const { error: profileError } = await supabase
                 .from("users")
@@ -136,6 +145,31 @@ export default function RegisterPage() {
                 .eq("id", session.user.id);
             if (profileError) throw profileError;
 
+            if (selectedTicket.price > 0) {
+                // Paid tier — send to Flutterwave, ticket gets created by the webhook after payment
+                const res = await fetch("/api/payments/create-checkout", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        eventId: id,
+                        amount: selectedTicket.price,
+                        email: session.user.email,
+                        name: fullName,
+                        userId: session.user.id,
+                        ticketTypeName: selectedTicket.name,
+                    }),
+                });
+
+                const data = await res.json();
+                if (!res.ok || !data.sessionUrl) {
+                    throw new Error(data.error || "Failed to start payment");
+                }
+
+                window.location.href = data.sessionUrl;
+                return;
+            }
+
+            // Free tier — create the ticket immediately, no payment needed
             const { error } = await supabase.from("tickets").insert({
                 event_id: id,
                 user_id: session.user.id,
@@ -145,7 +179,7 @@ export default function RegisterPage() {
                 payment_method: "free",
                 qr_code_id: crypto.randomUUID(),
             });
-        if (error) throw error;
+            if (error) throw error;
 
             fetch("/api/send-email", {
                 method: "POST",
@@ -169,7 +203,7 @@ export default function RegisterPage() {
             setSubmitting(false);
         }
     };
-
+    
     if (loadingEvent) {
         return (
             <main className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-6 py-32 text-center">
@@ -334,32 +368,39 @@ export default function RegisterPage() {
                         </div>
                     </div>
 
-                    <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
-                        <h2 className="mb-4 text-lg font-semibold text-gray-900">Select a Ticket</h2>
-                        <div className="flex flex-col gap-3">
+                    <div className="rounded-3xl border border-gray-100 bg-white shadow-lg overflow-hidden">
+                        <div className="bg-gradient-to-r from-rose-500 to-pink-500 px-6 py-4">
+                            <h2 className="text-base font-bold text-white">Choose amount</h2>
+                        </div>
+                        <div className="flex flex-col gap-3 p-6">
                             {ticketOptions.map((option) => (
                                 <label
                                     key={option.id}
-                                    className={`flex cursor-pointer items-center justify-between rounded-xl border p-4 transition-colors ${
+                                    className={`flex cursor-pointer items-start justify-between gap-4 rounded-xl border-2 p-4 transition-colors ${
                                         (selectedTicketId || ticketOptions[0].id) === option.id
                                             ? "border-rose-400 bg-rose-50"
-                                            : "border-gray-200"
+                                            : "border-gray-200 hover:border-gray-300"
                                     }`}
                                 >
-                                    <div className="flex items-center gap-3">
+                                    <div className="flex items-start gap-3">
                                         <input
                                             type="radio"
                                             name="ticket"
+                                            className="mt-1"
                                             checked={(selectedTicketId || ticketOptions[0].id) === option.id}
                                             onChange={() => setSelectedTicketId(option.id)}
                                         />
-                                        <span className="text-sm font-medium text-gray-900">
-                                            {option.name}
-                                        </span>
+                                        <div>
+                                            <div className="text-sm font-bold text-gray-900">
+                                                {option.name} {option.price > 0 ? `— $${option.price}` : "— Free"}
+                                            </div>
+                                            {option.description && (
+                                                <div className="text-xs text-gray-500 mt-1">
+                                                    {option.description}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                    <span className="text-sm font-semibold text-gray-900">
-                                        {option.price > 0 ? `$${option.price}` : "Free"}
-                                    </span>
                                 </label>
                             ))}
                         </div>

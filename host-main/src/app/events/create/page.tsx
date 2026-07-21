@@ -99,6 +99,8 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
   const [uploading, setUploading] = useState(false);
   const [creating, setCreating] = useState(false);
   const [errors, setErrors] = useState<{[key: string]: string}>({});
+  const [createdEventLink, setCreatedEventLink] = useState<string | null>(null);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const eventTypes = [
     { value: 'Conference', icon: '🎤', color: 'from-blue-500 to-cyan-500' },
@@ -349,33 +351,48 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
         .select()
         .single();
 
-      if (error) throw error;
+        if (error) throw error;
 
-      const duration = Date.now() - startTime;
-
-      logger.logEventOperation('event_created', created.id, {
-        title: eventData.title,
-        hostId: userProfile.id,
-        duration,
-      });
-      logger.logDatabaseOperation('create', 'events', { eventId: created.id });
-      logger.logPerformance('create_event', duration, { eventId: created.id });
-
-      alert('Event created successfully!');
-      router.push('/events');
-    } catch (error: any) {
-      console.error('Event creation error:', error);
-      logger.error('Event creation failed', {
-        context: 'CreateEvent',
-        operation: 'createEvent',
-        metadata: { title: eventData.title, hostId: userProfile.id },
-        error: error,
-      });
-      alert(`Error: ${error.message || 'Failed to create event'}`);
-    } finally {
-      setCreating(false);
-    }
-  };
+        const duration = Date.now() - startTime;
+  
+        logger.logEventOperation('event_created', created.id, {
+          title: eventData.title,
+          hostId: userProfile.id,
+          duration,
+        });
+        logger.logDatabaseOperation('create', 'events', { eventId: created.id });
+        logger.logPerformance('create_event', duration, { eventId: created.id });
+  
+        const attendeeSiteUrl = process.env.NEXT_PUBLIC_ATTENDEE_SITE_URL || '';
+        const registrationLink = `${attendeeSiteUrl}/events/${created.id}/register`;
+  
+        // Save the real registration link on the event too, so it's available elsewhere later
+        await supabase
+          .from('events')
+          .update({ registration_url: registrationLink })
+          .eq('id', created.id);
+  
+        setCreatedEventLink(registrationLink);
+      } catch (error: any) {
+        console.error('Event creation error:', error);
+        logger.error('Event creation failed', {
+          context: 'CreateEvent',
+          operation: 'createEvent',
+          metadata: { title: eventData.title, hostId: userProfile.id },
+          error: error,
+        });
+        alert(`Error: ${error.message || 'Failed to create event'}`);
+      } finally {
+        setCreating(false);
+      }
+    };
+  
+    const copyRegistrationLink = () => {
+      if (!createdEventLink) return;
+      navigator.clipboard.writeText(createdEventLink);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    };
 
   const saveDraft = async () => {
     if (!userProfile?.id) {
