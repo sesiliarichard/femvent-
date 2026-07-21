@@ -62,13 +62,32 @@ export default function DashboardContent() {
 
         if (error) throw error;
 
+        const eventIds = (rows || []).map((row: any) => row.id);
+
+        // Count real ticket rows instead of trusting the cached tickets_sold column
+        const attendeesByEvent: Record<string, number> = {};
+        if (eventIds.length > 0) {
+          const { data: ticketRows, error: ticketsError } = await supabase
+            .from('tickets')
+            .select('event_id')
+            .in('event_id', eventIds)
+            .neq('status', 'cancelled');
+
+          if (ticketsError) throw ticketsError;
+
+          (ticketRows || []).forEach((t: any) => {
+            attendeesByEvent[t.event_id] = (attendeesByEvent[t.event_id] || 0) + 1;
+          });
+        }
+
         // Map to the field names this page's JSX expects
         const data = (rows || []).map((row: any) => ({
           id: row.id,
           title: row.title,
           startAt: row.event_date,
           isPublished: row.status === 'published',
-          currentAttendees: row.tickets_sold || 0,
+          currentAttendees: attendeesByEvent[row.id] || 0,
+          attendeesCount: attendeesByEvent[row.id] || 0,
           maxAttendees: row.capacity || 0,
           capacity: row.capacity || 0,
           price: row.price || 0,

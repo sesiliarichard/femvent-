@@ -209,6 +209,31 @@ function EventAttendeesContent() {
     }
   };
 
+  const handleDeleteAttendee = async (attendee: Attendee) => {
+    if (!confirm(`Remove ${attendee.userInfo?.name || 'this attendee'} from this event? This will permanently delete their ticket/registration.`)) {
+      return;
+    }
+    try {
+      const { error } = await supabase
+        .from('tickets')
+        .delete()
+        .eq('id', attendee.id);
+      if (error) throw error;
+      setAttendees((prev) => prev.filter((a) => a.id !== attendee.id));
+      setSelectedAttendees((prev) => {
+        const next = new Set(prev);
+        next.delete(attendee.id);
+        return next;
+      });
+      if (eventId) {
+        await updateAttendeeCount(eventId);
+      }
+    } catch (error) {
+      console.error('Error deleting attendee:', error);
+      alert('Failed to delete attendee. Please try again.');
+    }
+  };
+
   const handleBulkConfirm = async () => {
     try {
       const { error } = await supabase
@@ -607,7 +632,7 @@ function EventAttendeesContent() {
                               {attendee.createdAt.toLocaleDateString()}
                             </td>
                             <td className="px-6 py-5">
-                              <div className="flex justify-center">
+                              <div className="flex justify-center gap-2">
                                 <button
                                   onClick={() => {
                                     setSelectedAttendee(attendee);
@@ -617,6 +642,15 @@ function EventAttendeesContent() {
                                 >
                                   <svg className="w-5 h-5 text-slate-600 group-hover/btn:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                  </svg>
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteAttendee(attendee)}
+                                  className="p-3 hover:bg-red-100 rounded-xl transition-all duration-300 hover:scale-110 group/btn"
+                                  title="Remove attendee"
+                                >
+                                  <svg className="w-5 h-5 text-slate-600 group-hover/btn:text-red-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                   </svg>
                                 </button>
                               </div>
@@ -698,6 +732,12 @@ function EventAttendeesContent() {
                             </button>
                           )}
                         </div>
+                        <button
+                          onClick={() => handleDeleteAttendee(attendee)}
+                          className="mt-3 w-full px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-black hover:bg-red-100 transition-all duration-300"
+                        >
+                          🗑 Remove Attendee
+                        </button>
                       </div>
                     );
                   })}
