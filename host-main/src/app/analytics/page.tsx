@@ -63,6 +63,23 @@ function AnalyticsContent({ userProfile }: { userProfile: any }) {
           return eventDate >= startDateForFilter;
         });
 
+        // Count real ticket rows per event instead of trusting the cached tickets_sold column
+        const filteredEventIds = filteredEventsData.map((event: any) => event.id);
+        const attendeesByEvent: Record<string, number> = {};
+        if (filteredEventIds.length > 0) {
+          const { data: ticketRows, error: ticketsError } = await supabase
+            .from('tickets')
+            .select('event_id')
+            .in('event_id', filteredEventIds)
+            .neq('status', 'cancelled');
+
+          if (ticketsError) throw ticketsError;
+
+          (ticketRows || []).forEach((t: any) => {
+            attendeesByEvent[t.event_id] = (attendeesByEvent[t.event_id] || 0) + 1;
+          });
+        }
+
         // Calculate metrics
         let totalRevenue = 0;
         let totalAttendees = 0;
@@ -71,7 +88,7 @@ function AnalyticsContent({ userProfile }: { userProfile: any }) {
         for (const event of filteredEventsData) {
           const startDate = event.event_date ? new Date(event.event_date) : new Date();
 
-          const attendeeCount = event.tickets_sold || 0;
+          const attendeeCount = attendeesByEvent[event.id] || 0;
           const eventRevenue = attendeeCount * (event.price || 0);
 
           totalAttendees += attendeeCount;
@@ -103,7 +120,7 @@ function AnalyticsContent({ userProfile }: { userProfile: any }) {
         setLoading(false);
       }
     };
-
+    
     loadAnalyticsData();
   }, [userProfile?.id, timeRange]);
 
