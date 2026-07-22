@@ -41,7 +41,14 @@ interface EventData {
   partners: Partner[];
 }
 
-type TabType = 'Basic' | 'Speakers' | 'Agenda' | 'Partners';
+interface TicketTier {
+  id?: string;
+  name: string;
+  description: string;
+  price: string;
+}
+
+type TabType = 'Basic' | 'Tickets' | 'Speakers' | 'Agenda' | 'Partners';
 
 export default function EditEventPage() {
   const { userProfile } = useAuth();
@@ -72,6 +79,21 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
   const [saving, setSaving] = useState(false);
   const [errors, setErrors] = useState<{ [k: string]: string }>({});
   const [loading, setLoading] = useState(true);
+  const [ticketTiers, setTicketTiers] = useState<TicketTier[]>([]);
+
+  const addTicketTier = () => {
+    setTicketTiers((prev) => [...prev, { name: '', description: '', price: '0' }]);
+  };
+
+  const removeTicketTier = (index: number) => {
+    setTicketTiers((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const updateTicketTier = (index: number, field: keyof TicketTier, value: string) => {
+    setTicketTiers((prev) =>
+      prev.map((tier, i) => (i === index ? { ...tier, [field]: value } : tier))
+    );
+  };
 
   const eventTypes = useMemo(() => [
     { value: 'Conference', icon: '🎤', color: 'from-blue-500 to-cyan-500' },
@@ -84,6 +106,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
 
   const tabs: { id: TabType; label: string; icon: string }[] = [
     { id: 'Basic', label: 'Basic Info', icon: '📝' },
+    { id: 'Tickets', label: 'Tickets', icon: '🎟️' },
     { id: 'Speakers', label: 'Speakers', icon: '🎤' },
     { id: 'Agenda', label: 'Agenda', icon: '📅' },
     { id: 'Partners', label: 'Partners', icon: '🤝' },
@@ -124,6 +147,23 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
           agenda: Array.isArray(data.agenda) ? data.agenda.map((it: any) => ({ ...it, time: it.time ? new Date(it.time) : new Date() })) : [],
           partners: Array.isArray(data.partners) ? data.partners : [],
         });
+
+        const { data: tiers } = await supabase
+          .from('ticket_types')
+          .select('id, name, description, price')
+          .eq('event_id', eventId)
+          .order('sort_order', { ascending: true });
+
+        if (tiers && tiers.length > 0) {
+          setTicketTiers(
+            tiers.map((t: any) => ({
+              id: t.id,
+              name: t.name || '',
+              description: t.description || '',
+              price: t.price != null ? String(t.price) : '0',
+            }))
+          );
+        }
       } finally {
         setLoading(false);
       }
@@ -270,6 +310,27 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
         .eq('id', eventId);
 
         if (error) throw error;
+
+        // Replace ticket tiers wholesale — simplest way to handle adds/edits/removes together
+        await supabase.from('ticket_types').delete().eq('event_id', eventId);
+
+        const validTiers = ticketTiers.filter((t) => t.name.trim() !== '');
+        if (validTiers.length > 0) {
+          const { error: tiersError } = await supabase.from('ticket_types').insert(
+            validTiers.map((tier, index) => ({
+              event_id: eventId,
+              name: tier.name,
+              description: tier.description || null,
+              price: Number(tier.price) || 0,
+              currency: 'USD',
+              sort_order: index,
+            }))
+          );
+          if (tiersError) {
+            console.error('Error saving ticket tiers:', tiersError);
+          }
+        }
+
         router.push('/events');
       } finally {
         setSaving(false);
@@ -966,6 +1027,99 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
                         onChange={(e) => updateAgendaItem(i, 'description', e.target.value)}
                         rows={3}
                         className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-medium placeholder-slate-400 resize-none"
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+{activeTab === 'Tickets' && (
+            <div className="space-y-6 animate-[fadeIn_0.5s_ease-out]">
+              <div className="flex justify-between items-center mb-8">
+                <div>
+                  <h3 className="text-2xl font-black text-slate-900">Ticket Types</h3>
+                  <p className="text-slate-600 font-medium mt-1">
+                    Add or edit ticket tiers attendees can choose from (e.g. Free, General, VIP)
+                  </p>
+                </div>
+                <button
+                  onClick={addTicketTier}
+                  className="group flex items-center gap-3 bg-gradient-to-r from-rose-600 to-pink-600 text-white px-6 py-3 rounded-2xl font-bold hover:shadow-xl hover:shadow-rose-500/30 hover:scale-105 transition-all duration-300"
+                >
+                  <svg className="w-5 h-5 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span>Add Ticket Type</span>
+                </button>
+              </div>
+
+              {ticketTiers.length === 0 ? (
+                <div className="text-center py-16 bg-gradient-to-br from-slate-50 to-rose-50 rounded-3xl border-2 border-dashed border-slate-300">
+                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-rose-100 to-pink-100 rounded-2xl flex items-center justify-center">
+                    <span className="text-4xl">🎟️</span>
+                  </div>
+                  <h3 className="text-xl font-black text-slate-900 mb-2">No ticket types yet</h3>
+                  <p className="text-slate-600 font-medium mb-6">Attendees will default to a single free ticket if none are added</p>
+                  <button
+                    onClick={addTicketTier}
+                    className="bg-gradient-to-r from-rose-600 to-pink-600 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-xl hover:scale-105 transition-all duration-300"
+                  >
+                    Add Your First Ticket Type
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {ticketTiers.map((tier, index) => (
+                    <div
+                      key={tier.id ?? index}
+                      className="group bg-gradient-to-br from-white to-slate-50 border-2 border-slate-200 rounded-3xl p-8 hover:border-rose-300 hover:shadow-xl transition-all duration-300"
+                      style={{ animation: `slideUp 0.5s ease-out ${index * 0.1}s backwards` }}
+                    >
+                      <div className="flex justify-between items-center mb-6">
+                        <div className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-gradient-to-br from-rose-600 to-pink-600 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-lg">
+                            {index + 1}
+                          </div>
+                          <h4 className="text-xl font-black text-slate-900">Ticket Type {index + 1}</h4>
+                        </div>
+                        <button
+                          onClick={() => removeTicketTier(index)}
+                          className="group/btn p-3 hover:bg-red-100 rounded-xl transition-all duration-300 hover:scale-110"
+                        >
+                          <svg className="w-6 h-6 text-red-600 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <input
+                          type="text"
+                          placeholder="Ticket Name (e.g. VIP, General, Free)"
+                          value={tier.name}
+                          onChange={(e) => updateTicketTier(index, 'name', e.target.value)}
+                          className="px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold placeholder-slate-400"
+                        />
+                        <div className="relative">
+                          <span className="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 font-semibold">$</span>
+                          <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            placeholder="0 for Free"
+                            value={tier.price}
+                            onChange={(e) => updateTicketTier(index, 'price', e.target.value)}
+                            className="w-full pl-10 pr-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold placeholder-slate-400"
+                          />
+                        </div>
+                      </div>
+                      <textarea
+                        placeholder="Description (e.g. 'Includes reserved seating and reception')"
+                        value={tier.description}
+                        onChange={(e) => updateTicketTier(index, 'description', e.target.value)}
+                        rows={2}
+                        className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold placeholder-slate-400"
                       />
                     </div>
                   ))}
