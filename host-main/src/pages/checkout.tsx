@@ -295,6 +295,10 @@ export default function CheckoutPage() {
                     </div>
                 </div>
             </div>
-        </div>
+            </div>
     );
+}
+
+export async function getServerSideProps() {
+    return { props: {} };
 }
