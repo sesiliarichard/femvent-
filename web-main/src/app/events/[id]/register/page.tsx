@@ -29,6 +29,7 @@ export default function RegisterPage() {
     const [event, setEvent] = useState<EventSummary | null>(null);
     const [loadingEvent, setLoadingEvent] = useState(true);
     const [ticketTypes, setTicketTypes] = useState<PriceOption[]>([]);
+    const [hostHasPayout, setHostHasPayout] = useState<boolean | null>(null);
 
     const [session, setSession] = useState<any>(null);
     const [authMode, setAuthMode] = useState<AuthMode>("login");
@@ -60,10 +61,19 @@ export default function RegisterPage() {
         (async () => {
             const { data } = await supabase
                 .from("events")
-                .select("id, title, price, currency")
+                .select("id, title, price, currency, host_id")
                 .eq("id", id)
                 .single();
             setEvent(data);
+
+            if (data?.host_id) {
+                const { data: hostRow } = await supabase
+                    .from("users")
+                    .select("flw_subaccount_id")
+                    .eq("id", data.host_id)
+                    .maybeSingle();
+                setHostHasPayout(!!hostRow?.flw_subaccount_id);
+            }
 
             const { data: tiers } = await supabase
                 .from("ticket_types")
@@ -146,6 +156,14 @@ export default function RegisterPage() {
             if (profileError) throw profileError;
 
             if (selectedTicket.price > 0) {
+                if (!hostHasPayout) {
+                    setSubmitError(
+                        "This host hasn't finished setting up payment collection yet, so paid tickets aren't available right now. Please check back soon or contact the organizer."
+                    );
+                    setSubmitting(false);
+                    return;
+                }
+
                 // Paid tier — send to Flutterwave, ticket gets created by the webhook after payment
                 const res = await fetch("/api/payments/create-checkout", {
                     method: "POST",
