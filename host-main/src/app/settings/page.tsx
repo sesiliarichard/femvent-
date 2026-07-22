@@ -26,7 +26,96 @@ export default function Settings() {
 function SettingsContent({ userProfile }: { userProfile: any }) {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState<'profile' | 'preferences' | 'security' | 'notifications'>('profile');
+  const [activeTab, setActiveTab] = useState<'profile' | 'preferences' | 'security' | 'notifications' | 'payout'>('profile');
+
+  const AUTO_PAYOUT_COUNTRIES = [
+    { code: 'TZ', name: 'Tanzania' },
+    { code: 'NG', name: 'Nigeria' },
+    { code: 'GH', name: 'Ghana' },
+    { code: 'KE', name: 'Kenya' },
+    { code: 'UG', name: 'Uganda' },
+    { code: 'ZA', name: 'South Africa' },
+  ];
+
+  const [payoutData, setPayoutData] = useState({
+    country: 'TZ',
+    bankCode: '',
+    accountNumber: '',
+    accountName: '',
+  });
+  const [bankOptions, setBankOptions] = useState<{ code: string; name: string }[]>([]);
+  const [loadingBanks, setLoadingBanks] = useState(false);
+  const [savingPayout, setSavingPayout] = useState(false);
+  const [payoutStatus, setPayoutStatus] = useState<string | null>(null);
+
+  const isAutoPayoutCountry = AUTO_PAYOUT_COUNTRIES.some((c) => c.code === payoutData.country);
+
+  useEffect(() => {
+    if (!isAutoPayoutCountry) {
+      setBankOptions([]);
+      return;
+    }
+    const loadBanks = async () => {
+      setLoadingBanks(true);
+      try {
+        const res = await fetch(`/api/payments/banks?country=${payoutData.country}`);
+        const data = await res.json();
+        setBankOptions(data.banks || []);
+      } catch (err) {
+        console.error('Failed to load banks:', err);
+      } finally {
+        setLoadingBanks(false);
+      }
+    };
+    loadBanks();
+  }, [payoutData.country, isAutoPayoutCountry]);
+
+  const handlePayoutSave = async () => {
+    if (!userProfile?.id) return;
+    setSavingPayout(true);
+    setPayoutStatus(null);
+    try {
+      if (isAutoPayoutCountry) {
+        if (!payoutData.bankCode || !payoutData.accountNumber || !payoutData.accountName) {
+          setPayoutStatus('Please fill in all payout fields.');
+          setSavingPayout(false);
+          return;
+        }
+        const res = await fetch('/api/payments/create-subaccount', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: userProfile.id,
+            accountBankCode: payoutData.bankCode,
+            accountNumber: payoutData.accountNumber,
+            accountName: payoutData.accountName,
+            businessName: profileData.name,
+            businessEmail: profileData.email,
+            country: payoutData.country,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save payout details');
+        setPayoutStatus('Payout details saved! You\'ll now receive ticket payments automatically.');
+      } else {
+        // Manual payout — just store details, no automatic sub-account
+        await supabase
+          .from('users')
+          .update({
+            bank_name: payoutData.bankCode,
+            bank_account_number: payoutData.accountNumber,
+            bank_account_name: payoutData.accountName,
+            payout_country: payoutData.country,
+          })
+          .eq('id', userProfile.id);
+        setPayoutStatus('Payout details saved. Since automatic payout isn\'t available in your country yet, FemVents will send your ticket revenue manually.');
+      }
+    } catch (err: any) {
+      setPayoutStatus(err.message || 'Failed to save payout details');
+    } finally {
+      setSavingPayout(false);
+    }
+  };
   
   const [profileData, setProfileData] = useState({
     name: '',
@@ -225,6 +314,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
 
   const tabs = [
     { id: 'profile', label: 'Profile', icon: '👤', color: 'from-secondary-500 to-accent-500' },
+    { id: 'payout', label: 'Payout', icon: '💰', color: 'from-rose-500 to-pink-500' },
     { id: 'preferences', label: 'Preferences', icon: '⚙️', color: 'from-purple-500 to-pink-500' },
     { id: 'security', label: 'Security', icon: '🔒', color: 'from-emerald-500 to-teal-500' },
     { id: 'notifications', label: 'Notifications', icon: '🔔', color: 'from-amber-500 to-orange-500' },
@@ -634,6 +724,115 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                       </>
                     )}
                   </div>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Payout Tab */}
+          {activeTab === 'payout' && (
+            <div className="space-y-8 animate-[fadeIn_0.5s_ease-out]">
+              <div className="pb-6 border-b-2 border-pink-100">
+                <h2 className="text-3xl font-black text-purple-900 mb-2">Payout Details</h2>
+                <p className="text-lg text-purple-600 font-medium">
+                  Set up where you'll receive money from ticket sales
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
+                  Country
+                </label>
+                <select
+                  value={payoutData.country}
+                  onChange={(e) => setPayoutData({ ...payoutData, country: e.target.value, bankCode: '' })}
+                  className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold"
+                >
+                  <optgroup label="Automatic Payout Supported">
+                    {AUTO_PAYOUT_COUNTRIES.map((c) => (
+                      <option key={c.code} value={c.code}>{c.name}</option>
+                    ))}
+                  </optgroup>
+                  <option value="OTHER">Other country (manual payout)</option>
+                </select>
+              </div>
+
+              {!isAutoPayoutCountry && (
+                <div className="p-6 bg-amber-50 border-2 border-amber-200 rounded-2xl">
+                  <p className="text-sm text-amber-800 font-semibold">
+                    Automatic payout isn't available in your country yet. Your details will still be saved,
+                    and FemVents will send your ticket revenue manually.
+                  </p>
+                </div>
+              )}
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
+                    {isAutoPayoutCountry ? 'Bank / Mobile Money Provider' : 'Bank Name'}
+                  </label>
+                  {isAutoPayoutCountry ? (
+                    <select
+                      value={payoutData.bankCode}
+                      onChange={(e) => setPayoutData({ ...payoutData, bankCode: e.target.value })}
+                      disabled={loadingBanks}
+                      className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold"
+                    >
+                      <option value="">{loadingBanks ? 'Loading...' : 'Select a bank or mobile money provider'}</option>
+                      {bankOptions.map((b) => (
+                        <option key={b.code} value={b.code}>{b.name}</option>
+                      ))}
+                    </select>
+                  ) : (
+                    <input
+                      type="text"
+                      placeholder="e.g. Bank of America"
+                      value={payoutData.bankCode}
+                      onChange={(e) => setPayoutData({ ...payoutData, bankCode: e.target.value })}
+                      className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold placeholder-slate-400"
+                    />
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
+                    Account Number
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Account or mobile number"
+                    value={payoutData.accountNumber}
+                    onChange={(e) => setPayoutData({ ...payoutData, accountNumber: e.target.value })}
+                    className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold placeholder-slate-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
+                  Account Holder Name
+                </label>
+                <input
+                  type="text"
+                  placeholder="Full name on the account"
+                  value={payoutData.accountName}
+                  onChange={(e) => setPayoutData({ ...payoutData, accountName: e.target.value })}
+                  className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold placeholder-slate-400"
+                />
+              </div>
+
+              {payoutStatus && (
+                <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-2xl text-sm font-semibold text-blue-800">
+                  {payoutStatus}
+                </div>
+              )}
+
+              <div className="flex justify-end pt-6 border-t-2 border-pink-100">
+                <button
+                  onClick={handlePayoutSave}
+                  disabled={savingPayout}
+                  className="group relative bg-gradient-to-r from-rose-600 to-pink-600 text-white px-10 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-rose-500/40 hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {savingPayout ? 'Saving...' : 'Save Payout Details'}
                 </button>
               </div>
             </div>

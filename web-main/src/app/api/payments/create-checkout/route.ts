@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export async function POST(req: NextRequest) {
   try {
@@ -9,6 +10,23 @@ export async function POST(req: NextRequest) {
     }
     if (!email) {
       return NextResponse.json({ error: 'Customer email is required' }, { status: 400 });
+    }
+
+    // Look up the event's host so we know where the money should go
+    const { data: eventRow } = await supabaseAdmin
+      .from('events')
+      .select('host_id')
+      .eq('id', eventId)
+      .maybeSingle();
+
+    let hostSubaccountId: string | null = null;
+    if (eventRow?.host_id) {
+      const { data: hostRow } = await supabaseAdmin
+        .from('users')
+        .select('flw_subaccount_id')
+        .eq('id', eventRow.host_id)
+        .maybeSingle();
+      hostSubaccountId = hostRow?.flw_subaccount_id || null;
     }
 
     const txRef = `femvents-${eventId}-${Date.now()}`;
@@ -31,6 +49,9 @@ export async function POST(req: NextRequest) {
           description: `Ticket purchase for event ${eventId}`,
         },
         meta: { eventId, userId: userId || null, ticketTypeName: ticketTypeName || 'Standard' },
+        ...(hostSubaccountId && {
+          subaccounts: [{ id: hostSubaccountId, transaction_split_ratio: 1 }],
+        }),
       }),
     });
 
