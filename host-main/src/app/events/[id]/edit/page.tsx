@@ -316,6 +316,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
           type: eventData.type,
           multi_day: eventData.multiDay,
           event_date: eventData.startAt.toISOString(),
+          end_date: eventData.multiDay ? eventData.endAt.toISOString() : null,
           venue: venueObject,
           location: venueName,
           capacity: capacityValue,
