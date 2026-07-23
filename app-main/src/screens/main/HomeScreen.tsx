@@ -32,11 +32,11 @@ const { width, height } = Dimensions.get('window');
 export const HomeScreen: React.FC = () => {
   const navigation = useNavigation();
   const { user } = useAuth();
-  const [events, setEvents] = useState([]);
+  const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [favorites, setFavorites] = useState(new Set());
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState('list');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -88,39 +88,53 @@ export const HomeScreen: React.FC = () => {
     };
   };
 
+  const loadMyRegisteredEvents = async () => {
+    if (!user?.id) {
+      setEvents([]);
+      return;
+    }
+    try {
+      const { data, error } = await supabase
+        .from('tickets')
+        .select('event_id, events(*)')
+        .eq('user_id', user.id)
+        .eq('status', 'confirmed');
+
+      if (error) throw error;
+
+      const normalized = (data || [])
+        .filter((row: any) => row.events)
+        .map((row: any) => normalizeEvent(row.events));
+
+      normalized.sort((a, b) => {
+        const aDate = a.date ? new Date(a.date).getTime() : Number.MAX_SAFE_INTEGER;
+        const bDate = b.date ? new Date(b.date).getTime() : Number.MAX_SAFE_INTEGER;
+        return aDate - bDate;
+      });
+      setEvents(normalized);
+    } catch (error) {
+      console.error('Error loading my registered events:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const loadAndSort = async () => {
-      try {
-        const { data, error } = await supabase.from('events').select('*');
-        if (error) throw error;
+    loadMyRegisteredEvents();
 
-        const normalized = (data || []).map(normalizeEvent);
-        normalized.sort((a, b) => {
-          const aDate = a.date ? new Date(a.date).getTime() : Number.MAX_SAFE_INTEGER;
-          const bDate = b.date ? new Date(b.date).getTime() : Number.MAX_SAFE_INTEGER;
-          return aDate - bDate;
-        });
-        setEvents(normalized);
-      } catch (error) {
-        console.error('Error loading events:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadAndSort();
+    if (!user?.id) return;
 
     const channel = supabase
-    .channel(`home-events-changes-${Date.now()}-${Math.random()}`)
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => {
-      loadAndSort();
-    })
-    .subscribe();
+      .channel(`home-my-tickets-changes-${Date.now()}-${Math.random()}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets', filter: `user_id=eq.${user.id}` }, () => {
+        loadMyRegisteredEvents();
+      })
+      .subscribe();
 
-  return () => {
-    supabase.removeChannel(channel);
-  };
-}, []);
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id]);
 
   useEffect(() => {
     if (!events.length) {
@@ -144,25 +158,11 @@ export const HomeScreen: React.FC = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    try {
-      const { data, error } = await supabase.from('events').select('*');
-      if (error) throw error;
-
-      const normalized = (data || []).map(normalizeEvent);
-      normalized.sort((a, b) => {
-        const aDate = a.date ? new Date(a.date).getTime() : Number.MAX_SAFE_INTEGER;
-        const bDate = b.date ? new Date(b.date).getTime() : Number.MAX_SAFE_INTEGER;
-        return aDate - bDate;
-      });
-      setEvents(normalized);
-    } catch (error) {
-      console.error('Error refreshing events:', error);
-    } finally {
-      setRefreshing(false);
-    }
+    await loadMyRegisteredEvents();
+    setRefreshing(false);
   };
 
-  const toggleFavorite = (eventId) => {
+  const toggleFavorite = (eventId: string) => {
     setFavorites(prev => {
       const newFav = new Set(prev);
       if (newFav.has(eventId)) {
@@ -174,7 +174,7 @@ export const HomeScreen: React.FC = () => {
     });
   };
 
-  const filteredEvents = events.filter(event => {
+  const filteredEvents = events.filter((event: any) => {
     const matchesSearch = event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       event.description?.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === 'all' ||
@@ -201,7 +201,7 @@ export const HomeScreen: React.FC = () => {
     return filteredEvents.slice(0, 3);
   })();
 
-  const getTimeUntilEvent = (date) => {
+  const getTimeUntilEvent = (date: string | Date | undefined) => {
     if (!date) return 'TBD';
     const eventDate = new Date(date);
     const now = new Date();
@@ -223,7 +223,7 @@ export const HomeScreen: React.FC = () => {
     extrapolate: 'clamp',
   });
 
-  const renderQuickAction = ({ item, index }) => (
+  const renderQuickAction = ({ item, index }: { item: any; index: number }) => (
     <Animated.View
       style={[
         styles.quickActionWrapper,
@@ -254,7 +254,7 @@ export const HomeScreen: React.FC = () => {
     </Animated.View>
   );
 
-  const renderFeaturedEvent = ({ item, index }) => {
+  const renderFeaturedEvent = ({ item, index }: { item: any; index: number }) => {
     return (
       <Animated.View
         style={[
@@ -358,7 +358,7 @@ export const HomeScreen: React.FC = () => {
     );
   };
 
-  const renderCategory = ({ item, index }) => {
+  const renderCategory = ({ item, index }: { item: any; index: number }) => {
     const selected = selectedCategory === item.id;
 
     return (
@@ -389,7 +389,7 @@ export const HomeScreen: React.FC = () => {
     );
   };
 
-  const renderEventCard = ({ item, index }) => {
+  const renderEventCard = ({ item, index }: { item: any; index: number }) => {
     return (
       <TouchableOpacity
         style={styles.eventCard}
@@ -703,7 +703,7 @@ export const HomeScreen: React.FC = () => {
 
           {filteredEvents.length > 0 ? (
             <View style={viewMode === 'grid' ? styles.eventsGrid : styles.eventsList}>
-              {filteredEvents.slice(0, 6).map((event, index) => (
+              {filteredEvents.slice(0, 6).map((event: any, index: number) => (
                 <View key={event.id} style={viewMode === 'grid' ? styles.gridItem : undefined}>
                   {renderEventCard({ item: event, index })}
                 </View>
