@@ -97,7 +97,14 @@ export default function PaymentStatusPage() {
     );
   }
 
-  const qrData = encodeURIComponent(ticket.id);
+  const qrPayload = JSON.stringify({
+    ticketId: ticket.id,
+    eventId: ticket.event_id,
+    userId: ticket.user_id,
+    qrCodeId: ticket.qr_code_id || `qr_${ticket.id}`,
+    timestamp: Date.now(),
+  });
+  const qrData = encodeURIComponent(qrPayload);
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
