@@ -237,7 +237,22 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
   };
   const removeSpeaker = (i: number) => updateEventData({ speakers: eventData.speakers.filter((_, idx) => idx !== i) });
 
-  const addAgendaItem = () => updateEventData({ agenda: [...eventData.agenda, { time: new Date(), title: '', description: '', speaker: '', duration: '' }] });
+  const getEventDays = (): Date[] => {
+    const days: Date[] = [];
+    const start = new Date(eventData.startAt);
+    start.setHours(0, 0, 0, 0);
+    const end = eventData.multiDay ? new Date(eventData.endAt) : new Date(eventData.startAt);
+    end.setHours(0, 0, 0, 0);
+
+    const cursor = new Date(start);
+    while (cursor <= end) {
+      days.push(new Date(cursor));
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return days.length > 0 ? days : [start];
+  };
+
+  const addAgendaItem = () => updateEventData({ agenda: [...eventData.agenda, { time: new Date(eventData.startAt), title: '', description: '', speaker: '', duration: '' }] });
   const updateAgendaItem = (i: number, field: keyof AgendaItem, value: any) => {
     const next = [...eventData.agenda];
     next[i] = { ...next[i], [field]: value };
@@ -988,17 +1003,41 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
                         </button>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <input
-                          type="time"
-                          value={`${String((it.time || new Date()).getHours()).padStart(2, '0')}:${String((it.time || new Date()).getMinutes()).padStart(2, '0')}`}
-                          onChange={(e) => {
-                            const [h, m] = e.target.value.split(':');
-                            const d = new Date(it.time || new Date());
-                            d.setHours(parseInt(h), parseInt(m));
-                            updateAgendaItem(i, 'time', d);
-                          }}
-                          className="px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-bold"
-                        />
+                        {eventData.multiDay && (
+                          <div>
+                            <label className="block text-sm font-black text-slate-900 mb-3 uppercase tracking-wide">Day</label>
+                            <select
+                              value={new Date(it.time || eventData.startAt).toDateString()}
+                              onChange={(e) => {
+                                const selectedDay = new Date(e.target.value);
+                                const d = new Date(it.time || eventData.startAt);
+                                d.setFullYear(selectedDay.getFullYear(), selectedDay.getMonth(), selectedDay.getDate());
+                                updateAgendaItem(i, 'time', d);
+                              }}
+                              className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-bold"
+                            >
+                              {getEventDays().map((day, dayIndex) => (
+                                <option key={dayIndex} value={day.toDateString()}>
+                                  Day {dayIndex + 1} — {day.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        )}
+                        <div>
+                          <label className="block text-sm font-black text-slate-900 mb-3 uppercase tracking-wide">Time</label>
+                          <input
+                            type="time"
+                            value={`${String((it.time || new Date()).getHours()).padStart(2, '0')}:${String((it.time || new Date()).getMinutes()).padStart(2, '0')}`}
+                            onChange={(e) => {
+                              const [h, m] = e.target.value.split(':');
+                              const d = new Date(it.time || new Date());
+                              d.setHours(parseInt(h), parseInt(m));
+                              updateAgendaItem(i, 'time', d);
+                            }}
+                            className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-bold"
+                          />
+                        </div>
                         <input
                           type="text"
                           placeholder="Session Title"

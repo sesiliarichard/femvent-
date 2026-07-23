@@ -241,8 +241,23 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
     }));
   };
 
+  const getEventDays = (): Date[] => {
+    const days: Date[] = [];
+    const start = new Date(eventData.startAt);
+    start.setHours(0, 0, 0, 0);
+    const end = eventData.multiDay ? new Date(eventData.endAt) : new Date(eventData.startAt);
+    end.setHours(0, 0, 0, 0);
+
+    const cursor = new Date(start);
+    while (cursor <= end) {
+      days.push(new Date(cursor));
+      cursor.setDate(cursor.getDate() + 1);
+    }
+    return days.length > 0 ? days : [start];
+  };
+
   const addAgendaItem = () => {
-    const defaultTime = new Date();
+    const defaultTime = new Date(eventData.startAt);
     defaultTime.setHours(9 + eventData.agenda.length, 0, 0, 0);
     setEventData(prev => ({
       ...prev,
@@ -1150,20 +1165,43 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
                           </svg>
                         </button>
                       </div>
-                      <div className="space-y-6">
-                        <div>
-                          <label className="block text-sm font-black text-slate-900 mb-3 uppercase tracking-wide">Time</label>
-                          <input
-                            type="time"
-                            value={item.time.toTimeString().slice(0, 5)}
-                            onChange={(e) => {
-                              const [hours, minutes] = e.target.value.split(':');
-                              const newTime = new Date(item.time);
-                              newTime.setHours(parseInt(hours), parseInt(minutes));
-                              updateAgendaItem(index, 'time', newTime);
-                            }}
-                            className="px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-bold"
-                          />
+                     <div className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {eventData.multiDay && (
+                            <div>
+                              <label className="block text-sm font-black text-slate-900 mb-3 uppercase tracking-wide">Day</label>
+                              <select
+                                value={new Date(item.time).toDateString()}
+                                onChange={(e) => {
+                                  const selectedDay = new Date(e.target.value);
+                                  const newTime = new Date(item.time);
+                                  newTime.setFullYear(selectedDay.getFullYear(), selectedDay.getMonth(), selectedDay.getDate());
+                                  updateAgendaItem(index, 'time', newTime);
+                                }}
+                                className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-bold"
+                              >
+                                {getEventDays().map((day, dayIndex) => (
+                                  <option key={dayIndex} value={day.toDateString()}>
+                                    Day {dayIndex + 1} — {day.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' })}
+                                  </option>
+                                ))}
+                              </select>
+                            </div>
+                          )}
+                          <div>
+                            <label className="block text-sm font-black text-slate-900 mb-3 uppercase tracking-wide">Time</label>
+                            <input
+                              type="time"
+                              value={item.time.toTimeString().slice(0, 5)}
+                              onChange={(e) => {
+                                const [hours, minutes] = e.target.value.split(':');
+                                const newTime = new Date(item.time);
+                                newTime.setHours(parseInt(hours), parseInt(minutes));
+                                updateAgendaItem(index, 'time', newTime);
+                              }}
+                              className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-bold"
+                            />
+                          </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                           <input
