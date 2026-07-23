@@ -23,6 +23,7 @@ const { width } = Dimensions.get('window');
 interface Session {
   id: string;
   time: string;
+  date?: Date;
   duration: string;
   type: 'Keynote' | 'Workshop' | 'Break' | 'Panel' | 'Networking';
   title: string;
@@ -142,8 +143,8 @@ useEffect(() => {
       setEventData({
         id: row.id,
         ...row,
-        startAt: row.start_at ? new Date(row.start_at) : undefined,
-        endAt: row.end_at ? new Date(row.end_at) : undefined,
+        startAt: row.event_date ? new Date(row.event_date) : undefined,
+        endAt: row.end_date ? new Date(row.end_date) : undefined,
         createdAt: row.created_at ? new Date(row.created_at) : undefined,
         // Agenda items are stored as jsonb; time values are plain strings/ISO dates
         agenda: row.agenda?.map((item: any) => ({
@@ -265,16 +266,27 @@ useEffect(() => {
                      hour12: true
                    });
                  }
-               } else if (typeof item.time === 'string') {
-                 // Already a string - validate it's a valid time format
-                 const testDate = new Date(`2000-01-01 ${item.time}`);
-                 if (!isNaN(testDate.getTime())) {
-                   timeString = item.time;
-                   timeDate = testDate;
-                 } else {
-                   console.warn(`Invalid time string format at index ${index}: ${item.time}`);
-                 }
-               } else if (item.time.seconds && typeof item.time.seconds === 'number') {
+                } else if (typeof item.time === 'string') {
+                  // Try parsing as a full ISO datetime first (what the host dashboard actually stores)
+                  const isoDate = new Date(item.time);
+                  if (!isNaN(isoDate.getTime())) {
+                    timeDate = isoDate;
+                    timeString = isoDate.toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true,
+                    });
+                  } else {
+                    // Fall back to legacy short time-only strings, e.g. "9:15 AM"
+                    const testDate = new Date(`2000-01-01 ${item.time}`);
+                    if (!isNaN(testDate.getTime())) {
+                      timeString = item.time;
+                      timeDate = testDate;
+                    } else {
+                      console.warn(`Invalid time string format at index ${index}: ${item.time}`);
+                    }
+                  }
+                } else if (item.time.seconds && typeof item.time.seconds === 'number') {
                  // Timestamp with seconds property
                  timeDate = new Date(item.time.seconds * 1000);
                  if (!isNaN(timeDate.getTime())) {
@@ -357,11 +369,12 @@ useEffect(() => {
              }
            }
 
-           // Build session object with validated data
-           const session: Session = {
-             id: item.id || `session-${index}`,
-             time: timeString,
-            duration: item.duration || '30 min',
+          // Build session object with validated data
+          const session: Session = {
+            id: item.id || `session-${index}`,
+            time: timeString,
+            date: timeDate || undefined,
+           duration: item.duration || '30 min',
              type: (item.type || 'Session') as Session['type'],
             title: item.title || 'Untitled Session',
              speaker: item.speaker || item.speakers?.[0]?.name || 'TBA',
@@ -406,19 +419,49 @@ useEffect(() => {
 
   const scheduleData = convertAgendaToSessions() || [];
 
-  const days = [
-    { id: 1, label: 'Day 1', date: 'Dec 4' },
-    { id: 2, label: 'Day 2', date: 'Dec 5' },
-    { id: 3, label: 'Day 3', date: 'Dec 6' },
-  ];
+  const getEventDays = () => {
+    if (!eventData?.startAt) {
+      return [{ id: 1, label: 'Day 1', date: '', fullDate: null as Date | null }];
+    }
+    const start = new Date(eventData.startAt);
+    start.setHours(0, 0, 0, 0);
+    const end = eventData.multi_day && eventData.endAt ? new Date(eventData.endAt) : new Date(eventData.startAt);
+    end.setHours(0, 0, 0, 0);
+
+    const result: { id: number; label: string; date: string; fullDate: Date }[] = [];
+    const cursor = new Date(start);
+    let idx = 1;
+    while (cursor <= end) {
+      result.push({
+        id: idx,
+        label: `Day ${idx}`,
+        date: cursor.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        fullDate: new Date(cursor),
+      });
+      cursor.setDate(cursor.getDate() + 1);
+      idx++;
+    }
+    return result.length > 0 ? result : [{ id: 1, label: 'Day 1', date: '', fullDate: null as Date | null }];
+  };
+
+  const days = getEventDays();
 
   const filteredSessions = (scheduleData || []).filter(session => {
     try {
-      return (
+      const matchesSearch =
         session?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         session?.speaker?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        session?.location?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+        session?.location?.toLowerCase().includes(searchQuery.toLowerCase());
+
+      if (!matchesSearch) return false;
+
+      // If this session has no real date (e.g. sample fallback data), don't filter it out by day
+      if (!session.date) return true;
+
+      const activeDay = days.find(d => d.id === selectedDay);
+      if (!activeDay?.fullDate) return true;
+
+      return session.date.toDateString() === activeDay.fullDate.toDateString();
      } catch (error) {
        return false;
      }
