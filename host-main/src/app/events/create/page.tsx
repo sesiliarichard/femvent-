@@ -257,7 +257,8 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
   };
 
   const addAgendaItem = () => {
-    const defaultTime = new Date(eventData.startAt);
+    const lastItem = eventData.agenda[eventData.agenda.length - 1];
+    const defaultTime = lastItem ? new Date(lastItem.time) : new Date(eventData.startAt);
     defaultTime.setHours(9 + eventData.agenda.length, 0, 0, 0);
     setEventData(prev => ({
       ...prev,

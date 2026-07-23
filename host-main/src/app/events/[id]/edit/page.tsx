@@ -252,7 +252,11 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
     return days.length > 0 ? days : [start];
   };
 
-  const addAgendaItem = () => updateEventData({ agenda: [...eventData.agenda, { time: new Date(eventData.startAt), title: '', description: '', speaker: '', duration: '' }] });
+  const addAgendaItem = () => {
+    const lastItem = eventData.agenda[eventData.agenda.length - 1];
+    const defaultTime = lastItem ? new Date(lastItem.time) : new Date(eventData.startAt);
+    updateEventData({ agenda: [...eventData.agenda, { time: defaultTime, title: '', description: '', speaker: '', duration: '' }] });
+  };
   const updateAgendaItem = (i: number, field: keyof AgendaItem, value: any) => {
     const next = [...eventData.agenda];
     next[i] = { ...next[i], [field]: value };
