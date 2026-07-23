@@ -578,14 +578,14 @@ export const HomeScreen: React.FC = () => {
 
           <View style={styles.searchContainer}>
             <View style={styles.searchWrapper}>
-              <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
+            <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
               <Searchbar
                 placeholder="Search events, locations..."
                 onChangeText={setSearchQuery}
                 value={searchQuery}
                 style={styles.searchbar}
                 inputStyle={styles.searchInput}
-                iconColor="transparent"
+                icon={() => null}
                 placeholderTextColor="#999"
               />
             </View>

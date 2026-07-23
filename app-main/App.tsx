@@ -42,8 +42,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 import { AuthProvider, useAuth } from './src/services/AuthContext';
 import { LoginScreen } from './src/screens/auth/LoginScreen';
-import { SignupScreen } from './src/screens/auth/SignupScreen';
 import { ForgotPasswordScreen } from './src/screens/auth/ForgotPasswordScreen';
+import { OnboardingScreen, hasSeenOnboarding } from './src/screens/OnboardingScreen';
 import { setupNotificationListeners, requestNotificationPermissions } from './src/services/notifications';
 import * as Notifications from 'expo-notifications';
 
@@ -123,6 +123,8 @@ function MainDrawer() {
         drawerType: 'front',
         overlayColor: 'rgba(0,0,0,0.5)',
         drawerStyle: { width: '80%' },
+        swipeEnabled: true,
+        swipeEdgeWidth: 60,
       }}
     >
       <Drawer.Screen name="Tabs" component={MainTabs} />
@@ -133,6 +135,15 @@ function MainDrawer() {
 function AppNavigator() {
   const { user, loading } = useAuth();
   const navigationRef = React.useRef<any>();
+  const [onboardingChecked, setOnboardingChecked] = React.useState(false);
+  const [showOnboarding, setShowOnboarding] = React.useState(false);
+
+  React.useEffect(() => {
+    hasSeenOnboarding().then((seen) => {
+      setShowOnboarding(!seen);
+      setOnboardingChecked(true);
+    });
+  }, []);
 
   // Request notification permissions when user logs in
   React.useEffect(() => {
@@ -167,7 +178,7 @@ function AppNavigator() {
     return cleanup;
   }, []);
 
-  if (loading) {
+  if (loading || !onboardingChecked) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#6200ee" />
@@ -284,14 +295,16 @@ function AppNavigator() {
             <Stack.Screen name="Resources" component={ResourcesScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Feedback" component={FeedbackScreen} options={{ headerShown: false }} />
           </>
-        ) : (
-          <>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Signup" component={SignupScreen} />
-            <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-          </>
-        )}
-      </Stack.Navigator>
+       ) : (
+        <Stack.Group screenOptions={{ headerShown: false }}>
+          {showOnboarding && (
+            <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+          )}
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
+        </Stack.Group>
+      )}
+    </Stack.Navigator>
     </NavigationContainer>
   );
 }

@@ -19,6 +19,7 @@ import {
   Avatar,
 } from 'react-native-paper';
 import { supabase } from '../../services/supabase';
+import { useAuth } from '../../services/AuthContext';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -27,6 +28,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 const { width } = Dimensions.get('window');
 
 export const EventsScreen: React.FC = () => {
+  const { user } = useAuth();
   const [events, setEvents] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -75,39 +77,54 @@ export const EventsScreen: React.FC = () => {
     };
   };
 
+  const loadMyRegisteredEvents = async () => {
+    if (!user?.id) {
+      setEvents([]);
+      setLoading(false);
+      return;
+    }
+    try {
+      const { data, error } = await supabase
+        .from('tickets')
+        .select('event_id, events(*)')
+        .eq('user_id', user.id)
+        .eq('status', 'confirmed');
+
+      if (error) throw error;
+
+      const normalized = (data || [])
+        .filter((row: any) => row.events)
+        .map((row: any) => normalizeEvent(row.events));
+
+      normalized.sort((a, b) => {
+        const aDate = a.date ? new Date(a.date).getTime() : Number.MAX_SAFE_INTEGER;
+        const bDate = b.date ? new Date(b.date).getTime() : Number.MAX_SAFE_INTEGER;
+        return aDate - bDate;
+      });
+      setEvents(normalized);
+    } catch (error) {
+      console.error('Error loading my registered events:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const loadAndSort = async () => {
-      try {
-        const { data, error } = await supabase.from('events').select('*');
-        if (error) throw error;
+    loadMyRegisteredEvents();
 
-        const normalized = (data || []).map(normalizeEvent);
-        normalized.sort((a, b) => {
-          const aDate = a.date ? new Date(a.date).getTime() : Number.MAX_SAFE_INTEGER;
-          const bDate = b.date ? new Date(b.date).getTime() : Number.MAX_SAFE_INTEGER;
-          return aDate - bDate;
-        });
-        setEvents(normalized);
-      } catch (error) {
-        console.error('Error loading events:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadAndSort();
+    if (!user?.id) return;
 
     const channel = supabase
-      .channel('events-screen-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => {
-        loadAndSort();
+      .channel(`events-screen-my-tickets-${user.id}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets', filter: `user_id=eq.${user.id}` }, () => {
+        loadMyRegisteredEvents();
       })
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [user?.id]);
 
   useEffect(() => {
     if (!events.length) {
@@ -129,24 +146,10 @@ export const EventsScreen: React.FC = () => {
     ]).start();
   }, [events, fadeAnim, slideAnim]);
 
-  const onRefresh = async () => {
+ const onRefresh = async () => {
     setRefreshing(true);
-    try {
-      const { data, error } = await supabase.from('events').select('*');
-      if (error) throw error;
-
-      const normalized = (data || []).map(normalizeEvent);
-      normalized.sort((a, b) => {
-        const aDate = a.date ? new Date(a.date).getTime() : Number.MAX_SAFE_INTEGER;
-        const bDate = b.date ? new Date(b.date).getTime() : Number.MAX_SAFE_INTEGER;
-        return aDate - bDate;
-      });
-      setEvents(normalized);
-    } catch (error) {
-      console.error('Error refreshing events:', error);
-    } finally {
-      setRefreshing(false);
-    }
+    await loadMyRegisteredEvents();
+    setRefreshing(false);
   };
 
   const toggleFavorite = (eventId: string) => {
@@ -370,13 +373,13 @@ export const EventsScreen: React.FC = () => {
         <View style={styles.searchContainer}>
           <View style={styles.searchWrapper}>
             <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
-        <Searchbar
+       <Searchbar
               placeholder="Search events, locations..."
           onChangeText={setSearchQuery}
           value={searchQuery}
           style={styles.searchbar}
             inputStyle={styles.searchInput}
-              iconColor="transparent"
+              icon={() => null}
             placeholderTextColor="#999"
           />
           </View>

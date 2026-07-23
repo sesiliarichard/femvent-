@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Alert, Image, ScrollView } from 'react-native';
 import { Text } from 'react-native-paper';
 import { DrawerContentComponentProps } from '@react-navigation/drawer';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -75,7 +75,11 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
                     <Text style={styles.userEmail}>{user?.email}</Text>
                 </View>
 
-                <View style={styles.body}>
+                <ScrollView
+                    style={styles.body}
+                    contentContainerStyle={styles.bodyContent}
+                    showsVerticalScrollIndicator={false}
+                >
                 {renderSection('Event', [
                         { icon: 'calendar-outline', label: 'My Events', onPress: () => go('MyEvents') },
                         { icon: 'home-outline', label: 'Home', onPress: () => go('Home') },
@@ -105,7 +109,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
                         { icon: 'card-outline', label: 'Payment history', onPress: () => go('PaymentHistory') },
                         { icon: 'settings-outline', label: 'Settings', onPress: () => go('Settings') },
                     ])}
-                </View>
+                </ScrollView>
 
                 <TouchableOpacity style={styles.logout} onPress={handleSignOut} activeOpacity={0.7}>
                     <Ionicons name="log-out-outline" size={20} color="#fecaca" />
@@ -166,7 +170,10 @@ const styles = StyleSheet.create({
     },
     body: {
         flex: 1,
+    },
+    bodyContent: {
         paddingTop: 8,
+        paddingBottom: 20,
     },
     section: {
         paddingHorizontal: 20,
