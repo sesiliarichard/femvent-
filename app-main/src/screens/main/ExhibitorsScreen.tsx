@@ -15,25 +15,17 @@ interface Exhibitor {
     website?: string;
 }
 
-// TODO: replace with Supabase query once an `exhibitors` table exists
-const SAMPLE_EXHIBITORS: Exhibitor[] = [
-    { id: '1', name: 'TechCorp Africa', booth: 'A1', category: 'Technology', description: 'AI and cloud solutions for African startups.', website: 'https://example.com' },
-    { id: '2', name: 'Women in AI Fund', booth: 'A2', category: 'Investment', description: 'Grants and funding for women-led AI ventures.' },
-    { id: '3', name: 'CloudBridge', booth: 'B1', category: 'Infrastructure', description: 'Cloud hosting partner for the conference.' },
-    { id: '4', name: 'DataSpark Labs', booth: 'B2', category: 'Data & Analytics', description: 'Data science training and consulting.' },
-];
-
+// No `exhibitors` table exists yet — this screen shows an empty state until one is built.
+const SAMPLE_EXHIBITORS: Exhibitor[] = [];
 export const ExhibitorsScreen: React.FC = () => {
     const navigation = useNavigation();
     const [exhibitors, setExhibitors] = useState<Exhibitor[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setExhibitors(SAMPLE_EXHIBITORS);
-            setLoading(false);
-        }, 300);
-        return () => clearTimeout(timer);
+        // TODO: replace with a real Supabase query once an `exhibitors` table exists
+        setExhibitors(SAMPLE_EXHIBITORS);
+        setLoading(false);
     }, []);
 
     if (loading) {
@@ -59,6 +51,15 @@ export const ExhibitorsScreen: React.FC = () => {
             </LinearGradient>
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+                {exhibitors.length === 0 ? (
+                    <View style={styles.emptyContainer}>
+                        <Ionicons name="business-outline" size={64} color="#cbd5e0" />
+                        <Text style={styles.emptyTitle}>No exhibitors yet</Text>
+                        <Text style={styles.emptyDescription}>
+                            The host hasn't added any exhibitors for this event.
+                        </Text>
+                    </View>
+                ) : (
                 <View style={styles.listContainer}>
                     <Text style={styles.sectionTitle}>
                         {exhibitors.length} {exhibitors.length === 1 ? 'Exhibitor' : 'Exhibitors'}
@@ -80,13 +81,13 @@ export const ExhibitorsScreen: React.FC = () => {
                                 )}
                             </View>
                         </View>
-                    ))}
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-    );
-};
-
+                  ))}
+                  </View>
+                  )}
+              </ScrollView>
+          </SafeAreaView>
+      );
+  };
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#f8f9fa' },
     loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
@@ -100,6 +101,9 @@ const styles = StyleSheet.create({
     headerTitle: { fontSize: 24, fontWeight: '800', color: '#fff' },
     scrollView: { flex: 1 },
     listContainer: { padding: 20 },
+    emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 100, paddingHorizontal: 40 },
+    emptyTitle: { fontSize: 18, fontWeight: '700', color: '#1a1a1a', marginTop: 16, marginBottom: 6 },
+    emptyDescription: { fontSize: 14, color: '#666', textAlign: 'center' },
     sectionTitle: { fontSize: 16, fontWeight: '700', color: '#666', marginBottom: 16 },
     card: {
         flexDirection: 'row', backgroundColor: '#fff', borderRadius: 20, padding: 16, marginBottom: 12,

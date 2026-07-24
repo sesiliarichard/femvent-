@@ -14,31 +14,8 @@ interface Announcement {
     priority: 'normal' | 'urgent';
 }
 
-// TODO: replace with Supabase query + realtime subscription once an `announcements` table exists
-const SAMPLE_ANNOUNCEMENTS: Announcement[] = [
-    {
-        id: '1',
-        title: 'Venue change for Workshop B',
-        body: 'The 1:25 PM workshop "Building Inclusive AI Teams" has moved to Workshop Room A.',
-        createdAt: new Date(Date.now() - 1000 * 60 * 20),
-        priority: 'urgent',
-    },
-    {
-        id: '2',
-        title: 'Lunch is served',
-        body: 'Lunch break is now open in the Exhibitor Hall. Enjoy!',
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 2),
-        priority: 'normal',
-    },
-    {
-        id: '3',
-        title: 'Welcome to Gendering AI 2026',
-        body: 'Thank you for registering. Check the Agenda tab for the full schedule.',
-        createdAt: new Date(Date.now() - 1000 * 60 * 60 * 24),
-        priority: 'normal',
-    },
-];
-
+/// No `announcements` table exists yet — this screen shows an empty state until one is built.
+const SAMPLE_ANNOUNCEMENTS: Announcement[] = [];
 const formatRelativeTime = (date: Date) => {
     const diffMs = Date.now() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
@@ -54,13 +31,11 @@ export const AnnouncementsScreen: React.FC = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setAnnouncements(SAMPLE_ANNOUNCEMENTS);
-            setLoading(false);
-        }, 300);
-        return () => clearTimeout(timer);
+        // TODO: replace with a real Supabase query once an `announcements` table exists
+        setAnnouncements(SAMPLE_ANNOUNCEMENTS);
+        setLoading(false);
     }, []);
-
+    
     if (loading) {
         return (
             <SafeAreaView style={styles.container} edges={['top']}>

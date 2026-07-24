@@ -144,6 +144,39 @@ export const TicketDetailScreen: React.FC = () => {
         }
     };
 
+    const getCategoryConfig = (t: Ticket | null) => {
+        const raw = (t?.priceOption?.name || (t as any)?.type || 'general').toLowerCase();
+
+        if (raw.includes('vip')) {
+            return {
+                key: 'vip',
+                label: 'VIP',
+                gradient: ['#1f1c2c', '#3d3450'] as [string, string],
+                accent: '#d4af37',
+                badgeGradient: ['#bf953f', '#fcf6ba'] as [string, string],
+                icon: 'star' as const,
+            };
+        }
+        if (raw.includes('free')) {
+            return {
+                key: 'free',
+                label: 'FREE',
+                gradient: ['#0ba360', '#3cba92'] as [string, string],
+                accent: '#0ba360',
+                badgeGradient: ['#43e97b', '#38f9d7'] as [string, string],
+                icon: 'gift' as const,
+            };
+        }
+        return {
+            key: 'general',
+            label: 'GENERAL',
+            gradient: ['#667eea', '#764ba2'] as [string, string],
+            accent: '#667eea',
+            badgeGradient: ['#667eea', '#764ba2'] as [string, string],
+            icon: 'ticket' as const,
+        };
+    };
+
     const formatEventDate = (date: Date | undefined) => {
         if (!date) return 'Date TBA';
         return date.toLocaleDateString('en-US', {
@@ -177,12 +210,13 @@ export const TicketDetailScreen: React.FC = () => {
     }
 
     const statusConfig = getStatusConfig(ticket.status);
+    const categoryConfig = getCategoryConfig(ticket);
     const eventDate = ticket.event?.startAt || ticket.event?.date;
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-            <LinearGradient
-                colors={['#667eea', '#764ba2']}
+ <LinearGradient
+                colors={categoryConfig.gradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.header}
@@ -206,8 +240,8 @@ export const TicketDetailScreen: React.FC = () => {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
-                {/* Status Badge */}
-                <View style={styles.statusContainer}>
+  {/* Status + Category Badges */}
+  <View style={styles.statusContainer}>
                     <LinearGradient
                         colors={statusConfig.gradient}
                         style={styles.statusBadge}
@@ -216,6 +250,27 @@ export const TicketDetailScreen: React.FC = () => {
                     >
                         <Ionicons name={statusConfig.icon as any} size={20} color="#fff" />
                         <Text style={styles.statusText}>{statusConfig.label}</Text>
+                    </LinearGradient>
+
+                    <LinearGradient
+                        colors={categoryConfig.badgeGradient}
+                        style={styles.categoryBadge}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                    >
+                        <Ionicons
+                            name={categoryConfig.icon as any}
+                            size={16}
+                            color={categoryConfig.key === 'vip' ? '#3d2e00' : '#fff'}
+                        />
+                        <Text
+                            style={[
+                                styles.categoryBadgeText,
+                                categoryConfig.key === 'vip' && { color: '#3d2e00' },
+                            ]}
+                        >
+                            {categoryConfig.label}
+                        </Text>
                     </LinearGradient>
                 </View>
 
@@ -261,12 +316,12 @@ export const TicketDetailScreen: React.FC = () => {
                         </View>
 
                         <View style={styles.detailRow}>
-                            <View style={styles.detailIcon}>
-                                <Ionicons name="ticket-outline" size={22} color="#fa709a" />
+                            <View style={[styles.detailIcon, { backgroundColor: `${categoryConfig.accent}1A` }]}>
+                                <Ionicons name={categoryConfig.icon as any} size={22} color={categoryConfig.accent} />
                             </View>
                             <View style={styles.detailContent}>
                                 <Text style={styles.detailLabel}>Ticket Type</Text>
-                                <Text style={styles.detailValue}>
+                                <Text style={[styles.detailValue, { color: categoryConfig.accent }]}>
                                     {ticket.priceOption?.name || 'General Admission'}
                                 </Text>
                             </View>
@@ -283,7 +338,7 @@ export const TicketDetailScreen: React.FC = () => {
                         </Text>
 
                         <View style={styles.qrCodeContainer}>
-                            <View style={styles.qrCodeWrapper}>
+                            <View style={[styles.qrCodeWrapper, { borderWidth: 2, borderColor: `${categoryConfig.accent}40` }]}>
                                 <QRCode
                                     value={qrData}
                                     size={width * 0.6}
@@ -408,8 +463,30 @@ const styles = StyleSheet.create({
         paddingBottom: 40,
     },
     statusContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
+        gap: 10,
         marginBottom: 20,
+    },
+    categoryBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 18,
+        paddingVertical: 10,
+        borderRadius: 20,
+        gap: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+        elevation: 5,
+    },
+    categoryBadgeText: {
+        fontSize: 14,
+        color: '#fff',
+        fontWeight: '800',
+        letterSpacing: 1,
     },
     statusBadge: {
         flexDirection: 'row',

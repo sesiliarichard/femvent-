@@ -117,6 +117,39 @@ export const TicketsScreen: React.FC = () => {
     }
   };
 
+  const getCategoryConfig = (ticket: Ticket) => {
+    const raw = (ticket.priceOption?.name || (ticket as any).type || 'general').toLowerCase();
+
+    if (raw.includes('vip')) {
+      return {
+        key: 'vip',
+        label: 'VIP',
+        gradient: ['#1f1c2c', '#3d3450'] as [string, string],
+        accent: '#d4af37',
+        badgeGradient: ['#bf953f', '#fcf6ba'] as [string, string],
+        icon: 'star' as const,
+      };
+    }
+    if (raw.includes('free')) {
+      return {
+        key: 'free',
+        label: 'FREE',
+        gradient: ['#0ba360', '#3cba92'] as [string, string],
+        accent: '#0ba360',
+        badgeGradient: ['#43e97b', '#38f9d7'] as [string, string],
+        icon: 'gift' as const,
+      };
+    }
+    return {
+      key: 'general',
+      label: 'GENERAL',
+      gradient: ['#667eea', '#764ba2'] as [string, string],
+      accent: '#667eea',
+      badgeGradient: ['#667eea', '#764ba2'] as [string, string],
+      icon: 'ticket' as const,
+    };
+  };
+
   const getPosterImage = (ticket: Ticket) =>
     ticket.event?.posterURL ||
     (ticket.event as any)?.bannerURL ||
@@ -232,6 +265,7 @@ export const TicketsScreen: React.FC = () => {
 
   const renderTicket = ({ item, index }: { item: Ticket; index: number }) => {
     const statusConfig = getStatusConfig(item.status);
+    const categoryConfig = getCategoryConfig(item);
 
     return (
       <TouchableOpacity
@@ -252,17 +286,40 @@ export const TicketsScreen: React.FC = () => {
               colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.8)']}
               style={styles.ticketHeaderGradient}
             >
-              {/* Status Badge */}
-              <View style={styles.statusBadgeContainer}>
+  {/* Status + Category Badges */}
+  <View style={styles.badgeRow}>
+                <View style={styles.statusBadgeContainer}>
+                  <LinearGradient
+                    colors={statusConfig.gradient}
+                    style={styles.statusBadge}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    <Ionicons name={statusConfig.icon as any} size={14} color="#fff" />
+                    <Text style={styles.statusText}>
+                      {(item.status || 'pending').toUpperCase()}
+                    </Text>
+                  </LinearGradient>
+                </View>
+
                 <LinearGradient
-                  colors={statusConfig.gradient}
-                  style={styles.statusBadge}
+                  colors={categoryConfig.badgeGradient}
+                  style={styles.categoryBadge}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                 >
-                  <Ionicons name={statusConfig.icon as any} size={14} color="#fff" />
-                  <Text style={styles.statusText}>
-                    {(item.status || 'pending').toUpperCase()}
+                  <Ionicons
+                    name={categoryConfig.icon as any}
+                    size={12}
+                    color={categoryConfig.key === 'vip' ? '#3d2e00' : '#fff'}
+                  />
+                  <Text
+                    style={[
+                      styles.categoryBadgeText,
+                      categoryConfig.key === 'vip' && { color: '#3d2e00' },
+                    ]}
+                  >
+                    {categoryConfig.label}
                   </Text>
                 </LinearGradient>
               </View>
@@ -305,12 +362,14 @@ export const TicketsScreen: React.FC = () => {
               </View>
 
               <View style={styles.detailRow}>
-                <View style={styles.detailIconContainer}>
-                  <Ionicons name="ticket-outline" size={18} color="#4facfe" />
+                <View style={[styles.detailIconContainer, { backgroundColor: `${categoryConfig.accent}1A` }]}>
+                  <Ionicons name="ticket-outline" size={18} color={categoryConfig.accent} />
                 </View>
                 <View style={styles.detailContent}>
                   <Text style={styles.detailLabel}>Ticket Type</Text>
-                  <Text style={styles.detailValue}>{getTicketTypeLabel(item)}</Text>
+                  <Text style={[styles.detailValue, { color: categoryConfig.accent }]}>
+                    {getTicketTypeLabel(item)}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -324,9 +383,11 @@ export const TicketsScreen: React.FC = () => {
 
             {/* Ticket Footer */}
             <View style={styles.ticketFooter}>
-              <View style={styles.priceContainer}>
+            <View style={styles.priceContainer}>
                 <Text style={styles.priceLabel}>Total Paid</Text>
-                <Text style={styles.priceValue}>{getTicketPriceValue(item)}</Text>
+                <Text style={[styles.priceValue, { color: categoryConfig.accent }]}>
+                  {getTicketPriceValue(item)}
+                </Text>
               </View>
 
               <View style={styles.ticketActions}>
@@ -335,7 +396,7 @@ export const TicketsScreen: React.FC = () => {
                   onPress={() => navigation.navigate('TicketDetail', { ticketId: item.id })}
                 >
                   <LinearGradient
-                    colors={['#667eea', '#764ba2']}
+                    colors={categoryConfig.gradient}
                     style={styles.actionButtonGradient}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
@@ -574,8 +635,32 @@ const styles = StyleSheet.create({
     padding: 16,
     justifyContent: 'space-between',
   },
+  badgeRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+  },
   statusBadgeContainer: {
     alignSelf: 'flex-start',
+  },
+  categoryBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 12,
+    gap: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  categoryBadgeText: {
+    fontSize: 11,
+    color: '#fff',
+    fontWeight: '800',
+    letterSpacing: 0.5,
   },
   statusBadge: {
     flexDirection: 'row',

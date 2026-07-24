@@ -14,13 +14,8 @@ interface Resource {
     url: string;
 }
 
-// TODO: replace with Supabase query (and Supabase Storage for file URLs) once a `resources` table exists
-const SAMPLE_RESOURCES: Resource[] = [
-    { id: '1', title: 'Opening Keynote Slides', type: 'slides', size: '4.2 MB', url: 'https://example.com/slides1.pdf' },
-    { id: '2', title: 'Building Inclusive AI Teams — Workshop Notes', type: 'pdf', size: '1.1 MB', url: 'https://example.com/notes.pdf' },
-    { id: '3', title: 'Conference Sponsorship Deck', type: 'pdf', size: '2.8 MB', url: 'https://example.com/sponsors.pdf' },
-    { id: '4', title: 'Event Code of Conduct', type: 'link', url: 'https://example.com/conduct' },
-];
+// No `resources` table exists yet — this screen shows an empty state until one is built.
+const SAMPLE_RESOURCES: Resource[] = [];
 
 const typeIcon: Record<Resource['type'], keyof typeof Ionicons.glyphMap> = {
     pdf: 'document-text-outline',
@@ -34,11 +29,9 @@ export const ResourcesScreen: React.FC = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setResources(SAMPLE_RESOURCES);
-            setLoading(false);
-        }, 300);
-        return () => clearTimeout(timer);
+        // TODO: replace with a real Supabase query once a `resources` table exists
+        setResources(SAMPLE_RESOURCES);
+        setLoading(false);
     }, []);
 
     const handleOpen = async (resource: Resource) => {
@@ -73,6 +66,15 @@ export const ResourcesScreen: React.FC = () => {
             </LinearGradient>
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+                {resources.length === 0 ? (
+                    <View style={styles.emptyContainer}>
+                        <Ionicons name="folder-open-outline" size={64} color="#cbd5e0" />
+                        <Text style={styles.emptyTitle}>No resources yet</Text>
+                        <Text style={styles.emptyDescription}>
+                            The host hasn't published any resources for this event.
+                        </Text>
+                    </View>
+                ) : (
                 <View style={styles.listContainer}>
                     {resources.map((res) => (
                         <TouchableOpacity key={res.id} style={styles.card} onPress={() => handleOpen(res)} activeOpacity={0.7}>
@@ -85,11 +87,12 @@ export const ResourcesScreen: React.FC = () => {
                             </View>
                             <Ionicons name="download-outline" size={20} color="#999" />
                         </TouchableOpacity>
-                    ))}
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-    );
+          ))}
+          </View>
+          )}
+      </ScrollView>
+  </SafeAreaView>
+);
 };
 
 const styles = StyleSheet.create({
@@ -105,6 +108,9 @@ const styles = StyleSheet.create({
     headerTitle: { fontSize: 24, fontWeight: '800', color: '#fff' },
     scrollView: { flex: 1 },
     listContainer: { padding: 20 },
+    emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 100, paddingHorizontal: 40 },
+    emptyTitle: { fontSize: 18, fontWeight: '700', color: '#1a1a1a', marginTop: 16, marginBottom: 6 },
+    emptyDescription: { fontSize: 14, color: '#666', textAlign: 'center' },
     card: {
         flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 18,
         padding: 14, marginBottom: 12,

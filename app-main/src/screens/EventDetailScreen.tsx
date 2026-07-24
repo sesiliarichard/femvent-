@@ -81,9 +81,9 @@ useEffect(() => {
       id: row.id,
       ...row,
       createdAt: row.created_at ? new Date(row.created_at) : undefined,
-      date: row.event_date ? new Date(row.event_date) : (row.start_at ? new Date(row.start_at) : undefined),
-      startAt: row.start_at ? new Date(row.start_at) : undefined,
-      endAt: row.end_at ? new Date(row.end_at) : undefined,
+      date: row.event_date ? new Date(row.event_date) : undefined,
+      startAt: row.event_date ? new Date(row.event_date) : undefined,
+      endAt: row.end_date ? new Date(row.end_date) : undefined,
       // Field mapping for compatibility
       location: row.location || row.venue?.name || row.venue || 'Online',
       maxAttendees: row.max_attendees || row.capacity || 0,
@@ -280,12 +280,33 @@ useEffect(() => {
     );
   }
 
-  const scheduleItems = [
-    { id: 1, time: '08:00 AM', title: 'Registration Opens', desc: 'Welcome and registration desk opens for all attendees', color: '#8b5cf6' },
-    { id: 2, time: '09:00 AM', title: 'Welcome Keynote', desc: 'Opening keynote by Dr. Sarah Johnson exploring future trends', color: '#6366f1' },
-    { id: 3, time: '10:10 AM', title: 'AI Innovation Panel', desc: 'Interactive discussion on creative approaches to artificial intelligence', color: '#10b981' },
-    { id: 4, time: '11:30 AM', title: 'Workshop Session', desc: 'Hands-on workshop: Building AI systems in real-time', color: '#f59e0b' },
-  ];
+  const scheduleColors = ['#8b5cf6', '#6366f1', '#10b981', '#f59e0b', '#ec4899', '#0ea5e9'];
+
+  const scheduleItems = (Array.isArray(event.agenda) ? event.agenda : [])
+  .map((item: any, index: number) => {
+    const itemDate = item.time ? new Date(item.time) : null;
+    const timeLabel = itemDate && !isNaN(itemDate.getTime())
+      ? itemDate.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })
+      : (typeof item.time === 'string' ? item.time : 'TBA');
+    const dateLabel = itemDate && !isNaN(itemDate.getTime())
+      ? itemDate.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+      : '';
+
+    return {
+      id: item.id || `agenda-${index}`,
+      time: timeLabel,
+      dateLabel,
+      rawDate: itemDate,
+      title: item.title || 'Untitled Session',
+      desc: item.description || (item.speaker ? `Speaker: ${item.speaker}` : ''),
+      color: scheduleColors[index % scheduleColors.length],
+    };
+  })
+
+    .sort((a, b) => {
+      if (!a.rawDate || !b.rawDate) return 0;
+      return a.rawDate.getTime() - b.rawDate.getTime();
+    });
 
   const headerOpacity = scrollY.interpolate({
     inputRange: [0, 100],
@@ -464,7 +485,8 @@ useEffect(() => {
             </View>
           </View>
 
-          {/* Event Schedule */}
+         {/* Event Schedule */}
+          {scheduleItems.length > 0 && (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>Event Schedule</Text>
@@ -494,8 +516,11 @@ useEffect(() => {
                     )}
                   </View>
 
-                  <View style={styles.scheduleItemRight}>
+                <View style={styles.scheduleItemRight}>
                     <View style={styles.scheduleItemCard}>
+                      {!!item.dateLabel && event.multi_day && (
+                        <Text style={styles.scheduleItemDate}>{item.dateLabel}</Text>
+                      )}
                       <View style={styles.scheduleItemHeader}>
                         <Text style={styles.scheduleItemTitle}>{item.title}</Text>
                         <Ionicons
@@ -509,10 +534,11 @@ useEffect(() => {
                       )}
                     </View>
                   </View>
-                </TouchableOpacity>
+               </TouchableOpacity>
               ))}
             </View>
           </View>
+          )}
 
           {/* Quick Navigation */}
           <View style={styles.section}>
@@ -965,6 +991,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  scheduleItemDate: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#94a3b8',
+    marginBottom: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.3,
   },
   scheduleItemTitle: {
     fontSize: 15,

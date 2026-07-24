@@ -16,7 +16,6 @@ import {
   Card,
   Title,
   Paragraph,
-  Divider,
 } from 'react-native-paper';
 import { useAuth } from '../../services/AuthContext';
 import { theme } from '../../utils/theme';
@@ -106,16 +105,6 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
               Sign In
             </Button>
 
-            <Divider style={styles.divider} />
-
-            <Button
-              mode="outlined"
-              onPress={() => navigation.navigate('Signup')}
-              style={styles.button}
-            >
-              Create Account
-            </Button>
-
             <Button
               mode="text"
               onPress={() => navigation.navigate('ForgotPassword')}
@@ -123,6 +112,10 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             >
               Forgot Password?
             </Button>
+
+            <Paragraph style={styles.helperText}>
+              Use the same email and password you set when registering for an event.
+            </Paragraph>
           </Card.Content>
         </Card>
       </ScrollView>
@@ -183,5 +176,12 @@ const styles = StyleSheet.create({
   },
   forgotButton: {
     marginTop: 8,
+  },
+  helperText: {
+    textAlign: 'center',
+    fontSize: 13,
+    color: theme.colors.onSurfaceVariant,
+    marginTop: 12,
+    paddingHorizontal: 12,
   },
 });

@@ -249,40 +249,10 @@ export default function PrivateChatScreen({ navigation, route }: PrivateChatScre
 
   const handleTyping = (text: string) => {
     setNewMessage(text);
-    
-    if (!user?.id || !eventId || !recipientId) return;
-
-    // Update typing indicator
-    const typingRef = doc(db, 'typingIndicators', `${eventId}_${recipientId}`);
-    setDoc(typingRef, {
-      userId: user.id,
-      userName: user.name || user.email?.split('@')[0] || 'Anonymous',
-      eventId: eventId,
-      recipientId: recipientId,
-      isTyping: text.length > 0,
-      timestamp: serverTimestamp(),
-    });
-
-    // Clear previous timeout
-    if (typingTimeout) {
-      clearTimeout(typingTimeout);
-    }
-
-    // Set timeout to stop typing indicator
-    const timeout = setTimeout(() => {
-      setDoc(typingRef, {
-        userId: user.id,
-        userName: user.name || user.email?.split('@')[0] || 'Anonymous',
-        eventId: eventId,
-        recipientId: recipientId,
-        isTyping: false,
-        timestamp: serverTimestamp(),
-      });
-    }, 2000);
-
-    setTypingTimeout(timeout);
+    // Typing indicator temporarily disabled — previous implementation used
+    // Firebase Firestore (doc/setDoc), which no longer exists after the
+    // Supabase migration. Rebuild with Supabase Realtime Presence if wanted.
   };
-
   const sendMessage = async () => {
     if (!newMessage.trim() || !user || !eventId || !recipientId) {
       return;
