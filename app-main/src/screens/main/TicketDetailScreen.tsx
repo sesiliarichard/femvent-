@@ -146,6 +146,9 @@ export const TicketDetailScreen: React.FC = () => {
 
     const getCategoryConfig = (t: Ticket | null) => {
         const raw = (t?.priceOption?.name || (t as any)?.type || 'general').toLowerCase();
+        const priceValue = Number(
+            t?.priceOption?.price ?? (t as any)?.price ?? (t as any)?.amountPaid ?? 0
+        );
 
         if (raw.includes('vip')) {
             return {
@@ -157,7 +160,7 @@ export const TicketDetailScreen: React.FC = () => {
                 icon: 'star' as const,
             };
         }
-        if (raw.includes('free')) {
+        if (raw.includes('free') || priceValue === 0) {
             return {
                 key: 'free',
                 label: 'FREE',

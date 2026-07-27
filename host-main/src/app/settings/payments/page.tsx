@@ -1,0 +1,240 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import DashboardLayout from '@/components/DashboardLayout';
+
+interface Bank {
+  id: number;
+  code: string;
+  name: string;
+}
+
+interface PaymentAccount {
+  id: string;
+  provider: 'flutterwave' | 'stripe' | 'paypal' | 'manual';
+  status: string;
+  display_label: string | null;
+}
+
+const PROVIDER_META: Record<string, { name: string; blurb: string; comingSoon?: boolean }> = {
+  flutterwave: { name: 'Flutterwave', blurb: 'Best for organizers in Africa.' },
+  manual: { name: 'Manual bank transfer', blurb: 'Works anywhere. Buyers pay you directly and you confirm the ticket.' },
+  stripe: { name: 'Stripe', blurb: 'Best for organizers in the US, UK, EU, Canada, Australia.', comingSoon: true },
+  paypal: { name: 'PayPal', blurb: 'Wide reach for receiving international payments.', comingSoon: true },
+};
+
+export default function PaymentSettingsPage() {
+  const { user } = useAuth();
+  const [accounts, setAccounts] = useState<PaymentAccount[]>([]);
+  const [loadingAccounts, setLoadingAccounts] = useState(true);
+  const [activeForm, setActiveForm] = useState<'flutterwave' | 'manual' | null>(null);
+
+  const loadAccounts = async () => {
+    if (!user?.id) return;
+    try {
+      const res = await fetch(`/api/payments/list-accounts?userId=${user.id}`);
+      const data = await res.json();
+      if (res.ok) setAccounts(data.accounts || []);
+    } finally {
+      setLoadingAccounts(false);
+    }
+  };
+
+  useEffect(() => {
+    loadAccounts();
+  }, [user?.id]);
+
+  const getAccountFor = (provider: string) =>
+    accounts.find((a) => a.provider === provider && a.status === 'active');
+
+  return (
+    <DashboardLayout>
+      <div style={{ maxWidth: 640, margin: '0 auto', padding: '2rem 1rem' }}>
+        <h1 style={{ fontSize: 24, fontWeight: 700, marginBottom: 4 }}>Payment settings</h1>
+        <p style={{ color: '#666', marginBottom: 24 }}>
+          Connect at least one payment method so ticket money comes directly to you.
+        </p>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {Object.entries(PROVIDER_META).map(([provider, meta]) => {
+            const account = getAccountFor(provider);
+            const isOpen = activeForm === provider;
+
+            return (
+              <div
+                key={provider}
+                style={{
+                  border: '1px solid #e5e5e5',
+                  borderRadius: 12,
+                  padding: 16,
+                  opacity: meta.comingSoon ? 0.6 : 1,
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div>
+                    <p style={{ fontWeight: 600, fontSize: 16 }}>{meta.name}</p>
+                    <p style={{ fontSize: 13, color: '#888' }}>{meta.blurb}</p>
+                  </div>
+
+                  {meta.comingSoon ? (
+                    <span style={{ fontSize: 12, color: '#999', fontWeight: 600 }}>Coming soon</span>
+                  ) : account ? (
+                    <span style={{ fontSize: 12, color: '#065f46', fontWeight: 600 }}>
+                      ✅ {account.display_label}
+                    </span>
+                  ) : (
+                    <button
+                      onClick={() => setActiveForm(isOpen ? null : (provider as 'flutterwave' | 'manual'))}
+                      style={{
+                        fontSize: 14,
+                        fontWeight: 600,
+                        padding: '8px 16px',
+                        borderRadius: 8,
+                        border: '1px solid #4f46e5',
+                        color: '#4f46e5',
+                        background: '#fff',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {isOpen ? 'Cancel' : 'Connect'}
+                    </button>
+                  )}
+                </div>
+
+                {isOpen && provider === 'flutterwave' && (
+                  <FlutterwaveForm userId={user?.id} onConnected={() => { setActiveForm(null); loadAccounts(); }} />
+                )}
+                {isOpen && provider === 'manual' && (
+                  <ManualForm userId={user?.id} onConnected={() => { setActiveForm(null); loadAccounts(); }} />
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </DashboardLayout>
+  );
+}
+
+function FlutterwaveForm({ userId, onConnected }: { userId?: string; onConnected: () => void }) {
+  const [banks, setBanks] = useState<Bank[]>([]);
+  const [bankCode, setBankCode] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [accountName, setAccountName] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch('/api/payments/banks?country=TZ')
+      .then((r) => r.json())
+      .then((d) => setBanks(d.banks || []))
+      .catch(() => setError('Failed to load banks'));
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userId) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/payments/create-subaccount', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId,
+          accountBankCode: bankCode,
+          accountNumber,
+          accountName,
+          businessName: accountName,
+          country: 'TZ',
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to connect');
+        return;
+      }
+      onConnected();
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <select required value={bankCode} onChange={(e) => setBankCode(e.target.value)} style={inputStyle}>
+        <option value="">Select your bank</option>
+        {banks.map((b) => <option key={b.id} value={b.code}>{b.name}</option>)}
+      </select>
+      <input required placeholder="Account number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} style={inputStyle} />
+      <input required placeholder="Account holder name" value={accountName} onChange={(e) => setAccountName(e.target.value)} style={inputStyle} />
+      {error && <p style={{ color: '#b91c1c', fontSize: 13 }}>{error}</p>}
+      <button type="submit" disabled={submitting} style={submitButtonStyle}>
+        {submitting ? 'Connecting...' : 'Connect Flutterwave'}
+      </button>
+    </form>
+  );
+}
+
+function ManualForm({ userId, onConnected }: { userId?: string; onConnected: () => void }) {
+  const [bankName, setBankName] = useState('');
+  const [accountNumber, setAccountNumber] = useState('');
+  const [accountName, setAccountName] = useState('');
+  const [instructions, setInstructions] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userId) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/payments/create-manual-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, bankName, accountNumber, accountName, instructions }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to save');
+        return;
+      }
+      onConnected();
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <input required placeholder="Bank or mobile money name" value={bankName} onChange={(e) => setBankName(e.target.value)} style={inputStyle} />
+      <input required placeholder="Account / phone number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} style={inputStyle} />
+      <input required placeholder="Account holder name" value={accountName} onChange={(e) => setAccountName(e.target.value)} style={inputStyle} />
+      <textarea placeholder="Instructions for buyers (optional)" value={instructions} onChange={(e) => setInstructions(e.target.value)} style={{ ...inputStyle, minHeight: 70 }} />
+      {error && <p style={{ color: '#b91c1c', fontSize: 13 }}>{error}</p>}
+      <button type="submit" disabled={submitting} style={submitButtonStyle}>
+        {submitting ? 'Saving...' : 'Save bank details'}
+      </button>
+    </form>
+  );
+}
+
+const inputStyle: React.CSSProperties = {
+  width: '100%',
+  padding: '10px 12px',
+  borderRadius: 8,
+  border: '1px solid #ddd',
+  fontSize: 14,
+};
+
+const submitButtonStyle: React.CSSProperties = {
+  padding: '10px 16px',
+  borderRadius: 8,
+  background: '#4f46e5',
+  color: '#fff',
+  fontWeight: 600,
+  border: 'none',
+  cursor: 'pointer',
+};

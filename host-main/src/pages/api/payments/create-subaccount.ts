@@ -39,18 +39,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const { error: dbError } = await supabaseAdmin
-      .from('users')
-      .update({
-        flw_subaccount_id: data.data.subaccount_id,
-        bank_code: accountBankCode,
-        bank_account_number: accountNumber,
-        bank_account_name: accountName,
-      })
-      .eq('id', userId);
+    .from('users')
+    .update({
+      flw_subaccount_id: data.data.subaccount_id,
+      bank_code: accountBankCode,
+      bank_account_number: accountNumber,
+      bank_account_name: accountName,
+    })
+    .eq('id', userId);
 
-    if (dbError) throw dbError;
+  if (dbError) throw dbError;
 
-    return res.status(200).json({ success: true, subaccountId: data.data.subaccount_id });
+  const { error: paymentAccountError } = await supabaseAdmin
+    .from('payment_accounts')
+    .upsert(
+      {
+        user_id: userId,
+        provider: 'flutterwave',
+        status: 'active',
+        external_account_id: data.data.subaccount_id,
+        display_label: `${businessName || accountName} — ****${accountNumber.slice(-4)}`,
+        meta: { accountBankCode, accountNumber, accountName, country },
+      },
+      { onConflict: 'user_id,provider' }
+    );
+
+  if (paymentAccountError) {
+    console.error('Failed to record payment_accounts row:', paymentAccountError);
+  }
+
+  return res.status(200).json({ success: true, subaccountId: data.data.subaccount_id });
   } catch (error) {
     console.error('Error creating subaccount:', error);
     return res.status(500).json({ error: 'Internal server error' });

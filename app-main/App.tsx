@@ -37,7 +37,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 
 import { AuthProvider, useAuth } from './src/services/AuthContext';
@@ -317,6 +317,8 @@ function ThemedAppContainer() {
     Manrope_600SemiBold,
     Manrope_700Bold,
     Manrope_800ExtraBold,
+    ...Ionicons.font,
+    ...MaterialIcons.font,
   });
   const [showSplash, setShowSplash] = React.useState(true);
   React.useEffect(() => {
