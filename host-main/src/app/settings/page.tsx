@@ -96,9 +96,10 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to save payout details');
+        // create-subaccount.ts already writes the payment_accounts row for 'flutterwave'
         setPayoutStatus('Payout details saved! You\'ll now receive ticket payments automatically.');
       } else {
-        // Manual payout — just store details, no automatic sub-account
+        // Manual payout — store details on users AND record it in payment_accounts
         await supabase
           .from('users')
           .update({
@@ -108,6 +109,21 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
             payout_country: payoutData.country,
           })
           .eq('id', userProfile.id);
+
+        const res = await fetch('/api/payments/create-manual-account', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId: userProfile.id,
+            bankName: payoutData.bankCode,
+            accountNumber: payoutData.accountNumber,
+            accountName: payoutData.accountName,
+            instructions: `Country: ${payoutData.country}`,
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to save payout details');
+
         setPayoutStatus('Payout details saved. Since automatic payout isn\'t available in your country yet, FemVents will send your ticket revenue manually.');
       }
     } catch (err: any) {
