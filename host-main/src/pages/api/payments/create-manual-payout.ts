@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { logPaymentAccountHistory } from '@/lib/paymentHistory';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -13,6 +14,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    const displayLabel = `${bankName} — ****${String(accountNumber).slice(-4)}`;
+
+    const { data: existing } = await supabaseAdmin
+      .from('payment_accounts')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('provider', 'manual')
+      .maybeSingle();
+
     const { error } = await supabaseAdmin
       .from('payment_accounts')
       .upsert(
@@ -21,13 +31,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           provider: 'manual',
           status: 'active',
           external_account_id: null,
-          display_label: `${bankName} — ****${String(accountNumber).slice(-4)}`,
+          display_label: displayLabel,
           meta: { bankName, accountNumber, accountName, instructions: instructions || null },
         },
         { onConflict: 'user_id,provider' }
       );
 
     if (error) throw error;
+
+    await logPaymentAccountHistory({
+      userId,
+      provider: 'manual',
+      action: existing ? 'updated' : 'connected',
+      displayLabel,
+    });
 
     return res.status(200).json({ success: true });
   } catch (error) {
