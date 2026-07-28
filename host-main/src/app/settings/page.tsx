@@ -52,8 +52,70 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
   const [wiseEmail, setWiseEmail] = useState('');
   const [cryptoAddress, setCryptoAddress] = useState('');
   const [cryptoNetwork, setCryptoNetwork] = useState('USDT-TRC20');
+  const [connectedAccounts, setConnectedAccounts] = useState<any[]>([]);
+  const [loadingAccounts, setLoadingAccounts] = useState(false);
+  const [deletingProvider, setDeletingProvider] = useState<string | null>(null);
+  const [historyItems, setHistoryItems] = useState<any[]>([]);
+  const [loadingHistory, setLoadingHistory] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
 
   const isAutoPayoutCountry = AUTO_PAYOUT_COUNTRIES.some((c) => c.code === payoutData.country);
+
+  const loadConnectedAccounts = async () => {
+    if (!userProfile?.id) return;
+    setLoadingAccounts(true);
+    try {
+      const res = await fetch(`/api/payments/list-accounts?userId=${userProfile.id}`);
+      const data = await res.json();
+      if (res.ok) setConnectedAccounts(data.accounts || []);
+    } catch (err) {
+      console.error('Failed to load connected accounts:', err);
+    } finally {
+      setLoadingAccounts(false);
+    }
+  };
+
+  const loadHistory = async () => {
+    if (!userProfile?.id) return;
+    setLoadingHistory(true);
+    try {
+      const res = await fetch(`/api/payments/history?userId=${userProfile.id}`);
+      const data = await res.json();
+      if (res.ok) setHistoryItems(data.history || []);
+    } catch (err) {
+      console.error('Failed to load payment history:', err);
+    } finally {
+      setLoadingHistory(false);
+    }
+  };
+
+  useEffect(() => {
+    loadConnectedAccounts();
+    loadHistory();
+  }, [userProfile?.id]);
+
+  const handleDeleteAccount = async (provider: string) => {
+    if (!userProfile?.id) return;
+    if (!confirm(`Remove your ${provider} payout method? Ticket buyers will no longer see this as a payment option.`)) {
+      return;
+    }
+    setDeletingProvider(provider);
+    try {
+      const res = await fetch('/api/payments/delete-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userProfile.id, provider }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to remove payment method');
+      await loadConnectedAccounts();
+      await loadHistory();
+    } catch (err: any) {
+      alert(err.message || 'Failed to remove payment method');
+    } finally {
+      setDeletingProvider(null);
+    }
+  };
 
   useEffect(() => {
     if (!isAutoPayoutCountry) {
@@ -176,6 +238,8 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
 
         setPayoutStatus('Payout details saved. Since automatic payout isn\'t available in your country yet, FemVents will send your ticket revenue manually.');
       }
+      await loadConnectedAccounts();
+      await loadHistory();
     } catch (err: any) {
       setPayoutStatus(err.message || 'Failed to save payout details');
     } finally {
@@ -798,12 +862,53 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
           {/* Payout Tab */}
           {activeTab === 'payout' && (
             <div className="space-y-8 animate-[fadeIn_0.5s_ease-out]">
-              <div className="pb-6 border-b-2 border-pink-100">
+                          <div className="pb-6 border-b-2 border-pink-100">
                 <h2 className="text-3xl font-black text-purple-900 mb-2">Payout Details</h2>
                 <p className="text-lg text-purple-600 font-medium">
                   Set up where you'll receive money from ticket sales
                 </p>
               </div>
+
+              {connectedAccounts.length > 0 && (
+                <div>
+                  <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
+                    Connected Payment Methods
+                  </label>
+                  <div className="space-y-3">
+                    {connectedAccounts.map((acc) => (
+                      <div
+                        key={acc.provider}
+                        className="flex items-center justify-between p-5 bg-pink-50 border-2 border-pink-200 rounded-2xl"
+                      >
+                        <div>
+                          <p className="font-black text-purple-900 uppercase text-sm tracking-wide">{acc.provider}</p>
+                          <p className="text-sm text-purple-600 font-semibold">{acc.display_label}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (acc.provider === 'manual') setNonAfricaMethod('manual');
+                              else if (['paypal', 'wise', 'crypto'].includes(acc.provider)) setNonAfricaMethod(acc.provider);
+                            }}
+                            className="px-4 py-2 rounded-xl bg-white border-2 border-pink-300 text-purple-700 text-sm font-bold hover:bg-pink-100 transition-all duration-300"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteAccount(acc.provider)}
+                            disabled={deletingProvider === acc.provider}
+                            className="px-4 py-2 rounded-xl bg-white border-2 border-red-200 text-red-600 text-sm font-bold hover:bg-red-50 transition-all duration-300 disabled:opacity-50"
+                          >
+                            {deletingProvider === acc.provider ? 'Removing...' : 'Delete'}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div>
                 <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
@@ -1009,7 +1114,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                 </>
               )}
 
-              {payoutStatus && (
+{payoutStatus && (
                 <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-2xl text-sm font-semibold text-blue-800">
                   {payoutStatus}
                 </div>
@@ -1024,9 +1129,48 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                   {savingPayout ? 'Saving...' : 'Save Payout Details'}
                 </button>
               </div>
+
+              <div className="pt-6 border-t-2 border-pink-100">
+                <button
+                  type="button"
+                  onClick={() => setShowHistory(!showHistory)}
+                  className="text-sm font-black text-purple-700 uppercase tracking-wide hover:text-rose-600 transition-colors"
+                >
+                  {showHistory ? '▲ Hide' : '▼ Show'} Payout History
+                </button>
+
+                {showHistory && (
+                  <div className="mt-4 space-y-2">
+                    {loadingHistory ? (
+                      <p className="text-sm text-purple-500 font-medium">Loading history...</p>
+                    ) : historyItems.length === 0 ? (
+                      <p className="text-sm text-purple-500 font-medium">No payout activity yet.</p>
+                    ) : (
+                      historyItems.map((item) => (
+                        <div
+                          key={item.id}
+                          className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm"
+                        >
+                          <span className="font-bold text-slate-700">
+                            {item.action === 'connected' && '✅ Connected'}
+                            {item.action === 'updated' && '✏️ Updated'}
+                            {item.action === 'removed' && '🗑 Removed'}
+                            {' '}
+                            <span className="uppercase">{item.provider}</span>
+                            {item.display_label ? ` — ${item.display_label}` : ''}
+                          </span>
+                          <span className="text-slate-400 font-medium">
+                            {new Date(item.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           )}
-
+          
           {/* Notifications Tab */}
           {activeTab === 'notifications' && (
             <div className="space-y-8 animate-[fadeIn_0.5s_ease-out]">
