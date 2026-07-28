@@ -52,6 +52,13 @@ export default function CheckoutPage() {
     }, [eventId]);
 
     useEffect(() => {
+        // For events without reserved seating, use the event's own price as the subtotal
+        if (event && !event.hasReservedSeating) {
+            setSubtotal(Number(event.price) || 0);
+        }
+    }, [event]);
+
+    useEffect(() => {
         calculateTotal();
     }, [subtotal, discount]);
 

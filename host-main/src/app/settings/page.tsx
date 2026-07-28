@@ -160,7 +160,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
           })
           .eq('id', userProfile.id);
 
-        const res = await fetch('/api/payments/create-manual-account', {
+          const res = await fetch('/api/payments/create-manual-payout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
