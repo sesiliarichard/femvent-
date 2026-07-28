@@ -183,6 +183,23 @@ function EventAttendeesContent() {
         await updateAttendeeCount(eventId);
       }
 
+      // Best-effort confirmation email — don't block the UI if this fails
+      if (selectedAttendee.userInfo?.email) {
+        try {
+          await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              to: selectedAttendee.userInfo.email,
+              subject: `Your ticket for ${event?.title || 'the event'} is confirmed`,
+              body: `Thanks for your payment! Your ticket for ${event?.title || 'the event'} is now confirmed.`,
+            }),
+          });
+        } catch (emailError) {
+          console.error('Confirmation email failed (payment still confirmed):', emailError);
+        }
+      }
+
       setShowPaymentModal(false);
       setSelectedAttendee(null);
       setPaymentAmount('');
@@ -607,14 +624,16 @@ function EventAttendeesContent() {
                                 </span>
                               ) : (
                                 <button
-                                  onClick={() => {
-                                    setSelectedAttendee(attendee);
-                                    setShowPaymentModal(true);
-                                  }}
-                                  className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-bold hover:shadow-lg hover:scale-105 transition-all duration-300"
-                                >
-                                  Record
-                                </button>
+                                onClick={() => {
+                                  setSelectedAttendee(attendee);
+                                  setPaymentAmount(attendee.paymentAmount ? String(attendee.paymentAmount) : '');
+                                  setPaymentMethod(attendee.paymentMethod || 'cash');
+                                  setShowPaymentModal(true);
+                                }}
+                                className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-bold hover:shadow-lg hover:scale-105 transition-all duration-300"
+                              >
+                                Record
+                              </button>
                               )}
                             </td>
                             <td className="px-6 py-5">
@@ -724,6 +743,8 @@ function EventAttendeesContent() {
                             <button
                               onClick={() => {
                                 setSelectedAttendee(attendee);
+                                setPaymentAmount(attendee.paymentAmount ? String(attendee.paymentAmount) : '');
+                                setPaymentMethod(attendee.paymentMethod || 'cash');
                                 setShowPaymentModal(true);
                               }}
                               className="px-4 py-3 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white text-sm font-black"
@@ -764,10 +785,23 @@ function EventAttendeesContent() {
               </div>
             </div>
             <div className="p-8 space-y-6">
-              <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl p-6 border border-slate-200">
+            <div className="bg-gradient-to-r from-slate-50 to-blue-50 rounded-2xl p-6 border border-slate-200">
                 <p className="text-sm font-bold text-slate-600 mb-3 uppercase tracking-wide">Attendee</p>
                 <p className="font-black text-slate-900 text-lg mb-2">{selectedAttendee.userInfo?.name}</p>
                 <p className="text-sm text-slate-600 font-semibold">{selectedAttendee.userInfo?.email}</p>
+                {selectedAttendee.paymentId?.startsWith('FV-') && (
+                  <div className="mt-4 pt-4 border-t border-slate-200">
+                    <p className="text-xs font-bold text-amber-700 uppercase tracking-wide mb-1">
+                      ⏳ Awaiting {selectedAttendee.paymentMethod} payment
+                    </p>
+                    <p className="text-sm text-slate-700">
+                      Reference: <span className="font-mono font-black">{selectedAttendee.paymentId}</span>
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Check that this reference matches what the buyer sent before confirming.
+                    </p>
+                  </div>
+                )}
               </div>
               <div>
                 <label className="block text-sm font-black text-slate-900 mb-3 uppercase tracking-wide">Amount ($)</label>
@@ -880,6 +914,7 @@ function EventAttendeesContent() {
                   { label: 'Check-in Status', value: selectedAttendee.checkInStatus === 'checked-in' ? '✓ Checked In' : 'Not Checked In', checkIn: true },
                   selectedAttendee.paymentAmount && { label: 'Payment Amount', value: `$${selectedAttendee.paymentAmount}` },
                   selectedAttendee.paymentMethod && { label: 'Payment Method', value: selectedAttendee.paymentMethod.replace('_', ' ') },
+                  selectedAttendee.paymentId?.startsWith('FV-') && { label: 'Payment Reference', value: selectedAttendee.paymentId },
                   { label: 'Registered', value: selectedAttendee.createdAt.toLocaleDateString() },
                   selectedAttendee.checkInTime && { label: 'Checked In', value: selectedAttendee.checkInTime.toLocaleString() },
                 ].filter(Boolean).map((item: any, idx) => (

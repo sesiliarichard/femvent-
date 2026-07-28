@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -16,6 +17,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // Look up the event's organizer
+    const { data: event, error: eventError } = await supabaseAdmin
+      .from('events')
+      .select('host_id, currency')
+      .eq('id', eventId)
+      .maybeSingle();
+
+    if (eventError) throw eventError;
+
+    if (!event || !event.host_id) {
+      return res.status(400).json({ error: 'Event or organizer not found' });
+    }
+
+    // Look up the organizer's active Flutterwave payment account
+    const { data: paymentAccount, error: paymentAccountError } = await supabaseAdmin
+      .from('payment_accounts')
+      .select('external_account_id')
+      .eq('user_id', event.host_id)
+      .eq('provider', 'flutterwave')
+      .eq('status', 'active')
+      .maybeSingle();
+
+    if (paymentAccountError) throw paymentAccountError;
+
+    if (!paymentAccount?.external_account_id) {
+      return res.status(400).json({
+        error: 'This organizer has not connected a Flutterwave payout account yet',
+      });
+    }
+
     const txRef = `femvents-${eventId}-${Date.now()}`;
 
     const flutterwaveRes = await fetch('https://api.flutterwave.com/v3/payments', {
@@ -27,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       body: JSON.stringify({
         tx_ref: txRef,
         amount,
-        currency: 'USD',
+        currency: event.currency || 'USD',
         redirect_url: redirectUrl || `${req.headers.origin}/events/${eventId}/payment-status`,
         customer: {
           email,
@@ -37,6 +68,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           title: 'FemVents Ticket Purchase',
           description: `Ticket purchase for event ${eventId}`,
         },
+        subaccounts: [
+          {
+            id: paymentAccount.external_account_id,
+          },
+        ],
         meta: {
           eventId,
           userId: userId || null,
