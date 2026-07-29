@@ -66,13 +66,18 @@ export default function RegisterPage() {
                 .single();
             setEvent(data);
 
-            if (data?.host_id) {
-                const { data: hostRow } = await supabase
-                    .from("users")
-                    .select("flw_subaccount_id")
-                    .eq("id", data.host_id)
-                    .maybeSingle();
-                setHostHasPayout(!!hostRow?.flw_subaccount_id);
+            if (data?.id) {
+                try {
+                    const methodsRes = await fetch(`/api/payments/available-methods?eventId=${data.id}`);
+                    if (methodsRes.ok) {
+                        const { methods } = await methodsRes.json();
+                        setHostHasPayout(Array.isArray(methods) && methods.length > 0);
+                    } else {
+                        setHostHasPayout(false);
+                    }
+                } catch {
+                    setHostHasPayout(false);
+                }
             }
 
             const { data: tiers } = await supabase
