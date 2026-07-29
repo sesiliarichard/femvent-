@@ -47,8 +47,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
   const [loadingBanks, setLoadingBanks] = useState(false);
   const [savingPayout, setSavingPayout] = useState(false);
   const [payoutStatus, setPayoutStatus] = useState<string | null>(null);
-  const [nonAfricaMethod, setNonAfricaMethod] = useState<'paypal' | 'wise' | 'crypto' | 'manual'>('paypal');
-  const [paypalEmail, setPaypalEmail] = useState('');
+  const [payoutMethod, setPayoutMethod] = useState<'flutterwave' | 'wise' | 'crypto' | 'manual'>('flutterwave');
   const [wiseEmail, setWiseEmail] = useState('');
   const [cryptoAddress, setCryptoAddress] = useState('');
   const [cryptoNetwork, setCryptoNetwork] = useState('USDT-TRC20');
@@ -118,7 +117,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
   };
 
   useEffect(() => {
-    if (!isAutoPayoutCountry) {
+    if (payoutMethod !== 'flutterwave' || !isAutoPayoutCountry) {
       setBankOptions([]);
       return;
     }
@@ -135,14 +134,19 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
       }
     };
     loadBanks();
-  }, [payoutData.country, isAutoPayoutCountry]);
+  }, [payoutData.country, isAutoPayoutCountry, payoutMethod]);
 
-  const handlePayoutSave = async () => {
+ const handlePayoutSave = async () => {
     if (!userProfile?.id) return;
     setSavingPayout(true);
     setPayoutStatus(null);
     try {
-      if (isAutoPayoutCountry) {
+      if (payoutMethod === 'flutterwave') {
+        if (!isAutoPayoutCountry) {
+          setPayoutStatus('Flutterwave isn\'t available in your selected country yet. Try Wise, Crypto, or Bank Wire instead.');
+          setSavingPayout(false);
+          return;
+        }
         if (!payoutData.bankCode || !payoutData.accountNumber || !payoutData.accountName) {
           setPayoutStatus('Please fill in all payout fields.');
           setSavingPayout(false);
@@ -163,22 +167,8 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to save payout details');
-        setPayoutStatus('Payout details saved! You\'ll now receive ticket payments automatically.');
-      } else if (nonAfricaMethod === 'paypal') {
-        if (!paypalEmail) {
-          setPayoutStatus('Please enter your PayPal email.');
-          setSavingPayout(false);
-          return;
-        }
-        const res = await fetch('/api/payments/create-paypal-account', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: userProfile.id, paypalEmail }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Failed to connect PayPal');
-        setPayoutStatus('PayPal connected! You\'ll now receive ticket payments directly to your PayPal account.');
-      } else if (nonAfricaMethod === 'wise') {
+        setPayoutStatus('Flutterwave connected! You\'ll now receive ticket payments automatically.');
+      } else if (payoutMethod === 'wise') {
         if (!wiseEmail) {
           setPayoutStatus('Please enter your Wise account email.');
           setSavingPayout(false);
@@ -192,7 +182,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to connect Wise');
         setPayoutStatus('Wise connected! You\'ll now receive ticket payments to your Wise account.');
-      } else if (nonAfricaMethod === 'crypto') {
+      } else if (payoutMethod === 'crypto') {
         if (!cryptoAddress) {
           setPayoutStatus('Please enter your wallet address.');
           setSavingPayout(false);
@@ -218,11 +208,10 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
             bank_name: payoutData.bankCode,
             bank_account_number: payoutData.accountNumber,
             bank_account_name: payoutData.accountName,
-            payout_country: payoutData.country,
           })
           .eq('id', userProfile.id);
 
-          const res = await fetch('/api/payments/create-manual-payout', {
+        const res = await fetch('/api/payments/create-manual-payout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -230,13 +219,12 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
             bankName: payoutData.bankCode,
             accountNumber: payoutData.accountNumber,
             accountName: payoutData.accountName,
-            instructions: `Country: ${payoutData.country}`,
           }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to save payout details');
 
-        setPayoutStatus('Payout details saved. Since automatic payout isn\'t available in your country yet, FemVents will send your ticket revenue manually.');
+        setPayoutStatus('Bank details saved. FemVents will send your ticket revenue manually.');
       }
       await loadConnectedAccounts();
       await loadHistory();
@@ -885,11 +873,12 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                           <p className="text-sm text-purple-600 font-semibold">{acc.display_label}</p>
                         </div>
                         <div className="flex gap-2">
-                          <button
+                        <button
                             type="button"
                             onClick={() => {
-                              if (acc.provider === 'manual') setNonAfricaMethod('manual');
-                              else if (['paypal', 'wise', 'crypto'].includes(acc.provider)) setNonAfricaMethod(acc.provider);
+                              if (['manual', 'wise', 'crypto', 'flutterwave'].includes(acc.provider)) {
+                                setPayoutMethod(acc.provider as 'manual' | 'wise' | 'crypto' | 'flutterwave');
+                              }
                             }}
                             className="px-4 py-2 rounded-xl bg-white border-2 border-pink-300 text-purple-700 text-sm font-bold hover:bg-pink-100 transition-all duration-300"
                           >
@@ -910,101 +899,159 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                 </div>
               )}
 
-              <div>
+<div>
                 <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
-                  Country
+                  How do you want to receive payments?
                 </label>
-                <select
-                  value={payoutData.country}
-                  onChange={(e) => setPayoutData({ ...payoutData, country: e.target.value, bankCode: '' })}
-                  className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold"
-                >
-                  <optgroup label="Automatic Payout Supported">
-                    {AUTO_PAYOUT_COUNTRIES.map((c) => (
-                      <option key={c.code} value={c.code}>{c.name}</option>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setPayoutMethod('flutterwave')}
+                    className={`px-4 py-4 rounded-2xl font-bold text-sm transition-all duration-300 ${
+                      payoutMethod === 'flutterwave'
+                        ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-lg'
+                        : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
+                    }`}
+                  >
+                    💳 Flutterwave
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPayoutMethod('wise')}
+                    className={`px-4 py-4 rounded-2xl font-bold text-sm transition-all duration-300 ${
+                      payoutMethod === 'wise'
+                        ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-lg'
+                        : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
+                    }`}
+                  >
+                    🌍 Wise
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPayoutMethod('crypto')}
+                    className={`px-4 py-4 rounded-2xl font-bold text-sm transition-all duration-300 ${
+                      payoutMethod === 'crypto'
+                        ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-lg'
+                        : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
+                    }`}
+                  >
+                    ₿ Crypto (USDT)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPayoutMethod('manual')}
+                    className={`px-4 py-4 rounded-2xl font-bold text-sm transition-all duration-300 ${
+                      payoutMethod === 'manual'
+                        ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-lg'
+                        : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
+                    }`}
+                  >
+                    🏦 Bank Wire
+                  </button>
+                </div>
+
+                <div className="mt-4">
+                  <p className="text-xs font-black text-purple-400 uppercase tracking-wide mb-3">Coming Soon</p>
+                  <div className="grid grid-cols-3 gap-3">
+                    {[
+                      { icon: '📱', label: 'AzamPay' },
+                      { icon: '💰', label: 'PayPal' },
+                      { icon: '💳', label: 'Stripe' },
+                    ].map((p) => (
+                      <div
+                        key={p.label}
+                        className="px-4 py-4 rounded-2xl font-bold text-sm bg-slate-50 text-slate-400 border-2 border-slate-200 text-center cursor-not-allowed opacity-70"
+                      >
+                        {p.icon} {p.label}
+                      </div>
                     ))}
-                  </optgroup>
-                  <option value="OTHER">Other country (manual payout)</option>
-                </select>
+                  </div>
+                </div>
               </div>
 
-              {!isAutoPayoutCountry && (
-                <>
-                  <div className="p-6 bg-amber-50 border-2 border-amber-200 rounded-2xl">
-                    <p className="text-sm text-amber-800 font-semibold">
-                      Automatic bank payout isn't available in your country yet. Connect PayPal for
-                      automatic payouts, or save your bank details and FemVents will send your revenue manually.
+              {payoutMethod === 'flutterwave' && (
+                <div className="p-6 bg-pink-50/50 border-2 border-pink-200 rounded-2xl space-y-6">
+                  <div>
+                    <p className="text-sm font-black text-purple-900 uppercase tracking-wide mb-1">Flutterwave</p>
+                    <p className="text-sm text-purple-600 font-medium">
+                      Instant automatic payouts — only available for organizers in supported countries.
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setNonAfricaMethod('paypal')}
-                      className={`px-4 py-4 rounded-2xl font-bold text-sm transition-all duration-300 ${
-                        nonAfricaMethod === 'paypal'
-                          ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-lg'
-                          : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
-                      }`}
+                  <div>
+                    <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
+                      Country
+                    </label>
+                    <select
+                      value={payoutData.country}
+                      onChange={(e) => setPayoutData({ ...payoutData, country: e.target.value, bankCode: '' })}
+                      className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold"
                     >
-                      💳 PayPal
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setNonAfricaMethod('wise')}
-                      className={`px-4 py-4 rounded-2xl font-bold text-sm transition-all duration-300 ${
-                        nonAfricaMethod === 'wise'
-                          ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-lg'
-                          : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
-                      }`}
-                    >
-                      🌍 Wise
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setNonAfricaMethod('crypto')}
-                      className={`px-4 py-4 rounded-2xl font-bold text-sm transition-all duration-300 ${
-                        nonAfricaMethod === 'crypto'
-                          ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-lg'
-                          : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
-                      }`}
-                    >
-                      ₿ Crypto (USDT)
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setNonAfricaMethod('manual')}
-                      className={`px-4 py-4 rounded-2xl font-bold text-sm transition-all duration-300 ${
-                        nonAfricaMethod === 'manual'
-                          ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-lg'
-                          : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
-                      }`}
-                    >
-                      🏦 Bank Wire
-                    </button>
+                      {AUTO_PAYOUT_COUNTRIES.map((c) => (
+                        <option key={c.code} value={c.code}>{c.name}</option>
+                      ))}
+                    </select>
                   </div>
-                </>
-              )}
 
-{!isAutoPayoutCountry && nonAfricaMethod === 'paypal' && (
-                <div>
-                  <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
-                    PayPal Email
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="you@example.com"
-                    value={paypalEmail}
-                    onChange={(e) => setPaypalEmail(e.target.value)}
-                    className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold placeholder-slate-400"
-                  />
-                  <p className="text-sm text-purple-500 font-medium mt-2">
-                    Ticket payments will be sent directly to this PayPal account.
-                  </p>
+                  {!isAutoPayoutCountry && (
+                    <div className="p-4 bg-amber-50 border-2 border-amber-200 rounded-2xl">
+                      <p className="text-sm text-amber-800 font-semibold">
+                        Flutterwave isn't available for this country yet. Try Wise, Crypto, or Bank Wire above instead.
+                      </p>
+                    </div>
+                  )}
+
+                  {isAutoPayoutCountry && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
+                          Bank / Mobile Money Provider
+                        </label>
+                        <select
+                          value={payoutData.bankCode}
+                          onChange={(e) => setPayoutData({ ...payoutData, bankCode: e.target.value })}
+                          disabled={loadingBanks}
+                          className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold"
+                        >
+                          <option value="">{loadingBanks ? 'Loading...' : 'Select a bank or mobile money provider'}</option>
+                          {bankOptions.map((b) => (
+                            <option key={b.code} value={b.code}>{b.name}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
+                          Account Number
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Account or mobile number"
+                          value={payoutData.accountNumber}
+                          onChange={(e) => setPayoutData({ ...payoutData, accountNumber: e.target.value })}
+                          className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold placeholder-slate-400"
+                        />
+                      </div>
+                    </div>
+                  )}
+
+                  {isAutoPayoutCountry && (
+                    <div>
+                      <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
+                        Account Holder Name
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Full name on the account"
+                        value={payoutData.accountName}
+                        onChange={(e) => setPayoutData({ ...payoutData, accountName: e.target.value })}
+                        className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold placeholder-slate-400"
+                      />
+                    </div>
+                  )}
                 </div>
               )}
 
-              {!isAutoPayoutCountry && nonAfricaMethod === 'wise' && (
+              {payoutMethod === 'wise' && (
                 <div>
                   <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
                     Wise Account Email
@@ -1017,12 +1064,12 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                     className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold placeholder-slate-400"
                   />
                   <p className="text-sm text-purple-500 font-medium mt-2">
-                    Use the email linked to your Wise account. Supports receiving in 80+ countries.
+                    Use the email linked to your Wise account. Availability to receive money depends on your country.
                   </p>
                 </div>
               )}
 
-              {!isAutoPayoutCountry && nonAfricaMethod === 'crypto' && (
+              {payoutMethod === 'crypto' && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
@@ -1055,35 +1102,21 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                   </p>
                 </div>
               )}
-              
-              {(isAutoPayoutCountry || nonAfricaMethod === 'manual') && (
+
+              {payoutMethod === 'manual' && (
                 <>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
-                        {isAutoPayoutCountry ? 'Bank / Mobile Money Provider' : 'Bank Name'}
+                        Bank Name
                       </label>
-                      {isAutoPayoutCountry ? (
-                        <select
-                          value={payoutData.bankCode}
-                          onChange={(e) => setPayoutData({ ...payoutData, bankCode: e.target.value })}
-                          disabled={loadingBanks}
-                          className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold"
-                        >
-                          <option value="">{loadingBanks ? 'Loading...' : 'Select a bank or mobile money provider'}</option>
-                          {bankOptions.map((b) => (
-                            <option key={b.code} value={b.code}>{b.name}</option>
-                          ))}
-                        </select>
-                      ) : (
-                        <input
-                          type="text"
-                          placeholder="e.g. Bank of America"
-                          value={payoutData.bankCode}
-                          onChange={(e) => setPayoutData({ ...payoutData, bankCode: e.target.value })}
-                          className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold placeholder-slate-400"
-                        />
-                      )}
+                      <input
+                        type="text"
+                        placeholder="e.g. Bank of America"
+                        value={payoutData.bankCode}
+                        onChange={(e) => setPayoutData({ ...payoutData, bankCode: e.target.value })}
+                        className="w-full px-6 py-4 rounded-2xl border-2 border-pink-200 focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 transition-all duration-300 font-semibold placeholder-slate-400"
+                      />
                     </div>
                     <div>
                       <label className="block text-sm font-black text-purple-900 mb-3 uppercase tracking-wide">
