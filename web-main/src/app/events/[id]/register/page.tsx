@@ -68,7 +68,7 @@ export default function RegisterPage() {
 
             if (data?.id) {
                 try {
-                    const methodsRes = await fetch(`/api/payments/available-methods?eventId=${data.id}`);
+                    const methodsRes = await fetch(`${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/available-methods?eventId=${data.id}`);
                     if (methodsRes.ok) {
                         const { methods } = await methodsRes.json();
                         setHostHasPayout(Array.isArray(methods) && methods.length > 0);
