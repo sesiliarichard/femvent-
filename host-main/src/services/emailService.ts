@@ -4,9 +4,7 @@
  * Feature 4 Completion: Send emails via SendGrid or Resend
  * Supports HTML templates, attachments, and tracking
  */
-
-import { db } from '@/lib/firebase';
-import { collection, addDoc, updateDoc, doc, Timestamp, getDoc } from 'firebase/firestore';
+import { supabase } from '@/lib/supabase';
 
 // Using Resend (simpler than SendGrid)
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -69,10 +67,14 @@ export async function sendWorkflowEmail(
 ): Promise<void> {
     try {
         // Get workflow and step details
-        const workflowDoc = await getDoc(doc(db, 'emailWorkflows', workflowId));
-        if (!workflowDoc.exists()) throw new Error('Workflow not found');
+        const { data: workflow, error: workflowError } = await supabase
+            .from('email_workflows')
+            .select('*')
+            .eq('id', workflowId)
+            .single();
 
-        const workflow = workflowDoc.data();
+        if (workflowError || !workflow) throw new Error('Workflow not found');
+
         const step = workflow.steps.find((s: any) => s.id === stepId);
         if (!step) throw new Error('Step not found');
 
@@ -103,27 +105,38 @@ export async function sendWorkflowEmail(
         });
 
         // Log sent email
-        await addDoc(collection(db, 'emailSentLog'), {
-            workflowId,
-            stepId,
-            recipientEmail,
-            emailId,
-            subject,
-            status: 'sent',
-            sentAt: Timestamp.now()
-        });
+        const { error: logError } = await supabase
+            .from('email_sent_log')
+            .insert({
+                workflow_id: workflowId,
+                step_id: stepId,
+                recipient_email: recipientEmail,
+                email_id: emailId,
+                subject,
+                status: 'sent',
+                sent_at: new Date().toISOString()
+            });
+
+        if (logError) throw logError;
 
         // Update workflow stats
-        await updateDoc(doc(db, 'emailWorkflows', workflowId), {
-            'stats.sent': (workflow.stats?.sent || 0) + 1
-        });
+        const { error: updateError } = await supabase
+            .from('email_workflows')
+            .update({
+                stats: {
+                    ...workflow.stats,
+                    sent: (workflow.stats?.sent || 0) + 1
+                }
+            })
+            .eq('id', workflowId);
+
+        if (updateError) throw updateError;
 
     } catch (error) {
         console.error('Error sending workflow email:', error);
         throw error;
     }
 }
-
 /**
  * Send transactional email (ticket confirmation, etc.)
  */
