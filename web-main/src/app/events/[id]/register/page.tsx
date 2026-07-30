@@ -52,6 +52,10 @@ export default function RegisterPage() {
     const [submitError, setSubmitError] = useState("");
     const [success, setSuccess] = useState(false);
     const [pendingOrder, setPendingOrder] = useState<{ reference: string; instructions: any; provider: string } | null>(null);
+    const [showAzamPayForm, setShowAzamPayForm] = useState(false);
+    const [azamPhone, setAzamPhone] = useState("");
+    const [azamProvider, setAzamProvider] = useState("Mpesa");
+    const [azamStatus, setAzamStatus] = useState<string | null>(null);
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -301,7 +305,43 @@ export default function RegisterPage() {
             setSubmitting(false);
         }
     };
-    
+
+    const handleAzamPaySubmit = async () => {
+        if (!session?.user || !azamPhone) return;
+        setSubmitting(true);
+        setAzamStatus(null);
+        try {
+            const res = await fetch(
+                `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-azampay-checkout`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        eventId: id,
+                        amount: selectedTicket.price,
+                        phoneNumber: azamPhone,
+                        provider: azamProvider,
+                        email: session.user.email,
+                        name: fullName,
+                        userId: session.user.id,
+                        ticketTypeName: selectedTicket.name,
+                    }),
+                }
+            );
+
+            const data = await res.json();
+            if (!res.ok || !data.success) {
+                throw new Error(data.error || "Failed to start mobile money payment");
+            }
+
+            setAzamStatus(data.message || "Check your phone to approve the payment.");
+        } catch (err: any) {
+            setAzamStatus(err.message || "Failed to start payment");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
     if (loadingEvent) {
         return (
             <main className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-6 py-32 text-center">
@@ -533,12 +573,57 @@ export default function RegisterPage() {
                         </div>
                     </div>
 
+{selectedTicket.price > 0 && (
+                        <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
+                            <button
+                                type="button"
+                                onClick={() => setShowAzamPayForm((v) => !v)}
+                                className="text-sm font-semibold text-rose-500"
+                            >
+                                {showAzamPayForm ? "Hide mobile money option" : "Pay with Mobile Money (Tanzania/Rwanda)"}
+                            </button>
+                            {showAzamPayForm && (
+                                <div className="mt-4 flex flex-col gap-3">
+                                    <select
+                                        value={azamProvider}
+                                        onChange={(e) => setAzamProvider(e.target.value)}
+                                        className="rounded-xl border border-gray-200 px-4 py-3 text-sm"
+                                    >
+                                        <option value="Mpesa">M-Pesa</option>
+                                        <option value="Tigo">Tigo Pesa</option>
+                                        <option value="Airtel">Airtel Money</option>
+                                        <option value="Halopesa">HaloPesa</option>
+                                        <option value="Azampesa">AzamPesa</option>
+                                    </select>
+                                    <input
+                                        type="tel"
+                                        placeholder="Phone number (e.g. 255712345678)"
+                                        value={azamPhone}
+                                        onChange={(e) => setAzamPhone(e.target.value)}
+                                        className="rounded-xl border border-gray-200 px-4 py-3 text-sm"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={handleAzamPaySubmit}
+                                        disabled={submitting || !azamPhone}
+                                        className="rounded-full bg-gray-900 px-6 py-3 text-sm font-semibold text-white disabled:opacity-60"
+                                    >
+                                        {submitting ? "Sending..." : "Send payment request"}
+                                    </button>
+                                    {azamStatus && (
+                                        <p className="text-sm text-gray-600">{azamStatus}</p>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {submitError && (
                         <p className="rounded-xl bg-amber-50 p-4 text-sm text-amber-700">
                             {submitError}
                         </p>
                     )}
-
+                    
                     <button
                         type="submit"
                         disabled={submitting}
