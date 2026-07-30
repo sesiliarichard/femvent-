@@ -68,7 +68,7 @@ export default function RegisterPage() {
                 .single();
             setEvent(data);
 
-            if (dif (data?.id) {
+            if (data?.id) {
                 try {
                     const methodsRes = await fetch(`${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/available-methods?eventId=${data.id}`);
                     if (methodsRes.ok) {
@@ -338,7 +338,7 @@ export default function RegisterPage() {
             </main>
         );
     }
-    
+
     return (
         <main className="mx-auto flex max-w-2xl flex-col gap-8 px-6 pb-20">
             <div>
