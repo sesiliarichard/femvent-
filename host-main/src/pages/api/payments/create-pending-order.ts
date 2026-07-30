@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
-  
+
   const { eventId, provider, amount, userId, guestName, guestEmail } = req.body;
 
   if (!eventId || !provider || !amount || amount <= 0) {
@@ -56,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Organizer has not connected this payment method' });
     }
 
-    const reference = `FV-${provider.toUpperCase()}-${Date.now()}`;
+    const reference = crypto.randomUUID();
 
     const { data: ticket, error: insertError } = await supabaseAdmin
       .from('tickets')
