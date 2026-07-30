@@ -30,6 +30,7 @@ export default function RegisterPage() {
     const [loadingEvent, setLoadingEvent] = useState(true);
     const [ticketTypes, setTicketTypes] = useState<PriceOption[]>([]);
     const [hostHasPayout, setHostHasPayout] = useState<boolean | null>(null);
+    const [hostMethods, setHostMethods] = useState<Array<{ provider: string; instructions?: any }>>([]);
 
     const [session, setSession] = useState<any>(null);
     const [authMode, setAuthMode] = useState<AuthMode>("login");
@@ -50,6 +51,7 @@ export default function RegisterPage() {
     const [submitting, setSubmitting] = useState(false);
     const [submitError, setSubmitError] = useState("");
     const [success, setSuccess] = useState(false);
+    const [pendingOrder, setPendingOrder] = useState<{ reference: string; instructions: any; provider: string } | null>(null);
 
     useEffect(() => {
         supabase.auth.getSession().then(({ data }) => setSession(data.session));
@@ -66,11 +68,12 @@ export default function RegisterPage() {
                 .single();
             setEvent(data);
 
-            if (data?.id) {
+            if (dif (data?.id) {
                 try {
                     const methodsRes = await fetch(`${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/available-methods?eventId=${data.id}`);
                     if (methodsRes.ok) {
                         const { methods } = await methodsRes.json();
+                        setHostMethods(Array.isArray(methods) ? methods : []);
                         setHostHasPayout(Array.isArray(methods) && methods.length > 0);
                     } else {
                         setHostHasPayout(false);
@@ -160,7 +163,7 @@ export default function RegisterPage() {
                 .eq("id", session.user.id);
             if (profileError) throw profileError;
 
-            if (selectedTicket.price > 0) {
+            if (sif (selectedTicket.price > 0) {
                 if (!hostHasPayout) {
                     setSubmitError(
                         "This host hasn't finished setting up payment collection yet, so paid tickets aren't available right now. Please check back soon or contact the organizer."
@@ -169,26 +172,69 @@ export default function RegisterPage() {
                     return;
                 }
 
-                // Paid tier — send to Flutterwave, ticket gets created by the webhook after payment
-                const res = await fetch("/api/payments/create-checkout", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        eventId: id,
-                        amount: selectedTicket.price,
-                        email: session.user.email,
-                        name: fullName,
-                        userId: session.user.id,
-                        ticketTypeName: selectedTicket.name,
-                    }),
-                });
+                const hasFlutterwave = hostMethods.some((m) => m.provider === "flutterwave");
 
-                const data = await res.json();
-                if (!res.ok || !data.sessionUrl) {
-                    throw new Error(data.error || "Failed to start payment");
+                if (hasFlutterwave) {
+                    // Paid tier — send to Flutterwave, ticket gets created by the webhook after payment
+                    const res = await fetch("/api/payments/create-checkout", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            eventId: id,
+                            amount: selectedTicket.price,
+                            email: session.user.email,
+                            name: fullName,
+                            userId: session.user.id,
+                            ticketTypeName: selectedTicket.name,
+                        }),
+                    });
+
+                    const data = await res.json();
+                    if (!res.ok || !data.sessionUrl) {
+                        throw new Error(data.error || "Failed to start payment");
+                    }
+
+                    window.location.href = data.sessionUrl;
+                    return;
                 }
 
-                window.location.href = data.sessionUrl;
+                // No Flutterwave — fall back to a manual/pending provider (crypto, wise, manual)
+                const manualMethod = hostMethods.find((m) =>
+                    ["crypto", "wise", "manual"].includes(m.provider)
+                );
+                if (!manualMethod) {
+                    setSubmitError(
+                        "This host hasn't finished setting up payment collection yet, so paid tickets aren't available right now. Please check back soon or contact the organizer."
+                    );
+                    setSubmitting(false);
+                    return;
+                }
+
+                const pendingRes = await fetch(
+                    `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-pending-order`,
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            eventId: id,
+                            provider: manualMethod.provider,
+                            amount: selectedTicket.price,
+                            userId: session.user.id,
+                        }),
+                    }
+                );
+
+                const pendingData = await pendingRes.json();
+                if (!pendingRes.ok) {
+                    throw new Error(pendingData.error || "Failed to start payment");
+                }
+
+                setPendingOrder({
+                    reference: pendingData.reference,
+                    instructions: pendingData.instructions,
+                    provider: manualMethod.provider,
+                });
+                setSubmitting(false);
                 return;
             }
 
@@ -243,7 +289,7 @@ export default function RegisterPage() {
         );
     }
 
-    if (success) {
+  if (success) {
         return (
             <main className="mx-auto flex max-w-2xl flex-col items-center gap-6 px-6 py-32 text-center">
                 <div className="text-5xl">✅</div>
@@ -264,6 +310,35 @@ export default function RegisterPage() {
         );
     }
 
+    if (pendingOrder) {
+        return (
+            <main className="mx-auto flex max-w-2xl flex-col items-center gap-6 px-6 py-32 text-center">
+                <div className="text-5xl">💰</div>
+                <h1 className="text-3xl font-bold text-gray-900">Complete Your Payment</h1>
+                <div className="w-full rounded-3xl border border-gray-100 bg-white p-6 shadow-lg text-left">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-rose-500">
+                        {pendingOrder.provider === "crypto" ? "Crypto Payment" : pendingOrder.provider}
+                    </p>
+                    <p className="mt-1 text-xl font-bold text-gray-900">{event.title}</p>
+                    <p className="mt-4 text-sm text-gray-600">
+                        Send <strong>${selectedTicket.price}</strong> using the details below. Your
+                        ticket will be confirmed once the organizer verifies your payment — keep
+                        your reference number handy.
+                    </p>
+                    {pendingOrder.provider === "crypto" && (
+                        <div className="mt-4 rounded-xl bg-gray-50 p-4 text-sm space-y-1">
+                            <p><strong>Wallet Address:</strong> {pendingOrder.instructions?.cryptoAddress}</p>
+                            <p><strong>Network:</strong> {pendingOrder.instructions?.cryptoNetwork}</p>
+                        </div>
+                    )}
+                    <p className="mt-4 text-sm font-semibold text-gray-900">
+                        Reference: {pendingOrder.reference}
+                    </p>
+                </div>
+            </main>
+        );
+    }
+    
     return (
         <main className="mx-auto flex max-w-2xl flex-col gap-8 px-6 pb-20">
             <div>
