@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         price_currency: 'usd',
         order_id: orderId,
         order_description: `Ticket purchase for event ${eventId}${ticketTypeName ? ` (${ticketTypeName})` : ''}`,
-        ipn_callback_url: `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/nowpayments-webhook`,
+        ipn_callback_url: `https://femvents-host.netlify.app/api/payments/nowpayments-webhook`,
         success_url: `${origin}/events/${eventId}/payment-status?crypto=success&order_id=${orderId}`,
         cancel_url: `${origin}/events/${eventId}/payment-status?crypto=cancelled`,
       }),
