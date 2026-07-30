@@ -163,7 +163,7 @@ export default function RegisterPage() {
                 .eq("id", session.user.id);
             if (profileError) throw profileError;
 
-            if (sif (selectedTicket.price > 0) {
+            if (selectedTicket.price > 0) {
                 if (!hostHasPayout) {
                     setSubmitError(
                         "This host hasn't finished setting up payment collection yet, so paid tickets aren't available right now. Please check back soon or contact the organizer."
