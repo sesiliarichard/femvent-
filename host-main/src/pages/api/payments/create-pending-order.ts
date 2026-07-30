@@ -56,7 +56,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(400).json({ error: 'Organizer has not connected this payment method' });
     }
 
-    const reference = crypto.randomUUID();
+    const reference = `FV-${provider.toUpperCase()}-${Date.now()}`;
+
+    // tickets.payment_id is a foreign key into payments — that row must exist first
+    const { data: payment, error: paymentError } = await supabaseAdmin
+      .from('payments')
+      .insert({
+        event_id: eventId,
+        user_id: userId || null,
+        amount: Math.round(amount),
+        status: 'pending',
+        payment_method: provider,
+        type: 'ticket',
+        currency: 'USD',
+        meta: { reference },
+      })
+      .select()
+      .single();
+
+    if (paymentError) throw paymentError;
 
     const { data: ticket, error: insertError } = await supabaseAdmin
       .from('tickets')
@@ -66,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         guest_name: userId ? null : guestName || null,
         guest_email: userId ? null : guestEmail || null,
         status: 'pending',
-        payment_id: reference,
+        payment_id: payment.id,
         payment_amount: amount,
         payment_method: provider,
         ticket_type: 'Standard',
@@ -82,6 +100,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       reference,
       instructions: paymentAccount.meta,
     });
+    
   } catch (error) {
     console.error('Error creating pending order:', error);
     return res.status(500).json({ error: 'Internal server error' });
