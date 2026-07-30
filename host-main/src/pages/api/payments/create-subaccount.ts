@@ -48,22 +48,29 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
     .eq('id', userId);
 
-  if (dbError) throw dbError;
+    if (dbError) throw dbError;
 
-  const { error: paymentAccountError } = await supabaseAdmin
-    .from('payment_accounts')
-    .upsert(
-      {
-        user_id: userId,
-        provider: 'flutterwave',
-        status: 'active',
-        external_account_id: data.data.subaccount_id,
-        display_label: `${businessName || accountName} — ****${accountNumber.slice(-4)}`,
-        meta: { accountBankCode, accountNumber, accountName, country },
-      },
-      { onConflict: 'user_id,provider' }
-    );
-
+    // Only one payout method can be active at a time
+    await supabaseAdmin
+      .from('payment_accounts')
+      .update({ status: 'inactive' })
+      .eq('user_id', userId)
+      .neq('provider', 'flutterwave');
+  
+    const { error: paymentAccountError } = await supabaseAdmin
+      .from('payment_accounts')
+      .upsert(
+        {
+          user_id: userId,
+          provider: 'flutterwave',
+          status: 'active',
+          external_account_id: data.data.subaccount_id,
+          display_label: `${businessName || accountName} — ****${accountNumber.slice(-4)}`,
+          meta: { accountBankCode, accountNumber, accountName, country },
+        },
+        { onConflict: 'user_id,provider' }
+      );
+      
   if (paymentAccountError) {
     console.error('Failed to record payment_accounts row:', paymentAccountError);
   }

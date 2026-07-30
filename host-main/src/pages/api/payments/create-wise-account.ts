@@ -14,6 +14,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // Only one payout method can be active at a time
+    await supabaseAdmin
+      .from('payment_accounts')
+      .update({ status: 'inactive' })
+      .eq('user_id', userId)
+      .neq('provider', 'wise');
+
     const { error } = await supabaseAdmin
       .from('payment_accounts')
       .upsert(
@@ -29,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       );
 
     if (error) throw error;
-
+    
     return res.status(200).json({ success: true });
   } catch (error) {
     console.error('Error saving Wise account:', error);

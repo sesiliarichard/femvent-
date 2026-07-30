@@ -13,6 +13,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // Only one payout method can be active at a time
+    await supabaseAdmin
+      .from('payment_accounts')
+      .update({ status: 'inactive' })
+      .eq('user_id', userId)
+      .neq('provider', 'crypto');
+
     const { error } = await supabaseAdmin
       .from('payment_accounts')
       .upsert(

@@ -16,13 +16,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     const displayLabel = `${bankName} — ****${String(accountNumber).slice(-4)}`;
 
+    // Only one payout method can be active at a time
+    await supabaseAdmin
+      .from('payment_accounts')
+      .update({ status: 'inactive' })
+      .eq('user_id', userId)
+      .neq('provider', 'manual');
+
     const { data: existing } = await supabaseAdmin
       .from('payment_accounts')
       .select('id')
       .eq('user_id', userId)
       .eq('provider', 'manual')
       .maybeSingle();
-
+      
     const { error } = await supabaseAdmin
       .from('payment_accounts')
       .upsert(
