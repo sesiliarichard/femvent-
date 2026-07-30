@@ -198,9 +198,38 @@ export default function RegisterPage() {
                     return;
                 }
 
-                // No Flutterwave — fall back to a manual/pending provider (crypto, wise, manual)
+                const hasCrypto = hostMethods.some((m) => m.provider === "crypto");
+
+                if (hasCrypto) {
+                    // Crypto — hosted NOWPayments checkout, auto-confirmed via webhook
+                    const cryptoRes = await fetch(
+                        `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-crypto-checkout`,
+                        {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                eventId: id,
+                                amount: selectedTicket.price,
+                                email: session.user.email,
+                                name: fullName,
+                                userId: session.user.id,
+                                ticketTypeName: selectedTicket.name,
+                            }),
+                        }
+                    );
+
+                    const cryptoData = await cryptoRes.json();
+                    if (!cryptoRes.ok || !cryptoData.sessionUrl) {
+                        throw new Error(cryptoData.error || "Failed to start payment");
+                    }
+
+                    window.location.href = cryptoData.sessionUrl;
+                    return;
+                }
+
+                // No Flutterwave or crypto — fall back to a manual/pending provider (wise, manual)
                 const manualMethod = hostMethods.find((m) =>
-                    ["crypto", "wise", "manual"].includes(m.provider)
+                    ["wise", "manual"].includes(m.provider)
                 );
                 if (!manualMethod) {
                     setSubmitError(
