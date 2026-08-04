@@ -12,14 +12,17 @@ interface Bank {
 
 interface PaymentAccount {
   id: string;
-  provider: 'flutterwave' | 'stripe' | 'paypal' | 'manual';
+  provider: 'flutterwave' | 'stripe' | 'paypal' | 'manual' | 'azampay' | 'wise' | 'crypto';
   status: string;
   display_label: string | null;
 }
 
 const PROVIDER_META: Record<string, { name: string; blurb: string; comingSoon?: boolean }> = {
-  flutterwave: { name: 'Flutterwave', blurb: 'Best for organizers in Africa.' },
+  azampay: { name: 'AzamPay (Mobile Money & Bank)', blurb: 'Buyers pay instantly via M-Pesa, Tigo Pesa, Airtel Money, HaloPesa, or bank transfer. Best for Tanzania & Rwanda.' },
+  crypto: { name: 'Crypto (USDT)', blurb: 'Buyers pay with cryptocurrency. Works for buyers anywhere in the world.' },
   manual: { name: 'Manual bank transfer', blurb: 'Works anywhere. Buyers pay you directly and you confirm the ticket.' },
+  wise: { name: 'Wise', blurb: 'For organizers who already use Wise to receive international transfers.' },
+  flutterwave: { name: 'Flutterwave', blurb: 'Best for organizers in Africa.', comingSoon: true },
   stripe: { name: 'Stripe', blurb: 'Best for organizers in the US, UK, EU, Canada, Australia.', comingSoon: true },
   paypal: { name: 'PayPal', blurb: 'Wide reach for receiving international payments.', comingSoon: true },
 };
@@ -28,7 +31,7 @@ export default function PaymentSettingsPage() {
   const { user } = useAuth();
   const [accounts, setAccounts] = useState<PaymentAccount[]>([]);
   const [loadingAccounts, setLoadingAccounts] = useState(true);
-  const [activeForm, setActiveForm] = useState<'flutterwave' | 'manual' | null>(null);
+  const [activeForm, setActiveForm] = useState<'flutterwave' | 'manual' | 'azampay' | 'wise' | 'crypto' | null>(null);
 
   const loadAccounts = async () => {
     if (!user?.id) return;
@@ -85,7 +88,7 @@ export default function PaymentSettingsPage() {
                     </span>
                   ) : (
                     <button
-                      onClick={() => setActiveForm(isOpen ? null : (provider as 'flutterwave' | 'manual'))}
+                    onClick={() => setActiveForm(isOpen ? null : (provider as 'flutterwave' | 'manual' | 'azampay' | 'wise' | 'crypto'))}
                       style={{
                         fontSize: 14,
                         fontWeight: 600,
@@ -107,6 +110,15 @@ export default function PaymentSettingsPage() {
                 )}
                 {isOpen && provider === 'manual' && (
                   <ManualForm userId={user?.id} onConnected={() => { setActiveForm(null); loadAccounts(); }} />
+                )}
+               {isOpen && provider === 'azampay' && (
+                  <AzamPayForm userId={user?.id} onConnected={() => { setActiveForm(null); loadAccounts(); }} />
+                )}
+                {isOpen && provider === 'wise' && (
+                  <WiseForm userId={user?.id} onConnected={() => { setActiveForm(null); loadAccounts(); }} />
+                )}
+                {isOpen && provider === 'crypto' && (
+                  <CryptoForm userId={user?.id} onConnected={() => { setActiveForm(null); loadAccounts(); }} />
                 )}
               </div>
             );
@@ -191,7 +203,7 @@ function ManualForm({ userId, onConnected }: { userId?: string; onConnected: () 
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch('/api/payments/create-manual-account', {
+      const res = await fetch('/api/payments/create-manual-payout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, bankName, accountNumber, accountName, instructions }),
@@ -216,6 +228,127 @@ function ManualForm({ userId, onConnected }: { userId?: string; onConnected: () 
       {error && <p style={{ color: '#b91c1c', fontSize: 13 }}>{error}</p>}
       <button type="submit" disabled={submitting} style={submitButtonStyle}>
         {submitting ? 'Saving...' : 'Save bank details'}
+      </button>
+    </form>
+  );
+}
+
+function AzamPayForm({ userId, onConnected }: { userId?: string; onConnected: () => void }) {
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleEnable = async () => {
+    if (!userId) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/payments/create-azampay-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, enabled: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to enable');
+        return;
+      }
+      onConnected();
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <p style={{ fontSize: 13, color: '#666' }}>
+        No account details needed — payments go through our platform, and payouts are
+        settled to you separately.
+      </p>
+      {error && <p style={{ color: '#b91c1c', fontSize: 13 }}>{error}</p>}
+      <button onClick={handleEnable} disabled={submitting} style={submitButtonStyle}>
+        {submitting ? 'Enabling...' : 'Enable AzamPay'}
+      </button>
+    </div>
+  );
+}
+
+function WiseForm({ userId, onConnected }: { userId?: string; onConnected: () => void }) {
+  const [wiseEmail, setWiseEmail] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userId) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/payments/create-wise-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, wiseEmail }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to connect');
+        return;
+      }
+      onConnected();
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <input required type="email" placeholder="Your Wise account email" value={wiseEmail} onChange={(e) => setWiseEmail(e.target.value)} style={inputStyle} />
+      {error && <p style={{ color: '#b91c1c', fontSize: 13 }}>{error}</p>}
+      <button type="submit" disabled={submitting} style={submitButtonStyle}>
+        {submitting ? 'Connecting...' : 'Connect Wise'}
+      </button>
+    </form>
+  );
+}
+
+function CryptoForm({ userId, onConnected }: { userId?: string; onConnected: () => void }) {
+  const [cryptoAddress, setCryptoAddress] = useState('');
+  const [cryptoNetwork, setCryptoNetwork] = useState('USDT-TRC20');
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!userId) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/payments/create-crypto-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, cryptoAddress, cryptoNetwork }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to connect');
+        return;
+      }
+      onConnected();
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <select value={cryptoNetwork} onChange={(e) => setCryptoNetwork(e.target.value)} style={inputStyle}>
+        <option value="USDT-TRC20">USDT (TRC-20)</option>
+        <option value="USDT-ERC20">USDT (ERC-20)</option>
+        <option value="BTC">Bitcoin</option>
+      </select>
+      <input required placeholder="Wallet address" value={cryptoAddress} onChange={(e) => setCryptoAddress(e.target.value)} style={inputStyle} />
+      {error && <p style={{ color: '#b91c1c', fontSize: 13 }}>{error}</p>}
+      <button type="submit" disabled={submitting} style={submitButtonStyle}>
+        {submitting ? 'Connecting...' : 'Connect Wallet'}
       </button>
     </form>
   );

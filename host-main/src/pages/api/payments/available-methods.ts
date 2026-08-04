@@ -45,15 +45,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       provider: a.provider,
       label: a.display_label,
       instructions:
-        a.provider === 'manual'
-          ? { bankName: a.meta?.bankName, accountNumber: a.meta?.accountNumber, accountName: a.meta?.accountName, notes: a.meta?.instructions }
-          : a.provider === 'wise'
-          ? { wiseEmail: a.meta?.wiseEmail }
-          : a.provider === 'crypto'
-          ? { address: a.meta?.cryptoAddress, network: a.meta?.cryptoNetwork }
-          : a.provider === 'paypal'
-          ? { paypalEmail: a.meta?.paypalEmail }
-          : null,
+      a.provider === 'manual'
+        ? { bankName: a.meta?.bankName, accountNumber: a.meta?.accountNumber, accountName: a.meta?.accountName, notes: a.meta?.instructions }
+        : a.provider === 'wise'
+        ? { wiseEmail: a.meta?.wiseEmail }
+        : a.provider === 'crypto'
+        ? { address: a.meta?.cryptoAddress, network: a.meta?.cryptoNetwork }
+        : a.provider === 'paypal'
+        ? { paypalEmail: a.meta?.paypalEmail }
+        : a.provider === 'azampay'
+        ? {}
+        : null,
     }));
 
     return res.status(200).json({ methods });

@@ -18,10 +18,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Only one payout method can be active at a time
     await supabaseAdmin
-      .from('payment_accounts')
-      .update({ status: 'inactive' })
-      .eq('user_id', userId)
-      .neq('provider', 'manual');
+    .from('payment_accounts')
+    .update({ status: 'inactive' })
+    .eq('user_id', userId)
+    .in('provider', ['flutterwave', 'wise', 'crypto']);
 
     const { data: existing } = await supabaseAdmin
       .from('payment_accounts')
