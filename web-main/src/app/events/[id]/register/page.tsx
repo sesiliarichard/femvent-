@@ -52,7 +52,7 @@ export default function RegisterPage() {
     const [submitError, setSubmitError] = useState("");
     const [success, setSuccess] = useState(false);
     const [pendingOrder, setPendingOrder] = useState<{ reference: string; instructions: any; provider: string } | null>(null);
-    const [showAzamPayForm, setShowAzamPayForm] = useState(false);
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string | null>(null);
     const [azamPhone, setAzamPhone] = useState("");
     const [azamProvider, setAzamProvider] = useState("Mpesa");
     const [azamStatus, setAzamStatus] = useState<string | null>(null);
@@ -176,9 +176,19 @@ export default function RegisterPage() {
                     return;
                 }
 
-                const hasFlutterwave = hostMethods.some((m) => m.provider === "flutterwave");
+                if (!selectedPaymentMethod) {
+                    setSubmitError("Please choose a payment method.");
+                    setSubmitting(false);
+                    return;
+                }
 
-                if (hasFlutterwave) {
+                if (selectedPaymentMethod === "azampay") {
+                    // AzamPay has its own dedicated form/button below — nothing to do here
+                    setSubmitting(false);
+                    return;
+                }
+
+                if (selectedPaymentMethod === "flutterwave") {
                     // Paid tier — send to Flutterwave, ticket gets created by the webhook after payment
                     const res = await fetch("/api/payments/create-checkout", {
                         method: "POST",
@@ -202,9 +212,7 @@ export default function RegisterPage() {
                     return;
                 }
 
-                const hasCrypto = hostMethods.some((m) => m.provider === "crypto");
-
-                if (hasCrypto) {
+                if (selectedPaymentMethod === "crypto") {
                     // Crypto — hosted NOWPayments checkout, auto-confirmed via webhook
                     const cryptoRes = await fetch(
                         `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-crypto-checkout`,
@@ -231,44 +239,34 @@ export default function RegisterPage() {
                     return;
                 }
 
-                // No Flutterwave or crypto — fall back to a manual/pending provider (wise, manual)
-                const manualMethod = hostMethods.find((m) =>
-                    ["wise", "manual"].includes(m.provider)
-                );
-                if (!manualMethod) {
-                    setSubmitError(
-                        "This host hasn't finished setting up payment collection yet, so paid tickets aren't available right now. Please check back soon or contact the organizer."
+                if (["wise", "manual"].includes(selectedPaymentMethod)) {
+                    const pendingRes = await fetch(
+                        `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-pending-order`,
+                        {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                eventId: id,
+                                provider: selectedPaymentMethod,
+                                amount: selectedTicket.price,
+                                userId: session.user.id,
+                            }),
+                        }
                     );
+
+                    const pendingData = await pendingRes.json();
+                    if (!pendingRes.ok) {
+                        throw new Error(pendingData.error || "Failed to start payment");
+                    }
+
+                    setPendingOrder({
+                        reference: pendingData.reference,
+                        instructions: pendingData.instructions,
+                        provider: selectedPaymentMethod,
+                    });
                     setSubmitting(false);
                     return;
                 }
-
-                const pendingRes = await fetch(
-                    `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-pending-order`,
-                    {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            eventId: id,
-                            provider: manualMethod.provider,
-                            amount: selectedTicket.price,
-                            userId: session.user.id,
-                        }),
-                    }
-                );
-
-                const pendingData = await pendingRes.json();
-                if (!pendingRes.ok) {
-                    throw new Error(pendingData.error || "Failed to start payment");
-                }
-
-                setPendingOrder({
-                    reference: pendingData.reference,
-                    instructions: pendingData.instructions,
-                    provider: manualMethod.provider,
-                });
-                setSubmitting(false);
-                return;
             }
 
             // Free tier — create the ticket immediately, no payment needed
@@ -572,16 +570,42 @@ export default function RegisterPage() {
                             ))}
                         </div>
                     </div>
-                    {selectedTicket.price > 0 && hostMethods.some((m) => m.provider === "azampay") && (
+                    {selectedTicket.price > 0 && hostMethods.length > 0 && (
                         <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
-                            <button
-                                type="button"
-                                onClick={() => setShowAzamPayForm((v) => !v)}
-                                className="text-sm font-semibold text-rose-500"
-                            >
-                                {showAzamPayForm ? "Hide mobile money option" : "Pay with Mobile Money (Tanzania/Rwanda)"}
-                            </button>
-                            {showAzamPayForm && (
+                            <h2 className="mb-4 text-lg font-semibold text-gray-900">Payment Method</h2>
+                            <div className="flex flex-col gap-2">
+                                {hostMethods.map((m) => {
+                                    const labels: Record<string, string> = {
+                                        flutterwave: "Card / Flutterwave",
+                                        crypto: "Crypto (USDT)",
+                                        azampay: "Mobile Money (AzamPay)",
+                                        wise: "Wise Transfer",
+                                        manual: "Bank Transfer",
+                                    };
+                                    return (
+                                        <label
+                                            key={m.provider}
+                                            className={`flex cursor-pointer items-center gap-3 rounded-xl border-2 p-4 transition-colors ${
+                                                selectedPaymentMethod === m.provider
+                                                    ? "border-rose-400 bg-rose-50"
+                                                    : "border-gray-200 hover:border-gray-300"
+                                            }`}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="paymentMethod"
+                                                checked={selectedPaymentMethod === m.provider}
+                                                onChange={() => setSelectedPaymentMethod(m.provider)}
+                                            />
+                                            <span className="text-sm font-semibold text-gray-900">
+                                                {labels[m.provider] || m.provider}
+                                            </span>
+                                        </label>
+                                    );
+                                })}
+                            </div>
+
+                            {selectedPaymentMethod === "azampay" && (
                                 <div className="mt-4 flex flex-col gap-3">
                                     <select
                                         value={azamProvider}
@@ -623,13 +647,15 @@ export default function RegisterPage() {
                         </p>
                     )}
                     
-                    <button
-                        type="submit"
-                        disabled={submitting}
-                        className="rounded-full bg-gradient-to-r from-rose-500 to-pink-500 px-6 py-4 text-sm font-semibold text-white shadow-lg disabled:opacity-60"
-                    >
-                        {submitting ? "Processing..." : "Complete Registration"}
-                    </button>
+                    {selectedPaymentMethod !== "azampay" && (
+                        <button
+                            type="submit"
+                            disabled={submitting}
+                            className="rounded-full bg-gradient-to-r from-rose-500 to-pink-500 px-6 py-4 text-sm font-semibold text-white shadow-lg disabled:opacity-60"
+                        >
+                            {submitting ? "Processing..." : "Complete Registration"}
+                        </button>
+                    )}
                 </form>
             )}
         </main>
