@@ -47,7 +47,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
   const [loadingBanks, setLoadingBanks] = useState(false);
   const [savingPayout, setSavingPayout] = useState(false);
   const [payoutStatus, setPayoutStatus] = useState<string | null>(null);
-  const [payoutMethod, setPayoutMethod] = useState<'flutterwave' | 'wise' | 'crypto' | 'manual'>('flutterwave');
+  const [payoutMethod, setPayoutMethod] = useState<'flutterwave' | 'wise' | 'crypto' | 'manual' | 'azampay'>('flutterwave');
   const [wiseEmail, setWiseEmail] = useState('');
   const [cryptoAddress, setCryptoAddress] = useState('');
   const [cryptoNetwork, setCryptoNetwork] = useState('USDT-TRC20');
@@ -196,6 +196,15 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to save wallet address');
         setPayoutStatus('Wallet connected! You\'ll now receive ticket payments in crypto.');
+      } else if (payoutMethod === 'azampay') {
+        const res = await fetch('/api/payments/create-azampay-account', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: userProfile.id, enabled: true }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to enable AzamPay');
+        setPayoutStatus('AzamPay enabled! Buyers can now pay via mobile money or bank transfer.');
       } else {
         if (!payoutData.bankCode || !payoutData.accountNumber || !payoutData.accountName) {
           setPayoutStatus('Please fill in all payout fields.');
@@ -877,7 +886,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                             type="button"
                             onClick={() => {
                               if (['manual', 'wise', 'crypto', 'flutterwave'].includes(acc.provider)) {
-                                setPayoutMethod(acc.provider as 'manual' | 'wise' | 'crypto' | 'flutterwave');
+                                setPayoutMethod(acc.provider as 'manual' | 'wise' | 'crypto' | 'flutterwave' | 'azampay');
                               }
                             }}
                             className="px-4 py-2 rounded-xl bg-white border-2 border-pink-300 text-purple-700 text-sm font-bold hover:bg-pink-100 transition-all duration-300"
@@ -948,13 +957,23 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                   >
                     🏦 Bank Wire
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => setPayoutMethod('azampay')}
+                    className={`px-4 py-4 rounded-2xl font-bold text-sm transition-all duration-300 ${
+                      payoutMethod === 'azampay'
+                        ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-lg'
+                        : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
+                    }`}
+                  >
+                    📱 AzamPay
+                  </button>
                 </div>
 
                 <div className="mt-4">
                   <p className="text-xs font-black text-purple-400 uppercase tracking-wide mb-3">Coming Soon</p>
                   <div className="grid grid-cols-3 gap-3">
                     {[
-                      { icon: '📱', label: 'AzamPay' },
                       { icon: '💰', label: 'PayPal' },
                       { icon: '💳', label: 'Stripe' },
                     ].map((p) => (
@@ -1099,6 +1118,20 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                   </div>
                   <p className="md:col-span-2 text-sm text-amber-700 font-semibold bg-amber-50 border-2 border-amber-200 rounded-2xl p-4">
                     ⚠️ Double-check this address carefully — crypto transfers to a wrong or wrong-network address cannot be reversed or recovered.
+                  </p>
+                </div>
+              )}
+
+{payoutMethod === 'azampay' && (
+                <div className="p-6 bg-pink-50/50 border-2 border-pink-200 rounded-2xl space-y-4">
+                  <div>
+                    <p className="text-sm font-black text-purple-900 uppercase tracking-wide mb-1">AzamPay</p>
+                    <p className="text-sm text-purple-600 font-medium">
+                      Buyers pay instantly via M-Pesa, Tigo Pesa, Airtel Money, HaloPesa, or bank transfer — best for Tanzania and Rwanda.
+                    </p>
+                  </div>
+                  <p className="text-sm text-purple-500 font-medium">
+                    No account details needed here — payments are processed through FemVents' platform account, and your revenue is settled to you separately.
                   </p>
                 </div>
               )}
