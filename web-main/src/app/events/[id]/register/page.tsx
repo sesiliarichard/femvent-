@@ -572,8 +572,7 @@ export default function RegisterPage() {
                             ))}
                         </div>
                     </div>
-
-{selectedTicket.price > 0 && (
+                    {selectedTicket.price > 0 && hostMethods.some((m) => m.provider === "azampay") && (
                         <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
                             <button
                                 type="button"
