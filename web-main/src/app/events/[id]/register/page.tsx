@@ -398,6 +398,21 @@ export default function RegisterPage() {
                             <p><strong>Network:</strong> {pendingOrder.instructions?.cryptoNetwork}</p>
                         </div>
                     )}
+                    {pendingOrder.provider === "manual" && (
+                        <div className="mt-4 rounded-xl bg-gray-50 p-4 text-sm space-y-1">
+                            <p><strong>Bank Name:</strong> {pendingOrder.instructions?.bankName}</p>
+                            <p><strong>Account Number:</strong> {pendingOrder.instructions?.accountNumber}</p>
+                            <p><strong>Account Name:</strong> {pendingOrder.instructions?.accountName}</p>
+                            {pendingOrder.instructions?.instructions && (
+                                <p><strong>Notes:</strong> {pendingOrder.instructions.instructions}</p>
+                            )}
+                        </div>
+                    )}
+                    {pendingOrder.provider === "wise" && (
+                        <div className="mt-4 rounded-xl bg-gray-50 p-4 text-sm space-y-1">
+                            <p><strong>Wise Account Email:</strong> {pendingOrder.instructions?.wiseEmail}</p>
+                        </div>
+                    )}
                     <p className="mt-4 text-sm font-semibold text-gray-900">
                         Reference: {pendingOrder.reference}
                     </p>
