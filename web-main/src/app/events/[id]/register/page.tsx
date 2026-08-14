@@ -239,6 +239,32 @@ export default function RegisterPage() {
                     return;
                 }
 
+                if (selectedPaymentMethod === "pesapal") {
+                    const pesapalRes = await fetch(
+                        `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-pesapal-checkout`,
+                        {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                eventId: id,
+                                amount: selectedTicket.price,
+                                email: session.user.email,
+                                name: fullName,
+                                userId: session.user.id,
+                                ticketTypeName: selectedTicket.name,
+                            }),
+                        }
+                    );
+
+                    const pesapalData = await pesapalRes.json();
+                    if (!pesapalRes.ok || !pesapalData.sessionUrl) {
+                        throw new Error(pesapalData.error || "Failed to start payment");
+                    }
+
+                    window.location.href = pesapalData.sessionUrl;
+                    return;
+                }
+
                 if (["wise", "manual"].includes(selectedPaymentMethod)) {
                     const pendingRes = await fetch(
                         `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-pending-order`,
@@ -590,13 +616,14 @@ export default function RegisterPage() {
                             <h2 className="mb-4 text-lg font-semibold text-gray-900">Payment Method</h2>
                             <div className="flex flex-col gap-2">
                                 {hostMethods.map((m) => {
-                                    const labels: Record<string, string> = {
-                                        flutterwave: "Card / Flutterwave",
-                                        crypto: "Crypto (USDT)",
-                                        azampay: "Mobile Money (AzamPay)",
-                                        wise: "Wise Transfer",
-                                        manual: "Bank Transfer",
-                                    };
+                                  const labels: Record<string, string> = {
+                                    flutterwave: "Card / Flutterwave",
+                                    crypto: "Crypto (USDT)",
+                                    azampay: "Mobile Money (AzamPay)",
+                                    pesapal: "Card / Mobile Money (Pesapal)",
+                                    wise: "Wise Transfer",
+                                    manual: "Bank Transfer",
+                                };
                                     return (
                                         <label
                                             key={m.provider}
