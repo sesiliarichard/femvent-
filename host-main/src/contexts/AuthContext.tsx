@@ -4,12 +4,18 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
 import type { User } from '@supabase/supabase-js';
+interface SignUpOptions {
+  role?: 'attendee' | 'host';
+  organizationName?: string;
+  businessEmail?: string;
+}
+
 interface AuthContextType {
   user: User | null;
   userProfile: any;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, name?: string) => Promise<void>;
+  signUp: (email: string, password: string, name?: string, options?: SignUpOptions) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -128,30 +134,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signUp = async (email: string, password: string, name?: string) => {
+  const signUp = async (email: string, password: string, name?: string, options?: SignUpOptions) => {
     try {
-      logger.logAuthEvent('sign_up_attempt', { email });
+      const role = options?.role ?? 'attendee';
+      const organizationName = options?.organizationName ?? null;
+      const businessEmail = options?.businessEmail ?? email;
+
+      logger.logAuthEvent('sign_up_attempt', { email, role });
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
       if (!data.user) throw new Error('Signup did not return a user');
 
-      // Create user profile row
       const { error: profileError } = await supabase.from('users').insert({
         id: data.user.id,
         name: name || email.split('@')[0],
-        email: email,
-        role: 'attendee',
+        email,
+        role,
         status: 'active',
+        organization_name: organizationName,
+        business_email: businessEmail,
       });
       if (profileError) throw profileError;
 
-      logger.logAuthEvent('sign_up_success', { email, userId: data.user.id });
+      logger.logAuthEvent('sign_up_success', { email, userId: data.user.id, role });
     } catch (error: any) {
-      logger.error('Sign up failed', { 
-        context: 'AuthContext', 
-        operation: 'signUp', 
+      logger.error('Sign up failed', {
+        context: 'AuthContext',
+        operation: 'signUp',
         metadata: { email },
-        error: error 
+        error: error,
       });
       throw new Error(error.message);
     }

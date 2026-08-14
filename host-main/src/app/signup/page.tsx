@@ -1,223 +1,165 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { FormEvent, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/contexts/AuthContext';
-import Link from 'next/link';
+import { validateBusinessEmail } from '@/lib/validators/businessEmail';
 
-// Impressive event images for slideshow
-const slideshowImages = [
-  '/slideshow/event1.jpg',
-  '/slideshow/event2.jpg',
-  '/slideshow/event3.jpg',
-  '/slideshow/event4.jpg',
-  '/slideshow/event5.jpg',
-];
+const initialForm = {
+  fullName: '',
+  organizationName: '',
+  businessEmail: '',
+  password: '',
+  confirmPassword: '',
+};
 
-export default function SignupPage() {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  
-  // Validation states
-  const [nameError, setNameError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [passwordError, setPasswordError] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
-  
-  const { signUp, signInWithGoogle } = useAuth();
+export default function HostOrganizerSignupPage() {
   const router = useRouter();
+  const [form, setForm] = useState(initialForm);
+  const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
-  // Auto-rotate slideshow every 5 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % slideshowImages.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Validation functions
-  const validateEmail = (email: string) => {
-    if (!email) {
-      setEmailError('');
-      return true;
-    }
-    
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setEmailError('Please enter a valid email address');
-      return false;
-    }
-
-    setEmailError('');
-    return true;
+  const updateField = (field: keyof typeof initialForm, value: string) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+    setFieldErrors((prev) => ({ ...prev, [field]: '' }));
+    setError('');
   };
 
-  const validateName = (name: string) => {
-    if (!name) {
-      setNameError('');
-      return true;
-    }
-
-    if (name.length < 2) {
-      setNameError('Name must be at least 2 characters');
-      return false;
-    }
-
-    setNameError('');
-    return true;
-  };
-
-  const validatePasswordStrength = () => {
-    if (!password) {
-      setPasswordError('');
-      return true;
-    }
-    
-    if (password.length < 6) {
-      setPasswordError('Password must be at least 6 characters');
-      return false;
-    } else {
-      setPasswordError('');
-      return true;
-    }
-  };
-
-  const validatePasswordMatch = () => {
-    if (!confirmPassword) {
-      setConfirmPasswordError('');
-      return true;
-    }
-    
-    if (password !== confirmPassword) {
-      setConfirmPasswordError('Passwords do not match');
-      return false;
-    } else {
-      setConfirmPasswordError('');
-      return true;
-    }
-  };
-
-  const handleEmailChange = (text: string) => {
-    setEmail(text);
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (text && !emailRegex.test(text)) {
-      setEmailError('Please enter a valid email address');
-    } else {
-      setEmailError('');
-    }
-  };
-
-  const handleNameChange = (text: string) => {
-    setName(text);
-    if (text && text.length < 2) {
-      setNameError('Name must be at least 2 characters');
-    } else {
-      setNameError('');
-    }
-  };
-
-  const handlePasswordChange = (text: string) => {
-    setPassword(text);
-    if (text && text.length < 6) {
-      setPasswordError('Password must be at least 6 characters');
-    } else {
-      setPasswordError('');
-    }
-  };
-
-  const handleConfirmPasswordChange = (text: string) => {
-    setConfirmPassword(text);
-    if (text && password && text !== password) {
-      setConfirmPasswordError('Passwords do not match');
-    } else {
-      setConfirmPasswordError('');
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     setError('');
 
-    // Check if all fields are filled
-    if (!name || !email || !password || !confirmPassword) {
-      setError('Please fill in all fields');
+    const nextErrors: Record<string, string> = {};
+
+    if (!form.fullName.trim()) {
+      nextErrors.fullName = 'Full name is required.';
+    }
+
+    if (!form.organizationName.trim()) {
+      nextErrors.organizationName = 'Organization name is required.';
+    }
+
+    const businessEmailError = validateBusinessEmail(form.businessEmail);
+    if (businessEmailError) {
+      nextErrors.businessEmail = businessEmailError;
+    }
+
+    if (!form.password) {
+      nextErrors.password = 'Password is required.';
+    } else if (form.password.length < 8) {
+      nextErrors.password = 'Password must be at least 8 characters.';
+    }
+
+    if (!form.confirmPassword) {
+      nextErrors.confirmPassword = 'Please confirm your password.';
+    } else if (form.confirmPassword !== form.password) {
+      nextErrors.confirmPassword = 'Passwords do not match.';
+    }
+
+    if (Object.keys(nextErrors).length > 0) {
+      setFieldErrors(nextErrors);
       return;
     }
 
-    // Validate all fields
-    const isEmailValid = validateEmail(email);
-    const isNameValid = validateName(name);
-    const isPasswordValid = validatePasswordStrength();
-    const isConfirmPasswordValid = validatePasswordMatch();
+    const params = new URLSearchParams({
+      fullName: form.fullName.trim(),
+      organizationName: form.organizationName.trim(),
+      businessEmail: form.businessEmail.trim(),
+      email: form.businessEmail.trim(),
+      password: form.password,
+    });
 
-    if (!isEmailValid || !isNameValid || !isPasswordValid || !isConfirmPasswordValid) {
-      setError('Please fix the errors above before creating your account');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      await signUp(email, password, name);
-      router.push('/dashboard');
-    } catch (error: any) {
-      setError(error.message || 'An error occurred during signup');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    setError('');
-
-    try {
-      await signInWithGoogle();
-      router.push('/dashboard');
-    } catch (error: any) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
+    router.push(`/signup/plan?${params.toString()}`);
   };
 
   return (
-    <div className="min-h-screen flex">
-      {/* Left Side - Image Slideshow */}
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        {/* Slideshow Images */}
-        {slideshowImages.map((image, index) => (
-          <div
-            key={index}
-            className="absolute inset-0 transition-opacity duration-1000 ease-in-out"
-            style={{
-              opacity: index === currentImageIndex ? 1 : 0,
-              backgroundImage: `url(${image})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-            }}
-          />
-        ))}
-        
-        {/* Dark overlay for better text visibility */}
-        <div className="absolute inset-0 bg-gradient-to-br from-primary-900/80 via-secondary-900/70 to-accent-900/60" />
-        
-        {/* Content overlay */}
-        <div className="relative z-10 flex flex-col items-center justify-center w-full p-12 text-white">
-          <h1 className="text-5xl font-bold mb-4 text-center drop-shadow-lg">FemVents</h1>
-          <p className="text-2xl text-white/95 mb-8 text-center drop-shadow-md">Join Our Community</p>
-          <p className="text-lg text-white/90 text-center max-w-md drop-shadow-md">
-            Create amazing events and build your community. Start your journey as a host today.
-          </p>
-          
-          {/* Slideshow indicators */}
-          <div className="flex gap-2 mt-12">
+    <main className="min-h-screen bg-slate-950 px-4 py-12 text-slate-900">
+      <div className="mx-auto max-w-5xl overflow-hidden rounded-[32px] bg-white shadow-2xl shadow-slate-900/30">
+        <div className="grid gap-0 md:grid-cols-2">
+          <div className="bg-gradient-to-br from-rose-600 via-pink-600 to-orange-500 p-10 text-white">
+            <p className="text-sm font-semibold uppercase tracking-[0.35em] text-rose-100">Host onboarding</p>
+            <h1 className="mt-6 text-4xl font-black tracking-tight">Create your organizer account</h1>
+            <p className="mt-4 max-w-md text-base text-rose-100/90">
+              Set up your organization details and choose the plan that matches your event goals.
+            </p>
+          </div>
+
+          <div className="p-8 sm:p-10">
+            <form className="space-y-5" onSubmit={onSubmit}>
+              <div>
+                <label className="block text-sm font-medium text-slate-700">Full name</label>
+                <input
+                  value={form.fullName}
+                  onChange={(event) => updateField('fullName', event.target.value)}
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none ring-0 transition focus:border-rose-400 focus:bg-white"
+                  placeholder="Alicia Mwangi"
+                />
+                {fieldErrors.fullName ? <p className="mt-1 text-xs text-rose-600">{fieldErrors.fullName}</p> : null}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700">Organization name</label>
+                <input
+                  value={form.organizationName}
+                  onChange={(event) => updateField('organizationName', event.target.value)}
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none ring-0 transition focus:border-rose-400 focus:bg-white"
+                  placeholder="Lumo Events"
+                />
+                {fieldErrors.organizationName ? <p className="mt-1 text-xs text-rose-600">{fieldErrors.organizationName}</p> : null}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700">Business email</label>
+                <input
+                  type="email"
+                  value={form.businessEmail}
+                  onChange={(event) => updateField('businessEmail', event.target.value)}
+                  className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none ring-0 transition focus:border-rose-400 focus:bg-white"
+                  placeholder="hello@lumoevents.com"
+                />
+                {fieldErrors.businessEmail ? <p className="mt-1 text-xs text-rose-600">{fieldErrors.businessEmail}</p> : null}
+              </div>
+
+              <div className="grid gap-5 sm:grid-cols-2">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">Password</label>
+                  <input
+                    type="password"
+                    value={form.password}
+                    onChange={(event) => updateField('password', event.target.value)}
+                    className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none ring-0 transition focus:border-rose-400 focus:bg-white"
+                    placeholder="••••••••"
+                  />
+                  {fieldErrors.password ? <p className="mt-1 text-xs text-rose-600">{fieldErrors.password}</p> : null}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700">Confirm password</label>
+                  <input
+                    type="password"
+                    value={form.confirmPassword}
+                    onChange={(event) => updateField('confirmPassword', event.target.value)}
+                    className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm outline-none ring-0 transition focus:border-rose-400 focus:bg-white"
+                    placeholder="••••••••"
+                  />
+                  {fieldErrors.confirmPassword ? <p className="mt-1 text-xs text-rose-600">{fieldErrors.confirmPassword}</p> : null}
+                </div>
+              </div>
+
+              {error ? <p className="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm text-rose-700">{error}</p> : null}
+
+              <button
+                type="submit"
+                className="w-full rounded-full bg-gradient-to-r from-rose-600 to-orange-500 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-600/25 transition hover:-translate-y-0.5"
+              >
+                Continue to plan selection
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  );
+}
             {slideshowImages.map((_, index) => (
               <button
                 key={index}
