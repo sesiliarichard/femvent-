@@ -112,8 +112,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       externalId,
       message: checkoutData.message || 'Check your phone to approve the payment',
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating AzamPay checkout:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: error?.message || String(error) });
   }
 }
