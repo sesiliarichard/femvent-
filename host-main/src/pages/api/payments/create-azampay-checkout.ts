@@ -78,15 +78,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const checkoutRawText = await checkoutRes.text();
     console.log('AzamPay checkout raw response:', checkoutRes.status, checkoutRawText);
 
-    let checkoutData: any;
-    try {
-      checkoutData = JSON.parse(checkoutRawText);
-    } catch {
-      return res.status(502).json({ error: `AzamPay checkout endpoint returned non-JSON (status ${checkoutRes.status}): ${checkoutRawText.slice(0, 300)}` });
+    let checkoutData: any = {};
+    if (checkoutRawText.trim().length > 0) {
+      try {
+        checkoutData = JSON.parse(checkoutRawText);
+      } catch {
+        return res.status(502).json({ error: `AzamPay checkout endpoint returned non-JSON (status ${checkoutRes.status}): ${checkoutRawText.slice(0, 300)}` });
+      }
     }
 
-    if (!checkoutData.success) {
-      console.error('AzamPay MNO checkout failed:', checkoutData);
+    // AzamPay sandbox sometimes returns 200 with an empty body when the push was accepted
+    const checkoutAccepted = checkoutRes.ok && (checkoutRawText.trim().length === 0 || checkoutData.success !== false);
+
+    if (!checkoutAccepted) {
+      console.error('AzamPay MNO checkout failed:', checkoutRes.status, checkoutData);
       return res.status(502).json({ error: checkoutData.message || 'Failed to initiate mobile money payment' });
     }
 
