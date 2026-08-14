@@ -36,10 +36,10 @@ export default function SignupPlanPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const fullName = searchParams.get('fullName') || '';
-  const organizationName = searchParams.get('organizationName') || '';
-  const businessEmail = searchParams.get('businessEmail') || '';
-  const email = searchParams.get('email') || businessEmail;
+  const fullName = searchParams?.get('fullName') || '';
+  const organizationName = searchParams?.get('organizationName') || '';
+  const businessEmail = searchParams?.get('businessEmail') || '';
+  const email = searchParams?.get('email') || businessEmail;
   const password = searchParams.get('password') || '';
 
   const handleSubmit = async () => {
