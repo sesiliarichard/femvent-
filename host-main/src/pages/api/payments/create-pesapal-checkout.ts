@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // Step 1: get an auth token
     const authRes = await fetch(`${PESAPAL_BASE}/api/Auth/RequestToken`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
         consumer_key: process.env.PESAPAL_CONSUMER_KEY,
         consumer_secret: process.env.PESAPAL_CONSUMER_SECRET,
@@ -53,6 +53,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({

@@ -264,7 +264,6 @@ export default function RegisterPage() {
                     window.location.href = pesapalData.sessionUrl;
                     return;
                 }
-
                 if (["wise", "manual"].includes(selectedPaymentMethod)) {
                     const pendingRes = await fetch(
                         `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-pending-order`,
