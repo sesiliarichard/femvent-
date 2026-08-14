@@ -40,7 +40,7 @@ export default function SignupPlanPage() {
   const organizationName = searchParams?.get('organizationName') || '';
   const businessEmail = searchParams?.get('businessEmail') || '';
   const email = searchParams?.get('email') || businessEmail;
-  const password = searchParams.get('password') || '';
+  const password = searchParams?.get('password') || '';
 
   const handleSubmit = async () => {
     if (!fullName || !email || !password) {
