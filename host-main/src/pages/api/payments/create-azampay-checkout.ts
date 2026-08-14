@@ -38,9 +38,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }),
     });
 
-    const tokenData = await tokenRes.json();
-    const accessToken = tokenData?.data?.accessToken;
+    const tokenRawText = await tokenRes.text();
+    console.log('AzamPay token raw response:', tokenRes.status, tokenRawText);
 
+    let tokenData: any;
+    try {
+      tokenData = JSON.parse(tokenRawText);
+    } catch {
+      return res.status(502).json({ error: `AzamPay token endpoint returned non-JSON (status ${tokenRes.status}): ${tokenRawText.slice(0, 300)}` });
+    }
+
+    const accessToken = tokenData?.data?.accessToken;
     if (!accessToken) {
       console.error('AzamPay token generation failed:', tokenData);
       return res.status(502).json({ error: 'Failed to authenticate with AzamPay' });
@@ -67,7 +75,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }),
     });
 
-    const checkoutData = await checkoutRes.json();
+    const checkoutRawText = await checkoutRes.text();
+    console.log('AzamPay checkout raw response:', checkoutRes.status, checkoutRawText);
+
+    let checkoutData: any;
+    try {
+      checkoutData = JSON.parse(checkoutRawText);
+    } catch {
+      return res.status(502).json({ error: `AzamPay checkout endpoint returned non-JSON (status ${checkoutRes.status}): ${checkoutRawText.slice(0, 300)}` });
+    }
 
     if (!checkoutData.success) {
       console.error('AzamPay MNO checkout failed:', checkoutData);
