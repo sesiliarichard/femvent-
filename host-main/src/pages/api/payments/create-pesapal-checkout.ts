@@ -50,7 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const token = authData?.token;
     if (!token) {
       console.error('Pesapal auth failed:', authData);
-      return res.status(502).json({ error: 'Failed to authenticate with Pesapal' });
+      return res.status(502).json({ error: `Pesapal auth failed (status ${authRes.status}): ${JSON.stringify(authData).slice(0, 500)}` });
     }
 
     const orderId = `femvents-${eventId}-${Date.now()}`;
