@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 const ALLOWED_ORIGIN = 'https://femvents.netlify.app';
-const PESAPAL_BASE = 'https://cybqa.pesapal.com/pesapalv3';
+const PESAPAL_BASE = 'https://pay.pesapal.com/v3';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
@@ -32,8 +32,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
-        consumer_key: process.env.PESAPAL_CONSUMER_KEY,
-        consumer_secret: process.env.PESAPAL_CONSUMER_SECRET,
+        consumer_key: process.env.PESAPAL_LIVE_CONSUMER_KEY,
+        consumer_secret: process.env.PESAPAL_LIVE_CONSUMER_SECRET,
       }),
     });
 
@@ -70,7 +70,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         amount,
         description: `Ticket purchase for event ${eventId}${ticketTypeName ? ` (${ticketTypeName})` : ''}`,
         callback_url: `${origin}/events/${eventId}/payment-status?pesapal=1&order_id=${orderId}`,
-        notification_id: process.env.PESAPAL_IPN_ID,
+        notification_id: process.env.PESAPAL_LIVE_IPN_ID,
         billing_address: {
           email_address: email,
           phone_number: phone || '',

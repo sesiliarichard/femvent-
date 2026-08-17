@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { sendEmail } from '@/lib/email';
 
-const PESAPAL_BASE = 'https://cybqa.pesapal.com/pesapalv3';
+const PESAPAL_BASE = 'https://pay.pesapal.com/v3';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
@@ -21,8 +21,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
-        consumer_key: process.env.PESAPAL_CONSUMER_KEY,
-        consumer_secret: process.env.PESAPAL_CONSUMER_SECRET,
+        consumer_key: process.env.PESAPAL_LIVE_CONSUMER_KEY,
+        consumer_secret: process.env.PESAPAL_LIVE_CONSUMER_SECRET,
       }),
     });
     const authData = await authRes.json();
