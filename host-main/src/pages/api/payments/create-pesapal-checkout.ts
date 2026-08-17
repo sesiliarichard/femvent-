@@ -37,9 +37,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }),
     });
 
-    const authData = await authRes.json();
-    const token = authData?.token;
+    const authRawText = await authRes.text();
+    console.log('Pesapal auth raw response:', authRes.status, authRawText);
 
+    let authData: any;
+    try {
+      authData = JSON.parse(authRawText);
+    } catch {
+      return res.status(502).json({ error: `Pesapal auth endpoint returned non-JSON (status ${authRes.status}): ${authRawText.slice(0, 300)}` });
+    }
+
+    const token = authData?.token;
     if (!token) {
       console.error('Pesapal auth failed:', authData);
       return res.status(502).json({ error: 'Failed to authenticate with Pesapal' });
@@ -73,7 +81,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }),
     });
 
-    const orderData = await orderRes.json();
+    const orderRawText = await orderRes.text();
+    console.log('Pesapal order raw response:', orderRes.status, orderRawText);
+
+    let orderData: any;
+    try {
+      orderData = JSON.parse(orderRawText);
+    } catch {
+      return res.status(502).json({ error: `Pesapal order endpoint returned non-JSON (status ${orderRes.status}): ${orderRawText.slice(0, 300)}` });
+    }
 
     if (!orderData.redirect_url) {
       console.error('Pesapal order submission failed:', orderData);
@@ -114,8 +130,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (ticketError) throw ticketError;
 
     return res.status(200).json({ sessionUrl: orderData.redirect_url, orderId });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating Pesapal checkout:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: error?.message || String(error) });
   }
 }
