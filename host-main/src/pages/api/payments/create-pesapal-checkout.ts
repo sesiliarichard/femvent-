@@ -93,7 +93,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (!orderData.redirect_url) {
       console.error('Pesapal order submission failed:', orderData);
-      return res.status(502).json({ error: 'Failed to create Pesapal payment session' });
+      return res.status(502).json({ error: `Pesapal order failed (status ${orderRes.status}): ${JSON.stringify(orderData).slice(0, 500)}` });
     }
 
     // Create pending payments + ticket rows — webhook flips them to confirmed
