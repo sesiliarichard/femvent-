@@ -18,9 +18,11 @@ export default function OrganizersPage() {
         description="Everything you need to create, promote, and manage your events. From ticket sales to attendee check-in, we've got you covered."
         action={
           <div className="flex flex-wrap gap-3">
-            <button className="rounded-full bg-gradient-to-r from-rose-500 to-pink-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:-translate-y-0.5 transition-all">
-              📅 Get started
-            </button>
+            <a href={`${process.env.NEXT_PUBLIC_HOST_APP_URL}/signup`}>
+              <button className="rounded-full bg-gradient-to-r from-rose-500 to-pink-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:-translate-y-0.5 transition-all">
+                📅 Get started
+              </button>
+            </a>
             <button className="rounded-full border-2 border-gray-200 hover:border-gray-400 px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:-translate-y-0.5">
               📥 Learn more
             </button>
