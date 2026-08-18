@@ -122,9 +122,9 @@ export default function SignupPage() {
 
   const handleEmailChange = (text: string) => {
     setEmail(text);
-    const check = validateBusinessEmail(text);
-    if (text && !check.valid) {
-      setEmailError(getBusinessEmailErrorMessage(check.reason));
+    const emailErrorMessage = validateBusinessEmail(text);
+    if (text && emailErrorMessage) {
+      setEmailError(emailErrorMessage);
     } else {
       setEmailError('');
     }
