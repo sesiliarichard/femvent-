@@ -1,37 +1,70 @@
-export function validateBusinessEmail(email: string): string {
-  const trimmed = email.trim();
+// Blocks common free/personal email providers so organizer signups
+// use a work or organization address instead.
+// Extend this list as you find more providers slipping through.
+const BLOCKED_DOMAINS = new Set([
+  "gmail.com",
+  "googlemail.com",
+  "yahoo.com",
+  "yahoo.co.uk",
+  "ymail.com",
+  "outlook.com",
+  "hotmail.com",
+  "hotmail.co.uk",
+  "live.com",
+  "msn.com",
+  "icloud.com",
+  "me.com",
+  "mac.com",
+  "aol.com",
+  "protonmail.com",
+  "proton.me",
+  "gmx.com",
+  "gmx.us",
+  "zoho.com",
+  "yandex.com",
+  "mail.com",
+  "inbox.com",
+  "rocketmail.com",
+]);
 
-  if (!trimmed) {
-    return 'Business email is required.';
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export type EmailValidationResult =
+  | { valid: true }
+  | { valid: false; reason: "invalid_format" | "personal_domain" };
+
+/**
+ * Checks that a string is a well-formed email AND not from a known
+ * personal/free-mail domain. Does not verify the domain actually
+ * exists or accepts mail — pair with a verification email step for that.
+ */
+export function validateBusinessEmail(email: string): EmailValidationResult {
+  const trimmed = email.trim().toLowerCase();
+
+  if (!EMAIL_PATTERN.test(trimmed)) {
+    return { valid: false, reason: "invalid_format" };
   }
 
-  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailPattern.test(trimmed)) {
-    return 'Please enter a valid business email address.';
+  const domain = trimmed.split("@")[1];
+  if (BLOCKED_DOMAINS.has(domain)) {
+    return { valid: false, reason: "personal_domain" };
   }
 
-  const domain = trimmed.split('@')[1]?.toLowerCase();
-  if (!domain) {
-    return 'Please enter a valid business email address.';
-  }
-
-  const freeEmailProviders = [
-    'gmail.com',
-    'yahoo.com',
-    'hotmail.com',
-    'outlook.com',
-    'icloud.com',
-    'protonmail.com',
-    'aol.com',
-  ];
-
-  if (freeEmailProviders.includes(domain)) {
-    return 'Please use your company email address instead of a personal inbox.';
-  }
-
-  return '';
+  return { valid: true };
 }
 
 export function isBusinessEmail(email: string): boolean {
-  return validateBusinessEmail(email) === '';
+  return validateBusinessEmail(email).valid;
+}
+
+/** Human-readable message for the reason returned above, ready to show under the field. */
+export function getBusinessEmailErrorMessage(
+  reason: "invalid_format" | "personal_domain"
+): string {
+  switch (reason) {
+    case "invalid_format":
+      return "Enter a valid email address.";
+    case "personal_domain":
+      return "Use your work or organization email instead of a personal address.";
+  }
 }
