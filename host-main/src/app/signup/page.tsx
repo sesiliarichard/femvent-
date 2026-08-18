@@ -4,11 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
-import {
-  validateBusinessEmail,
-  getBusinessEmailErrorMessage,
-} from '@/lib/validators/businessEmail';
-
+import { validateBusinessEmail } from '@/lib/validators/businessEmail';
 // Impressive event images for slideshow
 const slideshowImages = [
   '/slideshow/event1.jpg',
@@ -54,10 +50,9 @@ export default function SignupPage() {
       setEmailError('');
       return true;
     }
-
-    const check = validateBusinessEmail(email);
-    if (!check.valid) {
-      setEmailError(getBusinessEmailErrorMessage(check.reason));
+    const emailErrorMessage = validateBusinessEmail(email);
+    if (emailErrorMessage) {
+      setEmailError(emailErrorMessage);
       return false;
     }
 

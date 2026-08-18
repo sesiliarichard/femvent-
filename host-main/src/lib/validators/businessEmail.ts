@@ -36,5 +36,3 @@ export function isBusinessEmail(email: string): boolean {
   return validateBusinessEmail(email) === '';
 }
 
-// Alias kept for callers expecting this name
-export const getBusinessEmailErrorMessage = validateBusinessEmail;
