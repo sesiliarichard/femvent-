@@ -54,17 +54,5 @@ export function validateBusinessEmail(email: string): EmailValidationResult {
 }
 
 export function isBusinessEmail(email: string): boolean {
-  return validateBusinessEmail(email).valid;
-}
-
-/** Human-readable message for the reason returned above, ready to show under the field. */
-export function getBusinessEmailErrorMessage(
-  reason: "invalid_format" | "personal_domain"
-): string {
-  switch (reason) {
-    case "invalid_format":
-      return "Enter a valid email address.";
-    case "personal_domain":
-      return "Use your work or organization email instead of a personal address.";
-  }
+  return validateBusinessEmail(email) === '';
 }
