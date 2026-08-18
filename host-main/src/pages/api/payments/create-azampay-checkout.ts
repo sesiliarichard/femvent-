@@ -38,9 +38,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }),
     });
 
-    const tokenData = await tokenRes.json();
-    const accessToken = tokenData?.data?.accessToken;
+    const tokenRawText = await tokenRes.text();
+    console.log('AzamPay token raw response:', tokenRes.status, tokenRawText);
 
+    let tokenData: any;
+    try {
+      tokenData = JSON.parse(tokenRawText);
+    } catch {
+      return res.status(502).json({ error: `AzamPay token endpoint returned non-JSON (status ${tokenRes.status}): ${tokenRawText.slice(0, 300)}` });
+    }
+
+    const accessToken = tokenData?.data?.accessToken;
     if (!accessToken) {
       console.error('AzamPay token generation failed:', tokenData);
       return res.status(502).json({ error: 'Failed to authenticate with AzamPay' });
@@ -67,10 +75,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }),
     });
 
-    const checkoutData = await checkoutRes.json();
+    const checkoutRawText = await checkoutRes.text();
+    console.log('AzamPay checkout raw response:', checkoutRes.status, checkoutRawText);
 
-    if (!checkoutData.success) {
-      console.error('AzamPay MNO checkout failed:', checkoutData);
+    let checkoutData: any = {};
+    if (checkoutRawText.trim().length > 0) {
+      try {
+        checkoutData = JSON.parse(checkoutRawText);
+      } catch {
+        return res.status(502).json({ error: `AzamPay checkout endpoint returned non-JSON (status ${checkoutRes.status}): ${checkoutRawText.slice(0, 300)}` });
+      }
+    }
+
+    // AzamPay sandbox sometimes returns 200 with an empty body when the push was accepted
+    const checkoutAccepted = checkoutRes.ok && (checkoutRawText.trim().length === 0 || checkoutData.success !== false);
+
+    if (!checkoutAccepted) {
+      console.error('AzamPay MNO checkout failed:', checkoutRes.status, checkoutData);
       return res.status(502).json({ error: checkoutData.message || 'Failed to initiate mobile money payment' });
     }
 
@@ -112,8 +133,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       externalId,
       message: checkoutData.message || 'Check your phone to approve the payment',
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating AzamPay checkout:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    return res.status(500).json({ error: error?.message || String(error) });
   }
 }

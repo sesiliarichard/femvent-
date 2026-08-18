@@ -47,7 +47,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
   const [loadingBanks, setLoadingBanks] = useState(false);
   const [savingPayout, setSavingPayout] = useState(false);
   const [payoutStatus, setPayoutStatus] = useState<string | null>(null);
-  const [payoutMethod, setPayoutMethod] = useState<'flutterwave' | 'wise' | 'crypto' | 'manual' | 'azampay'>('flutterwave');
+  const [payoutMethod, setPayoutMethod] = useState<'flutterwave' | 'wise' | 'crypto' | 'manual' | 'azampay' | 'pesapal'>('flutterwave');
   const [wiseEmail, setWiseEmail] = useState('');
   const [cryptoAddress, setCryptoAddress] = useState('');
   const [cryptoNetwork, setCryptoNetwork] = useState('USDT-TRC20');
@@ -205,6 +205,15 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to enable AzamPay');
         setPayoutStatus('AzamPay enabled! Buyers can now pay via mobile money or bank transfer.');
+      } else if (payoutMethod === 'pesapal') {
+        const res = await fetch('/api/payments/create-pesapal-account', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: userProfile.id, enabled: true }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to enable Pesapal');
+        setPayoutStatus('Pesapal enabled! Buyers can now pay via card or mobile money.');
       } else {
         if (!payoutData.bankCode || !payoutData.accountNumber || !payoutData.accountName) {
           setPayoutStatus('Please fill in all payout fields.');
@@ -885,8 +894,8 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                         <button
                             type="button"
                             onClick={() => {
-                              if (['manual', 'wise', 'crypto', 'flutterwave'].includes(acc.provider)) {
-                                setPayoutMethod(acc.provider as 'manual' | 'wise' | 'crypto' | 'flutterwave' | 'azampay');
+                              if (['manual', 'wise', 'crypto', 'flutterwave', 'azampay', 'pesapal'].includes(acc.provider)) {
+                                setPayoutMethod(acc.provider as 'manual' | 'wise' | 'crypto' | 'flutterwave' | 'azampay' | 'pesapal');
                               }
                             }}
                             className="px-4 py-2 rounded-xl bg-white border-2 border-pink-300 text-purple-700 text-sm font-bold hover:bg-pink-100 transition-all duration-300"
@@ -967,6 +976,17 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                     }`}
                   >
                     📱 AzamPay
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPayoutMethod('pesapal')}
+                    className={`px-4 py-4 rounded-2xl font-bold text-sm transition-all duration-300 ${
+                      payoutMethod === 'pesapal'
+                        ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-lg'
+                        : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
+                    }`}
+                  >
+                    🌍 Pesapal
                   </button>
                 </div>
 
@@ -1128,6 +1148,20 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                     <p className="text-sm font-black text-purple-900 uppercase tracking-wide mb-1">AzamPay</p>
                     <p className="text-sm text-purple-600 font-medium">
                       Buyers pay instantly via M-Pesa, Tigo Pesa, Airtel Money, HaloPesa, or bank transfer — best for Tanzania and Rwanda.
+                    </p>
+                  </div>
+                  <p className="text-sm text-purple-500 font-medium">
+                    No account details needed here — payments are processed through FemVents' platform account, and your revenue is settled to you separately.
+                  </p>
+                </div>
+              )}
+
+              {payoutMethod === 'pesapal' && (
+                <div className="p-6 bg-pink-50/50 border-2 border-pink-200 rounded-2xl space-y-4">
+                  <div>
+                    <p className="text-sm font-black text-purple-900 uppercase tracking-wide mb-1">Pesapal</p>
+                    <p className="text-sm text-purple-600 font-medium">
+                      Buyers can pay by Visa, Mastercard, Amex, or mobile money — works for local buyers across East/Southern Africa and international cardholders anywhere.
                     </p>
                   </div>
                   <p className="text-sm text-purple-500 font-medium">

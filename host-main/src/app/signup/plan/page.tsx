@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -29,6 +29,14 @@ const plans = [
 ] as const;
 
 export default function SignupPlanPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignupPlanContent />
+    </Suspense>
+  );
+}
+
+function SignupPlanContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { signUp } = useAuth();
@@ -36,11 +44,11 @@ export default function SignupPlanPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const fullName = searchParams.get('fullName') || '';
-  const organizationName = searchParams.get('organizationName') || '';
-  const businessEmail = searchParams.get('businessEmail') || '';
-  const email = searchParams.get('email') || businessEmail;
-  const password = searchParams.get('password') || '';
+  const fullName = searchParams?.get('fullName') || '';
+  const organizationName = searchParams?.get('organizationName') || '';
+  const businessEmail = searchParams?.get('businessEmail') || '';
+  const email = searchParams?.get('email') || businessEmail;
+  const password = searchParams?.get('password') || '';
 
   const handleSubmit = async () => {
     if (!fullName || !email || !password) {
