@@ -15,6 +15,11 @@ interface PlatformSettings {
     features: {
         [key: string]: boolean;
     };
+    paymentMethods: {
+        pesapal: boolean;
+        crypto: boolean;
+        azampay: boolean;
+    };
     maintenanceMode: {
         enabled: boolean;
         message: string;
@@ -35,6 +40,11 @@ export default function SettingsPage() {
             templates: true,
             waitlist: true,
         },
+        paymentMethods: {
+            pesapal: true,
+            crypto: true,
+            azampay: true,
+        },
         maintenanceMode: {
             enabled: false,
             message: 'We are currently performing maintenance. Please check back soon.',
@@ -42,7 +52,7 @@ export default function SettingsPage() {
     });
     const [saving, setSaving] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<'fees' | 'features' | 'maintenance'>('fees');
+    const [activeTab, setActiveTab] = useState<'fees' | 'features' | 'payments' | 'maintenance'>('fees');
 
     useEffect(() => {
         fetchSettings();
@@ -64,6 +74,11 @@ export default function SettingsPage() {
                         paymentProcessingFee: data.payment_processing_fee,
                     },
                     features: data.features,
+                    paymentMethods: data.payment_methods || {
+                        pesapal: true,
+                        crypto: true,
+                        azampay: true,
+                    },
                     maintenanceMode: {
                         enabled: data.maintenance_enabled,
                         message: data.maintenance_message,
@@ -72,16 +87,17 @@ export default function SettingsPage() {
             } else {
                 // No settings row exists yet — create one with the defaults
                 const { data: created, error: insertError } = await supabase
-                    .from('platform_settings')
-                    .insert({
-                        platform_fee: settings.fees.platformFee,
-                        payment_processing_fee: settings.fees.paymentProcessingFee,
-                        features: settings.features,
-                        maintenance_enabled: settings.maintenanceMode.enabled,
-                        maintenance_message: settings.maintenanceMode.message,
-                    })
-                    .select()
-                    .single();
+                .from('platform_settings')
+                .insert({
+                    platform_fee: settings.fees.platformFee,
+                    payment_processing_fee: settings.fees.paymentProcessingFee,
+                    features: settings.features,
+                    payment_methods: settings.paymentMethods,
+                    maintenance_enabled: settings.maintenanceMode.enabled,
+                    maintenance_message: settings.maintenanceMode.message,
+                })
+                .select()
+                .single();
 
                 if (insertError) throw insertError;
                 if (created) {
@@ -91,6 +107,11 @@ export default function SettingsPage() {
                             paymentProcessingFee: created.payment_processing_fee,
                         },
                         features: created.features,
+                        paymentMethods: created.payment_methods || {
+                            pesapal: true,
+                            crypto: true,
+                            azampay: true,
+                        },
                         maintenanceMode: {
                             enabled: created.maintenance_enabled,
                             message: created.maintenance_message,
@@ -113,6 +134,7 @@ export default function SettingsPage() {
                     platform_fee: settings.fees.platformFee,
                     payment_processing_fee: settings.fees.paymentProcessingFee,
                     features: settings.features,
+                    payment_methods: settings.paymentMethods,
                     maintenance_enabled: settings.maintenanceMode.enabled,
                     maintenance_message: settings.maintenanceMode.message,
                     updated_at: new Date().toISOString(),
@@ -152,9 +174,10 @@ export default function SettingsPage() {
 
                 {/* Tabs */}
                 <div className="flex gap-2 mb-6 border-b border-gray-200">
-                    {[
+                {[
                         { key: 'fees', label: 'Fees & Commission', icon: '💰' },
                         { key: 'features', label: ' Feature Flags', icon: '🎚️' },
+                        { key: 'payments', label: 'Payment Methods', icon: '💳' },
                         { key: 'maintenance', label: 'Maintenance Mode', icon: '🔧' },
                     ].map(tab => (
                         <button
@@ -247,6 +270,69 @@ export default function SettingsPage() {
                                         onChange={(e) => setSettings({
                                             ...settings,
                                             features: { ...settings.features, [feature]: e.target.checked }
+                                        })}
+                                        className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </label>
+                            ))}
+                        </div>
+                    )}
+
+                                      {/* Payment Methods Tab */}
+                                      {activeTab === 'payments' && (
+                        <div className="space-y-3">
+                            {([
+                                { key: 'pesapal', label: 'Pesapal', desc: 'Card & mobile money — East/Southern Africa + international cards' },
+                                { key: 'crypto', label: 'Crypto (USDT)', desc: 'Crypto payments via NOWPayments' },
+                                { key: 'azampay', label: 'AzamPay', desc: 'Mobile money — Tanzania/Rwanda (M-Pesa, Tigo Pesa, Airtel Money, etc.)' },
+                            ] as const).map(({ key, label, desc }) => (
+                                <label
+                                    key={key}
+                                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                                >
+                                    <div>
+                                        <p className="font-medium text-gray-900">{label}</p>
+                                        <p className="text-sm text-gray-500">{desc}</p>
+                                    </div>
+                                    <input
+                                        type="checkbox"
+                                        checked={settings.paymentMethods[key]}
+                                        onChange={(e) => setSettings({
+                                            ...settings,
+                                            paymentMethods: { ...settings.paymentMethods, [key]: e.target.checked }
+                                        })}
+                                        className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                                    />
+                                </label>
+                            ))}
+                        </div>
+                    )}
+
+                                        {/* Payment Methods Tab */}
+                                        {activeTab === 'payments' && (
+                        <div className="space-y-3">
+                            <p className="text-sm text-gray-500 mb-2">
+                                Choose which payment methods hosts can use to pay for dashboard access.
+                            </p>
+                            {([
+                                { key: 'pesapal', label: 'Pesapal', desc: 'Card & mobile money — East/Southern Africa + international cards' },
+                                { key: 'crypto', label: 'Crypto (USDT)', desc: 'Crypto payments via NOWPayments' },
+                                { key: 'azampay', label: 'AzamPay', desc: 'Mobile money — Tanzania/Rwanda (M-Pesa, Tigo Pesa, Airtel Money, etc.)' },
+                            ] as const).map(({ key, label, desc }) => (
+                                <label
+                                    key={key}
+                                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                                >
+                                    <div>
+                                        <p className="font-medium text-gray-900">{label}</p>
+                                        <p className="text-sm text-gray-500">{desc}</p>
+                                    </div>
+                                    <input
+                                        type="checkbox"
+                                        checked={settings.paymentMethods[key]}
+                                        onChange={(e) => setSettings({
+                                            ...settings,
+                                            paymentMethods: { ...settings.paymentMethods, [key]: e.target.checked }
                                         })}
                                         className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                                     />
