@@ -40,7 +40,10 @@ function SignupPlanContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { signUp } = useAuth();
-  const [selectedPlan, setSelectedPlan] = useState<(typeof plans)[number]['id']>('starter');
+  const planFromUrl = searchParams?.get('plan') as (typeof plans)[number]['id'] | null;
+  const [selectedPlan, setSelectedPlan] = useState<(typeof plans)[number]['id']>(
+    planFromUrl && plans.some((p) => p.id === planFromUrl) ? planFromUrl : 'starter'
+  );
   const [step, setStep] = useState<'plan' | 'payment'>('plan');
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'pesapal' | 'crypto' | 'azampay' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);

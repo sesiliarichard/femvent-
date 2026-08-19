@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import Link from 'next/link';
 import { validateBusinessEmail } from '@/lib/validators/businessEmail';
@@ -35,6 +35,7 @@ export default function SignupPage() {
 
   const { signUp, signInWithGoogle } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // Auto-rotate slideshow every 5 seconds
   useEffect(() => {
@@ -191,16 +192,17 @@ export default function SignupPage() {
     setLoading(true);
     try {
 
-      // Role stays 'attendee' until a plan is chosen — see /signup/plan.
-      router.push('/signup/plan');
-    } catch (error: any) {
-      setError(error.message || 'An error occurred during signup');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
+        // Role stays 'attendee' until a plan is chosen — see /signup/plan.
+        const planParam = searchParams?.get('plan');
+        router.push(`/signup/plan${planParam ? `?plan=${planParam}` : ''}`);
+      } catch (error: any) {
+        setError(error.message || 'An error occurred during signup');
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    const handleGoogleSignIn = async () => {
     setLoading(true);
     setError('');
 
@@ -209,7 +211,8 @@ export default function SignupPage() {
       // NOTE: Google sign-in never collects orgName. If this is a new
       // user, /signup/plan (or a step before it) needs to prompt for it
       // and write it to the users table before continuing.
-      router.push('/signup/plan');
+      const planParam = searchParams?.get('plan');
+      router.push(`/signup/plan${planParam ? `?plan=${planParam}` : ''}`);
     } catch (error: any) {
       setError(error.message);
     } finally {
