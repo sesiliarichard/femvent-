@@ -22,7 +22,7 @@ export default function NavBar() {
         </div>
       </div>
       <span className="text-lg font-bold text-rose-600 md:text-xl hover:text-rose-700 transition-colors">
-        FemVentsApp
+        FemVents
       </span>
     </Link>
   );
@@ -63,10 +63,10 @@ export default function NavBar() {
             Log in
           </Link>
           <Link
-            href={brand.primaryCta.href}
+            href={`${process.env.NEXT_PUBLIC_HOST_APP_URL}/login`}
             className="hidden rounded-full bg-gradient-to-r from-rose-500 to-pink-600 px-5 py-2 text-sm font-semibold text-white shadow-md transition hover:shadow-lg md:inline-flex"
           >
-            {brand.primaryCta.label}
+            Sign In
           </Link>
 
           <button
@@ -98,12 +98,12 @@ export default function NavBar() {
                 {link.label}
               </Link>
             ))}
-            <Link
-              href={brand.primaryCta.href}
+                       <Link
+              href={`${process.env.NEXT_PUBLIC_HOST_APP_URL}/login`}
               className="mt-2 rounded-full bg-gray-900 px-4 py-2 text-center text-sm font-semibold text-white"
               onClick={() => setOpen(false)}
             >
-              {brand.primaryCta.label}
+              Sign In
             </Link>
           </nav>
         </div>
