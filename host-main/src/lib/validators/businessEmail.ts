@@ -10,25 +10,6 @@ export function validateBusinessEmail(email: string): string {
     return 'Please enter a valid business email address.';
   }
 
-  const domain = trimmed.split('@')[1]?.toLowerCase();
-  if (!domain) {
-    return 'Please enter a valid business email address.';
-  }
-
-  const freeEmailProviders = [
-    'gmail.com',
-    'yahoo.com',
-    'hotmail.com',
-    'outlook.com',
-    'icloud.com',
-    'protonmail.com',
-    'aol.com',
-  ];
-
-  if (freeEmailProviders.includes(domain)) {
-    return 'Please use your company email address instead of a personal inbox.';
-  }
-
   return '';
 }
 
