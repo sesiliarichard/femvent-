@@ -191,16 +191,25 @@ export default function SignupPage() {
 
     setLoading(true);
     try {
+      // Account creation happens on /signup/plan, once a plan + payment
+      // method are chosen. We just carry the form data through as params.
+      const planParam = searchParams?.get('plan');
+      const params = new URLSearchParams({
+        fullName: name,
+        organizationName: orgName,
+        businessEmail: email,
+        email,
+        password,
+      });
+      if (planParam) params.set('plan', planParam);
 
-        // Role stays 'attendee' until a plan is chosen — see /signup/plan.
-        const planParam = searchParams?.get('plan');
-        router.push(`/signup/plan${planParam ? `?plan=${planParam}` : ''}`);
-      } catch (error: any) {
-        setError(error.message || 'An error occurred during signup');
-      } finally {
-        setLoading(false);
-      }
-    };
+      router.push(`/signup/plan?${params.toString()}`);
+    } catch (error: any) {
+      setError(error.message || 'An error occurred during signup');
+    } finally {
+      setLoading(false);
+    }
+  };
   
     const handleGoogleSignIn = async () => {
     setLoading(true);
