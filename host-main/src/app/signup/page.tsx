@@ -190,7 +190,7 @@ export default function SignupPage() {
 
     setLoading(true);
     try {
-      await signUp(email, password, name, { organizationName: orgName, businessEmail: email });
+
       // Role stays 'attendee' until a plan is chosen — see /signup/plan.
       router.push('/signup/plan');
     } catch (error: any) {
