@@ -56,8 +56,8 @@ export default function NavBar() {
         </nav>
 
         <div className="flex items-center gap-3">
-          <Link
-            href="/login"
+        <Link
+            href={`${process.env.NEXT_PUBLIC_HOST_APP_URL}/login`}
             className="hidden text-sm font-medium text-gray-600 hover:text-gray-900 md:inline-flex"
           >
             Log in
