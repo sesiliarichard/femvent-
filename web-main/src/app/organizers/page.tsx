@@ -63,6 +63,69 @@ export default function OrganizersPage() {
           );
         })}
       </section>
+      
+
+      <section>
+        <SectionHeading
+          eyebrow="💳 Pricing"
+          title="Pick the setup that fits your team"
+          description="Start hosting events on FemVents — choose a plan and get access to your dashboard."
+        />
+        <div className="mt-8 grid gap-6 md:grid-cols-3">
+          {[
+            {
+              id: 'starter',
+              name: 'Starter',
+              price: '$29/mo',
+              description: 'For new organizers launching their first event.',
+              badge: 'Best for first-time hosts',
+            },
+            {
+              id: 'growth',
+              name: 'Growth',
+              price: '$79/mo',
+              description: 'For growing communities managing more than one event.',
+              badge: 'Popular for scaling teams',
+            },
+            {
+              id: 'pro',
+              name: 'Pro',
+              price: '$149/mo',
+              description: 'Advanced automation, analytics, and premium support.',
+              badge: 'Built for full-scale operations',
+            },
+          ].map((plan) => (
+            <div
+            key={plan.id}
+            className={`relative rounded-3xl border p-8 shadow-lg hover-lift transition-all ${
+              plan.id === 'growth'
+                ? 'border-rose-400 ring-2 ring-rose-200'
+                : 'border-gray-100 hover:border-rose-300'
+            }`}
+            >
+              {plan.id === 'growth' && (
+                <span className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-rose-500 px-4 py-1 text-xs font-bold uppercase tracking-wide text-white shadow-md">
+                  Most Popular
+                </span>
+              )}
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-gray-400">
+                {plan.badge}
+              </p>
+              <div className="mt-4 flex items-end justify-between gap-3">
+                <h3 className="text-2xl font-bold text-gray-900">{plan.name}</h3>
+                <span className="text-xl font-bold text-gray-900">{plan.price}</span>
+              </div>
+              <p className="mt-3 text-sm text-gray-600">{plan.description}</p>
+
+              <a href={`${process.env.NEXT_PUBLIC_HOST_APP_URL}/signup?plan=${plan.id}`}>
+                <button className="mt-6 w-full rounded-full bg-gradient-to-r from-rose-500 to-pink-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:-translate-y-0.5 transition-all">
+                  Choose {plan.name}
+                </button>
+              </a>
+            </div>
+          ))}
+        </div>
+      </section>
 
       <section className="rounded-3xl border border-purple-300/30 bg-gradient-to-br from-gray-900 via-purple-900 to-rose-900 p-10 text-white shadow-2xl">
         <SectionHeading
