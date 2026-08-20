@@ -170,9 +170,9 @@ function PesapalForm({ onSaved }: { onSaved: () => void }) {
 
   return (
     <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-3">
-      <input required placeholder="Consumer Key" value={consumerKey} onChange={(e) => setConsumerKey(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-      <input required type="password" placeholder="Consumer Secret" value={consumerSecret} onChange={(e) => setConsumerSecret(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-      <input required placeholder="IPN ID" value={ipnId} onChange={(e) => setIpnId(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+           <input required autoComplete="off" placeholder="Consumer Key" value={consumerKey} onChange={(e) => setConsumerKey(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+      <input required type="password" autoComplete="new-password" placeholder="Consumer Secret" value={consumerSecret} onChange={(e) => setConsumerSecret(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+      <input required autoComplete="off" placeholder="IPN ID" value={ipnId} onChange={(e) => setIpnId(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <button type="submit" disabled={submitting} className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold text-sm disabled:opacity-50">
         {submitting ? 'Saving...' : 'Save Pesapal credentials'}
@@ -207,8 +207,8 @@ function CryptoForm({ onSaved }: { onSaved: () => void }) {
 
   return (
     <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-3">
-      <input required type="password" placeholder="NOWPayments API Key" value={apiKey} onChange={(e) => setApiKey(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-      <input required type="password" placeholder="NOWPayments IPN Secret" value={ipnSecret} onChange={(e) => setIpnSecret(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+            <input required type="password" autoComplete="new-password" placeholder="NOWPayments API Key" value={apiKey} onChange={(e) => setApiKey(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+            <input required type="password" autoComplete="new-password" placeholder="NOWPayments IPN Secret" value={ipnSecret} onChange={(e) => setIpnSecret(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <button type="submit" disabled={submitting} className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold text-sm disabled:opacity-50">
         {submitting ? 'Saving...' : 'Save Crypto credentials'}
@@ -245,10 +245,10 @@ function AzamPayForm({ onSaved }: { onSaved: () => void }) {
 
   return (
     <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-3">
-      <input required placeholder="App Name" value={appName} onChange={(e) => setAppName(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-      <input required placeholder="Client ID" value={clientId} onChange={(e) => setClientId(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-      <input required type="password" placeholder="Client Secret" value={clientSecret} onChange={(e) => setClientSecret(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
-      <input required type="password" placeholder="API Key (Token)" value={apiKey} onChange={(e) => setApiKey(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+          <input required autoComplete="off" placeholder="App Name" value={appName} onChange={(e) => setAppName(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+      <input required autoComplete="off" placeholder="Client ID" value={clientId} onChange={(e) => setClientId(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+      <input required type="password" autoComplete="new-password" placeholder="Client Secret" value={clientSecret} onChange={(e) => setClientSecret(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+      <input required type="password" autoComplete="new-password" placeholder="API Key (Token)" value={apiKey} onChange={(e) => setApiKey(e.target.value)} className="px-3 py-2 border border-gray-300 rounded-lg text-sm" />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <button type="submit" disabled={submitting} className="px-4 py-2 rounded-lg bg-blue-600 text-white font-semibold text-sm disabled:opacity-50">
         {submitting ? 'Saving...' : 'Save AzamPay credentials'}
