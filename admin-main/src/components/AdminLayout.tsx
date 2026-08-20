@@ -12,14 +12,15 @@ import {
   Bell,
   BarChart3,
   LogOut,
-  ChevronRight
+  ChevronRight,
+  CreditCard
 } from 'lucide-react';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Users', href: '/users', icon: Users },
   { name: 'Events', href: '/events', icon: Calendar },
-
+  { name: 'Payment Methods', href: '/payment-methods', icon: CreditCard },
   { name: 'Moderation', href: '/moderation', icon: Shield },
   { name: 'Backup & Export', href: '/backup-export', icon: Database },
   { name: 'Notifications', href: '/notifications', icon: Bell },
