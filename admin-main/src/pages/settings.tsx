@@ -52,7 +52,7 @@ export default function SettingsPage() {
     });
     const [saving, setSaving] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState<'fees' | 'features' | 'payments' | 'maintenance'>('fees');
+    const [activeTab, setActiveTab] = useState<'fees' | 'features' | 'maintenance'>('fees');
 
     useEffect(() => {
         fetchSettings();
@@ -177,7 +177,6 @@ export default function SettingsPage() {
                 {[
                         { key: 'fees', label: 'Fees & Commission', icon: '💰' },
                         { key: 'features', label: ' Feature Flags', icon: '🎚️' },
-                        { key: 'payments', label: 'Payment Methods', icon: '💳' },
                         { key: 'maintenance', label: 'Maintenance Mode', icon: '🔧' },
                     ].map(tab => (
                         <button
@@ -278,71 +277,8 @@ export default function SettingsPage() {
                         </div>
                     )}
 
-                                      {/* Payment Methods Tab */}
-                                      {activeTab === 'payments' && (
-                        <div className="space-y-3">
-                            {([
-                                { key: 'pesapal', label: 'Pesapal', desc: 'Card & mobile money — East/Southern Africa + international cards' },
-                                { key: 'crypto', label: 'Crypto (USDT)', desc: 'Crypto payments via NOWPayments' },
-                                { key: 'azampay', label: 'AzamPay', desc: 'Mobile money — Tanzania/Rwanda (M-Pesa, Tigo Pesa, Airtel Money, etc.)' },
-                            ] as const).map(({ key, label, desc }) => (
-                                <label
-                                    key={key}
-                                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
-                                >
-                                    <div>
-                                        <p className="font-medium text-gray-900">{label}</p>
-                                        <p className="text-sm text-gray-500">{desc}</p>
-                                    </div>
-                                    <input
-                                        type="checkbox"
-                                        checked={settings.paymentMethods[key]}
-                                        onChange={(e) => setSettings({
-                                            ...settings,
-                                            paymentMethods: { ...settings.paymentMethods, [key]: e.target.checked }
-                                        })}
-                                        className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                                    />
-                                </label>
-                            ))}
-                        </div>
-                    )}
-
-                                        {/* Payment Methods Tab */}
-                                        {activeTab === 'payments' && (
-                        <div className="space-y-3">
-                            <p className="text-sm text-gray-500 mb-2">
-                                Choose which payment methods hosts can use to pay for dashboard access.
-                            </p>
-                            {([
-                                { key: 'pesapal', label: 'Pesapal', desc: 'Card & mobile money — East/Southern Africa + international cards' },
-                                { key: 'crypto', label: 'Crypto (USDT)', desc: 'Crypto payments via NOWPayments' },
-                                { key: 'azampay', label: 'AzamPay', desc: 'Mobile money — Tanzania/Rwanda (M-Pesa, Tigo Pesa, Airtel Money, etc.)' },
-                            ] as const).map(({ key, label, desc }) => (
-                                <label
-                                    key={key}
-                                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
-                                >
-                                    <div>
-                                        <p className="font-medium text-gray-900">{label}</p>
-                                        <p className="text-sm text-gray-500">{desc}</p>
-                                    </div>
-                                    <input
-                                        type="checkbox"
-                                        checked={settings.paymentMethods[key]}
-                                        onChange={(e) => setSettings({
-                                            ...settings,
-                                            paymentMethods: { ...settings.paymentMethods, [key]: e.target.checked }
-                                        })}
-                                        className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                                    />
-                                </label>
-                            ))}
-                        </div>
-                    )}
-
-                    {/* Maintenance Tab */}
-                    {activeTab === 'maintenance' && (
+                                {/* Maintenance Tab */}
+                                {activeTab === 'maintenance' && (
                         <div className="space-y-6">
                             <div className={`p-4 border-2 rounded-lg ${settings.maintenanceMode.enabled ? 'border-red-300 bg-red-50' : 'border-gray-200'
                                 }`}>
