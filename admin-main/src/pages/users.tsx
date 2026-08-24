@@ -99,6 +99,18 @@ export default function UsersPage() {
     }
   };
 
+  const handleDeleteUser = async (userId: string, userLabel: string) => {
+    if (!confirm(`Permanently delete ${userLabel}? This cannot be undone.`)) return;
+    try {
+      const { error } = await supabase.from('users').delete().eq('id', userId);
+      if (error) throw error;
+      setUsers(users.filter(user => user.id !== userId));
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      alert('Failed to delete user');
+    }
+  };
+
   const handleApproveHost = async (userId: string) => {
     try {
       await approveHostApplication(userId);
@@ -675,7 +687,7 @@ export default function UsersPage() {
                       >
                         {user.isSuspended ? '🔓 Activate' : '🔒 Suspend'}
                       </button>
-                      <button 
+                             <button 
                         onClick={() => handleRecordPayment(user)}
                         style={{ 
                           padding: '0.5rem 0.875rem', 
@@ -699,6 +711,31 @@ export default function UsersPage() {
                         }}
                       >
                         💳 Record Payment
+                      </button>
+                      <button 
+                        onClick={() => handleDeleteUser(user.id, user.name || user.email)}
+                        style={{ 
+                          padding: '0.5rem 0.875rem', 
+                          fontSize: '0.8rem',
+                          background: 'linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%)',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '0.5rem',
+                          cursor: 'pointer',
+                          fontWeight: '600',
+                          boxShadow: '0 2px 4px rgba(153, 27, 27, 0.3)',
+                          transition: 'transform 0.2s, box-shadow 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-1px)';
+                          e.currentTarget.style.boxShadow = '0 4px 6px rgba(153, 27, 27, 0.4)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = '0 2px 4px rgba(153, 27, 27, 0.3)';
+                        }}
+                      >
+                        🗑️ Delete
                       </button>
                     </div>
                   </div>
