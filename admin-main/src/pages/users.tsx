@@ -100,17 +100,20 @@ export default function UsersPage() {
   };
 
   const handleDeleteUser = async (userId: string, userLabel: string) => {
-    if (!confirm(`Permanently delete ${userLabel}? This cannot be undone.`)) return;
+    if (!confirm(`Remove ${userLabel}? Their account will be deactivated and hidden, but payment records are kept for audit purposes.`)) return;
     try {
-      const { error } = await supabase.from('users').delete().eq('id', userId);
+      const { error } = await supabase
+        .from('users')
+        .update({ status: 'deleted', deleted_at: new Date().toISOString() })
+        .eq('id', userId);
       if (error) throw error;
       setUsers(users.filter(user => user.id !== userId));
     } catch (error) {
-      console.error('Error deleting user:', error);
-      alert('Failed to delete user');
+      console.error('Error removing user:', error);
+      alert('Failed to remove user');
     }
   };
-
+  
   const handleApproveHost = async (userId: string) => {
     try {
       await approveHostApplication(userId);
