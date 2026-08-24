@@ -6,6 +6,14 @@ export interface Event {
   imageURL?: string;
   posterURL?: string;
   price: number;
+  ticketTypes?: Array<{
+    id: string;
+    name: string;
+    price: number;
+    is_active?: boolean;
+  }>;
+  minPrice?: number;
+  maxPrice?: number;
   category: string;
   capacity: number;
   location: string;

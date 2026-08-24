@@ -40,8 +40,13 @@ export const EventCard: React.FC<EventCardProps> = ({
         <div className="absolute bottom-4 left-4 right-4">
           <div className="flex items-center justify-between">
             <div>
-              <span className="px-2 py-1 text-xs font-semibold bg-primary-600 text-white rounded-full">
-                ${event.price}
+            <span className="px-2 py-1 text-xs font-semibold bg-primary-600 text-white rounded-full">
+                {(() => {
+                  const min = (event as any).minPrice ?? event.price;
+                  const max = (event as any).maxPrice ?? event.price;
+                  if (min === max) return min > 0 ? `$${min}` : 'Free';
+                  return `$${min} – $${max}`;
+                })()}
               </span>
               <span className="ml-2 px-2 py-1 text-xs font-semibold bg-gray-800 text-white rounded-full">
                 {event.category}
