@@ -1,6 +1,6 @@
 import PageHero from "@/components/PageHero";
 import SectionHeading from "@/components/SectionHeading";
-import { organizerSpotlights, impactStats } from "@/lib/content";
+import { getSiteContent } from "@/lib/siteContent";
 
 const workflow = [
   "Upload your event details and images",
@@ -9,7 +9,9 @@ const workflow = [
   "Track ticket sales and check in attendees on event day",
 ];
 
-export default function OrganizersPage() {
+export default async function OrganizersPage() {
+  const { organizerSpotlights, impactStats } = await getSiteContent();
+
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-16 px-6 pb-20">
       <PageHero

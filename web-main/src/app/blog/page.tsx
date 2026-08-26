@@ -1,7 +1,9 @@
 import PageHero from "@/components/PageHero";
-import { blogPosts } from "@/lib/content";
+import { getSiteContent } from "@/lib/siteContent";
 
-export default function BlogPage() {
+export default async function BlogPage() {
+  const { blogPosts } = await getSiteContent();
+
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-12 px-6 pb-20">
       <PageHero

@@ -1,6 +1,6 @@
 import PageHero from "@/components/PageHero";
 import SectionHeading from "@/components/SectionHeading";
-import { categories, destinations, featuredEvents } from "@/lib/content";
+import { getSiteContent } from "@/lib/siteContent";
 
 const FlameIcon = () => (
   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -74,7 +74,9 @@ const HandshakeIcon = () => (
   </svg>
 );
 
-export default function EventsPage() {
+export default async function EventsPage() {
+  const { categories, destinations, featuredEvents } = await getSiteContent();
+
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-16 px-6 pb-20">
       <PageHero

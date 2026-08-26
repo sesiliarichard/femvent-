@@ -11,7 +11,7 @@ export async function getSiteContent() {
 
     if (error) throw error;
 
-    const overrides = (data?.content || {}) as Record<string, any>;
+    const overrides = (data?.content || {}) as Partial<typeof defaults>;
 
     return {
       brand: { ...defaults.brand, ...(overrides.brand || {}) },
