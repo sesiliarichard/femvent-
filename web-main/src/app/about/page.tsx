@@ -297,13 +297,13 @@ export default function AboutPage() {
           representation, ownership, and whose needs technology is designed around.
         </p>
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
+             <div className="mt-8 grid gap-6 md:grid-cols-2">
           <div className="rounded-2xl border border-white/60 bg-white/70 p-6">
             <p className="text-sm font-semibold text-gray-900 mb-4">What guides us</p>
             <ul className="space-y-4">
               {approachGuides.map((item) => (
                 <li key={item.text} className="flex items-start gap-3">
-                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-rose-100 to-purple-100 text-sm">
+                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-rose-100 to-purple-100 text-rose-600">
                     {item.icon}
                   </span>
                   <span className="text-sm text-gray-600 pt-1">{item.text}</span>
@@ -316,7 +316,7 @@ export default function AboutPage() {
             <ul className="space-y-4">
               {exploringTogether.map((item) => (
                 <li key={item.text} className="flex items-start gap-3">
-                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 text-sm">
+                  <span className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 text-blue-600">
                     {item.icon}
                   </span>
                   <span className="text-sm text-gray-600 pt-1">{item.text}</span>
@@ -325,7 +325,6 @@ export default function AboutPage() {
             </ul>
           </div>
         </div>
-
         <div className="mt-8 rounded-2xl bg-gradient-to-r from-purple-600 to-rose-500 p-8 text-center shadow-lg">
           <p className="text-lg font-bold text-white">
             FemVents is not a finished product handed to the community.
