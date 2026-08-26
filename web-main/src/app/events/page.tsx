@@ -9,12 +9,6 @@ const FlameIcon = () => (
   </svg>
 );
 
-const CalendarIcon = () => (
-  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-  </svg>
-);
-
 const BookmarkIcon = () => (
   <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
@@ -47,21 +41,6 @@ const PaletteIcon = () => (
     <circle cx="7.5" cy="8.5" r="1" strokeWidth={1.5} />
     <circle cx="12" cy="6.5" r="1" strokeWidth={1.5} />
     <circle cx="16.5" cy="8.5" r="1" strokeWidth={1.5} />
-  </svg>
-);
-
-const MapPinIcon = () => (
-  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a2 2 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-  </svg>
-);
-
-const TargetIcon = () => (
-  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <circle cx="12" cy="12" r="9" strokeWidth={2} />
-    <circle cx="12" cy="12" r="5" strokeWidth={2} />
-    <circle cx="12" cy="12" r="1" strokeWidth={2} />
   </svg>
 );
 
@@ -99,11 +78,7 @@ export default function EventsPage() {
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-16 px-6 pb-20">
       <PageHero
-        highlight={
-          <span className="inline-flex items-center gap-1.5">
-            <CalendarIcon /> Events
-          </span>
-        }
+        highlight="Events"
         title="Find amazing events near you"
         description="Browse upcoming festivals, workshops, concerts, networking events, and more. Filter by category and location to find exactly what you're looking for."
         action={
@@ -184,11 +159,7 @@ export default function EventsPage() {
         <aside className="rounded-3xl border border-purple-100 bg-gradient-to-br from-purple-50/50 to-pink-50/50 p-6 shadow-lg backdrop-blur h-fit sticky top-24">
           <SectionHeading
             eyebrow="Browse by city"
-            title={
-              <span className="inline-flex items-center gap-2">
-                <MapPinIcon /> Find events in your city
-              </span>
-            }
+            title="Find events in your city"
             description="Check out what's happening in major cities across Africa."
           />
           <div className="mt-6 flex flex-col gap-3">
@@ -208,11 +179,7 @@ export default function EventsPage() {
       <section>
         <SectionHeading
           eyebrow="Categories"
-          title={
-            <span className="inline-flex items-center gap-2">
-              <TargetIcon /> Browse by interest
-            </span>
-          }
+          title="Browse by interest"
           description="Find events that match your interests, from music and art to business and wellness."
         />
         <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
