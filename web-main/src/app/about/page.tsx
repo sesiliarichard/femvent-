@@ -30,11 +30,51 @@ const platformGuides = [
 ];
 
 const platformActions = [
-  { icon: "🔍", text: "Discover feminist events, gatherings, actions, and opportunities." },
-  { icon: "📣", text: "Organize and share events with the communities you want to reach." },
-  { icon: "🤝", text: "Connect with people, collectives, and movements doing related work." },
-  { icon: "🗂️", text: "Archive moments of feminist gathering and movement-building." },
-  { icon: "🌐", text: "Grow networks of solidarity across geographies, generations, and movements." },
+  {
+    title: "Discover",
+    text: "Feminist events, gatherings, actions, and opportunities.",
+    icon: (
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    ),
+  },
+  {
+    title: "Organize",
+    text: "Share events with the communities you want to reach.",
+    icon: (
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
+      </svg>
+    ),
+  },
+  {
+    title: "Connect",
+    text: "People, collectives, and movements doing related work.",
+    icon: (
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+    ),
+  },
+  {
+    title: "Archive",
+    text: "Moments of feminist gathering and movement-building.",
+    icon: (
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+      </svg>
+    ),
+  },
+  {
+    title: "Grow",
+    text: "Networks of solidarity across geographies and generations.",
+    icon: (
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    ),
+  },
 ];
 
 const storyBeats = [
@@ -81,28 +121,26 @@ export default function AboutPage() {
         description="FemVents is a platform for discovering, creating, and connecting around feminist events, gatherings, and organizing. We are building digital infrastructure that makes it easier for feminist organizers, collectives, movements, researchers, artists, activists, and communities to find one another — and to turn gatherings into connection, learning, solidarity, and collective action."
       />
 
-      {/* More than an events platform */}
+          {/* More than an events platform */}
       <section className="rounded-3xl border border-purple-100 bg-gradient-to-br from-white to-purple-50/30 p-10 shadow-lg">
         <SectionHeading
           eyebrow="🌍 More than an events platform"
           title="Making feminist gatherings visible, connected, and accessible"
           description="Feminist organizing happens everywhere: in community halls and classrooms, online spaces and festivals, protests and reading groups, conferences and kitchen-table conversations. But these spaces can be difficult to discover beyond our immediate networks."
         />
-        <div className="mt-8 grid gap-4 sm:grid-cols-2">
+        <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
           {platformActions.map((item) => (
-            <div
-              key={item.text}
-              className="flex items-start gap-4 rounded-2xl border border-white/60 bg-white/80 p-5 shadow-sm hover-lift"
-            >
-              <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-rose-100 to-purple-100 text-lg">
+            <div key={item.title} className="flex flex-col items-center text-center">
+              <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-rose-100 to-purple-100 text-rose-600">
                 {item.icon}
               </span>
-              <p className="text-sm text-gray-700 pt-1.5">{item.text}</p>
+              <p className="mt-4 text-base font-bold text-gray-900">{item.title}</p>
+              <p className="mt-2 text-xs text-gray-500">{item.text}</p>
             </div>
           ))}
         </div>
       </section>
-
+      
       {/* What guides us */}
       <section className="rounded-3xl border border-purple-100 bg-gradient-to-br from-rose-50 via-white to-indigo-50 p-10 shadow-xl">
         <SectionHeading
