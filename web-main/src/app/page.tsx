@@ -1,15 +1,15 @@
-
 import Link from "next/link";
 import Image from "next/image";
-import {
-  brand,
-  destinations,
-  categories,
-  featuredEvents,
-  impactStats,
-} from "@/lib/content";
+import { getSiteContent } from "@/lib/siteContent";
 
-export default function Home() {
+export default async function Home() {
+  const {
+    destinations,
+    categories,
+    featuredEvents,
+    impactStats,
+  } = await getSiteContent();
+
   return (
     <main className="min-h-screen pb-20">
 
@@ -87,7 +87,7 @@ export default function Home() {
       {/* Marquee Section */}
       <section className="border-y border-gray-200 bg-white py-8 overflow-hidden">
         <div className="flex gap-16 animate-marquee whitespace-nowrap">
-          {[...categories, ...categories].map((cat, i) => (
+          {[...categories, ...categories].map((cat: any, i: number) => (
             <div key={i} className="flex items-center gap-2 text-2xl font-bold tracking-tight text-gray-300 uppercase">
               <span>{cat.title}</span>
               <span className="text-rose-500">•</span>
@@ -148,7 +148,7 @@ export default function Home() {
         </div>
 
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {featuredEvents.map((event, i) => (
+          {featuredEvents.map((event: any, i: number) => (
             <div key={i} className="group p-6 rounded-2xl bg-white border border-gray-200 hover:border-gray-300 transition-all hover:shadow-xl hover:shadow-gray-100/50">
               <div className="flex justify-between items-start mb-6">
                 <span className="px-3 py-1 rounded-full bg-gray-50 text-xs font-bold border border-gray-100">{event.city}</span>
@@ -181,4 +181,3 @@ export default function Home() {
     </main>
   );
 }
-

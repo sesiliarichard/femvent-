@@ -21,6 +21,7 @@ const navigation = [
   { name: 'Users', href: '/users', icon: Users },
   { name: 'Events', href: '/events', icon: Calendar },
   { name: 'Payment Methods', href: '/payment-methods', icon: CreditCard },
+  { name: 'Website Content', href: '/site-content', icon: Settings },
   { name: 'Moderation', href: '/moderation', icon: Shield },
   { name: 'Backup & Export', href: '/backup-export', icon: Database },
   { name: 'Notifications', href: '/notifications', icon: Bell },
