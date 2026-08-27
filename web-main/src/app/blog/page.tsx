@@ -1,13 +1,18 @@
 import PageHero from "@/components/PageHero";
 import { getSiteContent } from "@/lib/siteContent";
+import { BookOpen, PenLine, BarChart3, Target } from "lucide-react";
 
 export default async function BlogPage() {
   const { blogPosts } = await getSiteContent();
 
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-12 px-6 pb-20">
-      <PageHero
-        highlight="📚 Blog"
+            <PageHero
+        highlight={
+          <span className="flex items-center gap-2">
+            <BookOpen size={14} /> Blog
+          </span>
+        }
         title="Tips and stories from the FemVents community"
         description="Learn from successful event organizers and stay updated on trends in the African events scene."
       />
@@ -18,16 +23,21 @@ export default async function BlogPage() {
             'from-purple-500/10 to-pink-500/5',
             'from-orange-500/10 to-amber-500/5',
           ];
-          const icons = ['✍️', '📊', '🎯'];
+          const icons = [PenLine, BarChart3, Target];
 
           return (
             <article
               key={post.title}
               className={`group relative overflow-hidden rounded-3xl border border-gray-100 bg-gradient-to-br ${gradients[index]} p-6 shadow-lg hover-lift`}
             >
-              <div className="absolute top-4 right-4 text-3xl opacity-15 group-hover:opacity-25 transition-opacity">
-                {icons[index]}
-              </div>
+                            {(() => {
+                const Icon = icons[index];
+                return (
+                  <div className="absolute top-4 right-4 opacity-15 group-hover:opacity-25 transition-opacity">
+                    <Icon size={40} />
+                  </div>
+                );
+              })()}
               <div className="relative">
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] bg-gradient-to-r from-gray-500 to-gray-400 bg-clip-text text-transparent">
                   {post.date}
