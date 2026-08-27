@@ -1,7 +1,20 @@
 import { supabase } from './supabase';
 import * as defaults from './content';
 
-export async function getSiteContent() {
+export async function getSiteContent(): Promise<{
+  home: Record<string, any>;
+  brand: typeof defaults.brand;
+  navLinks: typeof defaults.navLinks;
+  destinations: typeof defaults.destinations;
+  categories: typeof defaults.categories;
+  featuredEvents: typeof defaults.featuredEvents;
+  organizerSpotlights: typeof defaults.organizerSpotlights;
+  impactStats: typeof defaults.impactStats;
+  blogPosts: typeof defaults.blogPosts;
+  faq: typeof defaults.faq;
+  supportTopics: typeof defaults.supportTopics;
+}> {
+  
   try {
     const { data, error } = await supabase
       .from('site_content')
