@@ -1,22 +1,27 @@
 import PageHero from "@/components/PageHero";
 import SectionHeading from "@/components/SectionHeading";
 import { getSiteContent } from "@/lib/siteContent";
+import { ShoppingCart, MessageCircle, BarChart3, HelpCircle } from "lucide-react";
 export default async function SupportPage() {
   const { faq, supportTopics } = await getSiteContent();
 
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-16 px-6 pb-20">
-      <PageHero
-        highlight="🛒 Support"
+            <PageHero
+        highlight={
+          <span className="flex items-center gap-2">
+            <ShoppingCart size={14} /> Support
+          </span>
+        }
         title="We're here to help"
         description="Get help with your events, account, or technical issues. Our support team is available to answer your questions."
         action={
           <div className="flex flex-wrap gap-3 text-sm font-semibold">
-            <button className="rounded-full bg-gradient-to-r from-rose-500 to-pink-600 px-6 py-3 text-white shadow-lg hover:-translate-y-0.5 transition-all">
-              💬 Contact support
+                       <button className="flex items-center gap-2 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 px-6 py-3 text-white shadow-lg hover:-translate-y-0.5 transition-all">
+              <MessageCircle size={16} /> Contact support
             </button>
-            <button className="rounded-full border-2 border-gray-200 hover:border-gray-400 px-6 py-3 text-gray-900 transition-all hover:-translate-y-0.5">
-              📊 System status
+            <button className="flex items-center gap-2 rounded-full border-2 border-gray-200 hover:border-gray-400 px-6 py-3 text-gray-900 transition-all hover:-translate-y-0.5">
+              <BarChart3 size={16} /> System status
             </button>
           </div>
         }
