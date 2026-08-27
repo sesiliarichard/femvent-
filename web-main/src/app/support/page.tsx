@@ -1,8 +1,9 @@
 import PageHero from "@/components/PageHero";
 import SectionHeading from "@/components/SectionHeading";
-import { faq, supportTopics } from "@/lib/content";
+import { getSiteContent } from "@/lib/siteContent";
+export default async function SupportPage() {
+  const { faq, supportTopics } = await getSiteContent();
 
-export default function SupportPage() {
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-16 px-6 pb-20">
       <PageHero
