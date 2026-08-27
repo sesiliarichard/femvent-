@@ -1,6 +1,7 @@
 import PageHero from "@/components/PageHero";
 import SectionHeading from "@/components/SectionHeading";
 import { getSiteContent } from "@/lib/siteContent";
+import { Calendar, Inbox, Drama, Rocket, Palette, Sparkles, CreditCard, Zap } from "lucide-react";
 
 const workflow = [
   "Upload your event details and images",
@@ -21,12 +22,12 @@ export default async function OrganizersPage() {
         action={
           <div className="flex flex-wrap gap-3">
             <a href={`${process.env.NEXT_PUBLIC_HOST_APP_URL}/signup`}>
-              <button className="rounded-full bg-gradient-to-r from-rose-500 to-pink-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:-translate-y-0.5 transition-all">
-                📅 Get started
+            <button className="flex items-center gap-2 rounded-full bg-gradient-to-r from-rose-500 to-pink-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:-translate-y-0.5 transition-all">
+                <Calendar size={16} /> Get started
               </button>
             </a>
-            <button className="rounded-full border-2 border-gray-200 hover:border-gray-400 px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:-translate-y-0.5">
-              📥 Learn more
+            <button className="flex items-center gap-2 rounded-full border-2 border-gray-200 hover:border-gray-400 px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:-translate-y-0.5">
+              <Inbox size={16} /> Learn more
             </button>
           </div>
         }
@@ -39,16 +40,21 @@ export default async function OrganizersPage() {
             'from-purple-500/15 to-pink-500/5',
             'from-orange-500/15 to-amber-500/5',
           ];
-          const icons = ['🎭', '🚀', '🎨'];
+          const icons = [Drama, Rocket, Palette];
 
           return (
             <article
               key={org.name}
               className={`group relative overflow-hidden rounded-3xl border border-gray-100 bg-gradient-to-br ${gradients[index]} p-6 shadow-lg hover-lift`}
             >
-              <div className="absolute top-4 right-4 text-4xl opacity-10 group-hover:opacity-20 transition-opacity">
-                {icons[index]}
-              </div>
+                            {(() => {
+                const Icon = icons[index];
+                return (
+                  <div className="absolute top-4 right-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                    <Icon size={48} />
+                  </div>
+                );
+              })()}
               <div className="relative">
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] bg-gradient-to-r from-gray-600 to-gray-400 bg-clip-text text-transparent">
                   {org.focus}
@@ -56,8 +62,8 @@ export default async function OrganizersPage() {
                 <h3 className="mt-3 text-2xl font-semibold text-gray-900">
                   {org.name}
                 </h3>
-                <p className="mt-1 text-sm font-semibold text-rose-500">
-                  ✨ {org.stat}
+                <p className="mt-1 flex items-center gap-1 text-sm font-semibold text-rose-500">
+                  <Sparkles size={14} /> {org.stat}
                 </p>
                 <p className="mt-3 text-sm text-gray-600">{org.blurb}</p>
               </div>
