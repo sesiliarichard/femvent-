@@ -1,7 +1,7 @@
 import PageHero from "@/components/PageHero";
 import SectionHeading from "@/components/SectionHeading";
 import { getSiteContent } from "@/lib/siteContent";
-import { Calendar, Inbox, Drama, Rocket, Palette, Sparkles, CreditCard, Zap } from "lucide-react";
+import { Calendar, Inbox, Drama, Rocket, Palette, Sparkles, CreditCard, Zap, Briefcase } from "lucide-react";
 
 const workflow = [
   "Upload your event details and images",
@@ -15,8 +15,12 @@ export default async function OrganizersPage() {
 
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-16 px-6 pb-20">
-      <PageHero
-        highlight="💼 For Organizers"
+            <PageHero
+        highlight={
+          <span className="flex items-center gap-2">
+            <Briefcase size={14} /> For Organizers
+          </span>
+        }
         title="Professional tools for event creators"
         description="Everything you need to create, promote, and manage your events. From ticket sales to attendee check-in, we've got you covered."
         action={

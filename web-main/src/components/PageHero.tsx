@@ -1,7 +1,7 @@
 type PageHeroProps = {
   title: string;
   description: string;
-  highlight?: string;
+  highlight?: React.ReactNode;
   action?: React.ReactNode;
 };
 
