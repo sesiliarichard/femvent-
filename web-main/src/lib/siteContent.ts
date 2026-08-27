@@ -14,7 +14,7 @@ export async function getSiteContent(): Promise<{
   faq: typeof defaults.faq;
   supportTopics: typeof defaults.supportTopics;
 }> {
-  
+
   try {
     const { data, error } = await supabase
       .from('site_content')
@@ -24,7 +24,9 @@ export async function getSiteContent(): Promise<{
 
     if (error) throw error;
 
-    const overrides = (data?.content || {}) as Partial<typeof defaults>;
+    const overrides = (data?.content || {}) as Partial<typeof defaults> & {
+  home?: Record<string, any>;
+};
 
     return {
       home: overrides.home || {},
@@ -41,6 +43,6 @@ export async function getSiteContent(): Promise<{
     };
   } catch (err) {
     console.error('Error fetching site content, falling back to defaults:', err);
-    return { ...defaults };
+    return { home: {}, ...defaults };
   }
 }
