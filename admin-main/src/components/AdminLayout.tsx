@@ -22,6 +22,7 @@ const navigation = [
   { name: 'Events', href: '/events', icon: Calendar },
   { name: 'Payment Methods', href: '/payment-methods', icon: CreditCard },
   { name: 'Website Content', href: '/site-content', icon: Settings },
+  { name: 'Edit Home Page', href: '/edit-home', icon: LayoutDashboard },
   { name: 'Moderation', href: '/moderation', icon: Shield },
   { name: 'Backup & Export', href: '/backup-export', icon: Database },
   { name: 'Notifications', href: '/notifications', icon: Bell },

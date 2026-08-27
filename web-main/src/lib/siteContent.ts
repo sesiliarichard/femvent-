@@ -14,6 +14,7 @@ export async function getSiteContent() {
     const overrides = (data?.content || {}) as Partial<typeof defaults>;
 
     return {
+      home: overrides.home || {},
       brand: { ...defaults.brand, ...(overrides.brand || {}) },
       navLinks: overrides.navLinks || defaults.navLinks,
       destinations: overrides.destinations || defaults.destinations,
