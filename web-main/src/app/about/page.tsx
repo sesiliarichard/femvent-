@@ -1,6 +1,7 @@
 import PageHero from "@/components/PageHero";
 import SectionHeading from "@/components/SectionHeading";
 import { brand } from "@/lib/content";
+import { getSiteContent } from "@/lib/siteContent";
 
 const platformGuides = [
   {
@@ -188,21 +189,43 @@ const exploringTogether = [
     ),
   },
 ];
-export default function AboutPage() {
+export default async function AboutPage() {
+  const { about } = await getSiteContent();
+
+  const a = {
+    heroTitle: about.heroTitle || "Where feminist movements gather.",
+    heroDescription: about.heroDescription || "FemVents is a platform for discovering, creating, and connecting around feminist events, gatherings, and organizing. We are building digital infrastructure that makes it easier for feminist organizers, collectives, movements, researchers, artists, activists, and communities to find one another — and to turn gatherings into connection, learning, solidarity, and collective action.",
+    moreThanTitle: about.moreThanTitle || "Making feminist gatherings visible, connected, and accessible",
+    moreThanDescription: about.moreThanDescription || "Feminist organizing happens everywhere: in community halls and classrooms, online spaces and festivals, protests and reading groups, conferences and kitchen-table conversations. But these spaces can be difficult to discover beyond our immediate networks.",
+    guides: about.guides || platformGuides,
+    infrastructureQuote: about.infrastructureQuote || "A feminist internet needs feminist infrastructure.",
+    infrastructureDetail: about.infrastructureDetail || `${brand.name} is our contribution to that infrastructure: a place to find where feminists are gathering, what they are organizing around, and how to join them.`,
+    callToAction: about.callToAction || "Find a gathering. Create one. Build something together.",
+    storyTitle: about.storyTitle || "FemVents began with a gathering.",
+    storyBeats: about.storyBeats || storyBeats,
+    stillBuildingLine: about.stillBuildingLine || "We are still building. And we believe that is part of the story.",
+    builtWithLine: about.builtWithLine || "FemVents is not only being built for feminist communities. It is being built with them.",
+    approachTitle: about.approachTitle || "Building with feminist communities, not just for them",
+    approachDescription: about.approachDescription || "We believe feminist infrastructure should be shaped by the people who use it. FemVents is being developed through an ongoing process of listening, testing, learning, and building alongside feminist organizers, collectives, and communities.",
+    approachExtended: about.approachExtended || "Rather than assuming what movements need, we want the platform to grow from the realities of how feminists gather, organize, share knowledge, build relationships, and sustain their work. For us, this means thinking beyond functionality. We are also asking questions about power, access, safety, care, representation, ownership, and whose needs technology is designed around.",
+    finalLine1: about.finalLine1 || "FemVents is not a finished product handed to the community.",
+    finalLine2: about.finalLine2 || "It is an invitation to shape feminist digital infrastructure together.",
+  };
+
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-16 px-6 pb-20">
-      <PageHero
+           <PageHero
         highlight="💫 About FemVents"
-        title="Where feminist movements gather."
-        description="FemVents is a platform for discovering, creating, and connecting around feminist events, gatherings, and organizing. We are building digital infrastructure that makes it easier for feminist organizers, collectives, movements, researchers, artists, activists, and communities to find one another — and to turn gatherings into connection, learning, solidarity, and collective action."
+        title={a.heroTitle}
+        description={a.heroDescription}
       />
 
           {/* More than an events platform */}
       <section className="rounded-3xl border border-purple-100 bg-gradient-to-br from-white to-purple-50/30 p-10 shadow-lg">
-        <SectionHeading
+      <SectionHeading
           eyebrow="🌍 More than an events platform"
-          title="Making feminist gatherings visible, connected, and accessible"
-          description="Feminist organizing happens everywhere: in community halls and classrooms, online spaces and festivals, protests and reading groups, conferences and kitchen-table conversations. But these spaces can be difficult to discover beyond our immediate networks."
+          title={a.moreThanTitle}
+          description={a.moreThanDescription}
         />
         <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-5">
           {platformActions.map((item) => (
@@ -224,7 +247,7 @@ export default function AboutPage() {
           title="The values shaping how we build"
         />
         <div className="mt-8 grid gap-6 sm:grid-cols-2">
-          {platformGuides.map((item, index) => {
+        {a.guides.map((item, index) => {
             const colors = [
               'from-blue-500/15 to-cyan-500/5',
               'from-purple-500/15 to-pink-500/5',
@@ -241,32 +264,31 @@ export default function AboutPage() {
           })}
         </div>
         <div className="mt-8 rounded-2xl border border-white/60 bg-white/70 p-8 text-center">
-          <p className="text-xl font-bold text-gray-900">A feminist internet needs feminist infrastructure.</p>
+          <p className="text-xl font-bold text-gray-900">{a.infrastructureQuote}</p>
           <p className="mt-3 text-sm text-gray-600 max-w-xl mx-auto">
-            {brand.name} is our contribution to that infrastructure: a place to find where feminists are gathering,
-            what they are organizing around, and how to join them.
+            {a.infrastructureDetail}
           </p>
           <p className="mt-4 text-base font-semibold bg-gradient-to-r from-rose-600 to-purple-600 bg-clip-text text-transparent">
-            Find a gathering. Create one. Build something together.
+            {a.callToAction}
           </p>
         </div>
       </section>
 
       {/* Our story — vertical timeline */}
       <section className="rounded-3xl border border-purple-100 bg-gradient-to-br from-white to-purple-50/30 p-10 shadow-lg">
-        <SectionHeading
+      <SectionHeading
           eyebrow="📖 Our story"
-          title="FemVents began with a gathering."
+          title={a.storyTitle}
         />
 
         <div className="mt-10 space-y-6">
-          {storyBeats.map((beat, index) => (
+          {a.storyBeats.map((beat, index) => (
             <div key={index} className="relative flex gap-6">
               <div className="flex flex-col items-center">
                 <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-rose-500 to-purple-500 text-sm font-bold text-white shadow-md">
                   {beat.year}
                 </span>
-                {index < storyBeats.length - 1 && (
+                {index < a.storyBeats.length - 1 && (
                   <span className="mt-2 w-px flex-1 bg-gradient-to-b from-purple-200 to-rose-100" />
                 )}
               </div>
@@ -278,23 +300,20 @@ export default function AboutPage() {
         </div>
 
         <div className="mt-8 rounded-2xl bg-gradient-to-r from-rose-500 to-purple-600 p-8 text-center shadow-lg">
-          <p className="text-xl font-bold text-white">We are still building. And we believe that is part of the story.</p>
-          <p className="mt-2 text-sm text-white/90">FemVents is not only being built for feminist communities. It is being built with them.</p>
+          <p className="text-xl font-bold text-white">{a.stillBuildingLine}</p>
+          <p className="mt-2 text-sm text-white/90">{a.builtWithLine}</p>
         </div>
       </section>
 
       {/* Our approach */}
       <section className="rounded-3xl border border-purple-100 bg-gradient-to-br from-rose-50 via-white to-indigo-50 p-10 shadow-xl">
-        <SectionHeading
+      <SectionHeading
           eyebrow="🤝 Our approach"
-          title="Building with feminist communities, not just for them"
-          description="We believe feminist infrastructure should be shaped by the people who use it. FemVents is being developed through an ongoing process of listening, testing, learning, and building alongside feminist organizers, collectives, and communities."
+          title={a.approachTitle}
+          description={a.approachDescription}
         />
         <p className="mt-4 text-sm text-gray-600 max-w-3xl">
-          Rather than assuming what movements need, we want the platform to grow from the realities of how
-          feminists gather, organize, share knowledge, build relationships, and sustain their work. For us, this
-          means thinking beyond functionality. We are also asking questions about power, access, safety, care,
-          representation, ownership, and whose needs technology is designed around.
+          {a.approachExtended}
         </p>
 
              <div className="mt-8 grid gap-6 md:grid-cols-2">
@@ -327,9 +346,9 @@ export default function AboutPage() {
         </div>
         <div className="mt-8 rounded-2xl bg-gradient-to-r from-purple-600 to-rose-500 p-8 text-center shadow-lg">
           <p className="text-lg font-bold text-white">
-            FemVents is not a finished product handed to the community.
+            {a.finalLine1}
           </p>
-          <p className="mt-1 text-base text-white/90">It is an invitation to shape feminist digital infrastructure together.</p>
+          <p className="mt-1 text-base text-white/90">{a.finalLine2}</p>
         </div>
       </section>
     </main>

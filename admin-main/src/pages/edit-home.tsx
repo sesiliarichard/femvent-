@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../services/supabase';
 import { AdminLayout } from '../components/AdminLayout';
-import { EditableText } from '../components/EditableText';
-import { EditableImage } from '../components/EditableImage';
+import { ImageUploadWidget } from '../components/ImageUploadWidget';
 
 interface HomeContent {
   heroBadge: string;
@@ -60,6 +59,37 @@ const DEFAULTS: HomeContent = {
   ctaButtonText: "Start Creating",
 };
 
+const FIELD_LABELS: Record<keyof HomeContent, string> = {
+  heroBadge: "Hero Badge Text",
+  heroTitleLine1: "Hero Title (Line 1)",
+  heroTitleLine2: "Hero Title (Line 2, coloured)",
+  heroDescription: "Hero Description",
+  heroImage1: "Hero Image 1",
+  heroImage2: "Hero Image 2",
+  liveNowLabel: "\"Live Now\" Card Label",
+  statNumber: "Stat Number (e.g. 1.2M)",
+  statLabel: "Stat Label (e.g. Tickets Sold)",
+  bentoTitle: "Collections Section Title",
+  bentoSubtitle: "Collections Section Subtitle",
+  nairobiImage: "Trending City Image",
+  nairobiTag: "Trending City Tag",
+  nairobiTitle: "Trending City Name",
+  nairobiDescription: "Trending City Description",
+  hotPicksCount: "Hot Picks Count",
+  hotPicksLabel: "Hot Picks Label",
+  midnightTag: "Featured Card Tag",
+  midnightTitle: "Featured Card Title",
+  artCultureLabel: "Small Card Label",
+  upcomingTitle: "Upcoming Events Section Title",
+  ctaTitleLine1: "CTA Title (Line 1)",
+  ctaTitleLine2: "CTA Title (Line 2)",
+  ctaDescription: "CTA Description",
+  ctaButtonText: "CTA Button Text",
+};
+
+const IMAGE_FIELDS: (keyof HomeContent)[] = ['heroImage1', 'heroImage2', 'nairobiImage'];
+const TEXTAREA_FIELDS: (keyof HomeContent)[] = ['heroDescription', 'nairobiDescription', 'ctaDescription'];
+
 export default function EditHomePage() {
   const [content, setContent] = useState<HomeContent>(DEFAULTS);
   const [loading, setLoading] = useState(true);
@@ -89,9 +119,7 @@ export default function EditHomePage() {
     }
   };
 
-  const saveField = async (field: keyof HomeContent, value: string) => {
-    const updated = { ...content, [field]: value };
-    setContent(updated);
+  const handleSave = async () => {
     setSaving(true);
     try {
       const { data: existing } = await supabase
@@ -100,7 +128,7 @@ export default function EditHomePage() {
         .eq('site', 'web-main')
         .maybeSingle();
 
-      const mergedContent = { ...(existing?.content || {}), home: updated };
+      const mergedContent = { ...(existing?.content || {}), home: content };
 
       const { error } = await supabase
         .from('site_content')
@@ -110,12 +138,17 @@ export default function EditHomePage() {
         );
 
       if (error) throw error;
+      alert('✅ Home page saved! Changes will appear on the live site shortly.');
     } catch (err) {
       console.error('Error saving home content:', err);
-      alert('Failed to save — your change may not have been kept.');
+      alert('Failed to save');
     } finally {
       setSaving(false);
     }
+  };
+
+  const update = (field: keyof HomeContent, value: string) => {
+    setContent({ ...content, [field]: value });
   };
 
   if (loading) {
@@ -128,183 +161,69 @@ export default function EditHomePage() {
     );
   }
 
+  const sections: { title: string; fields: (keyof HomeContent)[] }[] = [
+    { title: "Hero Section", fields: ["heroBadge", "heroTitleLine1", "heroTitleLine2", "heroDescription", "heroImage1", "heroImage2", "liveNowLabel", "statNumber", "statLabel"] },
+    { title: "Curated Collections", fields: ["bentoTitle", "bentoSubtitle", "nairobiImage", "nairobiTag", "nairobiTitle", "nairobiDescription", "hotPicksCount", "hotPicksLabel", "midnightTag", "midnightTitle", "artCultureLabel"] },
+    { title: "Upcoming Events", fields: ["upcomingTitle"] },
+    { title: "Call to Action", fields: ["ctaTitleLine1", "ctaTitleLine2", "ctaDescription", "ctaButtonText"] },
+  ];
+
   return (
     <AdminLayout>
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Edit Home Page</h1>
-          <p className="text-sm text-gray-500">Click any text or image below to edit it. Changes save automatically.</p>
-        </div>
-        {saving && <span className="text-sm text-blue-600 font-medium">Saving...</span>}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Edit Home Page</h1>
+        <p className="text-sm text-gray-500">Update the text and images shown on femvents.netlify.app.</p>
       </div>
 
-      <div className="rounded-2xl border border-gray-200 overflow-hidden bg-white">
-        <main className="min-h-screen pb-20">
-          {/* Hero Section */}
-          <section className="mx-auto max-w-7xl px-6 pt-24 pb-16 md:pt-32">
-            <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
-              <div className="space-y-8">
-                <div className="inline-block rounded-full bg-rose-50 text-rose-600 border border-rose-100 px-4 py-1.5 text-sm font-semibold">
-                  <EditableText value={content.heroBadge} onChange={(v) => saveField('heroBadge', v)} />
-                </div>
-                <h1 className="text-6xl font-black tracking-tighter text-gray-900 md:text-8xl leading-[0.9]">
-                  <EditableText value={content.heroTitleLine1} onChange={(v) => saveField('heroTitleLine1', v)} /> <br />
-                  <span className="bg-gradient-to-r from-rose-500 to-orange-500 bg-clip-text text-transparent">
-                    <EditableText value={content.heroTitleLine2} onChange={(v) => saveField('heroTitleLine2', v)} />
-                  </span>
-                </h1>
-                <p className="max-w-md text-xl font-medium text-gray-500 leading-relaxed">
-                  <EditableText value={content.heroDescription} onChange={(v) => saveField('heroDescription', v)} multiline />
-                </p>
+      {sections.map((section) => (
+        <div key={section.title} className="bg-white rounded-lg border border-gray-200 mb-6 overflow-hidden">
+          <div className="px-6 py-3 bg-gray-900 text-white font-semibold text-sm">
+            {section.title}
+          </div>
+          <div className="p-6 space-y-5">
+            {section.fields.map((field) => (
+              <div key={field}>
+                {IMAGE_FIELDS.includes(field) ? (
+                  <ImageUploadWidget
+                    label={FIELD_LABELS[field]}
+                    value={content[field]}
+                    onChange={(url) => update(field, url)}
+                    folder="home"
+                  />
+                ) : (
+                  <>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">{FIELD_LABELS[field]}</label>
+                    {TEXTAREA_FIELDS.includes(field) ? (
+                      <textarea
+                        value={content[field]}
+                        onChange={(e) => update(field, e.target.value)}
+                        rows={3}
+                        className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    ) : (
+                      <input
+                        type="text"
+                        value={content[field]}
+                        onChange={(e) => update(field, e.target.value)}
+                        className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      />
+                    )}
+                  </>
+                )}
               </div>
+            ))}
+          </div>
+        </div>
+      ))}
 
-              <div className="relative grid grid-cols-2 gap-4">
-                <div className="space-y-4 pt-12">
-                  <div className="aspect-[3/4] rounded-2xl bg-gray-100 overflow-hidden border border-gray-200">
-                    <EditableImage
-                      src={content.heroImage1}
-                      onChange={(url) => saveField('heroImage1', url)}
-                      alt="Event"
-                      folder="home"
-                      className="w-full h-full"
-                      imgClassName="object-cover w-full h-full"
-                    />
-                  </div>
-                  <div className="aspect-square rounded-2xl bg-gray-100 overflow-hidden border border-gray-200">
-                    <div className="w-full h-full bg-rose-500 p-6 flex flex-col justify-between">
-                      <span className="text-white/50 font-mono text-xs">01</span>
-                      <span className="text-white font-bold text-3xl tracking-tighter">
-                        <EditableText value={content.liveNowLabel} onChange={(v) => saveField('liveNowLabel', v)} className="text-white" />
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="space-y-4">
-                  <div className="aspect-square rounded-2xl bg-black overflow-hidden border border-gray-800">
-                    <div className="w-full h-full p-6 flex flex-col justify-between text-white">
-                      <span className="text-gray-500 font-mono text-xs">STATS</span>
-                      <div>
-                        <span className="block text-4xl font-bold tracking-tighter">
-                          <EditableText value={content.statNumber} onChange={(v) => saveField('statNumber', v)} className="text-white" />
-                        </span>
-                        <span className="text-gray-500 font-medium">
-                          <EditableText value={content.statLabel} onChange={(v) => saveField('statLabel', v)} className="text-gray-300" />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="aspect-[3/4] rounded-2xl bg-gray-100 overflow-hidden border border-gray-200">
-                    <EditableImage
-                      src={content.heroImage2}
-                      onChange={(url) => saveField('heroImage2', url)}
-                      alt="Event"
-                      folder="home"
-                      className="w-full h-full"
-                      imgClassName="object-cover w-full h-full"
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Bento Grid */}
-          <section className="mx-auto max-w-7xl px-6 py-24">
-            <div className="mb-12">
-              <h2 className="text-4xl font-black tracking-tighter">
-                <EditableText value={content.bentoTitle} onChange={(v) => saveField('bentoTitle', v)} />
-              </h2>
-              <p className="text-gray-500 mt-2 text-lg">
-                <EditableText value={content.bentoSubtitle} onChange={(v) => saveField('bentoSubtitle', v)} />
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-2 gap-4 h-[800px] md:h-[600px]">
-              <div className="relative group md:col-span-2 md:row-span-2 rounded-3xl overflow-hidden bg-gray-100 border border-gray-200">
-                <EditableImage
-                  src={content.nairobiImage}
-                  onChange={(url) => saveField('nairobiImage', url)}
-                  alt="City"
-                  folder="home"
-                  className="absolute inset-0"
-                  imgClassName="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-8 flex flex-col justify-end pointer-events-none">
-                  <span className="text-white/60 font-mono text-xs mb-2 pointer-events-auto">
-                    <EditableText value={content.nairobiTag} onChange={(v) => saveField('nairobiTag', v)} className="text-white/60" />
-                  </span>
-                  <h3 className="text-white text-4xl font-bold tracking-tighter pointer-events-auto">
-                    <EditableText value={content.nairobiTitle} onChange={(v) => saveField('nairobiTitle', v)} className="text-white" />
-                  </h3>
-                  <p className="text-white/80 mt-2 pointer-events-auto">
-                    <EditableText value={content.nairobiDescription} onChange={(v) => saveField('nairobiDescription', v)} className="text-white/80" />
-                  </p>
-                </div>
-              </div>
-
-              <div className="relative md:col-span-1 md:row-span-1 rounded-3xl overflow-hidden bg-rose-50 border border-rose-100 p-6 flex flex-col justify-between">
-                <span className="text-rose-600 font-bold text-xl">🔥 Hot Picks</span>
-                <div>
-                  <div className="text-4xl font-black tracking-tighter text-gray-900 mb-1">
-                    <EditableText value={content.hotPicksCount} onChange={(v) => saveField('hotPicksCount', v)} />
-                  </div>
-                  <div className="text-gray-500 text-sm">
-                    <EditableText value={content.hotPicksLabel} onChange={(v) => saveField('hotPicksLabel', v)} />
-                  </div>
-                </div>
-              </div>
-
-              <div className="relative md:col-span-1 md:row-span-2 rounded-3xl overflow-hidden bg-gray-900 border border-gray-800">
-                <div className="absolute inset-0 p-6 flex flex-col justify-between z-10">
-                  <span className="text-white/60 text-xs font-mono">
-                    <EditableText value={content.midnightTag} onChange={(v) => saveField('midnightTag', v)} className="text-white/60" />
-                  </span>
-                  <h3 className="text-white text-2xl font-bold leading-tight">
-                    <EditableText value={content.midnightTitle} onChange={(v) => saveField('midnightTitle', v)} className="text-white" multiline />
-                  </h3>
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-black/80" />
-              </div>
-
-              <div className="relative md:col-span-1 md:row-span-1 rounded-3xl overflow-hidden bg-white border border-gray-200 p-6 flex flex-col justify-center items-center text-center">
-                <span className="text-4xl mb-2">🎨</span>
-                <span className="font-bold text-gray-900">
-                  <EditableText value={content.artCultureLabel} onChange={(v) => saveField('artCultureLabel', v)} />
-                </span>
-              </div>
-            </div>
-          </section>
-
-          {/* Featured Events heading */}
-          <section className="mx-auto max-w-7xl px-6 pb-24">
-            <div className="flex items-end justify-between mb-8">
-              <h2 className="text-4xl font-black tracking-tighter">
-                <EditableText value={content.upcomingTitle} onChange={(v) => saveField('upcomingTitle', v)} />
-              </h2>
-            </div>
-            <p className="text-sm text-gray-400 italic">
-              Featured event cards below are edited on the "Featured Events" tab in Website Content.
-            </p>
-          </section>
-
-          {/* Big CTA */}
-          <section className="mx-auto max-w-7xl px-6 mb-20">
-            <div className="rounded-[2.5rem] bg-gradient-to-br from-rose-900 via-purple-900 to-black text-white p-12 md:p-24 text-center relative">
-              <div className="relative z-10 max-w-2xl mx-auto space-y-8">
-                <h2 className="text-5xl md:text-7xl font-black tracking-tighter leading-none bg-gradient-to-br from-white via-rose-100 to-purple-200 bg-clip-text text-transparent">
-                  <EditableText value={content.ctaTitleLine1} onChange={(v) => saveField('ctaTitleLine1', v)} className="text-white" /><br />
-                  <EditableText value={content.ctaTitleLine2} onChange={(v) => saveField('ctaTitleLine2', v)} className="text-white" />
-                </h2>
-                <p className="text-lg text-gray-400 font-medium">
-                  <EditableText value={content.ctaDescription} onChange={(v) => saveField('ctaDescription', v)} className="text-gray-300" />
-                </p>
-                <div className="inline-block h-14 px-10 rounded-full bg-white text-rose-600 font-bold text-lg flex items-center justify-center">
-                  <EditableText value={content.ctaButtonText} onChange={(v) => saveField('ctaButtonText', v)} />
-                </div>
-              </div>
-            </div>
-          </section>
-        </main>
+      <div className="flex justify-end sticky bottom-4">
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-semibold shadow-lg"
+        >
+          {saving ? 'Saving...' : '💾 Save Home Page'}
+        </button>
       </div>
     </AdminLayout>
   );
