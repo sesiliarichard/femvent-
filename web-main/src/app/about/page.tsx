@@ -247,7 +247,7 @@ export default async function AboutPage() {
           title="The values shaping how we build"
         />
         <div className="mt-8 grid gap-6 sm:grid-cols-2">
-        {a.guides.map((item, index) => {
+        {a.guides.map((item: any, index: number) => {
             const colors = [
               'from-blue-500/15 to-cyan-500/5',
               'from-purple-500/15 to-pink-500/5',
@@ -282,7 +282,7 @@ export default async function AboutPage() {
         />
 
         <div className="mt-10 space-y-6">
-          {a.storyBeats.map((beat, index) => (
+        {a.storyBeats.map((beat: any, index: number) => (
             <div key={index} className="relative flex gap-6">
               <div className="flex flex-col items-center">
                 <span className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-rose-500 to-purple-500 text-sm font-bold text-white shadow-md">
