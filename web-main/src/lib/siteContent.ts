@@ -4,6 +4,7 @@ import * as defaults from './content';
 export async function getSiteContent(): Promise<{
   home: Record<string, any>;
   about: Record<string, any>;
+  pricingPlans: Array<{ id: string; name: string; price: string; description: string; badge: string }>;
   brand: typeof defaults.brand;
   navLinks: typeof defaults.navLinks;
   destinations: typeof defaults.destinations;
@@ -26,12 +27,21 @@ export async function getSiteContent(): Promise<{
     if (error) throw error;
 
     const overrides = (data?.content || {}) as Partial<typeof defaults> & {
-  home?: Record<string, any>;
-};
+      home?: Record<string, any>;
+      about?: Record<string, any>;
+      pricingPlans?: Array<{ id: string; name: string; price: string; description: string; badge: string }>;
+    };
+
+    const DEFAULT_PLANS = [
+      { id: 'starter', name: 'Starter', price: '$29/mo', description: 'For new organizers launching their first event.', badge: 'Best for first-time hosts' },
+      { id: 'growth', name: 'Growth', price: '$79/mo', description: 'For growing communities managing more than one event.', badge: 'Popular for scaling teams' },
+      { id: 'pro', name: 'Pro', price: '$149/mo', description: 'Advanced automation, analytics, and premium support.', badge: 'Built for full-scale operations' },
+    ];
 
 return {
   home: overrides.home || {},
   about: overrides.about || {},
+  pricingPlans: overrides.pricingPlans || DEFAULT_PLANS,
   brand: { ...defaults.brand, ...(overrides.brand || {}) },
       navLinks: overrides.navLinks || defaults.navLinks,
       destinations: overrides.destinations || defaults.destinations,
@@ -45,6 +55,11 @@ return {
     };
   } catch (err) {
     console.error('Error fetching site content, falling back to defaults:', err);
-    return { home: {}, about: {}, ...defaults };
+    const DEFAULT_PLANS = [
+      { id: 'starter', name: 'Starter', price: '$29/mo', description: 'For new organizers launching their first event.', badge: 'Best for first-time hosts' },
+      { id: 'growth', name: 'Growth', price: '$79/mo', description: 'For growing communities managing more than one event.', badge: 'Popular for scaling teams' },
+      { id: 'pro', name: 'Pro', price: '$149/mo', description: 'Advanced automation, analytics, and premium support.', badge: 'Built for full-scale operations' },
+    ];
+    return { home: {}, about: {}, pricingPlans: DEFAULT_PLANS, ...defaults };
   }
 }
