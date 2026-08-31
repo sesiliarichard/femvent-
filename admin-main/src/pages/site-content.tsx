@@ -156,6 +156,7 @@ export default function SiteContentPage() {
           supportTopics: data.content.supportTopics || DEFAULTS.supportTopics,
           pricingPlans: data.content.pricingPlans || DEFAULTS.pricingPlans,
         });
+      }
     } catch (error) {
       console.error('Error fetching site content:', error);
     } finally {
