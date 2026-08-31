@@ -3,15 +3,12 @@ import SectionHeading from "@/components/SectionHeading";
 import { getSiteContent } from "@/lib/siteContent";
 import { Calendar, Inbox, Drama, Rocket, Palette, Sparkles, CreditCard, Zap, Briefcase } from "lucide-react";
 
-const workflow = [
-  "Upload your event details and images",
-  "Set up ticket types and pricing",
-  "Publish and share your event link",
-  "Track ticket sales and check in attendees on event day",
-];
-
 export default async function OrganizersPage() {
-  const { organizerSpotlights, impactStats } = await getSiteContent();
+  const { organizerSpotlights, impactStats, pricingPlans, organizersHero, howItWorks } = await getSiteContent();
+
+  const heroTitle = organizersHero.title || "Professional tools for event creators";
+  const heroDescription = organizersHero.description || "Everything you need to create, promote, and manage your events. From ticket sales to attendee check-in, we've got you covered.";
+
 
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-16 px-6 pb-20">
@@ -21,8 +18,8 @@ export default async function OrganizersPage() {
             <Briefcase size={14} /> For Organizers
           </span>
         }
-        title="Professional tools for event creators"
-        description="Everything you need to create, promote, and manage your events. From ticket sales to attendee check-in, we've got you covered."
+        title={heroTitle}
+        description={heroDescription}
         action={
           <div className="flex flex-wrap gap-3">
             <a href={`${process.env.NEXT_PUBLIC_HOST_APP_URL}/signup`}>
@@ -83,30 +80,8 @@ export default async function OrganizersPage() {
           title="Pick the setup that fits your team"
           description="Start hosting events on FemVents — choose a plan and get access to your dashboard."
         />
-        <div className="mt-8 grid gap-6 md:grid-cols-3">
-          {[
-            {
-              id: 'starter',
-              name: 'Starter',
-              price: '$29/mo',
-              description: 'For new organizers launching their first event.',
-              badge: 'Best for first-time hosts',
-            },
-            {
-              id: 'growth',
-              name: 'Growth',
-              price: '$79/mo',
-              description: 'For growing communities managing more than one event.',
-              badge: 'Popular for scaling teams',
-            },
-            {
-              id: 'pro',
-              name: 'Pro',
-              price: '$149/mo',
-              description: 'Advanced automation, analytics, and premium support.',
-              badge: 'Built for full-scale operations',
-            },
-          ].map((plan) => (
+               <div className="mt-8 grid gap-6 md:grid-cols-3">
+               {pricingPlans.map((plan) => (
             <div
             key={plan.id}
             className={`relative rounded-3xl border p-8 shadow-lg hover-lift transition-all ${
@@ -145,8 +120,8 @@ export default async function OrganizersPage() {
           title="Simple tools for professional results"
           description="Create and manage events with tools designed to keep your team organized and your attendees happy."
         />
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          {workflow.map((step, index) => (
+                <div className="mt-8 grid gap-6 md:grid-cols-2">
+                {howItWorks.map((step, index) => (
             <div key={step} className="group rounded-2xl border border-white/20 bg-white/5 p-6 hover:bg-white/10 transition-all hover:-translate-y-1">
               <span className="text-sm font-semibold uppercase tracking-[0.3em] text-white/60">
                 Step {index + 1}

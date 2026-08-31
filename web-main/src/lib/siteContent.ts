@@ -4,6 +4,8 @@ import * as defaults from './content';
 export async function getSiteContent(): Promise<{
   home: Record<string, any>;
   about: Record<string, any>;
+  organizersHero: Record<string, any>;
+  howItWorks: string[];
   pricingPlans: Array<{ id: string; name: string; price: string; description: string; badge: string }>;
   brand: typeof defaults.brand;
   navLinks: typeof defaults.navLinks;
@@ -29,6 +31,8 @@ export async function getSiteContent(): Promise<{
     const overrides = (data?.content || {}) as Partial<typeof defaults> & {
       home?: Record<string, any>;
       about?: Record<string, any>;
+      organizersHero?: Record<string, any>;
+      howItWorks?: string[];
       pricingPlans?: Array<{ id: string; name: string; price: string; description: string; badge: string }>;
     };
 
@@ -38,9 +42,18 @@ export async function getSiteContent(): Promise<{
       { id: 'pro', name: 'Pro', price: '$149/mo', description: 'Advanced automation, analytics, and premium support.', badge: 'Built for full-scale operations' },
     ];
 
+    const DEFAULT_WORKFLOW = [
+      "Upload your event details and images",
+      "Set up ticket types and pricing",
+      "Publish and share your event link",
+      "Track ticket sales and check in attendees on event day",
+    ];
+
 return {
   home: overrides.home || {},
   about: overrides.about || {},
+  organizersHero: overrides.organizersHero || {},
+  howItWorks: overrides.howItWorks || DEFAULT_WORKFLOW,
   pricingPlans: overrides.pricingPlans || DEFAULT_PLANS,
   brand: { ...defaults.brand, ...(overrides.brand || {}) },
       navLinks: overrides.navLinks || defaults.navLinks,
@@ -60,6 +73,12 @@ return {
       { id: 'growth', name: 'Growth', price: '$79/mo', description: 'For growing communities managing more than one event.', badge: 'Popular for scaling teams' },
       { id: 'pro', name: 'Pro', price: '$149/mo', description: 'Advanced automation, analytics, and premium support.', badge: 'Built for full-scale operations' },
     ];
-    return { home: {}, about: {}, pricingPlans: DEFAULT_PLANS, ...defaults };
+    const DEFAULT_WORKFLOW = [
+      "Upload your event details and images",
+      "Set up ticket types and pricing",
+      "Publish and share your event link",
+      "Track ticket sales and check in attendees on event day",
+    ];
+    return { home: {}, about: {}, organizersHero: {}, howItWorks: DEFAULT_WORKFLOW, pricingPlans: DEFAULT_PLANS, ...defaults };
   }
 }
