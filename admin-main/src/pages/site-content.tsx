@@ -44,6 +44,14 @@ interface FeaturedEvent {
     title: string;
     items: string[];
   }
+
+  interface PricingPlan {
+    id: string;
+    name: string;
+    price: string;
+    description: string;
+    badge: string;
+  }
   
   interface SiteContentData {
     brand: {
@@ -58,6 +66,7 @@ interface FeaturedEvent {
     blogPosts: BlogPost[];
     faq: FaqItem[];
     supportTopics: SupportTopic[];
+    pricingPlans: PricingPlan[];
   }
 const DEFAULTS: SiteContentData = {
   brand: {
@@ -108,13 +117,18 @@ const DEFAULTS: SiteContentData = {
     { title: "Marketing & Growth", items: ["Smart audiences", "Promo codes + referral loops", "Attribution dashboards"] },
     { title: "Finance & Compliance", items: ["Supported currencies", "Settlement schedules", "KYC / AML overview"] },
   ],
+  pricingPlans: [
+    { id: 'starter', name: 'Starter', price: '$29/mo', description: 'For new organizers launching their first event.', badge: 'Best for first-time hosts' },
+    { id: 'growth', name: 'Growth', price: '$79/mo', description: 'For growing communities managing more than one event.', badge: 'Popular for scaling teams' },
+    { id: 'pro', name: 'Pro', price: '$149/mo', description: 'Advanced automation, analytics, and premium support.', badge: 'Built for full-scale operations' },
+  ],
 };
 
 export default function SiteContentPage() {
   const [content, setContent] = useState<SiteContentData>(DEFAULTS);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState<'brand' | 'categories' | 'events' | 'organizers' | 'stats' | 'blog' | 'faq' | 'support'>('brand');
+  const [activeTab, setActiveTab] = useState<'brand' | 'categories' | 'events' | 'organizers' | 'stats' | 'blog' | 'faq' | 'support' | 'pricing'>('brand');
 
   useEffect(() => {
     fetchContent();
@@ -140,8 +154,8 @@ export default function SiteContentPage() {
           blogPosts: data.content.blogPosts || DEFAULTS.blogPosts,
           faq: data.content.faq || DEFAULTS.faq,
           supportTopics: data.content.supportTopics || DEFAULTS.supportTopics,
+          pricingPlans: data.content.pricingPlans || DEFAULTS.pricingPlans,
         });
-      }
     } catch (error) {
       console.error('Error fetching site content:', error);
     } finally {
@@ -237,6 +251,7 @@ export default function SiteContentPage() {
             { key: 'blog', label: 'Blog Posts' },
             { key: 'faq', label: 'FAQ' },
             { key: 'support', label: 'Support Topics' },
+            { key: 'pricing', label: 'Pricing Plans' },
           ].map((tab) => (
             <button
               key={tab.key}
@@ -487,9 +502,43 @@ export default function SiteContentPage() {
                   />
                 </div>
               ))}
-              <button onClick={() => addItem('supportTopics', { title: '', items: [] })} className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
+                     <button onClick={() => addItem('supportTopics', { title: '', items: [] })} className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
                 + Add support topic
               </button>
+            </div>
+          )}
+
+          {activeTab === 'pricing' && (
+            <div className="space-y-4">
+              {content.pricingPlans.map((plan, i) => (
+                <div key={i} className="border border-gray-200 rounded-lg p-4 space-y-2">
+                  <div className="flex justify-between items-start">
+                    <label className="block text-xs font-medium text-gray-500">Plan {i + 1} — ID (used in signup links, e.g. "starter")</label>
+                    <button onClick={() => removeItem('pricingPlans', i)} className="text-xs text-red-600 font-semibold hover:text-red-700">Remove</button>
+                  </div>
+                  <input type="text" value={plan.id} onChange={(e) => updateListItem('pricingPlans', i, 'id', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  <label className="block text-xs font-medium text-gray-500">Name</label>
+                  <input type="text" value={plan.name} onChange={(e) => updateListItem('pricingPlans', i, 'name', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  <div className="grid grid-cols-2 gap-2">
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500">Price</label>
+                      <input type="text" value={plan.price} onChange={(e) => updateListItem('pricingPlans', i, 'price', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-gray-500">Badge (small label above price)</label>
+                      <input type="text" value={plan.badge} onChange={(e) => updateListItem('pricingPlans', i, 'badge', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                    </div>
+                  </div>
+                  <label className="block text-xs font-medium text-gray-500">Description</label>
+                  <textarea value={plan.description} onChange={(e) => updateListItem('pricingPlans', i, 'description', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                </div>
+              ))}
+              <button onClick={() => addItem('pricingPlans', { id: '', name: '', price: '', description: '', badge: '' })} className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
+                + Add plan
+              </button>
+              <p className="text-xs text-gray-400 italic">
+                Note: the "Most Popular" badge on the Organizers page currently highlights whichever plan has id "growth" — editing the id may affect that highlight.
+              </p>
             </div>
           )}
           
