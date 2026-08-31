@@ -13,9 +13,9 @@ import {
   BarChart3,
   LogOut,
   ChevronRight,
-  CreditCard
+  CreditCard,
+  Briefcase
 } from 'lucide-react';
-
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
   { name: 'Users', href: '/users', icon: Users },
@@ -24,6 +24,7 @@ const navigation = [
   { name: 'Website Content', href: '/site-content', icon: Settings },
   { name: 'Edit Home Page', href: '/edit-home', icon: LayoutDashboard },
   { name: 'Edit About Page', href: '/edit-about', icon: Users },
+  { name: 'Edit Organizers Page', href: '/edit-organizers', icon: Briefcase },
   { name: 'Moderation', href: '/moderation', icon: Shield },
   { name: 'Backup & Export', href: '/backup-export', icon: Database },
   { name: 'Notifications', href: '/notifications', icon: Bell },
