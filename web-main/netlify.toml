@@ -20,7 +20,13 @@
   force = true
 
 [[redirects]]
+  from = "/host"
+  to = "https://femvents-host.netlify.app/host"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/host/*"
-  to = "https://femvents-host.netlify.app/:splat"
+  to = "https://femvents-host.netlify.app/host/:splat"
   status = 200
   force = true
