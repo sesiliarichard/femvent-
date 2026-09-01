@@ -8,8 +8,14 @@
   package = "@netlify/plugin-nextjs"
 
 [[redirects]]
+  from = "/admin"
+  to = "https://femvents-admin.netlify.app/admin"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/admin/*"
-  to = "https://femvents-admin.netlify.app/:splat"
+  to = "https://femvents-admin.netlify.app/admin/:splat"
   status = 200
   force = true
 
