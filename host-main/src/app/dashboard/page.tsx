@@ -27,9 +27,10 @@ function toDate(value: any): Date | null {
   return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
+import ProtectedRoute from '@/components/ProtectedRoute';
 
 // Main Dashboard Content - ENHANCED
-export default function DashboardContent() {
+function DashboardContent() {
   const { userProfile } = useAuth();
   const router = useRouter();
   const [showChart, setShowChart] = useState(true);
@@ -748,7 +749,7 @@ export default function DashboardContent() {
               </div>
             </div>
           ))}
-        </div>a
+        </div>
 
       <style jsx global>{`
         @keyframes fadeIn {
@@ -831,5 +832,13 @@ export default function DashboardContent() {
         }
       `}</style>
     </DashboardLayout>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <ProtectedRoute>
+      <DashboardContent />
+    </ProtectedRoute>
   );
 }
