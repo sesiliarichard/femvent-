@@ -2,6 +2,8 @@ import type { NextConfig } from "next";
 import path from 'path';
 
 const nextConfig: NextConfig = {
+  basePath: '/host',
+  assetPrefix: '/host',
   // Enable React compiler
   reactCompiler: true,
   // Instruct Turbopack where the project root is so it can resolve packages correctly
