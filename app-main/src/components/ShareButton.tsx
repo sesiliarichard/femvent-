@@ -33,7 +33,7 @@ export const ShareButton: React.FC<ShareButtonProps> = ({
     event,
     variant = 'icon',
     size = 24,
-    color = '#667eea',
+    color = '#6D3FE0',
 }) => {
     const [showOptions, setShowOptions] = useState(false);
 
@@ -119,7 +119,7 @@ export const ShareButton: React.FC<ShareButtonProps> = ({
                                         style={styles.option}
                                         onPress={() => handleOptionPress('more')}
                                     >
-                                        <View style={[styles.optionIcon, { backgroundColor: '#667eea' }]}>
+                                       <View style={[styles.optionIcon, { backgroundColor: '#6D3FE0' }]}>
                                             <Ionicons name="ellipsis-horizontal" size={24} color="#fff" />
                                         </View>
                                         <Text style={styles.optionText}>More</Text>
@@ -142,8 +142,8 @@ export const ShareButton: React.FC<ShareButtonProps> = ({
 
     return (
         <TouchableOpacity style={styles.button} onPress={handleShare} activeOpacity={0.8}>
-            <LinearGradient
-                colors={['#667eea', '#764ba2']}
+          <LinearGradient
+                colors={['#6D3FE0', '#5A2FC2']}
                 style={styles.gradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}

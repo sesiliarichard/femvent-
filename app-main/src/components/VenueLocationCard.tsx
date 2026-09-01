@@ -157,7 +157,7 @@ export const VenueLocationCard: React.FC<VenueLocationCardProps> = ({
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.iconContainer}>
-          <Ionicons name="location" size={24} color="#6366f1" />
+        <Ionicons name="location" size={24} color="#6D3FE0" />
         </View>
         <View style={styles.headerText}>
           <Text style={styles.label}>VENUE</Text>
@@ -180,7 +180,7 @@ export const VenueLocationCard: React.FC<VenueLocationCardProps> = ({
             activeOpacity={0.7}
           >
             <LinearGradient
-              colors={['#6366f1', '#8b5cf6']}
+              colors={['#6D3FE0', '#5A2FC2']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.actionGradient}

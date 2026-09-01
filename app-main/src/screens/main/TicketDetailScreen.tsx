@@ -134,15 +134,15 @@ export const TicketDetailScreen: React.FC = () => {
                     color: '#dc2626',
                     label: status.toUpperCase(),
                 };
-            default:
-                return {
-                    gradient: ['#667eea', '#764ba2'] as [string, string],
-                    icon: 'help-circle',
-                    color: '#666',
-                    label: 'UNKNOWN',
-                };
-        }
-    };
+                default:
+                    return {
+                        gradient: ['#6D3FE0', '#5A2FC2'] as [string, string],
+                        icon: 'help-circle',
+                        color: '#666',
+                        label: 'UNKNOWN',
+                    };
+            }
+        };
 
     const getCategoryConfig = (t: Ticket | null) => {
         const raw = (t?.priceOption?.name || (t as any)?.type || 'general').toLowerCase();
@@ -173,9 +173,9 @@ export const TicketDetailScreen: React.FC = () => {
         return {
             key: 'general',
             label: 'GENERAL',
-            gradient: ['#667eea', '#764ba2'] as [string, string],
-            accent: '#667eea',
-            badgeGradient: ['#667eea', '#764ba2'] as [string, string],
+            gradient: ['#6D3FE0', '#5A2FC2'] as [string, string],
+            accent: '#6D3FE0',
+            badgeGradient: ['#6D3FE0', '#5A2FC2'] as [string, string],
             icon: 'ticket' as const,
         };
     };
@@ -201,7 +201,7 @@ export const TicketDetailScreen: React.FC = () => {
         return (
             <SafeAreaView style={styles.container}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#667eea" />
+                    <ActivityIndicator size="large" color="#6D3FE0" />
                     <Text style={styles.loadingText}>Loading ticket...</Text>
                 </View>
             </SafeAreaView>
@@ -288,7 +288,7 @@ export const TicketDetailScreen: React.FC = () => {
                     <View style={styles.detailsContainer}>
                         <View style={styles.detailRow}>
                             <View style={styles.detailIcon}>
-                                <Ionicons name="calendar-outline" size={22} color="#667eea" />
+                            <Ionicons name="calendar-outline" size={22} color="#6D3FE0" />
                             </View>
                             <View style={styles.detailContent}>
                                 <Text style={styles.detailLabel}>Date</Text>
@@ -394,7 +394,7 @@ export const TicketDetailScreen: React.FC = () => {
 
                 {/* Help Card */}
                 <View style={styles.helpCard}>
-                    <Ionicons name="information-circle-outline" size={20} color="#667eea" />
+                <Ionicons name="information-circle-outline" size={20} color="#6D3FE0" />
                     <Text style={styles.helpText}>
                         Need help? Contact the event organizer or support team.
                     </Text>

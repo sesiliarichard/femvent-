@@ -139,7 +139,7 @@ export const ProfileScreen: React.FC = () => {
         label: 'Upcoming',
         value: ticketStats.upcoming,
         icon: 'event-available',
-        gradient: ['#667eea', '#764ba2'],
+        gradient: ['#6D3FE0', '#5A2FC2'],
       },
       {
         id: 'tickets',
@@ -178,7 +178,7 @@ export const ProfileScreen: React.FC = () => {
     title: string,
     description: string,
     onPress: () => void,
-    iconColor: string = '#667eea'
+    iconColor: string = '#6D3FE0'
   ) => (
     <TouchableOpacity
       style={styles.menuItem}
@@ -206,7 +206,7 @@ export const ProfileScreen: React.FC = () => {
       >
         {/* Header with Gradient */}
         <LinearGradient
-          colors={['#667eea', '#764ba2']}
+          colors={['#6D3FE0', '#5A2FC2']}
           style={styles.header}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -250,7 +250,7 @@ export const ProfileScreen: React.FC = () => {
           <View style={styles.sectionHeader}>
             <View style={styles.sectionTitleContainer}>
               <View style={styles.sectionIconCircle}>
-                <Ionicons name="person" size={20} color="#667eea" />
+              <Ionicons name="person" size={20} color="#6D3FE0" />
               </View>
               <Text style={styles.sectionTitle}>Account</Text>
             </View>
@@ -273,8 +273,8 @@ export const ProfileScreen: React.FC = () => {
               'person-circle-outline',
               'Edit Profile',
               'Update your personal information',
-              () => navigation.navigate('EditProfile' as never),
-              '#667eea'
+               () => navigation.navigate('EditProfile' as never),
+              '#6D3FE0'
             )}
             <Divider style={styles.divider} />
             {renderMenuItem(
@@ -291,8 +291,8 @@ export const ProfileScreen: React.FC = () => {
         {user?.role === 'attendee' && !user?.hostApplication && (
           <View style={styles.section}>
             <Surface style={styles.becomeHostCard} elevation={3}>
-              <LinearGradient
-                colors={['#667eea', '#764ba2']}
+            <LinearGradient
+                colors={['#6D3FE0', '#5A2FC2']}
                 style={styles.becomeHostGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -310,7 +310,7 @@ export const ProfileScreen: React.FC = () => {
                   activeOpacity={0.8}
                 >
                   <Text style={styles.becomeHostButtonText}>Apply Now</Text>
-                  <Ionicons name="arrow-forward" size={18} color="#667eea" />
+                  <Ionicons name="arrow-forward" size={18} color="#6D3FE0" />
                 </TouchableOpacity>
               </LinearGradient>
             </Surface>
@@ -412,7 +412,7 @@ export const ProfileScreen: React.FC = () => {
           <View style={styles.sectionHeader}>
             <View style={styles.sectionTitleContainer}>
               <View style={styles.sectionIconCircle}>
-                <Ionicons name="settings" size={20} color="#667eea" />
+              <Ionicons name="settings" size={20} color="#6D3FE0" />
               </View>
               <Text style={styles.sectionTitle}>Settings</Text>
             </View>
@@ -438,7 +438,7 @@ export const ProfileScreen: React.FC = () => {
             {renderMenuItem(
               'color-palette',
               'Theme',
-              `Current: ${mode.charAt(0).toUpperCase() + mode.slice(1)}`,
+            `Current: ${mode.charAt(0).toUpperCase() + mode.slice(1)}`,
               () => {
                 Alert.alert(
                   'Theme',
@@ -451,7 +451,7 @@ export const ProfileScreen: React.FC = () => {
                   ]
                 );
               },
-              '#667eea'
+              '#6D3FE0'
             )}
             <Divider style={styles.divider} />
             {renderMenuItem(
@@ -716,7 +716,7 @@ const styles = StyleSheet.create({
   becomeHostButtonText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#667eea',
+    color: '#6D3FE0',
   },
   applicationStatus: {
     padding: 18,

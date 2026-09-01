@@ -108,15 +108,14 @@ export const TicketsScreen: React.FC = () => {
           icon: 'close-circle',
           color: '#dc2626',
         };
-      default:
-        return {
-          gradient: ['#667eea', '#764ba2'] as [string, string],
-          icon: 'help-circle',
-          color: '#666',
-        };
-    }
-  };
-
+        default:
+          return {
+            gradient: ['#6D3FE0', '#5A2FC2'] as [string, string],
+            icon: 'help-circle',
+            color: '#666',
+          };
+      }
+    };
   const getCategoryConfig = (ticket: Ticket) => {
     const raw = (ticket.priceOption?.name || (ticket as any).type || 'general').toLowerCase();
     const priceValue = Number(
@@ -146,9 +145,9 @@ export const TicketsScreen: React.FC = () => {
     return {
       key: 'general',
       label: 'GENERAL',
-      gradient: ['#667eea', '#764ba2'] as [string, string],
-      accent: '#667eea',
-      badgeGradient: ['#667eea', '#764ba2'] as [string, string],
+      gradient: ['#6D3FE0', '#5A2FC2'] as [string, string],
+      accent: '#6D3FE0',
+      badgeGradient: ['#6D3FE0', '#5A2FC2'] as [string, string],
       icon: 'ticket' as const,
     };
   };
@@ -246,8 +245,8 @@ export const TicketsScreen: React.FC = () => {
       >
         {selected ? (
           <LinearGradient
-            colors={['#667eea', '#764ba2']}
-            style={styles.filterChip}
+          colors={['#6D3FE0', '#5A2FC2']}
+          style={styles.filterChip}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
           >
@@ -342,7 +341,7 @@ export const TicketsScreen: React.FC = () => {
             <View style={styles.ticketDetails}>
               <View style={styles.detailRow}>
                 <View style={styles.detailIconContainer}>
-                  <Ionicons name="calendar-outline" size={18} color="#667eea" />
+                <Ionicons name="calendar-outline" size={18} color="#6D3FE0" />
                 </View>
                 <View style={styles.detailContent}>
                   <Text style={styles.detailLabel}>Date & Time</Text>
@@ -420,8 +419,8 @@ export const TicketsScreen: React.FC = () => {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#667eea" />
-          <Text style={styles.loadingText}>Loading your tickets...</Text>
+        <ActivityIndicator size="large" color="#6D3FE0" />
+        <Text style={styles.loadingText}>Loading your tickets...</Text>
         </View>
       </SafeAreaView>
     );
@@ -433,7 +432,7 @@ export const TicketsScreen: React.FC = () => {
 
       {/* Header */}
       <LinearGradient
-        colors={['#667eea', '#764ba2']}
+        colors={['#6D3FE0', '#5A2FC2']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -447,7 +446,7 @@ export const TicketsScreen: React.FC = () => {
           </View>
           <TouchableOpacity style={styles.headerIconButton}>
             <View style={styles.iconButtonCircle}>
-              <Ionicons name="scan" size={22} color="#667eea" />
+            <Ionicons name="scan" size={22} color="#6D3FE0" />
             </View>
           </TouchableOpacity>
         </View>
@@ -481,8 +480,8 @@ export const TicketsScreen: React.FC = () => {
             style={styles.emptyButton}
             onPress={() => setSelectedFilter('all')}
           >
-            <LinearGradient
-              colors={['#667eea', '#764ba2']}
+             <LinearGradient
+              colors={['#6D3FE0', '#5A2FC2']}
               style={styles.emptyButtonGradient}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
@@ -502,8 +501,8 @@ export const TicketsScreen: React.FC = () => {
             <RefreshControl
               refreshing={refreshing}
               onRefresh={onRefresh}
-              colors={['#667eea']}
-              tintColor="#667eea"
+             colors={['#6D3FE0']}
+              tintColor="#6D3FE0"
             />
           }
           contentContainerStyle={styles.listContainer}
@@ -778,7 +777,7 @@ const styles = StyleSheet.create({
   },
   priceValue: {
     fontSize: 24,
-    color: '#667eea',
+    color: '#6D3FE0',
     fontWeight: '800',
   },
   ticketActions: {

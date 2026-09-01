@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   messageAvatar: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#6D3FE0',
     marginRight: 8,
   },
   avatarSpacer: {
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   userName: {
-    color: '#6366f1',
+    color: '#6D3FE0',
     fontSize: 13,
     fontWeight: '600',
     marginBottom: 4,
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
   replyName: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6366f1',
+    color: '#6D3FE0',
     marginBottom: 2,
   },
   replyText: {
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   ownBubble: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#6D3FE0',
     borderBottomRightRadius: 4,
   },
   otherBubble: {

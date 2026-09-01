@@ -133,7 +133,7 @@ export default function AttendeesListScreen({ navigation, route }: AttendeesList
         style={styles.chatButton}
         onPress={() => startPrivateChat(item)}
       >
-        <Ionicons name="chatbubble-outline" size={24} color="#6366f1" />
+        <Ionicons name="chatbubble-outline" size={24} color="#6D3FE0" />
       </TouchableOpacity>
     </TouchableOpacity>
   );
@@ -142,7 +142,7 @@ export default function AttendeesListScreen({ navigation, route }: AttendeesList
     return (
       <View style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#6366f1" />
+        <ActivityIndicator size="large" color="#6D3FE0" />
           <Text style={styles.loadingText}>Loading attendees...</Text>
         </View>
       </View>
@@ -172,7 +172,7 @@ export default function AttendeesListScreen({ navigation, route }: AttendeesList
               Alert.alert('Attendees Info', `Connect with ${attendees.length} registered attendees!`);
             }}
           >
-            <Ionicons name="information-circle-outline" size={24} color="#6366f1" />
+           <Ionicons name="information-circle-outline" size={24} color="#6D3FE0" />
           </TouchableOpacity>
         </View>
       </View>
@@ -186,7 +186,7 @@ export default function AttendeesListScreen({ navigation, route }: AttendeesList
             value={searchQuery}
             style={styles.searchBar}
             inputStyle={styles.searchInput}
-            iconColor="#6366f1"
+            iconColor="#6D3FE0"
           />
         </View>
         
@@ -207,7 +207,7 @@ export default function AttendeesListScreen({ navigation, route }: AttendeesList
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="people-outline" size={80} color="#6366f1" />
+             <Ionicons name="people-outline" size={80} color="#6D3FE0" />
             <Text style={styles.emptyTitle}>No Attendees Found</Text>
             <Text style={styles.emptyDescription}>
               {searchQuery ? 'Try adjusting your search terms' : 'No other attendees have registered yet'}
@@ -276,7 +276,7 @@ export default function AttendeesListScreen({ navigation, route }: AttendeesList
             // Stay on attendees page
           }}
         >
-          <Ionicons name="chatbubble" size={24} color="#6366f1" />
+          <Ionicons name="chatbubble" size={24} color="#6D3FE0" />
           <Text style={[styles.bottomNavLabel, styles.activeNavLabel]}>Chat</Text>
         </TouchableOpacity>
       </View>
@@ -394,7 +394,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   countText: {
-    color: '#6366f1',
+    color: '#6D3FE0',
     fontSize: 14,
     fontWeight: '600',
   },
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   avatar: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#6D3FE0',
   },
   attendeeDetails: {
     marginLeft: 16,

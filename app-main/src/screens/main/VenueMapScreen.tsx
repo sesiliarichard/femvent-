@@ -36,7 +36,7 @@ export const VenueMapScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-            <LinearGradient colors={['#667eea', '#764ba2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
+            <LinearGradient colors={['#6D3FE0', '#5A2FC2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
                 <View style={styles.headerContent}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Ionicons name="arrow-back" size={24} color="#fff" />
@@ -48,7 +48,7 @@ export const VenueMapScreen: React.FC = () => {
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
                 <View style={styles.addressCard}>
-                    <Ionicons name="location" size={22} color="#667eea" />
+                <Ionicons name="location" size={22} color="#6D3FE0" />
                     <View style={{ flex: 1, marginLeft: 12 }}>
                         <Text style={styles.venueName}>{VENUE_NAME}</Text>
                         <Text style={styles.venueAddress}>{VENUE_ADDRESS}</Text>
@@ -69,7 +69,7 @@ export const VenueMapScreen: React.FC = () => {
                     {VENUE_AREAS.map((area) => (
                         <View key={area.id} style={styles.areaCard}>
                             <View style={styles.areaIcon}>
-                                <Ionicons name={area.icon} size={20} color="#667eea" />
+                            <Ionicons name={area.icon} size={20} color="#6D3FE0" />
                             </View>
                             <View style={{ flex: 1 }}>
                                 <Text style={styles.areaName}>{area.name}</Text>
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     venueName: { fontSize: 15, fontWeight: '800', color: '#1a1a1a' },
     venueAddress: { fontSize: 13, color: '#666', marginTop: 2 },
     directionsButton: {
-        flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#667eea',
+        flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#6D3FE0',
         paddingHorizontal: 12, paddingVertical: 8, borderRadius: 12,
     },
     directionsText: { fontSize: 12, fontWeight: '700', color: '#fff' },
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
         shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
     },
     areaIcon: {
-        width: 40, height: 40, borderRadius: 12, backgroundColor: '#e0e7ff',
+        width: 40, height: 40, borderRadius: 12, backgroundColor: '#EDE7FB',
         justifyContent: 'center', alignItems: 'center', marginRight: 12,
     },
     areaName: { fontSize: 15, fontWeight: '700', color: '#1a1a1a' },

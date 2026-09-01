@@ -100,8 +100,8 @@ export const FavoritesScreen: React.FC = () => {
         return (
             <SafeAreaView style={styles.container} edges={['top']}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#667eea" />
-                    <Text style={styles.loadingText}>Loading favorites...</Text>
+                <ActivityIndicator size="large" color="#6D3FE0" />
+                <Text style={styles.loadingText}>Loading favorites...</Text>
                 </View>
             </SafeAreaView>
         );
@@ -110,7 +110,7 @@ export const FavoritesScreen: React.FC = () => {
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
             <LinearGradient
-                colors={['#667eea', '#764ba2']}
+                colors={['#6D3FE0', '#5A2FC2']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.header}
@@ -171,7 +171,7 @@ export const FavoritesScreen: React.FC = () => {
                                     </Text>
                                     <View style={styles.eventDetails}>
                                         <View style={styles.eventDetailRow}>
-                                            <Ionicons name="calendar" size={16} color="#667eea" />
+                                        <Ionicons name="calendar" size={16} color="#6D3FE0" />
                                             <Text style={styles.eventDetailText}>
                                                 {event.date.toLocaleDateString('en-US', {
                                                     month: 'short',

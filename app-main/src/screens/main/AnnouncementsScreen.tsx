@@ -40,7 +40,7 @@ export const AnnouncementsScreen: React.FC = () => {
         return (
             <SafeAreaView style={styles.container} edges={['top']}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#667eea" />
+                <ActivityIndicator size="large" color="#6D3FE0" />
                 </View>
             </SafeAreaView>
         );
@@ -48,7 +48,7 @@ export const AnnouncementsScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-            <LinearGradient colors={['#667eea', '#764ba2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
+          <LinearGradient colors={['#6D3FE0', '#5A2FC2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
                 <View style={styles.headerContent}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Ionicons name="arrow-back" size={24} color="#fff" />
@@ -73,7 +73,7 @@ export const AnnouncementsScreen: React.FC = () => {
                                         <Ionicons
                                             name={a.priority === 'urgent' ? 'alert-circle' : 'megaphone'}
                                             size={18}
-                                            color={a.priority === 'urgent' ? '#ef4444' : '#667eea'}
+                                            color={a.priority === 'urgent' ? '#ef4444' : '#6D3FE0'}
                                         />
                                     </View>
                                     <Text style={styles.timeText}>{formatRelativeTime(a.createdAt)}</Text>
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     },
     cardTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 },
     iconCircle: {
-        width: 32, height: 32, borderRadius: 16, backgroundColor: '#e0e7ff',
+        width: 32, height: 32, borderRadius: 16, backgroundColor: '#EDE7FB',
         justifyContent: 'center', alignItems: 'center',
     },
     iconCircleUrgent: { backgroundColor: '#fee2e2' },

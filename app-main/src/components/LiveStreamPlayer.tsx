@@ -77,7 +77,7 @@ export const LiveStreamPlayer: React.FC<LiveStreamPlayerProps> = ({
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#6366F1" />
+                 <ActivityIndicator size="large" color="#6D3FE0" />
                 <Text style={styles.loadingText}>Connecting to live stream...</Text>
             </View>
         );

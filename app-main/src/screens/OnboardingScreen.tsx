@@ -28,7 +28,7 @@ const SLIDES: Slide[] = [
     icon: 'calendar',
     title: 'Your Events, All in One Place',
     description: "See every event you've registered for, with agendas, speakers, and updates right at your fingertips.",
-    colors: ['#667eea', '#764ba2'],
+    colors: ['#6D3FE0', '#5A2FC2'],
   },
   {
     icon: 'qr-code',
@@ -163,5 +163,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     backgroundColor: '#fff', borderRadius: 16, paddingVertical: 16, marginHorizontal: 24, marginBottom: 12,
   },
-  nextButtonText: { fontSize: 16, fontWeight: '700', color: '#667eea' },
+  nextButtonText: { fontSize: 16, fontWeight: '700', color: '#6D3FE0' },
 });

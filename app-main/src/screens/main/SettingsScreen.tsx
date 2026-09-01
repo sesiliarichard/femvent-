@@ -147,8 +147,8 @@ export const SettingsScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-            <LinearGradient
-                colors={['#667eea', '#764ba2']}
+           <LinearGradient
+                colors={['#6D3FE0', '#5A2FC2']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.header}
@@ -188,7 +188,7 @@ export const SettingsScreen: React.FC = () => {
                     <View style={styles.card}>
                         <View style={styles.settingRow}>
                             <View style={styles.settingInfo}>
-                                <Ionicons name="ticket" size={24} color="#667eea" />
+                            <Ionicons name="ticket" size={24} color="#6D3FE0" />
                                 <View style={styles.settingText}>
                                     <Text style={styles.settingLabel}>Ticket Updates</Text>
                                     <Text style={styles.settingDescription}>
@@ -202,7 +202,7 @@ export const SettingsScreen: React.FC = () => {
                                     setTicketNotifications(value);
                                     saveSetting(SETTINGS_KEYS.TICKET_NOTIFICATIONS, value);
                                 }}
-                                trackColor={{ false: '#e2e8f0', true: '#667eea' }}
+                                trackColor={{ false: '#e2e8f0', true: '#6D3FE0' }}
                                 thumbColor={ticketNotifications ? '#fff' : '#cbd5e0'}
                             />
                         </View>
@@ -284,7 +284,7 @@ export const SettingsScreen: React.FC = () => {
                         disabled={testingNotification}
                     >
                         <LinearGradient
-                            colors={['#667eea', '#764ba2']}
+                            colors={['#6D3FE0', '#5A2FC2']}
                             style={styles.testButtonGradient}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
@@ -304,7 +304,7 @@ export const SettingsScreen: React.FC = () => {
                     <View style={styles.card}>
                         <TouchableOpacity style={styles.settingRow}>
                             <View style={styles.settingInfo}>
-                                <Ionicons name="person" size={24} color="#667eea" />
+                            <Ionicons name="person" size={24} color="#6D3FE0" />
                                 <View style={styles.settingText}>
                                     <Text style={styles.settingLabel}>Edit Profile</Text>
                                 </View>
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
         width: 64,
         height: 64,
         borderRadius: 32,
-        backgroundColor: '#667eea',
+        backgroundColor: '#6D3FE0',
         justifyContent: 'center',
         alignItems: 'center',
     },

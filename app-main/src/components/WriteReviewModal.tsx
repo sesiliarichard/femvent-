@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
         fontWeight: '600',
     },
     submitButton: {
-        backgroundColor: '#6366F1',
+        backgroundColor: '#6D3FE0',
     },
     submitButtonDisabled: {
         backgroundColor: '#CBD5E1',

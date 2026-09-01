@@ -60,12 +60,12 @@ export const AddToCalendarButton: React.FC<AddToCalendarButtonProps> = ({
                 disabled={loading}
             >
                 {loading ? (
-                    <ActivityIndicator size="small" color={isAdded ? '#10b981' : '#667eea'} />
+                    <ActivityIndicator size="small" color={isAdded ? '#10b981' : '#6D3FE0'} />
                 ) : (
                     <Ionicons
                         name={isAdded ? 'calendar' : 'calendar-outline'}
                         size={24}
-                        color={isAdded ? '#10b981' : '#667eea'}
+                        color={isAdded ? '#10b981' : '#6D3FE0'}
                     />
                 )}
             </TouchableOpacity>
@@ -80,7 +80,7 @@ export const AddToCalendarButton: React.FC<AddToCalendarButtonProps> = ({
             activeOpacity={0.8}
         >
             <LinearGradient
-                colors={isAdded ? ['#10b981', '#059669'] : ['#667eea', '#764ba2']}
+               colors={isAdded ? ['#10b981', '#059669'] : ['#6D3FE0', '#5A2FC2']}
                 style={styles.gradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}

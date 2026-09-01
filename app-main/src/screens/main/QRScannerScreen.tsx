@@ -108,8 +108,8 @@ export const QRScannerScreen: React.FC = () => {
         return (
             <SafeAreaView style={styles.container}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#667eea" />
-                    <Text style={styles.loadingText}>Requesting camera permission...</Text>
+                <ActivityIndicator size="large" color="#6D3FE0" />
+                <Text style={styles.loadingText}>Requesting camera permission...</Text>
                 </View>
             </SafeAreaView>
         );
@@ -129,7 +129,7 @@ export const QRScannerScreen: React.FC = () => {
                         onPress={requestCameraPermission}
                     >
                         <LinearGradient
-                            colors={['#667eea', '#764ba2']}
+                            colors={['#6D3FE0', '#5A2FC2']}
                             style={styles.permissionButtonGradient}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
@@ -310,11 +310,11 @@ export const QRScannerScreen: React.FC = () => {
                                         </>
                                     ) : (
                                         <TouchableOpacity
-                                            style={styles.modalButtonFull}
-                                            onPress={handleDismiss}
-                                        >
-                                            <LinearGradient
-                                                colors={['#667eea', '#764ba2']}
+                                        style={styles.modalButtonFull}
+                                        onPress={handleDismiss}
+                                    >
+                                        <LinearGradient
+                                            colors={['#6D3FE0', '#5A2FC2']}
                                                 style={styles.modalButtonGradient}
                                                 start={{ x: 0, y: 0 }}
                                                 end={{ x: 1, y: 1 }}
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
         padding: 12,
     },
     backTextButtonText: {
-        color: '#667eea',
+        color: '#6D3FE0',
         fontSize: 16,
         fontWeight: '600',
     },

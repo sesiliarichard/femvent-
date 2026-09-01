@@ -32,7 +32,7 @@ export const ExhibitorsScreen: React.FC = () => {
         return (
             <SafeAreaView style={styles.container} edges={['top']}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#667eea" />
+                <ActivityIndicator size="large" color="#6D3FE0" />
                 </View>
             </SafeAreaView>
         );
@@ -40,7 +40,7 @@ export const ExhibitorsScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-            <LinearGradient colors={['#667eea', '#764ba2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
+           <LinearGradient colors={['#6D3FE0', '#5A2FC2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
                 <View style={styles.headerContent}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Ionicons name="arrow-back" size={24} color="#fff" />
@@ -75,7 +75,7 @@ export const ExhibitorsScreen: React.FC = () => {
                                 <Text style={styles.exhibitorDescription}>{ex.description}</Text>
                                 {ex.website && (
                                     <TouchableOpacity onPress={() => Linking.openURL(ex.website!)} style={styles.websiteRow}>
-                                        <Ionicons name="link-outline" size={14} color="#667eea" />
+                                       <Ionicons name="link-outline" size={14} color="#6D3FE0" />
                                         <Text style={styles.websiteText}>Visit website</Text>
                                     </TouchableOpacity>
                                 )}
@@ -110,14 +110,14 @@ const styles = StyleSheet.create({
         shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 3,
     },
     boothBadge: {
-        width: 44, height: 44, borderRadius: 12, backgroundColor: '#e0e7ff',
+        width: 44, height: 44, borderRadius: 12, backgroundColor: '#EDE7FB',
         justifyContent: 'center', alignItems: 'center', marginRight: 14,
     },
-    boothText: { fontSize: 13, fontWeight: '800', color: '#667eea' },
+    boothText: { fontSize: 13, fontWeight: '800', color: '#6D3FE0' },
     cardBody: { flex: 1 },
     exhibitorName: { fontSize: 16, fontWeight: '800', color: '#1a1a1a', marginBottom: 2 },
-    exhibitorCategory: { fontSize: 12, fontWeight: '600', color: '#764ba2', marginBottom: 6 },
+    exhibitorCategory: { fontSize: 12, fontWeight: '600', color: '#5A2FC2', marginBottom: 6 },
     exhibitorDescription: { fontSize: 13, color: '#666', lineHeight: 18 },
     websiteRow: { flexDirection: 'row', alignItems: 'center', gap: 4, marginTop: 8 },
-    websiteText: { fontSize: 13, fontWeight: '600', color: '#667eea' },
+    websiteText: { fontSize: 13, fontWeight: '600', color: '#6D3FE0' },
 });
