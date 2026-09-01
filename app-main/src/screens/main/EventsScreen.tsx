@@ -42,7 +42,7 @@ export const EventsScreen: React.FC = () => {
  
 
   const categories = [
-    { id: 'all', name: 'All', icon: 'apps', gradient: ['#667eea', '#764ba2'] },
+    { id: 'all', name: 'All', icon: 'apps', gradient: ['#6D3FE0', '#5A2FC2'] },
     { id: 'technology', name: 'Tech', icon: 'laptop', gradient: ['#f093fb', '#f5576c'] },
     { id: 'music', name: 'Music', icon: 'music-note', gradient: ['#4facfe', '#00f2fe'] },
     { id: 'business', name: 'Business', icon: 'business-center', gradient: ['#43e97b', '#38f9d7'] },
@@ -214,7 +214,7 @@ export const EventsScreen: React.FC = () => {
               {item.category && (
                   <View style={styles.categoryBadge}>
                     <LinearGradient
-                      colors={categories.find(c => c.id === item.category)?.gradient || ['#667eea', '#764ba2']}
+                     colors={categories.find(c => c.id === item.category)?.gradient || ['#6D3FE0', '#5A2FC2']}
                       style={styles.categoryBadgeGradient}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
@@ -339,8 +339,8 @@ export const EventsScreen: React.FC = () => {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#667eea" />
-        <Text style={styles.loadingText}>Loading events...</Text>
+      <ActivityIndicator size="large" color="#6D3FE0" />
+      <Text style={styles.loadingText}>Loading events...</Text>
       </View>
       </SafeAreaView>
     );
@@ -352,7 +352,7 @@ export const EventsScreen: React.FC = () => {
       
       {/* Header */}
       <LinearGradient
-        colors={['#667eea', '#764ba2']}
+        colors={['#6D3FE0', '#5A2FC2']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -409,8 +409,8 @@ export const EventsScreen: React.FC = () => {
           <RefreshControl 
             refreshing={refreshing} 
             onRefresh={onRefresh} 
-            colors={['#667eea']}
-            tintColor="#667eea"
+           colors={['#6D3FE0']}
+            tintColor="#6D3FE0"
           />
         }
         ListEmptyComponent={
@@ -429,7 +429,7 @@ export const EventsScreen: React.FC = () => {
               onPress={() => setSelectedCategory('all')}
             >
               <LinearGradient
-                colors={['#667eea', '#764ba2']}
+                colors={['#6D3FE0', '#5A2FC2']}
                 style={styles.emptyButtonGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -613,7 +613,7 @@ const styles = StyleSheet.create({
   dateDay: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#667eea',
+    color: '#6D3FE0',
   },
   dateMonth: {
     fontSize: 11,
@@ -695,7 +695,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   hostAvatar: {
-    backgroundColor: '#667eea',
+    backgroundColor: '#6D3FE0',
   },
   hostName: {
     fontSize: 14,
@@ -711,7 +711,7 @@ const styles = StyleSheet.create({
   },
   priceText: {
     fontSize: 15,
-    color: '#667eea',
+    color: '#6D3FE0',
     fontWeight: '800',
   },
   cardActions: {

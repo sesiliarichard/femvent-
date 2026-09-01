@@ -104,8 +104,8 @@ function MainTabs() {
           }
           return <MaterialIcons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#6200ee',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: '#6D3FE0',
+        tabBarInactiveTintColor: '#a89fc2',
       })}
     >
 <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
@@ -181,7 +181,7 @@ function AppNavigator() {
   if (loading || !onboardingChecked) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#6200ee" />
+        <ActivityIndicator size="large" color="#6D3FE0" />
         <Text style={styles.loadingText}>Loading...</Text>
       </View>
     );

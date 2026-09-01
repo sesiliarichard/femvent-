@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { AdminLayout } from '../components/AdminLayout';
 import { EventCard } from '../components/EventCard';
 import { EventModal } from '../components/EventModal';
+import { EventDetailModal } from '../components/EventDetailModal';
 import { Event } from '@/types';
 import { useEventStats } from '@/services/eventStats';
 import { getAllEvents, createEvent, updateEvent, deleteEvent } from '../services/firestore';
@@ -102,6 +103,8 @@ export default function EventsPage() {
       }
     }
   };
+
+  const [viewingEvent, setViewingEvent] = useState<Event | null>(null);
 
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -311,10 +314,7 @@ export default function EventsPage() {
                   event={event}
                   onEdit={setEditingEvent}
                   onDelete={handleDeleteEvent}
-                  onViewDetails={(event) => {
-                    // TODO: Implement view details modal or navigation
-                    console.log('View details:', event);
-                  }}
+                  onViewDetails={(event) => setViewingEvent(event)}
                 />
               ))}
             </div>
@@ -343,6 +343,10 @@ export default function EventsPage() {
             </div>
           )}
         </div>
+
+        {viewingEvent && (
+          <EventDetailModal event={viewingEvent} onClose={() => setViewingEvent(null)} />
+        )}
 
         {/* Create/Edit Event Modal */}
         {(showCreateForm || editingEvent) && (

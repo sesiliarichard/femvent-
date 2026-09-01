@@ -46,7 +46,7 @@ export const HomeScreen: React.FC = () => {
  
 
   const categories = [
-    { id: 'all', name: 'All', icon: 'apps', gradient: ['#667eea', '#764ba2'] },
+    { id: 'all', name: 'All', icon: 'apps', gradient: ['#6D3FE0', '#5A2FC2'] },
     { id: 'technology', name: 'Tech', icon: 'laptop', gradient: ['#f093fb', '#f5576c'] },
     { id: 'music', name: 'Music', icon: 'music-note', gradient: ['#4facfe', '#00f2fe'] },
     { id: 'business', name: 'Business', icon: 'business-center', gradient: ['#43e97b', '#38f9d7'] },
@@ -517,8 +517,8 @@ export const HomeScreen: React.FC = () => {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#667eea" />
-          <Text style={styles.loadingText}>Loading amazing events...</Text>
+        <ActivityIndicator size="large" color="#6D3FE0" />
+        <Text style={styles.loadingText}>Loading amazing events...</Text>
         </View>
       </SafeAreaView>
     );
@@ -529,8 +529,8 @@ export const HomeScreen: React.FC = () => {
       <StatusBar barStyle="light-content" />
 
       <Animated.View style={{ opacity: headerOpacity }}>
-        <LinearGradient
-          colors={['#667eea', '#764ba2']}
+      <LinearGradient
+          colors={['#6D3FE0', '#5A2FC2']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.header}
@@ -548,12 +548,12 @@ export const HomeScreen: React.FC = () => {
                 onPress={() => (navigation as any).openDrawer()}
               >
                 <View style={styles.iconButtonCircle}>
-                  <Ionicons name="menu-outline" size={22} color="#667eea" />
+                <Ionicons name="menu-outline" size={22} color="#6D3FE0" />
                 </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.headerIconButton}>
                 <View style={styles.iconButtonCircle}>
-                  <Ionicons name="notifications-outline" size={22} color="#667eea" />
+                <Ionicons name="notifications-outline" size={22} color="#6D3FE0" />
                   <Badge style={styles.notificationBadge} size={8} />
                 </View>
               </TouchableOpacity>
@@ -604,8 +604,8 @@ export const HomeScreen: React.FC = () => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={['#667eea']}
-            tintColor="#667eea"
+            colors={['#6D3FE0']}
+            tintColor="#6D3FE0"
           />
         }
         showsVerticalScrollIndicator={false}
@@ -651,7 +651,7 @@ export const HomeScreen: React.FC = () => {
         <View style={styles.categoriesSection}>
           <View style={styles.sectionTitleContainer}>
             <View style={styles.sectionIconCircle}>
-              <Ionicons name="grid" size={20} color="#667eea" />
+            <Ionicons name="grid" size={20} color="#6D3FE0" />
             </View>
             <Text style={styles.sectionTitle}>Categories</Text>
           </View>
@@ -688,7 +688,7 @@ export const HomeScreen: React.FC = () => {
           <View style={styles.sectionHeader}>
             <View style={styles.sectionTitleContainer}>
               <View style={styles.sectionIconCircle}>
-                <Ionicons name="calendar" size={20} color="#667eea" />
+              <Ionicons name="calendar" size={20} color="#6D3FE0" />
               </View>
               <Text style={styles.sectionTitle}>
                 {selectedCategory === 'all' ? 'All Events' : `${categories.find(c => c.id === selectedCategory)?.name} Events`}
@@ -721,8 +721,8 @@ export const HomeScreen: React.FC = () => {
                   : `No ${categories.find(c => c.id === selectedCategory)?.name} events found`}
               </Text>
               <TouchableOpacity style={styles.emptyButton} onPress={() => setSelectedCategory('all')}>
-                <LinearGradient
-                  colors={['#667eea', '#764ba2']}
+              <LinearGradient
+                  colors={['#6D3FE0', '#5A2FC2']}
                   style={styles.emptyButtonGradient}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
@@ -929,7 +929,7 @@ const styles = StyleSheet.create({
   },
   seeAllText: {
     fontSize: 15,
-    color: '#667eea',
+    color: '#6D3FE0',
     fontWeight: '700',
   },
 
@@ -1112,7 +1112,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   activeViewMode: {
-    backgroundColor: '#667eea',
+    backgroundColor: '#6D3FE0',
   },
 
   eventsGrid: {
@@ -1174,7 +1174,7 @@ const styles = StyleSheet.create({
   eventDateDay: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#667eea',
+    color: '#6D3FE0',
   },
   eventDateMonth: {
     fontSize: 11,
@@ -1253,7 +1253,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   hostAvatar: {
-    backgroundColor: '#667eea',
+    backgroundColor: '#6D3FE0',
   },
   hostName: {
     fontSize: 14,
@@ -1269,7 +1269,7 @@ const styles = StyleSheet.create({
   },
   priceText: {
     fontSize: 15,
-    color: '#667eea',
+    color: '#6D3FE0',
     fontWeight: '800',
   },
   eventCardActions: {

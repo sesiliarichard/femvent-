@@ -73,7 +73,7 @@ export const MyEventsScreen: React.FC = () => {
         return (
             <SafeAreaView style={styles.container} edges={['top']}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#667eea" />
+                <ActivityIndicator size="large" color="#6D3FE0" />
                 </View>
             </SafeAreaView>
         );
@@ -81,7 +81,7 @@ export const MyEventsScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-            <LinearGradient colors={['#667eea', '#764ba2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
+           <LinearGradient colors={['#6D3FE0', '#5A2FC2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
                 <Text style={styles.headerTitle}>My Events</Text>
                 <Text style={styles.headerSubtitle}>Events you're registered for</Text>
             </LinearGradient>
@@ -153,6 +153,6 @@ const styles = StyleSheet.create({
     emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 80, paddingHorizontal: 40, gap: 8 },
     emptyTitle: { fontSize: 18, fontWeight: '700', color: '#1a1a1a', marginTop: 8 },
     emptyDescription: { fontSize: 14, color: '#666', textAlign: 'center', marginBottom: 16 },
-    browseButton: { backgroundColor: '#667eea', borderRadius: 16, paddingVertical: 14, paddingHorizontal: 32 },
+    browseButton: { backgroundColor: '#6D3FE0', borderRadius: 16, paddingVertical: 14, paddingHorizontal: 32 },
     browseButtonText: { fontSize: 15, fontWeight: '700', color: '#fff' },
 });
