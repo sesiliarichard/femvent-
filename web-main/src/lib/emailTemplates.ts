@@ -115,12 +115,8 @@ export const registrationConfirmationTemplate: EmailTemplate = {
         ${data.ticketType ? `<div class="event-detail">🎫 <strong>Ticket:</strong> ${data.ticketType}</div>` : ''}
       </div>
 
-      <p><strong>To see your QR ticket and event details:</strong></p>
-      <ol class="steps">
-        <li data-step="1">Open the FemVents app</li>
-        <li data-step="2">Log in with this same email — no need to create a new account</li>
-        <li data-step="3">Your registered event will be waiting for you</li>
-      </ol>
+       <p><strong>Your QR ticket is above</strong> — a downloadable PDF version is also attached to this email. Present either one at check-in.</p>
+      <p style="color:#666;font-size:14px;">You can also view your ticket anytime by opening the FemVents app and logging in with this same email — no need to create a new account.</p>
 
       ${data.actionUrl ? `
         <center>

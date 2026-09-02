@@ -9,12 +9,17 @@ const transporter = nodemailer.createTransport({
         pass: process.env.SMTP_PASSWORD,
     },
 });
-
 export interface EmailOptions {
     to: string;
     subject: string;
     body: string;
     html?: string;
+    attachments?: Array<{
+        filename: string;
+        content: Buffer;
+        contentType?: string;
+        cid?: string;
+    }>;
 }
 
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
@@ -25,6 +30,7 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
             subject: options.subject,
             text: options.body,
             html: options.html || options.body.replace(/\n/g, '<br>'),
+            attachments: options.attachments,
         };
 
         const info = await transporter.sendMail(mailOptions);

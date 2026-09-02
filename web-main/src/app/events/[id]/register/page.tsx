@@ -294,33 +294,40 @@ export default function RegisterPage() {
                 }
             }
 
-            // Free tier — create the ticket immediately, no payment needed
-            const { error } = await supabase.from("tickets").insert({
-                event_id: id,
-                user_id: session.user.id,
-                status: "confirmed",
-                ticket_type: selectedTicket.name,
-                payment_amount: selectedTicket.price,
-                payment_method: "free",
-                qr_code_id: crypto.randomUUID(),
-            });
-            if (error) throw error;
-
-            fetch("/api/send-email", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    to: session.user.email,
-                    templateId: "registration-confirmation",
-                    templateData: {
-                        recipientName: fullName,
-                        eventTitle: event?.title ?? '',
-                        eventDate: new Date().toLocaleDateString(),
-                        ticketType: selectedTicket.name,
-                    },
-                }),
-            }).catch((err) => console.error("Email send failed:", err));
-
+                   // Free tier — create the ticket immediately, no payment needed
+                   const { data: newTicket, error } = await supabase
+                   .from("tickets")
+                   .insert({
+                       event_id: id,
+                       user_id: session.user.id,
+                       status: "confirmed",
+                       ticket_type: selectedTicket.name,
+                       payment_amount: selectedTicket.price,
+                       payment_method: "free",
+                       qr_code_id: crypto.randomUUID(),
+                   })
+                   .select()
+                   .single();
+               if (error) throw error;
+   
+               fetch("/api/send-email", {
+                   method: "POST",
+                   headers: { "Content-Type": "application/json" },
+                   body: JSON.stringify({
+                       to: session.user.email,
+                       templateId: "registration-confirmation",
+                       templateData: {
+                           recipientName: fullName,
+                           eventTitle: event?.title ?? '',
+                           eventDate: new Date().toLocaleDateString(),
+                           ticketType: selectedTicket.name,
+                           ticketId: newTicket?.id,
+                           eventId: id,
+                           userId: session.user.id,
+                           qrCodeId: newTicket?.qr_code_id,
+                       },
+                   }),
+               }).catch((err) => console.error("Email send failed:", err));
             setSuccess(true);
         } catch (err: any) {
             setSubmitError(err.message || "Failed to complete registration");
