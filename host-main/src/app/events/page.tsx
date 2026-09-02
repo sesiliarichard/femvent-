@@ -171,7 +171,7 @@ function EventsContent({ userProfile }: { userProfile: any }) {
               </div>
             </div>
             <a 
-              href="/events/create" 
+              href="/host/events/create" 
               className="group relative bg-gradient-to-r from-secondary-500 via-secondary-600 to-accent-500 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-secondary-500/40 hover:scale-105 transition-all duration-300 active:scale-95 overflow-hidden"
             >
               <div className="absolute inset-0 bg-gradient-to-r from-accent-500 to-secondary-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -332,7 +332,7 @@ function EventsContent({ userProfile }: { userProfile: any }) {
             </p>
             {!searchQuery && (
               <a 
-                href="/events/create" 
+                href="/host/events/create" 
                 className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-secondary-500 to-accent-500 text-white font-bold hover:shadow-xl hover:shadow-secondary-500/30 hover:scale-105 transition-all duration-300"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -432,7 +432,7 @@ function EventsContent({ userProfile }: { userProfile: any }) {
                     {/* Action Buttons */}
                     <div className="grid grid-cols-3 gap-3 pt-4">
                       <a
-                        href={`/events/${item.id}`}
+                        href={`/host/events/${item.id}`}
                         className="group/btn flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-3 px-4 rounded-xl text-sm font-bold hover:shadow-xl hover:shadow-emerald-500/30 hover:scale-105 transition-all duration-300"
                       >
                         <svg className="w-4 h-4 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -442,7 +442,7 @@ function EventsContent({ userProfile }: { userProfile: any }) {
                         <span>View</span>
                       </a>
                       <a
-                        href={`/events/${item.id}/attendees`}
+                        href={`/host/events/${item.id}/attendees`}
                         className="group/btn flex items-center justify-center gap-2 bg-gradient-to-r from-secondary-500 to-accent-500 text-white py-3 px-4 rounded-xl text-sm font-bold hover:shadow-xl hover:shadow-secondary-500/30 hover:scale-105 transition-all duration-300"
                       >
                         <svg className="w-4 h-4 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -451,7 +451,7 @@ function EventsContent({ userProfile }: { userProfile: any }) {
                         <span>Attendees</span>
                       </a>
                       <a
-                        href={`/events/${item.id}/edit`}
+                        href={`/host/events/${item.id}/edit`}
                         className="group/btn flex items-center justify-center gap-2 bg-white border-2 border-pink-300 text-purple-700 py-3 px-4 rounded-xl text-sm font-bold hover:border-purple-400 hover:bg-pink-50 hover:scale-105 transition-all duration-300"
                       >
                         <svg className="w-4 h-4 group-hover/btn:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -546,7 +546,7 @@ function EventsContent({ userProfile }: { userProfile: any }) {
                     {/* Action Buttons */}
                     <div className="flex items-center gap-3 flex-shrink-0">
                       <a
-                        href={`/events/${item.id}/attendees`}
+                        href={`/host/events/${item.id}/attendees`}
                         className="group/btn p-3 bg-pink-100 text-secondary-600 rounded-xl hover:bg-pink-200 hover:scale-110 transition-all duration-300"
                         title="Manage Attendees"
                       >
@@ -555,14 +555,14 @@ function EventsContent({ userProfile }: { userProfile: any }) {
                         </svg>
                       </a>
                       <a
-                        href={`/events/${item.id}/announcements`}
+                        href={`/host/events/${item.id}/announcements`}
                         className="group/btn p-3 bg-pink-100 text-purple-600 rounded-xl hover:bg-pink-200 hover:scale-110 transition-all duration-300"
                         title="Announcements"
                       >
                         <span className="text-lg">📣</span>
                       </a>
                       <a
-                        href={`/events/${item.id}/edit`}
+                        href={`/host/events/${item.id}/edit`}
                         className="group/btn p-3 bg-pink-100 text-purple-600 rounded-xl hover:bg-pink-200 hover:scale-110 transition-all duration-300"
                         title="Edit Event"
                       >
