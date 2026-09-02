@@ -449,11 +449,11 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
   }
 
   const tabs = [
-    { id: 'profile', label: 'Profile', icon: '👤', color: 'from-secondary-500 to-accent-500' },
-    { id: 'payout', label: 'Payout', icon: '💰', color: 'from-rose-500 to-pink-500' },
-    { id: 'preferences', label: 'Preferences', icon: '⚙️', color: 'from-purple-500 to-pink-500' },
-    { id: 'security', label: 'Security', icon: '🔒', color: 'from-emerald-500 to-teal-500' },
-    { id: 'notifications', label: 'Notifications', icon: '🔔', color: 'from-amber-500 to-orange-500' },
+    { id: 'profile', label: 'Profile', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>, color: 'from-secondary-500 to-accent-500' },
+    { id: 'payout', label: 'Payout', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, color: 'from-rose-500 to-pink-500' },
+    { id: 'preferences', label: 'Preferences', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>, color: 'from-purple-500 to-pink-500' },
+    { id: 'security', label: 'Security', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>, color: 'from-emerald-500 to-teal-500' },
+    { id: 'notifications', label: 'Notifications', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg>, color: 'from-amber-500 to-orange-500' },
   ];
 
   return (
@@ -468,8 +468,8 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
         {/* Premium Header */}
         <div className="mb-10 animate-[fadeIn_0.8s_ease-out]">
           <div className="flex items-center gap-4 mb-4">
-            <div className="w-16 h-16 bg-gradient-to-br from-secondary-500 to-accent-500 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg">
-              ⚙️
+          <div className="w-16 h-16 bg-gradient-to-br from-secondary-500 to-accent-500 rounded-2xl flex items-center justify-center text-white shadow-lg">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
             </div>
             <div>
               <h1 className="text-5xl font-black bg-gradient-to-r from-purple-900 via-secondary-900 to-accent-900 bg-clip-text text-transparent">
@@ -496,7 +496,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                       : 'bg-transparent text-purple-600 hover:bg-pink-100 hover:scale-105'
                   }`}
                 >
-                  <span className={`text-2xl transition-transform duration-300 ${
+                                   <span className={`w-5 h-5 transition-transform duration-300 ${
                     activeTab === tab.id ? 'scale-110' : 'group-hover:scale-110'
                   }`}>
                     {tab.icon}
@@ -646,10 +646,10 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                     onChange={(e) => setPreferences({ ...preferences, language: e.target.value })}
                     className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-slate-900 font-bold cursor-pointer"
                   >
-                    <option value="en">🇺🇸 English</option>
-                    <option value="es">🇪🇸 Spanish</option>
-                    <option value="fr">🇫🇷 French</option>
-                    <option value="de">🇩🇪 German</option>
+                    <option value="en">English</option>
+                    <option value="es">Spanish</option>
+                    <option value="fr">French</option>
+                    <option value="de">German</option>
                   </select>
                 </div>
 
@@ -696,10 +696,10 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                     onChange={(e) => setPreferences({ ...preferences, currency: e.target.value })}
                     className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-slate-900 font-bold cursor-pointer"
                   >
-                    <option value="USD">💵 USD ($)</option>
-                    <option value="EUR">💶 EUR (€)</option>
-                    <option value="GBP">💷 GBP (£)</option>
-                    <option value="JPY">💴 JPY (¥)</option>
+                     <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                    <option value="JPY">JPY (¥)</option>
                   </select>
                 </div>
               </div>
@@ -708,9 +708,9 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                 <h3 className="text-2xl font-black text-purple-900 mb-6">Notification Preferences</h3>
                 <div className="space-y-4">
                   {[
-                    { key: 'emailNotifications', label: 'Email Notifications', desc: 'Receive updates via email', icon: '📧' },
-                    { key: 'pushNotifications', label: 'Push Notifications', desc: 'Get instant push notifications', icon: '🔔' },
-                    { key: 'marketingEmails', label: 'Marketing Emails', desc: 'Promotional and marketing content', icon: '📬' }
+                      { key: 'emailNotifications', label: 'Email Notifications', desc: 'Receive updates via email', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg> },
+                      { key: 'pushNotifications', label: 'Push Notifications', desc: 'Get instant push notifications', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" /></svg> },
+                      { key: 'marketingEmails', label: 'Marketing Emails', desc: 'Promotional and marketing content', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21.75 9v.906a2.25 2.25 0 01-1.183 1.981l-6.478 3.488M2.25 9v.906a2.25 2.25 0 001.183 1.981l6.478 3.488m0 0l2.09 1.126a2.25 2.25 0 002.18 0l2.09-1.126M2.25 12.75l6.478-3.488M18.75 12.75l-6.478-3.488" /></svg> }
                   ].map((item, idx) => (
                     <label
                       key={item.key}
@@ -718,7 +718,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                       style={{ animation: `slideUp 0.5s ease-out ${idx * 0.1}s backwards` }}
                     >
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gradient-to-br from-secondary-500 to-accent-500 rounded-xl flex items-center justify-center text-2xl shadow-lg">
+                      <div className="w-12 h-12 bg-gradient-to-br from-secondary-500 to-accent-500 rounded-xl flex items-center justify-center text-white shadow-lg">
                           {item.icon}
                         </div>
                         <div>
@@ -784,8 +784,8 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
               <div className="space-y-6">
                 <label className="group flex items-center justify-between p-6 bg-gradient-to-r from-emerald-50 to-teal-50/30 rounded-2xl border-2 border-emerald-200 hover:border-emerald-300 transition-all duration-300 cursor-pointer">
                   <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-xl flex items-center justify-center text-2xl shadow-lg">
-                      🔐
+                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-600 to-teal-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" /></svg>
                     </div>
                     <div>
                       <span className="text-lg font-black text-slate-900 block">Two-Factor Authentication</span>
@@ -818,11 +818,11 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                     onChange={(e) => setSecurity({ ...security, sessionTimeout: e.target.value })}
                     className="w-full md:w-96 px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-slate-900 font-bold cursor-pointer"
                   >
-                    <option value="1">⏱️ 1 hour</option>
-                    <option value="6">⏱️ 6 hours</option>
-                    <option value="12">⏱️ 12 hours</option>
-                    <option value="24">⏱️ 24 hours</option>
-                    <option value="168">⏱️ 1 week</option>
+                     <option value="1">1 hour</option>
+                    <option value="6">6 hours</option>
+                    <option value="12">12 hours</option>
+                    <option value="24">24 hours</option>
+                    <option value="168">1 week</option>
                   </select>
                 </div>
 
@@ -931,7 +931,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                         : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
                     }`}
                   >
-                    💳 Flutterwave
+                                        <svg className="inline-block w-4 h-4 mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg>Flutterwave
                   </button>
                   <button
                     type="button"
@@ -942,7 +942,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                         : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
                     }`}
                   >
-                    🌍 Wise
+                                        <svg className="inline-block w-4 h-4 mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582" /></svg>Wise
                   </button>
                   <button
                     type="button"
@@ -953,7 +953,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                         : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
                     }`}
                   >
-                    ₿ Crypto (USDT)
+                                       <svg className="inline-block w-4 h-4 mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Crypto (USDT)
                   </button>
                   <button
                     type="button"
@@ -964,7 +964,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                         : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
                     }`}
                   >
-                    🏦 Bank Wire
+                                        <svg className="inline-block w-4 h-4 mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>Bank Wire
                   </button>
                   <button
                     type="button"
@@ -975,7 +975,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                         : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
                     }`}
                   >
-                    📱 AzamPay
+                                      <svg className="inline-block w-4 h-4 mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg>AzamPay
                   </button>
                   <button
                     type="button"
@@ -986,7 +986,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                         : 'bg-pink-50 text-purple-700 border-2 border-pink-200'
                     }`}
                   >
-                    🌍 Pesapal
+                                      <svg className="inline-block w-4 h-4 mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582" /></svg>Pesapal
                   </button>
                 </div>
 
@@ -994,8 +994,8 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                   <p className="text-xs font-black text-purple-400 uppercase tracking-wide mb-3">Coming Soon</p>
                   <div className="grid grid-cols-3 gap-3">
                     {[
-                      { icon: '💰', label: 'PayPal' },
-                      { icon: '💳', label: 'Stripe' },
+                                          { icon: <svg className="inline-block w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, label: 'PayPal' },
+                                          { icon: <svg className="inline-block w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg>, label: 'Stripe' },
                     ].map((p) => (
                       <div
                         key={p.label}
@@ -1137,7 +1137,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                     />
                   </div>
                   <p className="md:col-span-2 text-sm text-amber-700 font-semibold bg-amber-50 border-2 border-amber-200 rounded-2xl p-4">
-                    ⚠️ Double-check this address carefully — crypto transfers to a wrong or wrong-network address cannot be reversed or recovered.
+                  <svg className="inline-block w-4 h-4 mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>Double-check this address carefully — crypto transfers to a wrong or wrong-network address cannot be reversed or recovered.
                   </p>
                 </div>
               )}
@@ -1251,10 +1251,10 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                           key={item.id}
                           className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200 rounded-xl text-sm"
                         >
-                          <span className="font-bold text-slate-700">
-                            {item.action === 'connected' && '✅ Connected'}
-                            {item.action === 'updated' && '✏️ Updated'}
-                            {item.action === 'removed' && '🗑 Removed'}
+                                                   <span className="font-bold text-slate-700 inline-flex items-center gap-1.5">
+                            {item.action === 'connected' && (<><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> Connected</>)}
+                            {item.action === 'updated' && (<><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg> Updated</>)}
+                            {item.action === 'removed' && (<><svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg> Removed</>)}
                             {' '}
                             <span className="uppercase">{item.provider}</span>
                             {item.display_label ? ` — ${item.display_label}` : ''}
@@ -1282,16 +1282,16 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
               <div className="space-y-6">
                 <div>
                   <h3 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
-                    <span className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white text-lg">
-                      🎫
+                  <span className="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h2a2 2 0 002-2 1 1 0 112 0 2 2 0 002 2h2a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2h-2a2 2 0 00-2 2 1 1 0 11-2 0 2 2 0 00-2-2z" /></svg>
                     </span>
                     Event Notifications
                   </h3>
                   <div className="space-y-4">
                     {[
-                      { label: 'New Event Registrations', desc: 'Get notified when someone registers for your events', icon: '👥' },
-                      { label: 'Payment Confirmations', desc: 'Receive alerts when payments are confirmed', icon: '💳' },
-                      { label: 'Event Reminders', desc: 'Get reminders before your events start', icon: '⏰' }
+                        { label: 'New Event Registrations', desc: 'Get notified when someone registers for your events', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" /></svg> },
+                        { label: 'Payment Confirmations', desc: 'Receive alerts when payments are confirmed', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg> },
+                        { label: 'Event Reminders', desc: 'Get reminders before your events start', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> }
                     ].map((item, idx) => (
                       <label
                         key={idx}
@@ -1324,8 +1324,8 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                   </h3>
                   <div className="space-y-4">
                     {[
-                      { label: 'System Updates', desc: 'Important updates about the platform', icon: '🔄', checked: true },
-                      { label: 'Maintenance Alerts', desc: 'Notifications about scheduled maintenance', icon: '🛠️', checked: false }
+                                           { label: 'System Updates', desc: 'Important updates about the platform', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>, checked: true },
+                                           { label: 'Maintenance Alerts', desc: 'Notifications about scheduled maintenance', icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766m-3.704 3.796l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085" /></svg>, checked: false }
                     ].map((item, idx) => (
                       <label
                         key={idx}
@@ -1333,7 +1333,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                         style={{ animation: `slideUp 0.5s ease-out ${idx * 0.1 + 0.3}s backwards` }}
                       >
                         <div className="flex items-center gap-4">
-                          <div className="text-3xl">{item.icon}</div>
+                        <div className="w-6 h-6">{item.icon}</div>
                           <div>
                             <span className="text-lg font-black text-slate-900 block">{item.label}</span>
                             <span className="text-sm text-slate-600 font-medium">{item.desc}</span>

@@ -157,8 +157,8 @@ function EventsContent({ userProfile }: { userProfile: any }) {
           <div className="flex items-center justify-between flex-wrap gap-6">
             <div className="space-y-3">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 bg-gradient-to-br from-secondary-500 to-accent-600 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">
-                  🎫
+              <div className="w-12 h-12 bg-gradient-to-br from-secondary-500 to-accent-600 rounded-2xl flex items-center justify-center text-white shadow-lg">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h2a2 2 0 002-2 1 1 0 112 0 2 2 0 002 2h2a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2h-2a2 2 0 00-2 2 1 1 0 11-2 0 2 2 0 00-2-2z" /></svg>
                 </div>
                 <div>
                   <h1 className="text-5xl font-black bg-gradient-to-r from-purple-900 via-secondary-900 to-accent-900 bg-clip-text text-transparent">
@@ -188,10 +188,10 @@ function EventsContent({ userProfile }: { userProfile: any }) {
         {/* Stats Overview */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
           {[
-            { label: 'Total Events', value: stats.total, icon: '🎯', color: 'from-secondary-500 to-accent-500', bgColor: 'bg-pink-50' },
-            { label: 'Upcoming', value: stats.upcoming, icon: '🚀', color: 'from-emerald-500 to-teal-500', bgColor: 'bg-emerald-50' },
-            { label: 'Completed', value: stats.completed, icon: '✅', color: 'from-purple-500 to-pink-500', bgColor: 'bg-purple-50' },
-            { label: 'Drafts', value: stats.drafts, icon: '📝', color: 'from-amber-500 to-orange-500', bgColor: 'bg-amber-50' },
+                      { label: 'Total Events', value: stats.total, icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><circle cx="12" cy="12" r="9" strokeWidth={2} /></svg>, color: 'from-secondary-500 to-accent-500', bgColor: 'bg-pink-50' },
+                      { label: 'Upcoming', value: stats.upcoming, icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" /></svg>, color: 'from-emerald-500 to-teal-500', bgColor: 'bg-emerald-50' },
+                      { label: 'Completed', value: stats.completed, icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, color: 'from-purple-500 to-pink-500', bgColor: 'bg-purple-50' },
+                      { label: 'Drafts', value: stats.drafts, icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>, color: 'from-amber-500 to-orange-500', bgColor: 'bg-amber-50' },
           ].map((stat, idx) => (
             <div
               key={idx}
@@ -207,7 +207,7 @@ function EventsContent({ userProfile }: { userProfile: any }) {
                   </p>
                 </div>
                 <div className={`${stat.bgColor} p-4 rounded-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500`}>
-                  <span className="text-3xl">{stat.icon}</span>
+                  {stat.icon}
                 </div>
               </div>
             </div>
@@ -360,10 +360,10 @@ function EventsContent({ userProfile }: { userProfile: any }) {
               }
               const status = item.isPublished === false ? 'Draft' : date ? (date < new Date() ? 'Completed' : 'Upcoming') : 'Scheduled';
               const statusConfig = {
-                Draft: { bg: 'from-slate-100 to-slate-200', text: 'text-slate-700', icon: '📝' },
-                Completed: { bg: 'from-purple-100 to-pink-100', text: 'text-purple-700', icon: '✅' },
-                Upcoming: { bg: 'from-emerald-100 to-teal-100', text: 'text-emerald-700', icon: '🚀' },
-                Scheduled: { bg: 'from-blue-100 to-cyan-100', text: 'text-blue-700', icon: '📅' },
+                Draft: { bg: 'from-slate-100 to-slate-200', text: 'text-slate-700', icon: <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg> },
+                Completed: { bg: 'from-purple-100 to-pink-100', text: 'text-purple-700', icon: <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
+                Upcoming: { bg: 'from-emerald-100 to-teal-100', text: 'text-emerald-700', icon: <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" /></svg> },
+                Scheduled: { bg: 'from-blue-100 to-cyan-100', text: 'text-blue-700', icon: <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg> },
               };
               const config = statusConfig[status as keyof typeof statusConfig];
 
@@ -509,8 +509,8 @@ function EventsContent({ userProfile }: { userProfile: any }) {
                 >
                   <div className="flex items-center gap-6">
                     {/* Event Icon */}
-                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-secondary-500 to-accent-500 rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                      🎫
+                    <div className="flex-shrink-0 w-16 h-16 bg-gradient-to-br from-secondary-500 to-accent-500 rounded-2xl flex items-center justify-center text-white shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
+                      <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h2a2 2 0 002-2 1 1 0 112 0 2 2 0 002 2h2a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2h-2a2 2 0 00-2 2 1 1 0 11-2 0 2 2 0 00-2-2z" /></svg>
                     </div>
 
                     {/* Event Details */}
@@ -559,7 +559,7 @@ function EventsContent({ userProfile }: { userProfile: any }) {
                         className="group/btn p-3 bg-pink-100 text-purple-600 rounded-xl hover:bg-pink-200 hover:scale-110 transition-all duration-300"
                         title="Announcements"
                       >
-                        <span className="text-lg">📣</span>
+                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
                       </a>
                       <a
                         href={`/host/events/${item.id}/edit`}

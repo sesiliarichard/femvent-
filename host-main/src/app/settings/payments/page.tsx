@@ -83,9 +83,10 @@ export default function PaymentSettingsPage() {
                   {meta.comingSoon ? (
                     <span style={{ fontSize: 12, color: '#999', fontWeight: 600 }}>Coming soon</span>
                   ) : account ? (
-                    <span style={{ fontSize: 12, color: '#065f46', fontWeight: 600 }}>
-                      ✅ {account.display_label}
-                    </span>
+                    <span style={{ fontSize: 12, color: '#065f46', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+                    <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    {account.display_label}
+                  </span>
                   ) : (
                     <button
                     onClick={() => setActiveForm(isOpen ? null : (provider as 'flutterwave' | 'manual' | 'azampay' | 'wise' | 'crypto'))}

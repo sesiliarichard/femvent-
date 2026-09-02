@@ -156,7 +156,7 @@ function DashboardContent() {
       {
         label: 'Total Events',
         value: stats.totalEvents,
-        icon: '🎯',
+        icon: <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12c0 1.657-4.03 3-9 3s-9-1.343-9-3 4.03-3 9-3 9 1.343 9 3z" /><circle cx="12" cy="12" r="9" strokeWidth={2} /></svg>,
         color: 'from-violet-500 via-purple-500 to-purple-600',
         bgColor: 'bg-violet-50',
         textColor: 'text-violet-600',
@@ -168,7 +168,7 @@ function DashboardContent() {
       {
         label: 'Total Attendees',
         value: stats.totalAttendees.toLocaleString(),
-        icon: '👥',
+        icon: <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" /></svg>,
         color: 'from-blue-500 via-cyan-500 to-teal-500',
         bgColor: 'bg-blue-50',
         textColor: 'text-blue-600',
@@ -180,7 +180,7 @@ function DashboardContent() {
       {
         label: 'Total Revenue',
         value: totalRevenueK > 0 ? totalRevenueK.toFixed(1) : '0',
-        icon: '💎',
+        icon: <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
         color: 'from-emerald-500 via-green-500 to-teal-600',
         bgColor: 'bg-emerald-50',
         textColor: 'text-emerald-600',
@@ -192,7 +192,7 @@ function DashboardContent() {
       {
         label: 'Fill Rate',
         value: stats.conversionRate,
-        icon: '⚡',
+        icon: <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>,
         color: 'from-amber-500 via-orange-500 to-red-500',
         bgColor: 'bg-amber-50',
         textColor: 'text-amber-600',
@@ -252,7 +252,8 @@ function DashboardContent() {
           <div className="flex items-center justify-between flex-wrap gap-6">
             <div className="space-y-3">
               <h1 className="text-6xl font-black bg-gradient-to-r from-purple-600 via-secondary-600 to-accent-600 bg-clip-text text-transparent leading-tight">
-                Welcome back, {userProfile?.name?.split(' ')[0] || 'Host'}! 👋
+              Welcome back, {userProfile?.name?.split(' ')[0] || 'Host'}!
+              <svg className="inline-block w-10 h-10 ml-2 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.05 4.575a1.575 1.575 0 10-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 013.15 0v1.5m-3.15 0l.075 5.925m3.075.75V4.575m0 0a1.575 1.575 0 013.15 0V15M6.9 7.575a1.575 1.575 0 10-3.15 0v8.175a6.75 6.75 0 006.75 6.75h2.018a5.25 5.25 0 003.712-1.538l1.732-1.732a5.25 5.25 0 001.538-3.712l.003-2.024a.668.668 0 01.198-.471 1.575 1.575 0 10-2.228-2.228 3.818 3.818 0 00-1.12 2.687M6.9 7.575V12" /></svg>
               </h1>
               <p className="text-xl text-purple-400 font-medium">
                 Here's what's happening with your events today
@@ -299,8 +300,8 @@ function DashboardContent() {
               <div className="relative z-10">
                 {/* Icon and Trend */}
                 <div className="flex items-start justify-between mb-6">
-                  <div className={`${stat.bgColor.replace('bg-blue-50', 'bg-pink-50').replace('bg-violet-50', 'bg-purple-50').replace('bg-emerald-50', 'bg-rose-50').replace('bg-amber-50', 'bg-orange-50')} p-4 rounded-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg`}>
-                    <span className="text-4xl">{stat.icon}</span>
+                <div className={`${stat.bgColor.replace('bg-blue-50', 'bg-pink-50').replace('bg-violet-50', 'bg-purple-50').replace('bg-emerald-50', 'bg-rose-50').replace('bg-amber-50', 'bg-orange-50')} ${stat.textColor.replace('text-blue-600', 'text-purple-600').replace('text-violet-600', 'text-purple-600').replace('text-emerald-600', 'text-rose-600').replace('text-amber-600', 'text-orange-600')} p-4 rounded-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg`}>
+                    {stat.icon}
                   </div>
                   <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-sm ${
                     stat.trendUp 
@@ -554,10 +555,10 @@ function DashboardContent() {
 
               <div className="space-y-6">
                 {[
-                  { label: 'Avg. Ticket', value: stats.totalAttendees > 0 ? `$${(stats.totalRevenue / Math.max(1, stats.totalAttendees)).toFixed(2)}` : '$0', icon: '💵', color: 'from-rose-400 to-accent-500' },
-                  { label: 'Active Events', value: events.filter((e: any) => e.isPublished).length.toString(), icon: '🎯', color: 'from-secondary-400 to-purple-500' },
-                  { label: 'Total Reach', value: stats.totalAttendees.toLocaleString(), icon: '🌟', color: 'from-purple-400 to-rose-500' },
-                  { label: 'Engagement', value: `${stats.conversionRate}%`, icon: '⚡', color: 'from-accent-400 to-orange-500' }
+                                { label: 'Avg. Ticket', value: stats.totalAttendees > 0 ? `$${(stats.totalRevenue / Math.max(1, stats.totalAttendees)).toFixed(2)}` : '$0', icon: <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, color: 'from-rose-400 to-accent-500' },
+                                { label: 'Active Events', value: events.filter((e: any) => e.isPublished).length.toString(), icon: <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><circle cx="12" cy="12" r="9" strokeWidth={2} /></svg>, color: 'from-secondary-400 to-purple-500' },
+                                { label: 'Total Reach', value: stats.totalAttendees.toLocaleString(), icon: <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.98 21.539a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>, color: 'from-purple-400 to-rose-500' },
+                                { label: 'Engagement', value: `${stats.conversionRate}%`, icon: <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>, color: 'from-accent-400 to-orange-500' }
                 ].map((item, i) => (
                   <div 
                     key={i} 
@@ -567,7 +568,7 @@ function DashboardContent() {
                     <div className={`absolute inset-0 bg-gradient-to-r ${item.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300`}></div>
                     <div className="relative flex items-center justify-between">
                       <div className="flex items-center gap-4">
-                        <div className="text-3xl group-hover:scale-125 transition-transform duration-300">
+                      <div className="w-7 h-7 group-hover:scale-125 transition-transform duration-300">
                           {item.icon}
                         </div>
                         <div>
@@ -692,7 +693,7 @@ function DashboardContent() {
 
             {events.length === 0 && !loadingStats && (
               <div className="px-10 py-20 text-center">
-                <div className="text-6xl mb-4">🎯</div>
+                                <div className="w-16 h-16 mb-4 mx-auto text-purple-300"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><circle cx="12" cy="12" r="9" strokeWidth={1.5} /></svg></div>
                 <h3 className="text-2xl font-bold text-purple-900 mb-2">No events yet</h3>
                 <p className="text-purple-500 mb-6">Create your first event to get started</p>
                 <button className="bg-gradient-to-r from-secondary-500 to-accent-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-xl hover:shadow-secondary-500/30 hover:scale-105 transition-all duration-300">
@@ -706,22 +707,22 @@ function DashboardContent() {
         {/* Premium Tips Section */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {[
-            {
-              icon: '🎨',
-              title: 'Visual Excellence',
+                        {
+                          icon: <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" /></svg>,
+                          title: 'Visual Excellence',
               desc: 'Use high-quality images and compelling descriptions to make your events irresistible',
               color: 'from-secondary-500 via-accent-500 to-rose-500',
               bgColor: 'from-pink-50 to-purple-50'
             },
             {
-              icon: '📱',
+              icon: <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>,
               title: 'Social Amplification',
               desc: 'Share your events across social platforms to maximize reach and engagement',
               color: 'from-purple-500 via-secondary-500 to-accent-500',
               bgColor: 'from-purple-50 to-secondary-50'
             },
             {
-              icon: '⚡',
+              icon: <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>,
               title: 'Early Bird Strategy',
               desc: 'Offer early bird pricing to create urgency and boost initial ticket sales',
               color: 'from-accent-500 via-rose-500 to-orange-500',
@@ -737,7 +738,7 @@ function DashboardContent() {
               <div className={`absolute -right-12 -bottom-12 w-40 h-40 bg-gradient-to-br ${tip.bgColor} rounded-full blur-2xl opacity-50 group-hover:scale-150 transition-transform duration-700`}></div>
               
               <div className="relative z-10">
-                <div className="text-5xl mb-5 group-hover:scale-125 group-hover:rotate-12 transition-transform duration-500 inline-block">
+              <div className="w-12 h-12 mb-5 group-hover:scale-125 group-hover:rotate-12 transition-transform duration-500 inline-block">
                   {tip.icon}
                 </div>
                 <h3 className="font-black text-purple-900 mb-3 text-xl group-hover:bg-gradient-to-r group-hover:from-secondary-600 group-hover:to-accent-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
