@@ -2,10 +2,12 @@ import nodemailer from 'nodemailer';
 
 // Create reusable transporter using Gmail SMTP
 const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT) || 587,
+    secure: false,
     auth: {
-        user: process.env.GMAIL_USER, // Your Gmail address
-        pass: process.env.GMAIL_APP_PASSWORD, // Gmail App Password (not regular password!)
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
     },
 });
 
@@ -22,7 +24,7 @@ export interface EmailOptions {
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
     try {
         const mailOptions = {
-            from: `"${process.env.APP_NAME || 'Hostdweb'}" <${process.env.GMAIL_USER}>`,
+            from: `"${process.env.APP_NAME || 'FemVents'}" <${process.env.SMTP_USER}>`,
             to: options.to,
             subject: options.subject,
             text: options.body,
