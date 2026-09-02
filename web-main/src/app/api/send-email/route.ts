@@ -18,34 +18,87 @@ async function generateTicketPdf(
     qrPng: Buffer
 ): Promise<Buffer> {
     return new Promise((resolve, reject) => {
-        const doc = new PDFDocument({ size: [400, 600], margin: 0 });
+        const W = 420;
+        const H = 680;
+        const doc = new PDFDocument({ size: [W, H], margin: 0 });
         const chunks: Buffer[] = [];
         doc.on('data', (chunk) => chunks.push(chunk));
         doc.on('end', () => resolve(Buffer.concat(chunks)));
         doc.on('error', reject);
 
-        // Header band
-        doc.rect(0, 0, 400, 90).fill('#667eea');
-        doc.fillColor('#ffffff').fontSize(22).font('Helvetica-Bold');
-        doc.text('FemVents Ticket', 0, 32, { align: 'center', width: 400 });
+        const pad = 32;
+        const stubTop = H - 300; // where the perforated divider sits
 
-        // Body
-        doc.fillColor('#111111').fontSize(20).font('Helvetica-Bold');
-        doc.text(data.eventTitle || 'Event', 30, 120, { width: 340 });
+        // ---- Outer card background ----
+        doc.roundedRect(10, 10, W - 20, H - 20, 18).fill('#ffffff');
+        doc.roundedRect(10, 10, W - 20, H - 20, 18).lineWidth(1).stroke('#e5e7eb');
 
-        doc.fillColor('#444444').fontSize(12).font('Helvetica');
-        let y = 160;
-        doc.text(`Attendee: ${data.recipientName}`, 30, y); y += 20;
-        doc.text(`Date: ${data.eventDate}`, 30, y); y += 20;
-        if (data.eventLocation) { doc.text(`Location: ${data.eventLocation}`, 30, y); y += 20; }
-        if (data.ticketType) { doc.text(`Ticket type: ${data.ticketType}`, 30, y); y += 20; }
-        if (data.ticketId) { doc.text(`Ticket ID: ${data.ticketId}`, 30, y); y += 20; }
+        // ---- Header gradient band ----
+        const grad = doc.linearGradient(10, 10, W - 10, 150);
+        grad.stop(0, '#0099ff').stop(1, '#764ba2');
+        doc.save();
+        doc.roundedRect(10, 10, W - 20, 150, 18).clip();
+        doc.rect(10, 10, W - 20, 150).fill(grad);
+        doc.restore();
 
-        // QR code
-        doc.image(qrPng, 100, y + 20, { width: 200, height: 200 });
+        doc.fillColor('#ffffff').font('Helvetica-Bold').fontSize(12);
+        doc.text('E - T I C K E T', pad, 36, { characterSpacing: 2 });
+        doc.fontSize(26);
+        doc.text('FemVents', pad, 56);
+        doc.font('Helvetica').fontSize(11).fillColor('#e8ecff');
+        doc.text('Experiences engineered for bold communities', pad, 92);
 
-        doc.fontSize(10).fillColor('#888888');
-        doc.text('Present this QR code at check-in.', 0, y + 240, { align: 'center', width: 400 });
+        // Status pill
+        doc.roundedRect(W - 150, 36, 100, 26, 13).fill('#ffffff');
+        doc.fillColor('#0099ff').font('Helvetica-Bold').fontSize(10);
+        doc.text('CONFIRMED', W - 150, 44, { width: 100, align: 'center' });
+
+        // ---- Event title ----
+        doc.fillColor('#0f172a').font('Helvetica-Bold').fontSize(22);
+        doc.text(data.eventTitle || 'Event', pad, 175, { width: W - pad * 2 });
+
+        // ---- Detail rows ----
+        const rows: Array<[string, string]> = [
+            ['ATTENDEE', data.recipientName || ''],
+            ['DATE', data.eventDate || ''],
+        ];
+        if (data.eventLocation) rows.push(['LOCATION', data.eventLocation]);
+        if (data.ticketType) rows.push(['TICKET TYPE', data.ticketType]);
+
+        let y = 225;
+        for (const [label, value] of rows) {
+            doc.font('Helvetica-Bold').fontSize(9).fillColor('#94a3b8');
+            doc.text(label, pad, y, { characterSpacing: 1 });
+            doc.font('Helvetica').fontSize(13).fillColor('#1e293b');
+            doc.text(value, pad, y + 13);
+            y += 44;
+        }
+
+        // ---- Perforated divider ----
+        doc.save();
+        doc.circle(10, stubTop, 12).fill('#f4f4f7');
+        doc.circle(W - 10, stubTop, 12).fill('#f4f4f7');
+        doc.restore();
+
+        doc.dash(4, { space: 4 });
+        doc.moveTo(30, stubTop).lineTo(W - 30, stubTop).lineWidth(1.2).stroke('#cbd5e1');
+        doc.undash();
+
+        // ---- Stub section (QR) ----
+        const qrSize = 190;
+        const qrX = (W - qrSize) / 2;
+        const qrY = stubTop + 30;
+
+        doc.roundedRect(qrX - 14, qrY - 14, qrSize + 28, qrSize + 28, 16).fill('#f8fafc');
+        doc.image(qrPng, qrX, qrY, { width: qrSize, height: qrSize });
+
+        doc.font('Helvetica').fontSize(9).fillColor('#94a3b8');
+        doc.text('SCAN AT CHECK-IN', 0, qrY + qrSize + 22, { align: 'center', width: W, characterSpacing: 1 });
+
+        if (data.ticketId) {
+            doc.font('Helvetica').fontSize(8).fillColor('#cbd5e1');
+            doc.text(`Ticket ID: ${data.ticketId}`, 0, H - 30, { align: 'center', width: W });
+        }
 
         doc.end();
     });
