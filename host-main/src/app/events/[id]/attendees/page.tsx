@@ -450,11 +450,11 @@ function EventAttendeesContent() {
             {/* Premium Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-5 gap-6">
               {[
-                { label: 'Total Attendees', value: stats.total, icon: '👥', color: 'from-blue-500 via-blue-600 to-cyan-600', bgColor: 'bg-blue-50', textColor: 'text-blue-600' },
-                { label: 'Confirmed', value: stats.confirmed, icon: '✅', color: 'from-emerald-500 via-green-500 to-teal-600', bgColor: 'bg-emerald-50', textColor: 'text-emerald-600' },
-                { label: 'Pending', value: stats.pending, icon: '⏰', color: 'from-amber-500 via-orange-500 to-yellow-600', bgColor: 'bg-amber-50', textColor: 'text-amber-600' },
-                { label: 'Checked In', value: stats.checkedIn, icon: '🎫', color: 'from-purple-500 via-violet-500 to-indigo-600', bgColor: 'bg-purple-50', textColor: 'text-purple-600' },
-                { label: 'Revenue', value: `$${stats.totalRevenue.toFixed(0)}`, icon: '💎', color: 'from-green-500 via-emerald-500 to-teal-600', bgColor: 'bg-green-50', textColor: 'text-green-600' },
+                              { label: 'Total Attendees', value: stats.total, icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" /></svg>, color: 'from-blue-500 via-blue-600 to-cyan-600', bgColor: 'bg-blue-50', textColor: 'text-blue-600' },
+                              { label: 'Confirmed', value: stats.confirmed, icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, color: 'from-emerald-500 via-green-500 to-teal-600', bgColor: 'bg-emerald-50', textColor: 'text-emerald-600' },
+                              { label: 'Pending', value: stats.pending, icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, color: 'from-amber-500 via-orange-500 to-yellow-600', bgColor: 'bg-amber-50', textColor: 'text-amber-600' },
+                              { label: 'Checked In', value: stats.checkedIn, icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h2a2 2 0 002-2 1 1 0 112 0 2 2 0 002 2h2a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2h-2a2 2 0 00-2 2 1 1 0 11-2 0 2 2 0 00-2-2z" /></svg>, color: 'from-purple-500 via-violet-500 to-indigo-600', bgColor: 'bg-purple-50', textColor: 'text-purple-600' },
+                              { label: 'Revenue', value: `$${stats.totalRevenue.toFixed(0)}`, icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, color: 'from-green-500 via-emerald-500 to-teal-600', bgColor: 'bg-green-50', textColor: 'text-green-600' },
               ].map((stat, idx) => (
                 <div
                   key={idx}
@@ -464,8 +464,8 @@ function EventAttendeesContent() {
                   <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
                   <div className="relative z-10">
                     <div className="flex items-center justify-between mb-4">
-                      <div className={`${stat.bgColor} p-3 rounded-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg`}>
-                        <span className="text-2xl">{stat.icon}</span>
+                    <div className={`${stat.bgColor} ${stat.textColor} p-3 rounded-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg`}>
+                        {stat.icon}
                       </div>
                     </div>
                     <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">{stat.label}</p>
@@ -502,18 +502,18 @@ function EventAttendeesContent() {
                   className="px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 bg-white font-bold text-slate-700 transition-all duration-300 cursor-pointer"
                 >
                   <option value="all">All Status</option>
-                  <option value="confirmed">✅ Confirmed</option>
-                  <option value="pending">⏰ Pending</option>
-                  <option value="cancelled">❌ Cancelled</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="pending">Pending</option>
+                  <option value="cancelled">Cancelled</option>
                 </select>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
                   className="px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 bg-white font-bold text-slate-700 transition-all duration-300 cursor-pointer"
                 >
-                  <option value="date">📅 Latest First</option>
-                  <option value="name">🔤 Name (A-Z)</option>
-                  <option value="status">📊 Status</option>
+                  <option value="date">Latest First</option>
+                  <option value="name">Name (A-Z)</option>
+                  <option value="status">Status</option>
                 </select>
               </div>
             </div>
@@ -755,9 +755,9 @@ function EventAttendeesContent() {
                         </div>
                         <button
                           onClick={() => handleDeleteAttendee(attendee)}
-                          className="mt-3 w-full px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-black hover:bg-red-100 transition-all duration-300"
+                          className="mt-3 w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-50 text-red-600 text-sm font-black hover:bg-red-100 transition-all duration-300"
                         >
-                          🗑 Remove Attendee
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>Remove Attendee
                         </button>
                       </div>
                     );
@@ -775,7 +775,7 @@ function EventAttendeesContent() {
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl animate-[slideUp_0.4s_ease-out] border-2 border-slate-200">
             <div className="px-8 py-6 border-b-2 border-slate-100 bg-gradient-to-r from-blue-50 to-purple-50">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black text-slate-900">💳 Record Payment</h2>
+              <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg>Record Payment</h2>
                 <button
                   onClick={() => setShowPaymentModal(false)}
                   className="text-slate-400 hover:text-slate-900 text-3xl font-bold transition-colors hover:rotate-90 transition-transform duration-300"
@@ -791,8 +791,8 @@ function EventAttendeesContent() {
                 <p className="text-sm text-slate-600 font-semibold">{selectedAttendee.userInfo?.email}</p>
                 {selectedAttendee.paymentId?.startsWith('FV-') && (
                   <div className="mt-4 pt-4 border-t border-slate-200">
-                    <p className="text-xs font-bold text-amber-700 uppercase tracking-wide mb-1">
-                      ⏳ Awaiting {selectedAttendee.paymentMethod} payment
+                                       <p className="text-xs font-bold text-amber-700 uppercase tracking-wide mb-1 flex items-center gap-1.5">
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>Awaiting {selectedAttendee.paymentMethod} payment
                     </p>
                     <p className="text-sm text-slate-700">
                       Reference: <span className="font-mono font-black">{selectedAttendee.paymentId}</span>
@@ -820,11 +820,11 @@ function EventAttendeesContent() {
                   onChange={(e) => setPaymentMethod(e.target.value)}
                   className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 text-slate-900 font-bold cursor-pointer"
                 >
-                  <option value="cash">💵 Cash</option>
-                  <option value="bank_transfer">🏦 Bank Transfer</option>
-                  <option value="mobile_money">📱 Mobile Money</option>
-                  <option value="card">💳 Card</option>
-                  <option value="other">📦 Other</option>
+                  <option value="cash">Cash</option>
+                  <option value="bank_transfer">Bank Transfer</option>
+                  <option value="mobile_money">Mobile Money</option>
+                  <option value="card">Card</option>
+                  <option value="other">Other</option>
                 </select>
               </div>
               <div className="flex gap-4 pt-4">
@@ -853,7 +853,7 @@ function EventAttendeesContent() {
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto animate-[slideUp_0.4s_ease-out] border-2 border-slate-200">
             <div className="sticky top-0 px-8 py-6 border-b-2 border-slate-100 bg-gradient-to-r from-blue-50 to-purple-50 z-10">
               <div className="flex items-center justify-between">
-                <h2 className="text-2xl font-black text-slate-900">👤 Attendee Details</h2>
+              <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" /></svg>Attendee Details</h2>
                 <button
                   onClick={() => setShowDetailModal(false)}
                   className="text-slate-400 hover:text-slate-900 text-3xl font-bold transition-colors hover:rotate-90 transition-transform duration-300"
@@ -946,8 +946,8 @@ function EventAttendeesContent() {
                   }}
                   className="px-6 py-4 rounded-2xl bg-gradient-to-r from-blue-50 to-blue-100 text-blue-600 hover:from-blue-100 hover:to-blue-200 font-black text-sm transition-all duration-300 hover:scale-105"
                 >
-                  💳 Record Payment
-                </button>
+                                   <svg className="inline-block w-4 h-4 mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg>Record Payment
+                                   </button>
                 <button
                   onClick={() => {
                     handleCheckIn(selectedAttendee);
@@ -968,7 +968,7 @@ function EventAttendeesContent() {
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-[fadeIn_0.3s_ease-out]">
           <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl animate-[slideUp_0.4s_ease-out] border-2 border-slate-200">
             <div className="px-8 py-6 border-b-2 border-slate-100 bg-gradient-to-r from-blue-50 to-purple-50">
-              <h2 className="text-2xl font-black text-slate-900">⚡ Bulk Actions</h2>
+            <h2 className="text-2xl font-black text-slate-900 flex items-center gap-2"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>Bulk Actions</h2>
               <p className="text-sm text-slate-600 font-bold mt-2">
                 <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-lg">{selectedAttendees.size}</span> attendees selected
               </p>
@@ -981,9 +981,9 @@ function EventAttendeesContent() {
                   onChange={(e) => setBulkAction(e.target.value as any)}
                   className="w-full px-6 py-4 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-500/20 transition-all duration-300 font-bold cursor-pointer"
                 >
-                  <option value="confirm">✅ Confirm Payments</option>
-                  <option value="message">💬 Send Message</option>
-                  <option value="export">📥 Export Data</option>
+                  <option value="confirm">Confirm Payments</option>
+                  <option value="message">Send Message</option>
+                  <option value="export">Export Data</option>
                 </select>
               </div>
 

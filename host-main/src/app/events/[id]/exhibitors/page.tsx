@@ -167,7 +167,7 @@ export default function ExhibitorsManagementPage({ params }: { params: Promise<{
                 </button>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">🏢</span>
+                  <svg className="w-8 h-8 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>
                     <span className="text-sm font-bold text-slate-500">{event?.title}</span>
                   </div>
                   <h1 className="text-4xl font-black bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
@@ -273,7 +273,7 @@ export default function ExhibitorsManagementPage({ params }: { params: Promise<{
             {/* List */}
             {exhibitors.length === 0 && !showForm ? (
               <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl p-16 text-center">
-                <div className="text-6xl mb-4">🏢</div>
+                                <div className="w-16 h-16 mb-4 mx-auto text-slate-300"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg></div>
                 <p className="text-xl font-black text-slate-900 mb-2">No exhibitors yet</p>
                 <p className="text-slate-500 font-medium">Add exhibitors and attendees will see them in the app.</p>
               </div>
@@ -305,8 +305,8 @@ export default function ExhibitorsManagementPage({ params }: { params: Promise<{
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 mt-2 hover:underline"
                             >
-                              🔗 Visit website
-                            </a>
+                               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>Visit website
+                                   </a>
                           )}
                         </div>
                       </div>

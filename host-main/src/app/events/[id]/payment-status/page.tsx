@@ -56,7 +56,7 @@ export default function PaymentStatusPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
         <div className="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
-          <div className="text-5xl mb-4">❌</div>
+        <div className="w-14 h-14 mb-4 mx-auto text-red-500"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
           <h1 className="text-2xl font-bold text-slate-900 mb-2">Payment Not Completed</h1>
           <p className="text-slate-600 mb-6">
             Your payment was {flwStatus || 'not completed'}. No charge was made.
@@ -87,7 +87,7 @@ export default function PaymentStatusPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
         <div className="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
-          <div className="text-5xl mb-4">⏳</div>
+        <div className="w-14 h-14 mb-4 mx-auto text-amber-500"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
           <h1 className="text-2xl font-bold text-slate-900 mb-2">Almost There</h1>
           <p className="text-slate-600">
             Your payment succeeded, but we're still finalizing your ticket. Check your email shortly, or refresh this page.
@@ -102,7 +102,7 @@ export default function PaymentStatusPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 p-6">
       <div className="bg-white rounded-2xl shadow-xl p-10 max-w-md w-full text-center">
-        <div className="text-5xl mb-4">✅</div>
+      <div className="w-14 h-14 mb-4 mx-auto text-emerald-500"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
         <h1 className="text-2xl font-bold text-slate-900 mb-2">You're In!</h1>
         <p className="text-slate-600 mb-6">{ticket.event?.title}</p>
 

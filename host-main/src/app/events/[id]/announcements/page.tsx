@@ -165,7 +165,7 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
                 </button>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-3xl">📣</span>
+                  <svg className="w-8 h-8 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
                     <span className="text-sm font-bold text-slate-500">{event?.title}</span>
                   </div>
                   <h1 className="text-4xl font-black bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
@@ -239,8 +239,8 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
                             : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                         }`}
                       >
-                        🚨 Urgent
-                      </button>
+                      <svg className="inline-block w-4 h-4 mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>Urgent
+                        </button>
                     </div>
                   </div>
 
@@ -266,7 +266,7 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
             {/* List */}
             {announcements.length === 0 && !showForm ? (
               <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl p-16 text-center">
-                <div className="text-6xl mb-4">📣</div>
+                                <div className="w-16 h-16 mb-4 mx-auto text-slate-300"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg></div>
                 <p className="text-xl font-black text-slate-900 mb-2">No announcements yet</p>
                 <p className="text-slate-500 font-medium">Post updates and attendees will see them instantly in the app.</p>
               </div>
@@ -282,7 +282,7 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-2">
                           {a.priority === 'urgent' ? (
-                            <span className="px-3 py-1 rounded-lg text-xs font-black bg-red-100 text-red-700">🚨 Urgent</span>
+                                                        <span className="px-3 py-1 rounded-lg text-xs font-black bg-red-100 text-red-700 inline-flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>Urgent</span>
                           ) : (
                             <span className="px-3 py-1 rounded-lg text-xs font-black bg-blue-100 text-blue-700">Normal</span>
                           )}

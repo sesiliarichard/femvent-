@@ -96,20 +96,20 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
   };
 
   const eventTypes = useMemo(() => [
-    { value: 'Conference', icon: '🎤', color: 'from-blue-500 to-cyan-500' },
-    { value: 'Workshop', icon: '🛠️', color: 'from-purple-500 to-pink-500' },
-    { value: 'Meetup', icon: '🤝', color: 'from-emerald-500 to-teal-500' },
-    { value: 'Webinar', icon: '💻', color: 'from-orange-500 to-red-500' },
-    { value: 'Exhibition', icon: '🎨', color: 'from-violet-500 to-purple-500' },
-    { value: 'Networking', icon: '🌐', color: 'from-amber-500 to-orange-500' }
+    { value: 'Conference', icon: <svg className="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" /></svg>, color: 'from-blue-500 to-cyan-500' },
+    { value: 'Workshop', icon: <svg className="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766m-3.704 3.796l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085" /></svg>, color: 'from-purple-500 to-pink-500' },
+    { value: 'Meetup', icon: <svg className="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>, color: 'from-emerald-500 to-teal-500' },
+    { value: 'Webinar', icon: <svg className="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" /></svg>, color: 'from-orange-500 to-red-500' },
+    { value: 'Exhibition', icon: <svg className="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909M18 12.75h.008v.008H18v-.008zM4.5 20.25h15a1.5 1.5 0 001.5-1.5V5.25a1.5 1.5 0 00-1.5-1.5h-15a1.5 1.5 0 00-1.5 1.5v13.5a1.5 1.5 0 001.5 1.5z" /></svg>, color: 'from-violet-500 to-purple-500' },
+    { value: 'Networking', icon: <svg className="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582" /></svg>, color: 'from-amber-500 to-orange-500' }
   ], []);
 
-  const tabs: { id: TabType; label: string; icon: string }[] = [
-    { id: 'Basic', label: 'Basic Info', icon: '📝' },
-    { id: 'Tickets', label: 'Tickets', icon: '🎟️' },
-    { id: 'Speakers', label: 'Speakers', icon: '🎤' },
-    { id: 'Agenda', label: 'Agenda', icon: '📅' },
-    { id: 'Partners', label: 'Partners', icon: '🤝' },
+  const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
+    { id: 'Basic', label: 'Basic Info', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg> },
+    { id: 'Tickets', label: 'Tickets', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h2a2 2 0 002-2 1 1 0 112 0 2 2 0 002 2h2a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2h-2a2 2 0 00-2 2 1 1 0 11-2 0 2 2 0 00-2-2z" /></svg> },
+    { id: 'Speakers', label: 'Speakers', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" /></svg> },
+    { id: 'Agenda', label: 'Agenda', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg> },
+    { id: 'Partners', label: 'Partners', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg> },
   ];
 
   useEffect(() => {
@@ -470,7 +470,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
                       : 'bg-transparent text-slate-600 hover:bg-slate-100 hover:scale-105'
                   }`}
                 >
-                  <span className={`text-2xl transition-transform duration-300 ${
+                                   <span className={`w-5 h-5 transition-transform duration-300 ${
                     activeTab === tab.id ? 'scale-110' : 'group-hover:scale-110'
                   }`}>
                     {tab.icon}
@@ -547,7 +547,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
                     >
                       <div className={`absolute inset-0 bg-gradient-to-br ${type.color} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
                       <div className="relative text-center">
-                        <span className="text-4xl mb-3 block group-hover:scale-110 transition-transform duration-300">
+                      <span className="w-9 h-9 mb-3 block mx-auto group-hover:scale-110 transition-transform duration-300 text-slate-600">
                           {type.icon}
                         </span>
                         <span className={`text-sm font-bold ${
@@ -752,7 +752,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
                       />
                     </div>
                     <p className="text-xs text-slate-500 font-medium">
-                      💡 Tip: Add address details to enable map navigation for attendees. Coordinates are optional but provide precise location.
+                    <svg className="inline-block w-4 h-4 mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18v-5.25m0 0a6.01 6.01 0 001.5-.189m-1.5.189a6.01 6.01 0 01-1.5-.189m3.75 7.478a12.06 12.06 0 01-4.5 0m3.75 2.383a14.406 14.406 0 01-3 0M14.25 18v-.192c0-.983.658-1.823 1.508-2.316a7.5 7.5 0 10-7.517 0c.85.493 1.509 1.333 1.509 2.316V18" /></svg>Tip: Add address details to enable map navigation for attendees. Coordinates are optional but provide precise location.
                     </p>
                   </div>
                 </div>
@@ -826,7 +826,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
               {eventData.speakers.length === 0 ? (
                 <div className="text-center py-16 bg-gradient-to-br from-slate-50 to-blue-50 rounded-3xl border-2 border-dashed border-slate-300">
                   <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center">
-                    <span className="text-4xl">🎤</span>
+                  <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" /></svg>
                   </div>
                   <h3 className="text-xl font-black text-slate-900 mb-2">No speakers added yet</h3>
                   <p className="text-slate-600 font-medium mb-6">Add speakers to showcase your event talent</p>
@@ -972,7 +972,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
               {eventData.agenda.length === 0 ? (
                 <div className="text-center py-16 bg-gradient-to-br from-slate-50 to-blue-50 rounded-3xl border-2 border-dashed border-slate-300">
                   <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center">
-                    <span className="text-4xl">📅</span>
+                  <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg>
                   </div>
                   <h3 className="text-xl font-black text-slate-900 mb-2">No agenda items yet</h3>
                   <p className="text-slate-600 font-medium mb-6">Create your event schedule</p>
@@ -1102,7 +1102,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
               {ticketTiers.length === 0 ? (
                 <div className="text-center py-16 bg-gradient-to-br from-slate-50 to-rose-50 rounded-3xl border-2 border-dashed border-slate-300">
                   <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-rose-100 to-pink-100 rounded-2xl flex items-center justify-center">
-                    <span className="text-4xl">🎟️</span>
+                  <svg className="w-10 h-10 text-rose-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h2a2 2 0 002-2 1 1 0 112 0 2 2 0 002 2h2a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2h-2a2 2 0 00-2 2 1 1 0 11-2 0 2 2 0 00-2-2z" /></svg>
                   </div>
                   <h3 className="text-xl font-black text-slate-900 mb-2">No ticket types yet</h3>
                   <p className="text-slate-600 font-medium mb-6">Attendees will default to a single free ticket if none are added</p>
@@ -1193,7 +1193,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
               {eventData.partners.length === 0 ? (
                 <div className="text-center py-16 bg-gradient-to-br from-slate-50 to-blue-50 rounded-3xl border-2 border-dashed border-slate-300">
                   <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl flex items-center justify-center">
-                    <span className="text-4xl">🤝</span>
+                  <svg className="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>
                   </div>
                   <h3 className="text-xl font-black text-slate-900 mb-2">No partners added yet</h3>
                   <p className="text-slate-600 font-medium mb-6">Add sponsors and collaborators</p>
