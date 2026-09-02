@@ -30,7 +30,7 @@ const baseTemplate = (content: string, footer?: string) => `
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Email from Hostdweb</title>
+    <title>Email from FemVents</title>
   <style>
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
@@ -122,7 +122,7 @@ const baseTemplate = (content: string, footer?: string) => `
     ${content}
     ${footer || `
       <div class="footer">
-        <p>© ${new Date().getFullYear()} Hostdweb Events - Professional Event Management</p>
+                <p>© ${new Date().getFullYear()} FemVents - Professional Event Management</p>
         <p style="font-size: 12px; color: #999;">You received this email because you registered for an event on our platform.</p>
       </div>
     `}
@@ -160,8 +160,8 @@ export const eventReminderTemplate: EmailTemplate = {
         </center>
       ` : ''}
       
-      <p>We look forward to seeing you there!</p>
-      <p>Best regards,<br><strong>${data.organizerName || 'The Hostdweb Team'}</strong></p>
+           <p>We look forward to seeing you there!</p>
+      <p>Best regards,<br><strong>${data.organizerName || 'The FemVents Team'}</strong></p>
     </div>
   `),
 };
@@ -198,7 +198,7 @@ export const eventUpdateTemplate: EmailTemplate = {
       ` : ''}
       
       <p>If you have any questions, please don't hesitate to reach out.</p>
-      <p>Thank you for your understanding,<br><strong>${data.organizerName || 'The Hostdweb Team'}</strong></p>
+          <p>Thank you for your understanding,<br><strong>${data.organizerName || 'The FemVents Team'}</strong></p>
     </div>
   `),
 };
@@ -229,7 +229,7 @@ export const thankYouTemplate: EmailTemplate = {
       ` : ''}
       
       <p>We hope to see you at future events!</p>
-      <p>With gratitude,<br><strong>${data.organizerName || 'The Hostdweb Team'}</strong></p>
+            <p>With gratitude,<br><strong>${data.organizerName || 'The FemVents Team'}</strong></p>
     </div>
   `),
 };
@@ -263,10 +263,11 @@ export const customAnnouncementTemplate: EmailTemplate = {
         </center>
       ` : ''}
       
-      <p>Best regards,<br><strong>${data.organizerName || 'The Hostdweb Team'}</strong></p>
+      <p>Best regards,<br><strong>${data.organizerName || 'The FemVents Team'}</strong></p>
     </div>
   `),
 };
+
 
 // Export all templates
 export const emailTemplates: EmailTemplate[] = [
