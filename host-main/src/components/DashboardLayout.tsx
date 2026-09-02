@@ -117,12 +117,12 @@ useEffect(() => {
   };
 
   const navigation = [
-    { label: 'Dashboard', icon: '📊', href: '/dashboard', key: 'dashboard' },
-    { label: 'Events', icon: '🎫', href: '/events', key: 'events' },
-    { label: 'Attendees', icon: '👥', href: '/attendees', key: 'attendees' },
-    { label: 'Analytics', icon: '📈', href: '/analytics', key: 'analytics' },
-    { label: 'Create Event', icon: '➕', href: '/events/create', key: 'create' },
-    { label: 'Settings', icon: '⚙️', href: '/settings', key: 'settings' },
+    { label: 'Dashboard', icon: '📊', href: '/host/dashboard', key: 'dashboard' },
+    { label: 'Events', icon: '🎫', href: '/host/events', key: 'events' },
+    { label: 'Attendees', icon: '👥', href: '/host/attendees', key: 'attendees' },
+    { label: 'Analytics', icon: '📈', href: '/host/analytics', key: 'analytics' },
+    { label: 'Create Event', icon: '➕', href: '/host/events/create', key: 'create' },
+    { label: 'Settings', icon: '⚙️', href: '/host/settings', key: 'settings' },
   ];
 
   if (!mounted) {
