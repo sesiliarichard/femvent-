@@ -231,11 +231,15 @@ function EventAttendeesContent() {
       return;
     }
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('tickets')
         .delete()
-        .eq('id', attendee.id);
+        .eq('id', attendee.id)
+        .select();
       if (error) throw error;
+      if (!data || data.length === 0) {
+        throw new Error('Delete blocked — no rows were removed (likely an RLS policy on the tickets table)');
+      }
       setAttendees((prev) => prev.filter((a) => a.id !== attendee.id));
       setSelectedAttendees((prev) => {
         const next = new Set(prev);
@@ -247,10 +251,10 @@ function EventAttendeesContent() {
       }
     } catch (error) {
       console.error('Error deleting attendee:', error);
-      alert('Failed to delete attendee. Please try again.');
+      alert(error instanceof Error ? error.message : 'Failed to delete attendee. Please try again.');
     }
   };
-
+  
   const handleBulkConfirm = async () => {
     try {
       const { error } = await supabase
