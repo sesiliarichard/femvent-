@@ -131,7 +131,8 @@ useEffect(() => {
       label: 'Events',
       icon: (
         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h2a2 2 0 002-2 1 1 0 112 0 2 2 0 002 2h2a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2h-2a2 2 0 00-2 2 1 1 0 11-2 0 2 2 0 00-2-2z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} d="M6 5.5a1.5 1.5 0 011.5-1.5h9A1.5 1.5 0 0118 5.5v1.75a1.75 1.75 0 000 3.5V12.5a1.75 1.75 0 000 3.5v1.75a1.5 1.5 0 01-1.5 1.5h-9A1.5 1.5 0 016 18.25v-1.75a1.75 1.75 0 000-3.5v-1.75a1.75 1.75 0 000-3.5V5.5z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.8} strokeDasharray="2 2.5" d="M12 5v14" />
         </svg>
       ),
       href: '/host/events',
@@ -225,15 +226,16 @@ useEffect(() => {
               const isActive = currentPage === item.key;
               return (
                 <a
+                                
                   key={item.key}
                   href={item.href}
-                  className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition cursor-pointer ${
+                  className={`flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 cursor-pointer ${
                     isActive
-                      ? 'bg-blue-50 text-blue-600 font-medium'
-                      : 'text-slate-600 hover:bg-slate-50'
+                      ? 'bg-blue-50 text-blue-600 font-semibold shadow-sm'
+                      : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900'
                   }`}
                 >
-                  <span className="text-xl">{item.icon}</span>
+                  <span className="flex-shrink-0">{item.icon}</span>
                   {!isCollapsed && <span className="text-sm">{item.label}</span>}
                 </a>
               );
@@ -279,16 +281,17 @@ useEffect(() => {
                   const isActive = currentPage === item.key;
                   return (
                     <a
+                                        
                       key={item.key}
                       href={item.href}
                       onClick={() => setIsSidebarOpen(false)}
-                      className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition cursor-pointer ${
+                      className={`flex items-center space-x-3 px-4 py-2.5 rounded-xl transition-all duration-200 cursor-pointer ${
                         isActive
-                          ? 'bg-gradient-to-r from-secondary-50 to-accent-50 text-secondary-600 font-medium'
-                          : 'text-purple-600 hover:bg-pink-50'
+                          ? 'bg-gradient-to-r from-secondary-50 to-accent-50 text-secondary-600 font-semibold shadow-sm'
+                          : 'text-purple-500 hover:bg-pink-50 hover:text-purple-900'
                       }`}
                     >
-                      <span className="text-xl">{item.icon}</span>
+                      <span className="flex-shrink-0">{item.icon}</span>
                       <span className="text-sm">{item.label}</span>
                     </a>
                   );
