@@ -100,17 +100,21 @@ export default function UsersPage() {
   };
 
   const handleDeleteUser = async (userId: string, userLabel: string) => {
-    if (!confirm(`Remove ${userLabel}? Their account will be deactivated and hidden, but payment records are kept for audit purposes.`)) return;
+    if (!confirm(`Permanently delete ${userLabel}? This cannot be undone and will remove their account entirely.`)) return;
     try {
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('users')
-        .update({ status: 'deleted', deleted_at: new Date().toISOString() })
-        .eq('id', userId);
+        .delete()
+        .eq('id', userId)
+        .select();
       if (error) throw error;
+      if (!data || data.length === 0) {
+        throw new Error('Delete blocked — no rows were removed (likely an RLS policy or a linked record, e.g. tickets, still referencing this user)');
+      }
       setUsers(users.filter(user => user.id !== userId));
     } catch (error) {
       console.error('Error removing user:', error);
-      alert('Failed to remove user');
+      alert(error instanceof Error ? error.message : 'Failed to remove user');
     }
   };
   
