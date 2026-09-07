@@ -5,6 +5,7 @@ import { AdminLayout } from '../components/AdminLayout';
 interface PlatformPaymentSetting {
   provider: 'pesapal' | 'crypto' | 'azampay';
   status: string;
+  credentials?: Record<string, any>;
 }
 
 const PROVIDER_META: Record<string, { name: string; blurb: string }> = {
@@ -21,7 +22,7 @@ export default function PaymentMethodsPage() {
   const loadSettings = async () => {
     setLoading(true);
     try {
-      const { data, error } = await supabase.from('platform_payment_settings').select('provider, status');
+      const { data, error } = await supabase.from('platform_payment_settings').select('provider, status, credentials');
       if (error) throw error;
       setSettings(data || []);
     } catch (err) {
@@ -41,13 +42,14 @@ export default function PaymentMethodsPage() {
   const toggleProvider = async (provider: string, currentlyActive: boolean) => {
     setSaving(provider);
     try {
+      const existing = settings.find((s) => s.provider === provider);
       const { error } = await supabase
         .from('platform_payment_settings')
         .upsert(
           {
             provider,
             status: currentlyActive ? 'inactive' : 'active',
-            credentials: {},
+            credentials: existing?.credentials ?? {},
             display_label: PROVIDER_META[provider].name,
             updated_at: new Date().toISOString(),
           },
