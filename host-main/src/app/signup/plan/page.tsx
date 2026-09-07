@@ -157,7 +157,26 @@ function SignupPlanContent() {
         return;
       }
 
-      setError('This payment method is not yet available for subscriptions. Please choose Pesapal.');
+      if (selectedPaymentMethod === 'crypto') {
+        const res = await fetch('/host/api/payments/create-crypto-subscription-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            plan: selectedPlan,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.sessionUrl) {
+          throw new Error(data.error || 'Failed to start payment');
+        }
+
+        window.location.href = data.sessionUrl;
+        return;
+      }
+
+      setError('This payment method is not yet available for subscriptions. Please choose Pesapal or Crypto.');
     } catch (err: any) {
       setError(err.message || 'Unable to create your organizer account.');
     } finally {
