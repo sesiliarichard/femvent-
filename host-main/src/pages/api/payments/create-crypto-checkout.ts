@@ -29,6 +29,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const orderId = `femvents-${eventId}-${Date.now()}`;
     const origin = req.headers.origin || process.env.NEXT_PUBLIC_ATTENDEE_SITE_URL;
 
+    const { data: cryptoSettings } = await supabaseAdmin
+      .from('platform_payment_settings')
+      .select('credentials')
+      .eq('provider', 'crypto')
+      .maybeSingle();
+
+    const payoutAddress = cryptoSettings?.credentials?.cryptoAddress;
+    const payoutCurrency = cryptoSettings?.credentials?.payoutCurrency;
+
+    if (!payoutAddress || !payoutCurrency) {
+      console.error('No crypto payout address configured in platform_payment_settings');
+      return res.status(500).json({ error: 'Crypto payments are not configured' });
+    }
+
     const npRes = await fetch('https://api.nowpayments.io/v1/invoice', {
       method: 'POST',
       headers: {
@@ -38,6 +52,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       body: JSON.stringify({
         price_amount: amount,
         price_currency: 'usd',
+        pay_currency: payoutCurrency,
         order_id: orderId,
         order_description: `Ticket purchase for event ${eventId}${ticketTypeName ? ` (${ticketTypeName})` : ''}`,
         ipn_callback_url: `https://femvents-host.netlify.app/api/payments/nowpayments-webhook`,
@@ -53,6 +68,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(502).json({ error: 'Failed to create crypto payment session' });
     }
 
+    // Route this invoice's funds directly to the platform's configured payout address
+    const routeRes = await fetch('https://api.nowpayments.io/v1/invoice-payment', {
+      method: 'POST',
+      headers: {
+        'x-api-key': process.env.NOWPAYMENTS_API_KEY as string,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        iid: data.id,
+        pay_currency: payoutCurrency,
+        payout_address: payoutAddress,
+        payout_currency: payoutCurrency,
+      }),
+    });
+
+    if (!routeRes.ok) {
+      const routeErr = await routeRes.json().catch(() => ({}));
+      console.error('NOWPayments payout routing failed:', routeErr);
+      return res.status(502).json({ error: 'Failed to configure crypto payout routing' });
+    }
+    
     // Create pending payments + ticket rows now — the webhook flips them to confirmed
     const { data: payment, error: paymentError } = await supabaseAdmin
       .from('payments')
