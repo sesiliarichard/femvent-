@@ -49,9 +49,7 @@ function SignupPlanContent() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'pesapal' | 'crypto' | 'azampay' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
-  const [paymentMethods, setPaymentMethods] = useState
-    { key: 'pesapal' | 'crypto' | 'azampay'; label: string; desc: string }[]
-  >([]);
+  const [paymentMethods, setPaymentMethods] = useState<{ key: 'pesapal' | 'crypto' | 'azampay'; label: string; desc: string }[]>([]);
   const [loadingMethods, setLoadingMethods] = useState(true);
 
   const PAYMENT_METHOD_META = {
