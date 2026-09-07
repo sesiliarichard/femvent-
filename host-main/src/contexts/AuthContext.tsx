@@ -69,7 +69,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             status: 'active',
           };
           const { error: insertError } = await supabase.from('users').insert(newProfile);
-          if (insertError) throw insertError;
+
+          if (insertError) {
+            // Another concurrent insert (e.g. signUp()'s own profile creation) won the race.
+            // Re-fetch the real row instead of trusting our fallback default.
+            if (insertError.code === '23505') {
+              const { data: existing } = await supabase
+                .from('users')
+                .select('*')
+                .eq('id', authUser.id)
+                .maybeSingle();
+              if (existing) {
+                setUserProfile(existing);
+                logger.setUser(existing.id, existing.email ?? undefined, existing.role);
+                logger.logAuthEvent('user_profile_loaded', { userId: existing.id, role: existing.role });
+                return;
+              }
+            }
+            throw insertError;
+          }
 
           setUserProfile(newProfile);
           logger.setUser(newProfile.id, newProfile.email ?? undefined, newProfile.role);
@@ -174,7 +192,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw new Error(error.message);
     }
   };
-  
+
   const signInWithGoogle = async () => {
     try {
       logger.logAuthEvent('google_sign_in_attempt');
