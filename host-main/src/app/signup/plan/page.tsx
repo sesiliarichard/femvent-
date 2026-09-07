@@ -108,22 +108,41 @@ function SignupPlanContent() {
     setError('');
 
     try {
-      // TODO: create the pending subscription payment here (Pesapal/Crypto/AzamPay checkout)
-      // before creating the account, then redirect to the provider's payment page.
-      await signUp(email, password, fullName, {
-        role: selectedPlan === 'starter' ? 'host' : 'attendee',
+      const userId = await signUp(email, password, fullName, {
         organizationName,
         businessEmail,
+        plan: selectedPlan,
       });
 
-      router.push('/dashboard');
+      if (selectedPaymentMethod === 'pesapal') {
+        const res = await fetch('/api/payments/create-subscription-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            plan: selectedPlan,
+            email,
+            name: fullName,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.sessionUrl) {
+          throw new Error(data.error || 'Failed to start payment');
+        }
+
+        window.location.href = data.sessionUrl;
+        return;
+      }
+
+      setError('This payment method is not yet available for subscriptions. Please choose Pesapal.');
     } catch (err: any) {
       setError(err.message || 'Unable to create your organizer account.');
     } finally {
       setIsSubmitting(false);
     }
   };
-
+  
   return (
     <main className="min-h-screen bg-slate-100 px-4 py-12 text-slate-900">
       <div className="mx-auto max-w-4xl rounded-[32px] bg-white p-8 shadow-xl shadow-slate-200/80">

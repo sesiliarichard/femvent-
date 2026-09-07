@@ -33,28 +33,24 @@ export default function ProtectedRoute({ children, requireAdmin }: ProtectedRout
             }
           }
 
-          // Check if user has host role OR an approved host application
-          if (userProfile?.role === 'host' || userProfile?.hostApplication?.status === 'approved' || userProfile?.role === 'admin') {
-            setIsHost(true);
-            setCheckingHost(false);
-            return;
-          }
-
-        // Check if user has created any events (alternative way to determine host)
-        const { data: hostEvents, error } = await supabase
-        .from('events')
-        .select('id')
-        .eq('host_id', user.id)
-        .limit(1);
-
-      if (error) throw error;
-
-      if (hostEvents && hostEvents.length > 0) {
-        setIsHost(true);
-      } else {
-        // Show access denied message
-        setIsHost(false);
-      }
+                // Admins always pass
+                if (userProfile?.role === 'admin') {
+                  setIsHost(true);
+                  setCheckingHost(false);
+                  return;
+                }
+      
+                // Hosts need both the role AND an active subscription
+                if (userProfile?.role === 'host' && userProfile?.subscription_status === 'active') {
+                  setIsHost(true);
+                  setCheckingHost(false);
+                  return;
+                }
+      
+                // No fallback based on having created events — access is gated on
+                // subscription_status only, set by the payment webhook on confirmed payment.
+                setIsHost(false);
+                
         } catch (error) {
           console.error('Error checking host status:', error);
           setIsHost(false);

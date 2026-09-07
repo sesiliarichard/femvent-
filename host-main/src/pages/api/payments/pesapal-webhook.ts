@@ -66,6 +66,46 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     await supabaseAdmin.from('payments').update({ status: 'confirmed' }).eq('id', payment.id);
 
+    // Subscription payments grant host access here — no ticket involved.
+    if (payment.type === 'subscription') {
+      const plan = payment.meta?.plan;
+
+      const { error: userUpdateError } = await supabaseAdmin
+        .from('users')
+        .update({ role: 'host', subscription_status: 'active', plan })
+        .eq('id', payment.user_id);
+
+      if (userUpdateError) throw userUpdateError;
+
+      try {
+        const { data: hostUser } = await supabaseAdmin
+          .from('users')
+          .select('email, name')
+          .eq('id', payment.user_id)
+          .maybeSingle();
+
+        if (hostUser?.email) {
+          await sendEmail({
+            to: hostUser.email,
+            subject: `Your ${plan} plan is active`,
+            body: `Thanks for subscribing! Your payment of $${payment.amount} was confirmed and your ${plan} plan is now active.`,
+            html: `
+              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                <h1>Subscription Active!</h1>
+                <p>Thanks for subscribing to the <strong>${plan}</strong> plan.</p>
+                <p><strong>Amount Paid:</strong> $${payment.amount}</p>
+                <p>You now have full access to your host dashboard.</p>
+              </div>
+            `,
+          });
+        }
+      } catch (emailError) {
+        console.error('Subscription confirmation email failed (payment still confirmed):', emailError);
+      }
+
+      return res.status(200).json({ received: true, type: 'subscription' });
+    }
+
     const { data: ticket, error: ticketError } = await supabaseAdmin
       .from('tickets')
       .update({ status: 'confirmed', confirmed_at: new Date().toISOString() })
@@ -109,6 +149,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await supabaseAdmin.from('events').update({ tickets_sold: uniqueUserIds.size }).eq('id', ticket.event_id);
 
     return res.status(200).json({ received: true });
+    
   } catch (error) {
     console.error('Pesapal webhook processing error:', error);
     return res.status(500).json({ error: 'Internal server error' });

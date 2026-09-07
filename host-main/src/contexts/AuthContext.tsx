@@ -8,6 +8,7 @@ interface SignUpOptions {
   role?: 'attendee' | 'host';
   organizationName?: string;
   businessEmail?: string;
+  plan?: string;
 }
 
 interface AuthContextType {
@@ -15,7 +16,7 @@ interface AuthContextType {
   userProfile: any;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, name?: string, options?: SignUpOptions) => Promise<void>;
+  signUp: (email: string, password: string, name?: string, options?: SignUpOptions) => Promise<string>;
   signInWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
 }
@@ -136,11 +137,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, name?: string, options?: SignUpOptions) => {
     try {
-      const role = options?.role ?? 'attendee';
+      // A plan means this signup is pending a subscription payment — never grant 'host' here.
+      // Host access is only granted by the payment webhook once payment is confirmed.
+      const role = options?.plan ? 'attendee' : options?.role ?? 'attendee';
       const organizationName = options?.organizationName ?? null;
       const businessEmail = options?.businessEmail ?? email;
+      const plan = options?.plan ?? null;
 
-      logger.logAuthEvent('sign_up_attempt', { email, role });
+      logger.logAuthEvent('sign_up_attempt', { email, role, plan });
       const { data, error } = await supabase.auth.signUp({ email, password });
       if (error) throw error;
       if (!data.user) throw new Error('Signup did not return a user');
@@ -153,10 +157,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         status: 'active',
         organization_name: organizationName,
         business_email: businessEmail,
+        plan,
+        subscription_status: plan ? 'inactive' : null,
       });
       if (profileError) throw profileError;
 
-      logger.logAuthEvent('sign_up_success', { email, userId: data.user.id, role });
+      logger.logAuthEvent('sign_up_success', { email, userId: data.user.id, role, plan });
+      return data.user.id;
     } catch (error: any) {
       logger.error('Sign up failed', {
         context: 'AuthContext',
@@ -167,7 +174,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       throw new Error(error.message);
     }
   };
-
+  
   const signInWithGoogle = async () => {
     try {
       logger.logAuthEvent('google_sign_in_attempt');
