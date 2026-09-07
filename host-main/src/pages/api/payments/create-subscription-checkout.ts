@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
-const ALLOWED_ORIGIN = 'https://femvents.netlify.app';
+const ALLOWED_ORIGIN = 'https://femvents.core23lab.org';
 const PESAPAL_BASE = 'https://pay.pesapal.com/v3';
 
 const PLAN_PRICES: Record<string, number> = {

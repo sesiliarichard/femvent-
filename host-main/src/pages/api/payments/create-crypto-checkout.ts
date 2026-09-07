@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
-const ALLOWED_ORIGIN = 'https://femvents.netlify.app';
+const ALLOWED_ORIGIN = 'https://femvents.core23lab.org';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         pay_currency: payoutCurrency,
         order_id: orderId,
         order_description: `Ticket purchase for event ${eventId}${ticketTypeName ? ` (${ticketTypeName})` : ''}`,
-        ipn_callback_url: `https://femvents-host.netlify.app/api/payments/nowpayments-webhook`,
+        ipn_callback_url: `https://femvents.core23lab.org/host/api/payments/nowpayments-webhook`,
         success_url: `${origin}/events/${eventId}/payment-status?crypto=success&order_id=${orderId}`,
         cancel_url: `${origin}/events/${eventId}/payment-status?crypto=cancelled`,
       }),
@@ -88,7 +88,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       console.error('NOWPayments payout routing failed:', routeErr);
       return res.status(502).json({ error: 'Failed to configure crypto payout routing' });
     }
-    
+
     // Create pending payments + ticket rows now — the webhook flips them to confirmed
     const { data: payment, error: paymentError } = await supabaseAdmin
       .from('payments')

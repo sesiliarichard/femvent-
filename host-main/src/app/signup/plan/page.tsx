@@ -115,7 +115,7 @@ function SignupPlanContent() {
       });
 
       if (selectedPaymentMethod === 'pesapal') {
-        const res = await fetch('/api/payments/create-subscription-checkout', {
+        const res = await fetch('/host/api/payments/create-subscription-checkout', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -142,7 +142,7 @@ function SignupPlanContent() {
       setIsSubmitting(false);
     }
   };
-  
+
   return (
     <main className="min-h-screen bg-slate-100 px-4 py-12 text-slate-900">
       <div className="mx-auto max-w-4xl rounded-[32px] bg-white p-8 shadow-xl shadow-slate-200/80">
