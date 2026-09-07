@@ -42,11 +42,11 @@ const platformGuides = [
 ];
 
 const platformActions = [
-  { title: "Discover", text: "Feminist events, gatherings, actions, and opportunities." },
-  { title: "Organize", text: "Share events with the communities you want to reach." },
-  { title: "Connect", text: "People, collectives, and movements doing related work." },
-  { title: "Archive", text: "Moments of feminist gathering and movement-building." },
-  { title: "Grow", text: "Networks of solidarity across geographies and generations." },
+  { title: "Discover", text: "Feminist events, gatherings, actions, and opportunities.", color: "orange" },
+  { title: "Organize", text: "Share events with the communities you want to reach.", color: "magenta" },
+  { title: "Connect", text: "People, collectives, and movements doing related work.", color: "plum" },
+  { title: "Archive", text: "Moments of feminist gathering and movement-building.", color: "purple" },
+  { title: "Grow", text: "Networks of solidarity across geographies and generations.", color: "lavender" },
 ];
 
 const storyBeats = [
@@ -101,7 +101,9 @@ export default async function Home() {
     heroDescription:
       about.heroDescription ||
       "FemVents is a platform for discovering, creating, and connecting around feminist events, gatherings, and organizing. We are building digital infrastructure that makes it easier for feminist organizers, collectives, movements, researchers, artists, activists, and communities to find one another — and to turn gatherings into connection, learning, solidarity, and collective action.",
-    heroImage: about.heroImage || null,
+    heroImage:
+      about.heroImage ||
+      "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80",
     heroImageAlt: about.heroImageAlt || "Feminist organizers gathering at a FemVents event",
     moreThanTitle: about.moreThanTitle || "Making feminist gatherings visible, connected, and accessible",
     moreThanDescription:
@@ -146,37 +148,35 @@ export default async function Home() {
               {a.heroDescription}
             </p>
           </div>
-          {a.heroImage && (
-            <div className="relative">
-              <img
-                src={a.heroImage}
-                alt={a.heroImageAlt}
-                className="w-full h-[340px] object-cover rounded-sm"
-              />
-              <div
-                className={`${heading} absolute -bottom-4 -left-4 bg-[#9B1F5C] text-[#FBF3FA] font-bold text-sm px-4 py-2 rounded-sm`}
-              >
-                {brand.name}
-              </div>
+          <div className="relative">
+            <img
+              src={a.heroImage}
+              alt={a.heroImageAlt}
+              className="w-full h-[340px] object-cover rounded-sm"
+            />
+            <div
+              className={`${heading} absolute -bottom-4 -left-4 bg-[#9B1F5C] text-[#FBF3FA] font-bold text-sm px-4 py-2 rounded-sm`}
+            >
+              {brand.name}
             </div>
-          )}
+          </div>
         </div>
       </section>
 
-      {/* More than an events platform */}
+      {/* More than an events platform — colored chip row */}
       <section className="mx-auto max-w-6xl px-6 py-16">
-        <h2 className={`${heading} font-bold text-2xl max-w-xl text-[#2E1F45]`}>{a.moreThanTitle}</h2>
-        <p className={`${body} text-[#5C4A6B] max-w-xl mt-3 text-sm`}>{a.moreThanDescription}</p>
-        <div className="flex flex-col sm:flex-row mt-10 border-t-2 border-[#2E1F45]">
-          {platformActions.map((item, i) => (
-            <div
-              key={item.title}
-              className={`flex-1 py-5 pr-4 ${i < platformActions.length - 1 ? "sm:border-r border-[#D9C9E0] border-b sm:border-b-0" : ""}`}
-            >
-              <p className={`${heading} font-bold text-sm text-[#9B1F5C]`}>{item.title}</p>
-              <p className={`${body} text-xs text-[#5C4A6B] mt-1.5`}>{item.text}</p>
-            </div>
-          ))}
+        <h2 className={`${heading} font-bold text-2xl max-w-xl text-[#2E1F45] mb-3`}>{a.moreThanTitle}</h2>
+        <p className={`${body} text-[#5C4A6B] max-w-xl mb-8 text-sm`}>{a.moreThanDescription}</p>
+        <div className="flex flex-wrap gap-3">
+          {platformActions.map((item) => {
+            const c = colorMap[item.color];
+            return (
+              <div key={item.title} className={`${c.bg} rounded-sm px-5 py-4 min-w-[150px]`}>
+                <p className={`${heading} font-bold text-sm mb-1 ${c.text}`}>{item.title}</p>
+                <p className={`${body} text-xs ${c.text} opacity-90`}>{item.text}</p>
+              </div>
+            );
+          })}
         </div>
       </section>
 
@@ -234,28 +234,36 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* Our approach */}
+      {/* Our approach — two color panels side by side */}
       <section className="mx-auto max-w-6xl px-6 py-16">
         <h2 className={`${heading} font-bold text-2xl max-w-xl text-[#2E1F45]`}>{a.approachTitle}</h2>
         <p className={`${body} text-[#5C4A6B] max-w-xl mt-3 text-sm`}>{a.approachDescription}</p>
         <p className={`${body} text-[#5C4A6B] max-w-2xl mt-3 text-sm`}>{a.approachExtended}</p>
 
-        <div className="mt-10 space-y-4">
-          {approachGuides.map((text) => (
-            <div key={text} className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-4 py-4 border-b border-[#D9C9E0]">
-              <span className={`${heading} font-bold text-sm text-[#9B1F5C]`}>Guides us</span>
-              <p className={`${body} text-sm text-[#3A3650]`}>{text}</p>
-            </div>
-          ))}
-          {exploringTogether.map((text) => (
-            <div key={text} className="grid grid-cols-1 sm:grid-cols-[160px_1fr] gap-4 py-4 border-b border-[#D9C9E0]">
-              <span className={`${heading} font-bold text-sm text-[#4A3B78]`}>Exploring</span>
-              <p className={`${body} text-sm text-[#3A3650]`}>{text}</p>
-            </div>
-          ))}
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
+          <div className="bg-[#E8743B] rounded-sm p-7">
+            <p className={`${heading} font-bold text-base text-[#2E1F45] mb-4`}>What guides us</p>
+            <ul className="space-y-3.5">
+              {approachGuides.map((text) => (
+                <li key={text} className={`${body} text-sm text-[#2E1F45] leading-relaxed`}>
+                  {text}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="bg-[#4A3B78] rounded-sm p-7">
+            <p className={`${heading} font-bold text-base text-[#FBF3FA] mb-4`}>What we&apos;re exploring together</p>
+            <ul className="space-y-3.5">
+              {exploringTogether.map((text) => (
+                <li key={text} className={`${body} text-sm text-[#FBF3FA] leading-relaxed`}>
+                  {text}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
-        <div className="mt-12">
+        <div className="mt-14">
           <h3 className={`${heading} font-bold text-xl text-[#2E1F45]`}>{a.finalLine1}</h3>
           <p className={`${body} text-[#5C4A6B] mt-2 text-base`}>{a.finalLine2}</p>
         </div>
