@@ -52,16 +52,22 @@ const platformActions = [
 const storyBeats = [
   {
     year: "2025",
+    image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=500&q=80",
+    imageAlt: "Gendering AI gathering",
     text:
       "We brought feminists together through Gendering AI, a gathering exploring gender, power, technology, and artificial intelligence. As we organized the convening, we encountered a challenge that felt familiar: feminist gatherings were happening everywhere, but there was no shared space to easily find them, connect across them, or make the organizing around them more visible.",
   },
   {
     year: "2025",
+    image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&q=80",
+    imageAlt: "Piloting the FemVents idea",
     text:
       "Later that year, we began piloting the idea: what would it look like to create digital infrastructure specifically for feminist gatherings and organizing? Not simply another events platform, but a space shaped by how feminist communities actually gather, share knowledge, build relationships, and organize.",
   },
   {
     year: "2026",
+    image: "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=500&q=80",
+    imageAlt: "Community shaping FemVents",
     text:
       "We are taking that question back to the community. FemVents is being tested and shaped together with feminist organizers, collectives, movements, and communities. We want the people who will use FemVents to influence what it becomes: what it should make possible, what values it should uphold, and what feminist digital infrastructure should look like in practice.",
   },
@@ -218,9 +224,14 @@ export default async function Home() {
         <div className="grid gap-6 sm:grid-cols-3">
           {a.storyBeats.map((beat: any, index: number) => (
             <div key={index} className="bg-[#F3D9EE] rounded-sm overflow-hidden">
-              {beat.image && (
-                <img src={beat.image} alt={beat.imageAlt || ""} className="w-full h-[140px] object-cover" />
-              )}
+              <img
+                src={
+                  beat.image ||
+                  "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=500&q=80"
+                }
+                alt={beat.imageAlt || ""}
+                className="w-full h-[140px] object-cover"
+              />
               <div className="p-5">
                 <span className={`${heading} font-bold text-2xl text-[#9B1F5C]`}>{beat.year}</span>
                 <p className={`${body} text-xs text-[#5C4A6B] mt-2 leading-relaxed`}>{beat.text}</p>
