@@ -40,7 +40,7 @@ export default function SignupPlanPage() {
 function SignupPlanContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signUp } = useAuth();
+  const { signUp, signIn } = useAuth();
   const planFromUrl = searchParams?.get('plan') as (typeof plans)[number]['id'] | null;
   const [selectedPlan, setSelectedPlan] = useState<(typeof plans)[number]['id']>(
     planFromUrl && plans.some((p) => p.id === planFromUrl) ? planFromUrl : 'starter'
@@ -108,11 +108,33 @@ function SignupPlanContent() {
     setError('');
 
     try {
-      const userId = await signUp(email, password, fullName, {
-        organizationName,
-        businessEmail,
-        plan: selectedPlan,
-      });
+      let userId: string;
+      try {
+        userId = await signUp(email, password, fullName, {
+          organizationName,
+          businessEmail,
+          plan: selectedPlan,
+        });
+      } catch (signUpErr: any) {
+        if (signUpErr.message?.toLowerCase().includes('already registered')) {
+          // Account exists — likely from a previous attempt where checkout failed.
+          // If it's still unpaid, resume checkout instead of blocking them.
+          await signIn(email, password);
+          const { data: existing } = await supabase
+            .from('users')
+            .select('id, subscription_status')
+            .eq('email', email)
+            .maybeSingle();
+
+          if (!existing) throw signUpErr;
+          if (existing.subscription_status === 'active') {
+            throw new Error('This account is already active. Please log in instead.');
+          }
+          userId = existing.id;
+        } else {
+          throw signUpErr;
+        }
+      }
 
       if (selectedPaymentMethod === 'pesapal') {
         const res = await fetch('/host/api/payments/create-subscription-checkout', {
