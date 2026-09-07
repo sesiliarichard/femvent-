@@ -14,74 +14,74 @@ const workSans = Work_Sans({
   variable: "--font-work-sans",
 });
 
-const platformActions = [
-  { title: "Discover", text: "Feminist events and opportunities." },
-  { title: "Organize", text: "Share events with your communities." },
-  { title: "Connect", text: "Find related collectives and movements." },
-  { title: "Archive", text: "Moments of movement-building." },
-  { title: "Grow", text: "Networks of solidarity, at scale." },
-];
-
 const platformGuides = [
   {
     title: "Feminist by design.",
     detail:
       "We think about power, access, safety, care, representation, and participation in how the platform is built.",
-    color: "orange",
   },
   {
     title: "Community-rooted.",
     detail: "FemVents should serve organizers and movements rather than extract value from them.",
-    color: "plum",
   },
   {
     title: "Plural feminisms.",
     detail:
-      "There is no single feminism. We make space for different feminist histories, politics, identities, languages, and geographies.",
-    color: "magenta",
+      "There is no single feminism. We make space for different feminist histories, politics, identities, languages, geographies, and ways of organizing.",
   },
   {
     title: "Accessible and inclusive.",
     detail:
-      "We want more people to find and participate in feminist spaces, including those often excluded by geography, language, disability, or cost.",
-    color: "purple",
+      "We want more people to be able to find and participate in feminist spaces including people often excluded by geography, language, disability, cost, or institutional networks.",
   },
   {
     title: "Built for connection, not just attendance.",
-    detail: "Success isn't how many tickets are sold. It's whether people find each other and create change.",
-    color: "lavender",
+    detail:
+      "Success isn't simply how many tickets are sold. It is whether people find each other, exchange knowledge, build relationships, organize, and create change.",
   },
+];
+
+const platformActions = [
+  { title: "Discover", text: "Feminist events, gatherings, actions, and opportunities." },
+  { title: "Organize", text: "Share events with the communities you want to reach." },
+  { title: "Connect", text: "People, collectives, and movements doing related work." },
+  { title: "Archive", text: "Moments of feminist gathering and movement-building." },
+  { title: "Grow", text: "Networks of solidarity across geographies and generations." },
 ];
 
 const storyBeats = [
   {
     year: "2025",
-    text: "We brought feminists together through Gendering AI, exploring gender, power, technology, and AI.",
+    text:
+      "We brought feminists together through Gendering AI, a gathering exploring gender, power, technology, and artificial intelligence. As we organized the convening, we encountered a challenge that felt familiar: feminist gatherings were happening everywhere, but there was no shared space to easily find them, connect across them, or make the organizing around them more visible.",
   },
   {
     year: "2025",
-    text: "We began piloting digital infrastructure shaped by how feminist communities actually gather and organize.",
+    text:
+      "Later that year, we began piloting the idea: what would it look like to create digital infrastructure specifically for feminist gatherings and organizing? Not simply another events platform, but a space shaped by how feminist communities actually gather, share knowledge, build relationships, and organize.",
   },
   {
     year: "2026",
-    text: "FemVents is being tested and shaped together with feminist organizers and communities.",
+    text:
+      "We are taking that question back to the community. FemVents is being tested and shaped together with feminist organizers, collectives, movements, and communities. We want the people who will use FemVents to influence what it becomes: what it should make possible, what values it should uphold, and what feminist digital infrastructure should look like in practice.",
   },
 ];
 
 const approachGuides = [
-  "Community-led — the people using FemVents shape what it becomes.",
-  "Feminist by design — power, inclusion, care, and safety throughout.",
-  "Built for connection, not just transactions.",
-  "Plural and inclusive across languages and histories.",
-  "Iterative and open — always a work in progress.",
+  "Community-led — the people using FemVents should have a voice in shaping what it becomes.",
+  "Feminist by design — we consider power, inclusion, care, safety, and accessibility throughout the design process.",
+  "Built for connection — we want gatherings to lead to relationships, collaboration, learning, solidarity, and collective action.",
+  "Plural and inclusive — we recognize that feminist movements are diverse, contextual, multilingual, and shaped by different histories and experiences.",
+  "Iterative and open — FemVents is a work in progress. We will keep testing, questioning, learning, and changing as the community grows.",
 ];
 
 const exploringTogether = [
-  "Discover feminist gatherings, actions, and opportunities.",
-  "Find organizers and movements working on shared issues.",
-  "Create gatherings accessible to different communities.",
-  "Strengthen connections beyond a single event.",
-  "Preserve knowledge and histories of feminist gathering.",
+  "Discover feminist gatherings, actions, conversations, and opportunities.",
+  "Find organizers, collectives, and movements working on shared issues.",
+  "Create and share gatherings in ways that are accessible to different communities.",
+  "Strengthen connections between people beyond a single event.",
+  "Preserve knowledge and histories created through feminist gatherings.",
+  "Build digital spaces that support movements without extracting from them.",
 ];
 
 const colorMap: Record<string, { bg: string; text: string }> = {
@@ -91,21 +91,24 @@ const colorMap: Record<string, { bg: string; text: string }> = {
   purple: { bg: "bg-[#4A3B78]", text: "text-[#FBF3FA]" },
   lavender: { bg: "bg-[#F3D9EE]", text: "text-[#2E1F45]" },
 };
+const guideColors = ["orange", "plum", "magenta", "purple", "lavender"];
 
-export default async function AboutPage() {
+export default async function Home() {
   const { about } = await getSiteContent();
 
   const a = {
     heroTitle: about.heroTitle || "Where feminist movements gather.",
     heroDescription:
       about.heroDescription ||
-      "FemVents is a platform for discovering, creating, and connecting around feminist events, gatherings, and organizing across Africa.",
-    heroImage: about.heroImage || null,
+      "FemVents is a platform for discovering, creating, and connecting around feminist events, gatherings, and organizing. We are building digital infrastructure that makes it easier for feminist organizers, collectives, movements, researchers, artists, activists, and communities to find one another — and to turn gatherings into connection, learning, solidarity, and collective action.",
+    heroImage:
+      about.heroImage ||
+      "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80",
     heroImageAlt: about.heroImageAlt || "Feminist organizers gathering at a FemVents event",
     moreThanTitle: about.moreThanTitle || "Making feminist gatherings visible, connected, and accessible",
     moreThanDescription:
       about.moreThanDescription ||
-      "Feminist organizing happens everywhere — but these spaces can be difficult to discover beyond immediate networks.",
+      "Feminist organizing happens everywhere: in community halls and classrooms, online spaces and festivals, protests and reading groups, conferences and kitchen-table conversations. But these spaces can be difficult to discover beyond our immediate networks.",
     guides: about.guides || platformGuides,
     infrastructureQuote: about.infrastructureQuote || "A feminist internet needs feminist infrastructure.",
     infrastructureDetail:
@@ -120,7 +123,10 @@ export default async function AboutPage() {
     approachTitle: about.approachTitle || "Building with feminist communities, not just for them",
     approachDescription:
       about.approachDescription ||
-      "We believe feminist infrastructure should be shaped by the people who use it — through listening, testing, and building alongside organizers and communities.",
+      "We believe feminist infrastructure should be shaped by the people who use it. FemVents is being developed through an ongoing process of listening, testing, learning, and building alongside feminist organizers, collectives, and communities.",
+    approachExtended:
+      about.approachExtended ||
+      "Rather than assuming what movements need, we want the platform to grow from the realities of how feminists gather, organize, share knowledge, build relationships, and sustain their work. For us, this means thinking beyond functionality. We are also asking questions about power, access, safety, care, representation, ownership, and whose needs technology is designed around.",
     finalLine1: about.finalLine1 || "FemVents is not a finished product handed to the community.",
     finalLine2: about.finalLine2 || "It is an invitation to shape feminist digital infrastructure together.",
   };
@@ -182,8 +188,7 @@ export default async function AboutPage() {
           <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-8`}>The values shaping how we build</h2>
         </div>
         {a.guides.map((item: any, index: number) => {
-          const colors = ["orange", "plum", "magenta", "purple", "lavender"];
-          const c = colorMap[item.color || colors[index % colors.length]];
+          const c = colorMap[guideColors[index % guideColors.length]];
           return (
             <div key={item.title} className={c.bg}>
               <div className="mx-auto max-w-6xl px-6 py-10 grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-6 items-start">
@@ -220,7 +225,7 @@ export default async function AboutPage() {
               )}
               <div className="p-5">
                 <span className={`${heading} font-bold text-2xl text-[#9B1F5C]`}>{beat.year}</span>
-                <p className={`${body} text-xs text-[#5C4A6B] mt-2`}>{beat.text}</p>
+                <p className={`${body} text-xs text-[#5C4A6B] mt-2 leading-relaxed`}>{beat.text}</p>
               </div>
             </div>
           ))}
@@ -235,6 +240,7 @@ export default async function AboutPage() {
       <section className="mx-auto max-w-6xl px-6 py-16">
         <h2 className={`${heading} font-bold text-2xl max-w-xl text-[#2E1F45]`}>{a.approachTitle}</h2>
         <p className={`${body} text-[#5C4A6B] max-w-xl mt-3 text-sm`}>{a.approachDescription}</p>
+        <p className={`${body} text-[#5C4A6B] max-w-2xl mt-3 text-sm`}>{a.approachExtended}</p>
 
         <div className="mt-10 space-y-4">
           {approachGuides.map((text) => (

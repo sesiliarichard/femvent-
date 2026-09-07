@@ -14,12 +14,20 @@ const PROVIDER_META: Record<string, { name: string; blurb: string }> = {
   azampay: { name: 'AzamPay', blurb: 'Mobile money — Tanzania/Rwanda (M-Pesa, Tigo Pesa, Airtel Money, etc.)' },
 };
 
+const CRYPTO_OPTIONS = [
+  { label: 'USDT (TRC20)', code: 'usdttrc20' },
+  { label: 'USDT (ERC20)', code: 'usdterc20' },
+  { label: 'USDT (BEP20)', code: 'usdtbsc' },
+  { label: 'BTC', code: 'btc' },
+  { label: 'ETH (ERC20)', code: 'eth' },
+];
+
 export default function PaymentMethodsPage() {
   const [settings, setSettings] = useState<PlatformPaymentSetting[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
   const [cryptoAddress, setCryptoAddress] = useState('');
-  const [cryptoNetwork, setCryptoNetwork] = useState('');
+  const [payoutCurrency, setPayoutCurrency] = useState(CRYPTO_OPTIONS[0].code);
   const [savingCrypto, setSavingCrypto] = useState(false);
 
   const loadSettings = async () => {
@@ -42,7 +50,7 @@ export default function PaymentMethodsPage() {
   useEffect(() => {
     const crypto = settings.find((s) => s.provider === 'crypto');
     setCryptoAddress(crypto?.credentials?.cryptoAddress || '');
-    setCryptoNetwork(crypto?.credentials?.cryptoNetwork || '');
+    setPayoutCurrency(crypto?.credentials?.payoutCurrency || CRYPTO_OPTIONS[0].code);
   }, [settings]);
 
   const isActive = (provider: string) =>
@@ -75,8 +83,8 @@ export default function PaymentMethodsPage() {
   };
 
   const saveCryptoAddress = async () => {
-    if (!cryptoAddress.trim() || !cryptoNetwork.trim()) {
-      alert('Please enter both a wallet address and a network');
+    if (!cryptoAddress.trim() || !payoutCurrency) {
+      alert('Please enter a wallet address and select a currency/network');
       return;
     }
     setSavingCrypto(true);
@@ -88,7 +96,7 @@ export default function PaymentMethodsPage() {
           {
             provider: 'crypto',
             status: existing?.status ?? 'inactive',
-            credentials: { cryptoAddress: cryptoAddress.trim(), cryptoNetwork: cryptoNetwork.trim() },
+            credentials: { cryptoAddress: cryptoAddress.trim(), payoutCurrency },
             display_label: PROVIDER_META.crypto.name,
             updated_at: new Date().toISOString(),
           },
@@ -155,14 +163,18 @@ export default function PaymentMethodsPage() {
                       placeholder="e.g. 0x1234... or bc1q..."
                       className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
                     />
-                    <label className="text-sm font-medium text-gray-700">Network</label>
-                    <input
-                      type="text"
-                      value={cryptoNetwork}
-                      onChange={(e) => setCryptoNetwork(e.target.value)}
-                      placeholder="e.g. TRC20, ERC20, BTC"
+                                       <label className="text-sm font-medium text-gray-700">Currency & network</label>
+                    <select
+                      value={payoutCurrency}
+                      onChange={(e) => setPayoutCurrency(e.target.value)}
                       className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                    />
+                    >
+                      {CRYPTO_OPTIONS.map((opt) => (
+                        <option key={opt.code} value={opt.code}>
+                          {opt.label}
+                        </option>
+                      ))}
+                    </select>
                     <button
                       type="button"
                       onClick={saveCryptoAddress}
