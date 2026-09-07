@@ -36,7 +36,7 @@ const navigation = [
 
 export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter();
-  const { signOut, user } = useAuth();
+  const { signOut, user, loading } = useAuth();
 
   const handleLogout = async () => {
     try {
@@ -47,6 +47,26 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   };
 
+  React.useEffect(() => {
+    if (loading) return;
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+    if (user.role !== 'admin') {
+      signOut();
+      router.push('/login');
+    }
+  }, [loading, user, router]);
+
+  if (loading || !user || user.role !== 'admin') {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-gray-500 text-sm">Checking access...</div>
+      </div>
+    );
+  }
+  
   return (
     <div className="min-h-screen bg-gray-50 flex">
       {/* Sidebar */}
