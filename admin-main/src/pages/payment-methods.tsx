@@ -18,6 +18,9 @@ export default function PaymentMethodsPage() {
   const [settings, setSettings] = useState<PlatformPaymentSetting[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState<string | null>(null);
+  const [cryptoAddress, setCryptoAddress] = useState('');
+  const [cryptoNetwork, setCryptoNetwork] = useState('');
+  const [savingCrypto, setSavingCrypto] = useState(false);
 
   const loadSettings = async () => {
     setLoading(true);
@@ -35,6 +38,12 @@ export default function PaymentMethodsPage() {
   useEffect(() => {
     loadSettings();
   }, []);
+
+  useEffect(() => {
+    const crypto = settings.find((s) => s.provider === 'crypto');
+    setCryptoAddress(crypto?.credentials?.cryptoAddress || '');
+    setCryptoNetwork(crypto?.credentials?.cryptoNetwork || '');
+  }, [settings]);
 
   const isActive = (provider: string) =>
     settings.find((s) => s.provider === provider)?.status === 'active';
@@ -65,6 +74,37 @@ export default function PaymentMethodsPage() {
     }
   };
 
+  const saveCryptoAddress = async () => {
+    if (!cryptoAddress.trim() || !cryptoNetwork.trim()) {
+      alert('Please enter both a wallet address and a network');
+      return;
+    }
+    setSavingCrypto(true);
+    try {
+      const existing = settings.find((s) => s.provider === 'crypto');
+      const { error } = await supabase
+        .from('platform_payment_settings')
+        .upsert(
+          {
+            provider: 'crypto',
+            status: existing?.status ?? 'inactive',
+            credentials: { cryptoAddress: cryptoAddress.trim(), cryptoNetwork: cryptoNetwork.trim() },
+            display_label: PROVIDER_META.crypto.name,
+            updated_at: new Date().toISOString(),
+          },
+          { onConflict: 'provider' }
+        );
+      if (error) throw error;
+      await loadSettings();
+      alert('Crypto receiving address saved');
+    } catch (err) {
+      console.error('Error saving crypto address:', err);
+      alert('Failed to save address');
+    } finally {
+      setSavingCrypto(false);
+    }
+  };
+
   if (loading) {
     return (
       <AdminLayout>
@@ -87,25 +127,53 @@ export default function PaymentMethodsPage() {
         </div>
 
         <div className="flex flex-col gap-3 max-w-2xl">
-          {Object.entries(PROVIDER_META).map(([provider, meta]) => {
+        {Object.entries(PROVIDER_META).map(([provider, meta]) => {
             const active = isActive(provider);
             return (
-              <label
-                key={provider}
-                className="flex items-center justify-between p-4 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 cursor-pointer transition-colors"
-              >
-                <div>
-                  <p className="font-semibold text-gray-900">{meta.name}</p>
-                  <p className="text-sm text-gray-500">{meta.blurb}</p>
-                </div>
-                <input
-                  type="checkbox"
-                  checked={active}
-                  disabled={saving === provider}
-                  onChange={() => toggleProvider(provider, active)}
-                  className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                />
-              </label>
+              <div key={provider} className="border border-gray-200 rounded-xl bg-white overflow-hidden">
+                <label className="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer transition-colors">
+                  <div>
+                    <p className="font-semibold text-gray-900">{meta.name}</p>
+                    <p className="text-sm text-gray-500">{meta.blurb}</p>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={active}
+                    disabled={saving === provider}
+                    onChange={() => toggleProvider(provider, active)}
+                    className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                  />
+                </label>
+
+                {provider === 'crypto' && (
+                  <div className="p-4 pt-0 flex flex-col gap-2 border-t border-gray-100">
+                    <label className="text-sm font-medium text-gray-700 mt-2">Receiving wallet address</label>
+                    <input
+                      type="text"
+                      value={cryptoAddress}
+                      onChange={(e) => setCryptoAddress(e.target.value)}
+                      placeholder="e.g. 0x1234... or bc1q..."
+                      className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    />
+                    <label className="text-sm font-medium text-gray-700">Network</label>
+                    <input
+                      type="text"
+                      value={cryptoNetwork}
+                      onChange={(e) => setCryptoNetwork(e.target.value)}
+                      placeholder="e.g. TRC20, ERC20, BTC"
+                      className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={saveCryptoAddress}
+                      disabled={savingCrypto}
+                      className="self-start mt-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      {savingCrypto ? 'Saving...' : 'Save address'}
+                    </button>
+                  </div>
+                )}
+              </div>
             );
           })}
         </div>
