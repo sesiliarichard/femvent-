@@ -1,8 +1,9 @@
 'use client';
 
-import { Suspense, useState } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
 
 const plans = [
   {
@@ -48,12 +49,43 @@ function SignupPlanContent() {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'pesapal' | 'crypto' | 'azampay' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const [paymentMethods, setPaymentMethods] = useState
+    { key: 'pesapal' | 'crypto' | 'azampay'; label: string; desc: string }[]
+  >([]);
+  const [loadingMethods, setLoadingMethods] = useState(true);
 
-  const paymentMethods = [
-    { key: 'pesapal', label: 'Pesapal', desc: 'Card & mobile money — East/Southern Africa + international cards' },
-    { key: 'crypto', label: 'Crypto (USDT)', desc: 'Crypto payments via NOWPayments' },
-    { key: 'azampay', label: 'AzamPay', desc: 'Mobile money — Tanzania/Rwanda (M-Pesa, Tigo Pesa, Airtel Money, etc.)' },
-  ] as const;
+  const PAYMENT_METHOD_META = {
+    pesapal: { label: 'Pesapal', desc: 'Card & mobile money — East/Southern Africa + international cards' },
+    crypto: { label: 'Crypto (USDT)', desc: 'Crypto payments via NOWPayments' },
+    azampay: { label: 'AzamPay', desc: 'Mobile money — Tanzania/Rwanda (M-Pesa, Tigo Pesa, Airtel Money, etc.)' },
+  } as const;
+
+  useEffect(() => {
+    const loadActiveMethods = async () => {
+      setLoadingMethods(true);
+      try {
+        const { data, error } = await supabase
+          .from('platform_payment_settings')
+          .select('provider, status')
+          .eq('status', 'active');
+        if (error) throw error;
+
+        const active = (data || [])
+          .map((row) => row.provider as keyof typeof PAYMENT_METHOD_META)
+          .filter((provider) => PAYMENT_METHOD_META[provider])
+          .map((provider) => ({ key: provider, ...PAYMENT_METHOD_META[provider] }));
+
+        setPaymentMethods(active);
+      } catch (err) {
+        console.error('Error loading active payment methods:', err);
+        setPaymentMethods([]);
+      } finally {
+        setLoadingMethods(false);
+      }
+    };
+
+    loadActiveMethods();
+  }, []);
 
   const selectedPlanDetails = plans.find((p) => p.id === selectedPlan)!;
 
@@ -166,6 +198,11 @@ function SignupPlanContent() {
             </div>
 
             <h2 className="mb-4 text-lg font-bold text-slate-900">Choose a payment method</h2>
+            {loadingMethods ? (
+              <p className="text-sm text-slate-500">Loading payment methods...</p>
+            ) : paymentMethods.length === 0 ? (
+              <p className="text-sm text-rose-600">No payment methods are currently available. Please contact support.</p>
+            ) : (
             <div className="space-y-3">
               {paymentMethods.map(({ key, label, desc }) => {
                 const isSelected = selectedPaymentMethod === key;
@@ -189,11 +226,12 @@ function SignupPlanContent() {
                       </div>
                     </div>
                   </label>
-                );
-              })}
-            </div>
-
-            {error ? (
+                           );
+                          })}
+                        </div>
+                        )}
+            
+                        {error ? (
               <div className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                 {error}
               </div>
