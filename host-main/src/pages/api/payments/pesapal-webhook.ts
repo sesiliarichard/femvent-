@@ -84,21 +84,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           .eq('id', payment.user_id)
           .maybeSingle();
 
-        if (hostUser?.email) {
-          await sendEmail({
-            to: hostUser.email,
-            subject: `Your ${plan} plan is active`,
-            body: `Thanks for subscribing! Your payment of $${payment.amount} was confirmed and your ${plan} plan is now active.`,
-            html: `
-              <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                <h1>Subscription Active!</h1>
-                <p>Thanks for subscribing to the <strong>${plan}</strong> plan.</p>
-                <p><strong>Amount Paid:</strong> $${payment.amount}</p>
-                <p>You now have full access to your host dashboard.</p>
-              </div>
-            `,
-          });
-        }
+          if (hostUser?.email) {
+            const dashboardUrl = 'https://femvents.core23lab.org/host/dashboard';
+            await sendEmail({
+              to: hostUser.email,
+              subject: `Your ${plan} plan is active`,
+              body: `Thanks for subscribing! Your payment of $${payment.amount} was confirmed and your ${plan} plan is now active. Go to your dashboard: ${dashboardUrl}`,
+              html: `
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                  <h1>Subscription Active!</h1>
+                  <p>Thanks for subscribing to the <strong>${plan}</strong> plan.</p>
+                  <p><strong>Amount Paid:</strong> $${payment.amount}</p>
+                  <p>You now have full access to your host dashboard.</p>
+                  <p style="margin-top: 24px;">
+                    <a href="${dashboardUrl}" style="display: inline-block; background: linear-gradient(135deg, #e11d48, #f97316); color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 999px; font-weight: 600;">
+                      Go to your dashboard
+                    </a>
+                  </p>
+                </div>
+              `,
+            });
+          }
       } catch (emailError) {
         console.error('Subscription confirmation email failed (payment still confirmed):', emailError);
       }
@@ -118,10 +124,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const recipientEmail = ticket.guest_email;
       if (recipientEmail && ticket.event) {
+        const eventUrl = `https://femvents.core23lab.org/events/${ticket.event_id}`;
         await sendEmail({
           to: recipientEmail,
           subject: `Your ticket for ${ticket.event.title}`,
-          body: `Thanks for registering! Your payment of $${ticket.payment_amount} was confirmed for ${ticket.event.title}.`,
+          body: `Thanks for registering! Your payment of $${ticket.payment_amount} was confirmed for ${ticket.event.title}. View your event: ${eventUrl}`,
           html: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <h1>Ticket Confirmed!</h1>
@@ -130,6 +137,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               ${ticket.event.venue ? `<p><strong>Venue:</strong> ${ticket.event.venue}</p>` : ''}
               <p><strong>Amount Paid:</strong> $${ticket.payment_amount}</p>
               <p>See you there!</p>
+              <p style="margin-top: 24px;">
+                <a href="${eventUrl}" style="display: inline-block; background: linear-gradient(135deg, #e11d48, #f97316); color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 999px; font-weight: 600;">
+                  View event details
+                </a>
+              </p>
             </div>
           `,
         });
