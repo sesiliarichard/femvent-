@@ -93,25 +93,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(502).json({ error: 'Failed to create crypto payment session' });
     }
 
-    const routeRes = await fetch('https://api.nowpayments.io/v1/invoice-payment', {
-      method: 'POST',
-      headers: {
-        'x-api-key': process.env.NOWPAYMENTS_API_KEY as string,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        iid: data.id,
-        pay_currency: payoutCurrency,
-        payout_address: payoutAddress,
-        payout_currency: payoutCurrency,
-      }),
-    });
-
-    if (!routeRes.ok) {
-      const routeErrText = await routeRes.text();
-      console.error('NOWPayments subscription payout routing failed:', routeRes.status, routeErrText);
-      return res.status(502).json({ error: `NOWPayments routing failed (status ${routeRes.status}): ${routeErrText.slice(0, 500)}` });
-    }
+      // Custody mode is enabled on this NOWPayments account — funds route automatically
+    // to the wallet registered under Settings > Payments > Payout wallets, so no
+    // per-transaction payout_address call is needed (or allowed) here.
 
     const { error: paymentError } = await supabaseAdmin.from('payments').insert({
       user_id: userId,
