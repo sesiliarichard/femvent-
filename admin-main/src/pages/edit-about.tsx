@@ -11,11 +11,15 @@ interface Guide {
 interface StoryBeat {
   year: string;
   text: string;
+  image: string;
+  imageAlt: string;
 }
 
 interface AboutContent {
   heroTitle: string;
   heroDescription: string;
+  heroImage: string;
+  heroImageAlt: string;
   moreThanTitle: string;
   moreThanDescription: string;
   guides: Guide[];
@@ -36,6 +40,8 @@ interface AboutContent {
 const DEFAULTS: AboutContent = {
   heroTitle: "Where feminist movements gather.",
   heroDescription: "FemVents is a platform for discovering, creating, and connecting around feminist events, gatherings, and organizing. We are building digital infrastructure that makes it easier for feminist organizers, collectives, movements, researchers, artists, activists, and communities to find one another — and to turn gatherings into connection, learning, solidarity, and collective action.",
+  heroImage: "",
+  heroImageAlt: "Feminist organizers gathering at a FemVents event",
   moreThanTitle: "Making feminist gatherings visible, connected, and accessible",
   moreThanDescription: "Feminist organizing happens everywhere: in community halls and classrooms, online spaces and festivals, protests and reading groups, conferences and kitchen-table conversations. But these spaces can be difficult to discover beyond our immediate networks.",
   guides: [
@@ -50,9 +56,9 @@ const DEFAULTS: AboutContent = {
   callToAction: "Find a gathering. Create one. Build something together.",
   storyTitle: "FemVents began with a gathering.",
   storyBeats: [
-    { year: "2025", text: "We brought feminists together through Gendering AI, a gathering exploring gender, power, technology, and artificial intelligence. As we organized the convening, we encountered a challenge that felt familiar: feminist gatherings were happening everywhere, but there was no shared space to easily find them, connect across them, or make the organizing around them more visible." },
-    { year: "2025", text: "Later that year, we began piloting the idea: what would it look like to create digital infrastructure specifically for feminist gatherings and organizing? Not simply another events platform, but a space shaped by how feminist communities actually gather, share knowledge, build relationships, and organize." },
-    { year: "2026", text: "We are taking that question back to the community. FemVents is being tested and shaped together with feminist organizers, collectives, movements, and communities. We want the people who will use FemVents to influence what it becomes: what it should make possible, what values it should uphold, and what feminist digital infrastructure should look like in practice." },
+    { year: "2025", text: "We brought feminists together through Gendering AI, a gathering exploring gender, power, technology, and artificial intelligence. As we organized the convening, we encountered a challenge that felt familiar: feminist gatherings were happening everywhere, but there was no shared space to easily find them, connect across them, or make the organizing around them more visible.", image: "", imageAlt: "Gendering AI gathering" },
+    { year: "2025", text: "Later that year, we began piloting the idea: what would it look like to create digital infrastructure specifically for feminist gatherings and organizing? Not simply another events platform, but a space shaped by how feminist communities actually gather, share knowledge, build relationships, and organize.", image: "", imageAlt: "Piloting the FemVents idea" },
+    { year: "2026", text: "We are taking that question back to the community. FemVents is being tested and shaped together with feminist organizers, collectives, movements, and communities. We want the people who will use FemVents to influence what it becomes: what it should make possible, what values it should uphold, and what feminist digital infrastructure should look like in practice.", image: "", imageAlt: "Community shaping FemVents" },
   ],
   stillBuildingLine: "We are still building. And we believe that is part of the story.",
   builtWithLine: "FemVents is not only being built for feminist communities. It is being built with them.",
@@ -110,7 +116,7 @@ export default function EditAboutPage() {
         );
 
       if (error) throw error;
-      alert('✅ About page saved!');
+      alert('✅ About page saved! Note: this also updates the Home page, since they share content.');
     } catch (err) {
       console.error('Error saving about content:', err);
       alert('Failed to save');
@@ -134,8 +140,8 @@ export default function EditAboutPage() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="flex items-center justify-center min-h-screen bg-[#FBF3FA]">
+          <div className="animate-spin rounded-full h-10 w-10 border-2 border-[#D9C9E0] border-t-[#9B1F5C]"></div>
         </div>
       </AdminLayout>
     );
@@ -144,126 +150,146 @@ export default function EditAboutPage() {
   return (
     <AdminLayout>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Edit About Page</h1>
-        <p className="text-sm text-gray-500">Update the text shown on femvents.netlify.app/about.</p>
+        <h1 className="text-2xl font-bold text-[#2E1F45]">Edit About Page</h1>
+        <p className="text-sm text-[#5C4A6B] mt-1">
+          Update the text and images shown on femvents.netlify.app/about. This content is shared with the Home page.
+        </p>
       </div>
 
       {/* Hero */}
-      <div className="bg-white rounded-lg border border-gray-200 mb-6 overflow-hidden">
-        <div className="px-6 py-3 bg-gray-900 text-white font-semibold text-sm">Hero</div>
+      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
+        <div className="px-6 py-3 bg-[#2E1F45] text-[#FBF3FA] font-bold text-sm">Hero</div>
         <div className="p-6 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
-            <input type="text" value={content.heroTitle} onChange={(e) => setContent({ ...content, heroTitle: e.target.value })} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Title</label>
+            <input type="text" value={content.heroTitle} onChange={(e) => setContent({ ...content, heroTitle: e.target.value })} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-            <textarea value={content.heroDescription} onChange={(e) => setContent({ ...content, heroDescription: e.target.value })} rows={4} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Description</label>
+            <textarea value={content.heroDescription} onChange={(e) => setContent({ ...content, heroDescription: e.target.value })} rows={4} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+          </div>
+          <ImageUploadWidget
+            label="Hero Image"
+            value={content.heroImage}
+            onChange={(url) => setContent({ ...content, heroImage: url })}
+            folder="about"
+          />
+          <div>
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Hero Image Alt Text</label>
+            <input type="text" value={content.heroImageAlt} onChange={(e) => setContent({ ...content, heroImageAlt: e.target.value })} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
           </div>
         </div>
       </div>
 
       {/* More than an events platform */}
-      <div className="bg-white rounded-lg border border-gray-200 mb-6 overflow-hidden">
-        <div className="px-6 py-3 bg-gray-900 text-white font-semibold text-sm">More Than An Events Platform</div>
+      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
+        <div className="px-6 py-3 bg-[#E8743B] text-[#2E1F45] font-bold text-sm">More Than An Events Platform</div>
         <div className="p-6 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
-            <input type="text" value={content.moreThanTitle} onChange={(e) => setContent({ ...content, moreThanTitle: e.target.value })} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Title</label>
+            <input type="text" value={content.moreThanTitle} onChange={(e) => setContent({ ...content, moreThanTitle: e.target.value })} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-            <textarea value={content.moreThanDescription} onChange={(e) => setContent({ ...content, moreThanDescription: e.target.value })} rows={3} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500" />
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Description</label>
+            <textarea value={content.moreThanDescription} onChange={(e) => setContent({ ...content, moreThanDescription: e.target.value })} rows={3} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
           </div>
         </div>
       </div>
 
       {/* What guides us */}
-      <div className="bg-white rounded-lg border border-gray-200 mb-6 overflow-hidden">
-        <div className="px-6 py-3 bg-gray-900 text-white font-semibold text-sm">What Guides Us (5 values)</div>
+      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
+        <div className="px-6 py-3 bg-[#9B1F5C] text-[#FBF3FA] font-bold text-sm">What Guides Us (5 values)</div>
         <div className="p-6 space-y-4">
           {content.guides.map((g, i) => (
-            <div key={i} className="border border-gray-200 rounded-lg p-4">
-              <label className="block text-xs font-medium text-gray-500 mb-1">Value {i + 1} — Title</label>
-              <input type="text" value={g.title} onChange={(e) => updateGuide(i, 'title', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-2 text-sm" />
-              <label className="block text-xs font-medium text-gray-500 mb-1">Detail</label>
-              <textarea value={g.detail} onChange={(e) => updateGuide(i, 'detail', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+            <div key={i} className="border border-[#D9C9E0] rounded-sm p-4">
+              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Value {i + 1} — Title</label>
+              <input type="text" value={g.title} onChange={(e) => updateGuide(i, 'title', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm mb-2 text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Detail</label>
+              <textarea value={g.detail} onChange={(e) => updateGuide(i, 'detail', e.target.value)} rows={2} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
             </div>
           ))}
-          <div className="border-t border-gray-200 pt-4 space-y-3">
+          <div className="border-t border-[#D9C9E0] pt-4 space-y-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Infrastructure Quote</label>
-              <input type="text" value={content.infrastructureQuote} onChange={(e) => setContent({ ...content, infrastructureQuote: e.target.value })} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm" />
+              <label className="block text-sm font-medium text-[#2E1F45] mb-2">Infrastructure Quote</label>
+              <input type="text" value={content.infrastructureQuote} onChange={(e) => setContent({ ...content, infrastructureQuote: e.target.value })} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Infrastructure Detail</label>
-              <textarea value={content.infrastructureDetail} onChange={(e) => setContent({ ...content, infrastructureDetail: e.target.value })} rows={2} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm" />
+              <label className="block text-sm font-medium text-[#2E1F45] mb-2">Infrastructure Detail</label>
+              <textarea value={content.infrastructureDetail} onChange={(e) => setContent({ ...content, infrastructureDetail: e.target.value })} rows={2} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Call to Action Line</label>
-              <input type="text" value={content.callToAction} onChange={(e) => setContent({ ...content, callToAction: e.target.value })} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm" />
+              <label className="block text-sm font-medium text-[#2E1F45] mb-2">Call to Action Line</label>
+              <input type="text" value={content.callToAction} onChange={(e) => setContent({ ...content, callToAction: e.target.value })} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
             </div>
           </div>
         </div>
       </div>
 
       {/* Our story */}
-      <div className="bg-white rounded-lg border border-gray-200 mb-6 overflow-hidden">
-        <div className="px-6 py-3 bg-gray-900 text-white font-semibold text-sm">Our Story</div>
+      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
+        <div className="px-6 py-3 bg-[#4A3B78] text-[#FBF3FA] font-bold text-sm">Our Story</div>
         <div className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
-            <input type="text" value={content.storyTitle} onChange={(e) => setContent({ ...content, storyTitle: e.target.value })} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm" />
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Title</label>
+            <input type="text" value={content.storyTitle} onChange={(e) => setContent({ ...content, storyTitle: e.target.value })} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
           </div>
           {content.storyBeats.map((beat, i) => (
-            <div key={i} className="border border-gray-200 rounded-lg p-4">
-              <label className="block text-xs font-medium text-gray-500 mb-1">Story Beat {i + 1} — Year</label>
-              <input type="text" value={beat.year} onChange={(e) => updateBeat(i, 'year', e.target.value)} className="w-24 px-3 py-2 border border-gray-300 rounded-lg mb-2 text-sm" />
-              <label className="block text-xs font-medium text-gray-500 mb-1">Text</label>
-              <textarea value={beat.text} onChange={(e) => updateBeat(i, 'text', e.target.value)} rows={3} className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm" />
+            <div key={i} className="border border-[#D9C9E0] rounded-sm p-4 space-y-3">
+              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Story Beat {i + 1} — Year</label>
+              <input type="text" value={beat.year} onChange={(e) => updateBeat(i, 'year', e.target.value)} className="w-24 px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Text</label>
+              <textarea value={beat.text} onChange={(e) => updateBeat(i, 'text', e.target.value)} rows={3} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+              <ImageUploadWidget
+                label={`Story Beat ${i + 1} Image`}
+                value={beat.image}
+                onChange={(url) => updateBeat(i, 'image', url)}
+                folder="about"
+              />
+              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Image Alt Text</label>
+              <input type="text" value={beat.imageAlt} onChange={(e) => updateBeat(i, 'imageAlt', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
             </div>
           ))}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">"Still Building" Line</label>
-            <input type="text" value={content.stillBuildingLine} onChange={(e) => setContent({ ...content, stillBuildingLine: e.target.value })} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm" />
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">"Still Building" Line</label>
+            <input type="text" value={content.stillBuildingLine} onChange={(e) => setContent({ ...content, stillBuildingLine: e.target.value })} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">"Built With" Line</label>
-            <input type="text" value={content.builtWithLine} onChange={(e) => setContent({ ...content, builtWithLine: e.target.value })} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm" />
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">"Built With" Line</label>
+            <input type="text" value={content.builtWithLine} onChange={(e) => setContent({ ...content, builtWithLine: e.target.value })} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
           </div>
         </div>
       </div>
 
       {/* Our approach */}
-      <div className="bg-white rounded-lg border border-gray-200 mb-6 overflow-hidden">
-        <div className="px-6 py-3 bg-gray-900 text-white font-semibold text-sm">Our Approach</div>
+      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
+        <div className="px-6 py-3 bg-[#C9508A] text-[#FBF3FA] font-bold text-sm">Our Approach</div>
         <div className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Title</label>
-            <input type="text" value={content.approachTitle} onChange={(e) => setContent({ ...content, approachTitle: e.target.value })} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm" />
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Title</label>
+            <input type="text" value={content.approachTitle} onChange={(e) => setContent({ ...content, approachTitle: e.target.value })} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-            <textarea value={content.approachDescription} onChange={(e) => setContent({ ...content, approachDescription: e.target.value })} rows={3} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm" />
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Description</label>
+            <textarea value={content.approachDescription} onChange={(e) => setContent({ ...content, approachDescription: e.target.value })} rows={3} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Extended Paragraph</label>
-            <textarea value={content.approachExtended} onChange={(e) => setContent({ ...content, approachExtended: e.target.value })} rows={4} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm" />
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Extended Paragraph</label>
+            <textarea value={content.approachExtended} onChange={(e) => setContent({ ...content, approachExtended: e.target.value })} rows={4} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Closing Line 1</label>
-            <input type="text" value={content.finalLine1} onChange={(e) => setContent({ ...content, finalLine1: e.target.value })} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm" />
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Closing Line 1</label>
+            <input type="text" value={content.finalLine1} onChange={(e) => setContent({ ...content, finalLine1: e.target.value })} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Closing Line 2</label>
-            <input type="text" value={content.finalLine2} onChange={(e) => setContent({ ...content, finalLine2: e.target.value })} className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm" />
+            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Closing Line 2</label>
+            <input type="text" value={content.finalLine2} onChange={(e) => setContent({ ...content, finalLine2: e.target.value })} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
           </div>
         </div>
       </div>
 
       <div className="flex justify-end sticky bottom-4">
-        <button onClick={handleSave} disabled={saving} className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-semibold shadow-lg">
-          {saving ? 'Saving...' : '💾 Save About Page'}
+        <button onClick={handleSave} disabled={saving} className="px-6 py-3 bg-[#2E1F45] text-[#FBF3FA] rounded-sm hover:bg-[#3D2A5C] disabled:opacity-50 font-bold text-sm shadow-lg">
+          {saving ? 'Saving...' : 'Save About Page'}
         </button>
       </div>
     </AdminLayout>

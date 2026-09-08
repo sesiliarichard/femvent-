@@ -45,14 +45,20 @@ interface FeaturedEvent {
     items: string[];
   }
 
+  interface PricingFeature {
+    label: string;
+    value: string;
+  }
+
   interface PricingPlan {
     id: string;
     name: string;
     price: string;
     description: string;
     badge: string;
+    features: PricingFeature[];
   }
-  
+
   interface SiteContentData {
     brand: {
       name: string;
@@ -117,10 +123,46 @@ const DEFAULTS: SiteContentData = {
     { title: "Marketing & Growth", items: ["Smart audiences", "Promo codes + referral loops", "Attribution dashboards"] },
     { title: "Finance & Compliance", items: ["Supported currencies", "Settlement schedules", "KYC / AML overview"] },
   ],
-  pricingPlans: [
-    { id: 'starter', name: 'Starter', price: '$29/mo', description: 'For new organizers launching their first event.', badge: 'Best for first-time hosts' },
-    { id: 'growth', name: 'Growth', price: '$79/mo', description: 'For growing communities managing more than one event.', badge: 'Popular for scaling teams' },
-    { id: 'pro', name: 'Pro', price: '$149/mo', description: 'Advanced automation, analytics, and premium support.', badge: 'Built for full-scale operations' },
+   pricingPlans: [
+    {
+      id: 'starter', name: 'Starter', price: '$29/mo', description: 'For new organizers launching their first event.', badge: 'Best for first-time hosts',
+      features: [
+        { label: 'Events', value: '1 live event at a time' },
+        { label: 'Ticketing', value: 'Free & paid tickets' },
+        { label: 'Check-in', value: 'QR scanner' },
+        { label: 'Team', value: '1 (you)' },
+        { label: 'Marketing', value: 'Basic email notifications' },
+        { label: 'Analytics', value: 'Basic sales dashboard' },
+        { label: 'Automation', value: '—' },
+        { label: 'Support', value: 'Email support' },
+      ],
+    },
+    {
+      id: 'growth', name: 'Growth', price: '$79/mo', description: 'For growing communities managing more than one event.', badge: 'Popular for scaling teams',
+      features: [
+        { label: 'Events', value: 'Unlimited simultaneous events' },
+        { label: 'Ticketing', value: 'Discount codes, waitlists' },
+        { label: 'Check-in', value: 'QR scanner + check-in analytics' },
+        { label: 'Team', value: 'Up to 5 seats' },
+        { label: 'Marketing', value: 'Bulk email & SMS, affiliate tracking' },
+        { label: 'Analytics', value: 'Full sales & attendee analytics' },
+        { label: 'Automation', value: 'Basic email workflows' },
+        { label: 'Support', value: 'Priority email support' },
+      ],
+    },
+    {
+      id: 'pro', name: 'Pro', price: '$149/mo', description: 'Advanced automation, analytics, and premium support.', badge: 'Built for full-scale operations',
+      features: [
+        { label: 'Events', value: 'Unlimited + multi-day events' },
+        { label: 'Ticketing', value: 'Seating/seat maps, A/B testing' },
+        { label: 'Check-in', value: 'Advanced check-in + live analytics' },
+        { label: 'Team', value: 'Unlimited seats' },
+        { label: 'Marketing', value: 'Full email workflow automation' },
+        { label: 'Analytics', value: 'Custom reports, exportable data' },
+        { label: 'Automation', value: 'Tax calc, invoicing, virtual events (Zoom)' },
+        { label: 'Support', value: 'Dedicated priority support' },
+      ],
+    },
   ],
 };
 
@@ -222,6 +264,31 @@ export default function SiteContentPage() {
     const updated = [...(content[key] as any[])];
     updated[index] = { ...updated[index], [field]: value };
     setContent({ ...content, [key]: updated });
+  };
+
+  const updatePlanFeature = (planIndex: number, featureIndex: number, field: 'label' | 'value', value: string) => {
+    const updatedPlans = [...content.pricingPlans];
+    const updatedFeatures = [...updatedPlans[planIndex].features];
+    updatedFeatures[featureIndex] = { ...updatedFeatures[featureIndex], [field]: value };
+    updatedPlans[planIndex] = { ...updatedPlans[planIndex], features: updatedFeatures };
+    setContent({ ...content, pricingPlans: updatedPlans });
+  };
+
+  const addPlanFeature = (planIndex: number) => {
+    const updatedPlans = [...content.pricingPlans];
+    updatedPlans[planIndex] = {
+      ...updatedPlans[planIndex],
+      features: [...updatedPlans[planIndex].features, { label: '', value: '' }],
+    };
+    setContent({ ...content, pricingPlans: updatedPlans });
+  };
+
+  const removePlanFeature = (planIndex: number, featureIndex: number) => {
+    const updatedPlans = [...content.pricingPlans];
+    const updatedFeatures = [...updatedPlans[planIndex].features];
+    updatedFeatures.splice(featureIndex, 1);
+    updatedPlans[planIndex] = { ...updatedPlans[planIndex], features: updatedFeatures };
+    setContent({ ...content, pricingPlans: updatedPlans });
   };
 
   if (loading) {
@@ -532,9 +599,37 @@ export default function SiteContentPage() {
                   </div>
                   <label className="block text-xs font-medium text-gray-500">Description</label>
                   <textarea value={plan.description} onChange={(e) => updateListItem('pricingPlans', i, 'description', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+
+                  <label className="block text-xs font-medium text-gray-500 mt-3">Features</label>
+                  <div className="space-y-2">
+                    {plan.features.map((feature, fi) => (
+                      <div key={fi} className="flex gap-2 items-center">
+                        <input
+                          type="text"
+                          placeholder="Label (e.g. Events)"
+                          value={feature.label}
+                          onChange={(e) => updatePlanFeature(i, fi, 'label', e.target.value)}
+                          className="w-1/3 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Value (e.g. 1 live event at a time)"
+                          value={feature.value}
+                          onChange={(e) => updatePlanFeature(i, fi, 'value', e.target.value)}
+                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                        />
+                        <button onClick={() => removePlanFeature(i, fi)} className="text-xs text-red-600 font-semibold hover:text-red-700 whitespace-nowrap">
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                    <button onClick={() => addPlanFeature(i)} className="w-full py-1.5 border-2 border-dashed border-gray-300 rounded-lg text-xs font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
+                      + Add feature row
+                    </button>
+                  </div>
                 </div>
               ))}
-              <button onClick={() => addItem('pricingPlans', { id: '', name: '', price: '', description: '', badge: '' })} className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
+              <button onClick={() => addItem('pricingPlans', { id: '', name: '', price: '', description: '', badge: '', features: [] })} className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
                 + Add plan
               </button>
               <p className="text-xs text-gray-400 italic">
