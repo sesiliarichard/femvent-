@@ -87,9 +87,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     if (!routeRes.ok) {
-      const routeErr = await routeRes.json().catch(() => ({}));
-      console.error('NOWPayments subscription payout routing failed:', routeErr);
-      return res.status(502).json({ error: 'Failed to configure crypto payout routing' });
+      const routeErrText = await routeRes.text();
+      console.error('NOWPayments subscription payout routing failed:', routeRes.status, routeErrText);
+      return res.status(502).json({ error: `NOWPayments routing failed (status ${routeRes.status}): ${routeErrText.slice(0, 500)}` });
     }
 
     const { error: paymentError } = await supabaseAdmin.from('payments').insert({
