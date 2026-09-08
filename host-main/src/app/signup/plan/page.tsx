@@ -1,157 +1,339 @@
-import Link from "next/link";
-import { Space_Grotesk, Work_Sans } from "next/font/google";
+'use client';
 
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  weight: ["500", "700"],
-  variable: "--font-space-grotesk",
-});
+import { Suspense, useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
 
-const workSans = Work_Sans({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-work-sans",
-});
+interface PricingFeature {
+  label: string;
+  value: string;
+}
 
-const plans = [
-  {
-    id: "starter",
-    name: "Starter",
-    price: "$29/mo",
-    description: "For new organizers launching their first event.",
-    badge: "Best for first-time hosts",
-    features: [
-      { label: "Events", value: "1 live event at a time" },
-      { label: "Ticketing", value: "Free & paid tickets" },
-      { label: "Check-in", value: "QR scanner" },
-      { label: "Team", value: "1 (you)" },
-      { label: "Marketing", value: "Basic email notifications" },
-      { label: "Analytics", value: "Basic sales dashboard" },
-      { label: "Automation", value: "—" },
-      { label: "Support", value: "Email support" },
-    ],
-  },
-  {
-    id: "growth",
-    name: "Growth",
-    price: "$79/mo",
-    description: "For growing communities managing more than one event.",
-    badge: "Popular for scaling teams",
-    features: [
-      { label: "Events", value: "Unlimited simultaneous events" },
-      { label: "Ticketing", value: "Discount codes, waitlists" },
-      { label: "Check-in", value: "QR scanner + check-in analytics" },
-      { label: "Team", value: "Up to 5 seats" },
-      { label: "Marketing", value: "Bulk email & SMS, affiliate tracking" },
-      { label: "Analytics", value: "Full sales & attendee analytics" },
-      { label: "Automation", value: "Basic email workflows" },
-      { label: "Support", value: "Priority email support" },
-    ],
-  },
-  {
-    id: "pro",
-    name: "Pro",
-    price: "$149/mo",
-    description: "Advanced automation, analytics, and premium support.",
-    badge: "Built for full-scale operations",
-    features: [
-      { label: "Events", value: "Unlimited + multi-day events" },
-      { label: "Ticketing", value: "Seating/seat maps, A/B testing" },
-      { label: "Check-in", value: "Advanced check-in + live analytics" },
-      { label: "Team", value: "Unlimited seats" },
-      { label: "Marketing", value: "Full email workflow automation" },
-      { label: "Analytics", value: "Custom reports, exportable data" },
-      { label: "Automation", value: "Tax calc, invoicing, virtual events (Zoom)" },
-      { label: "Support", value: "Dedicated priority support" },
-    ],
-  },
-] as const;
+interface PricingPlan {
+  id: string;
+  name: string;
+  price: string;
+  description: string;
+  badge: string;
+  features: PricingFeature[];
+}
 
-export default function PricingPage() {
-  const hostAppUrl = process.env.NEXT_PUBLIC_HOST_APP_URL || "";
+const DEFAULT_PLANS: PricingPlan[] = [
+  { id: 'starter', name: 'Starter', price: '$29/mo', description: 'For new organizers launching their first event.', badge: 'Best for first-time hosts', features: [] },
+  { id: 'growth', name: 'Growth', price: '$79/mo', description: 'For growing communities managing more than one event.', badge: 'Popular for scaling teams', features: [] },
+  { id: 'pro', name: 'Pro', price: '$149/mo', description: 'Advanced automation, analytics, and premium support.', badge: 'Built for full-scale operations', features: [] },
+];
 
-  const fontVars = `${spaceGrotesk.variable} ${workSans.variable}`;
-  const heading = "font-[family-name:var(--font-space-grotesk)]";
-  const body = "font-[family-name:var(--font-work-sans)]";
+export default function SignupPlanPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignupPlanContent />
+    </Suspense>
+  );
+}
+
+function SignupPlanContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { signUp, signIn } = useAuth();
+  const planFromUrl = searchParams?.get('plan') || 'starter';
+  const [plans, setPlans] = useState<PricingPlan[]>(DEFAULT_PLANS);
+  const [loadingPlans, setLoadingPlans] = useState(true);
+  const [selectedPlan, setSelectedPlan] = useState<string>(planFromUrl);
+  const [step, setStep] = useState<'plan' | 'payment'>('plan');
+
+  useEffect(() => {
+    const loadPlans = async () => {
+      setLoadingPlans(true);
+      try {
+        const { data, error } = await supabase
+          .from('site_content')
+          .select('content')
+          .eq('site', 'web-main')
+          .maybeSingle();
+        if (error) throw error;
+
+        if (data?.content?.pricingPlans && data.content.pricingPlans.length > 0) {
+          setPlans(data.content.pricingPlans);
+          if (!data.content.pricingPlans.some((p: PricingPlan) => p.id === planFromUrl)) {
+            setSelectedPlan(data.content.pricingPlans[0].id);
+          }
+        }
+      } catch (err) {
+        console.error('Error loading pricing plans, using defaults:', err);
+      } finally {
+        setLoadingPlans(false);
+      }
+    };
+
+    loadPlans();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'pesapal' | 'crypto' | 'azampay' | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
+  const [paymentMethods, setPaymentMethods] = useState<{ key: 'pesapal' | 'crypto' | 'azampay'; label: string; desc: string }[]>([]);
+  const [loadingMethods, setLoadingMethods] = useState(true);
+
+  const PAYMENT_METHOD_META = {
+    pesapal: { label: 'Pesapal', desc: 'Card & mobile money — East/Southern Africa + international cards' },
+    crypto: { label: 'Crypto (USDT)', desc: 'Crypto payments via NOWPayments' },
+    azampay: { label: 'AzamPay', desc: 'Mobile money — Tanzania/Rwanda (M-Pesa, Tigo Pesa, Airtel Money, etc.)' },
+  } as const;
+
+  useEffect(() => {
+    const loadActiveMethods = async () => {
+      setLoadingMethods(true);
+      try {
+        const { data, error } = await supabase
+          .from('platform_payment_settings')
+          .select('provider, status')
+          .eq('status', 'active');
+        if (error) throw error;
+
+        const active = (data || [])
+          .map((row) => row.provider as keyof typeof PAYMENT_METHOD_META)
+          .filter((provider) => PAYMENT_METHOD_META[provider])
+          .map((provider) => ({ key: provider, ...PAYMENT_METHOD_META[provider] }));
+
+        setPaymentMethods(active);
+      } catch (err) {
+        console.error('Error loading active payment methods:', err);
+        setPaymentMethods([]);
+      } finally {
+        setLoadingMethods(false);
+      }
+    };
+
+    loadActiveMethods();
+  }, []);
+
+  const selectedPlanDetails = plans.find((p) => p.id === selectedPlan) || plans[0];
+
+  const fullName = searchParams?.get('fullName') || '';
+  const organizationName = searchParams?.get('organizationName') || '';
+  const businessEmail = searchParams?.get('businessEmail') || '';
+  const email = searchParams?.get('email') || businessEmail;
+  const password = searchParams?.get('password') || '';
+
+  const handleSubmit = async () => {
+    if (!fullName || !email || !password) {
+      router.push('/signup');
+      return;
+    }
+
+    if (!selectedPaymentMethod) {
+      setError('Please choose a payment method.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError('');
+
+    try {
+      let userId: string;
+      try {
+        userId = await signUp(email, password, fullName, {
+          organizationName,
+          businessEmail,
+          plan: selectedPlan,
+        });
+      } catch (signUpErr: any) {
+        if (signUpErr.message?.toLowerCase().includes('already registered')) {
+          await signIn(email, password);
+          const { data: existing } = await supabase
+            .from('users')
+            .select('id, subscription_status')
+            .eq('email', email)
+            .maybeSingle();
+
+          if (!existing) throw signUpErr;
+          if (existing.subscription_status === 'active') {
+            throw new Error('This account is already active. Please log in instead.');
+          }
+          userId = existing.id;
+        } else {
+          throw signUpErr;
+        }
+      }
+
+      if (selectedPaymentMethod === 'pesapal') {
+        const res = await fetch('/host/api/payments/create-subscription-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            plan: selectedPlan,
+            email,
+            name: fullName,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.sessionUrl) {
+          throw new Error(data.error || 'Failed to start payment');
+        }
+
+        window.location.href = data.sessionUrl;
+        return;
+      }
+
+      if (selectedPaymentMethod === 'crypto') {
+        const res = await fetch('/host/api/payments/create-crypto-subscription-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            plan: selectedPlan,
+          }),
+        });
+
+        const data = await res.json();
+        if (!res.ok || !data.sessionUrl) {
+          throw new Error(data.error || 'Failed to start payment');
+        }
+
+        window.location.href = data.sessionUrl;
+        return;
+      }
+
+      setError('This payment method is not yet available for subscriptions. Please choose Pesapal or Crypto.');
+    } catch (err: any) {
+      setError(err.message || 'Unable to create your organizer account.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
-    <main className={`${fontVars} bg-[#FBF3FA]`}>
-      {/* Hero */}
-      <section className="mx-auto max-w-6xl px-6 pt-16 pb-10">
-        <p className={`${heading} font-medium text-[13px] text-[#9B1F5C] mb-3.5`}>Pricing</p>
-        <h1 className={`${heading} font-bold text-4xl sm:text-[42px] leading-[1.1] text-[#2E1F45] max-w-xl`}>
-          Pick the setup that fits your team
-        </h1>
-        <p className={`${body} text-[#5C4A6B] max-w-md mt-4 text-[15px] leading-relaxed`}>
-          Start hosting events on FemVents — choose a plan and get access to your dashboard.
-        </p>
-      </section>
+    <main className="min-h-screen bg-slate-100 px-4 py-12 text-slate-900">
+      <div className="mx-auto max-w-4xl rounded-[32px] bg-white p-8 shadow-xl shadow-slate-200/80">
+        <div className="mb-8 text-center">
+          <p className="text-sm font-semibold uppercase tracking-[0.35em] text-rose-500">Choose a plan</p>
+          <h1 className="mt-3 text-4xl font-black tracking-tight text-slate-900">Pick the setup that fits your team</h1>
+        </div>
 
-      {/* Plans */}
-      <section className="mx-auto max-w-6xl px-6 pt-3 pb-16 grid gap-5 md:grid-cols-3 items-start">
-        {plans.map((plan) => {
-          const isHighlight = plan.id === "growth";
-          return (
-            <div
-              key={plan.id}
-              className={`relative rounded-sm p-7 flex flex-col ${
-                isHighlight
-                  ? "bg-[#2E1F45] text-[#FBF3FA] shadow-[0_24px_48px_rgba(46,31,69,0.28)] md:-translate-y-3"
-                  : "bg-white border border-[#D9C9E0] text-[#2E1F45]"
-              }`}
-            >
-              {isHighlight && (
-                <span
-                  className={`${heading} absolute -top-[13px] left-7 bg-[#E8743B] text-[#2E1F45] font-bold text-[11px] uppercase tracking-wide px-3.5 py-1.5 rounded-full shadow-[0_4px_10px_rgba(232,116,59,0.4)]`}
-                >
-                  Most popular
-                </span>
-              )}
-              <p className={`${heading} font-medium text-[11px] uppercase tracking-wider opacity-65`}>
-                {plan.badge}
-              </p>
-              <div className="flex items-end justify-between mt-4">
-                <span className={`${heading} font-bold text-[26px]`}>{plan.name}</span>
-                <span className={`${heading} font-bold text-lg`}>{plan.price}</span>
-              </div>
-              <p
-                className={`${body} text-sm mt-3.5 pb-5 opacity-85 border-b ${
-                  isHighlight ? "border-white/15" : "border-black/10"
-                }`}
-              >
-                {plan.description}
-              </p>
+        {step === 'plan' ? (
+          <>
+            <div className="grid gap-5 md:grid-cols-3">
+              {plans.map((plan) => {
+                const isSelected = selectedPlan === plan.id;
 
-              <ul className="list-none m-0 p-0 flex-grow">
-                {plan.features.map((feature, index) => (
-                  <li
-                    key={feature.label}
-                    className={`${body} text-[13px] flex gap-2 items-baseline ${
-                      index === 0 ? "pt-4 pb-2.5" : "py-2.5 border-t"
-                    } ${isHighlight ? "border-white/15" : "border-black/10"}`}
+                return (
+                  <button
+                    key={plan.id}
+                    type="button"
+                    onClick={() => setSelectedPlan(plan.id)}
+                    className={`rounded-3xl border p-6 text-left transition-all ${
+                      isSelected
+                        ? 'border-rose-500 bg-rose-50 shadow-lg shadow-rose-100'
+                        : 'border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50'
+                    }`}
                   >
-                    <span
-                      className={`${heading} font-bold text-[10.5px] uppercase tracking-wider opacity-55 flex-shrink-0 w-20`}
-                    >
-                      {feature.label}
-                    </span>
-                    <span className="flex-1 font-medium">{feature.value}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <Link
-                href={`${hostAppUrl}/signup?plan=${plan.id}`}
-                className={`${heading} block w-full mt-7 py-3.5 rounded-sm text-center font-bold text-sm ${
-                  isHighlight ? "bg-[#E8743B] text-[#2E1F45]" : "bg-[#F3D9EE] text-[#2E1F45]"
-                }`}
-              >
-                Choose {plan.name}
-              </Link>
+                    <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">{plan.badge}</p>
+                    <div className="mt-4 flex items-end justify-between gap-3">
+                      <h2 className="text-2xl font-black">{plan.name}</h2>
+                      <span className="text-lg font-bold text-slate-900">{plan.price}</span>
+                    </div>
+                    <p className="mt-4 text-sm text-slate-600">{plan.description}</p>
+                    <div className="mt-6 flex items-center justify-between">
+                      <span className="text-sm font-medium text-slate-700">{isSelected ? 'Selected' : 'Choose plan'}</span>
+                      <span className={`h-4 w-4 rounded-full border-2 ${isSelected ? 'border-rose-500 bg-rose-500' : 'border-slate-300 bg-white'}`} />
+                    </div>
+                  </button>
+                );
+              })}
             </div>
-          );
-        })}
-      </section>
+
+            <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-slate-200 pt-6 sm:flex-row">
+              <div className="text-sm text-slate-500">
+                You'll pay for {selectedPlanDetails.name} ({selectedPlanDetails.price}) on the next step.
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setStep('payment')}
+                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-rose-600 to-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-600/25 transition hover:-translate-y-0.5"
+              >
+                Continue to payment
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="mb-6 rounded-2xl border border-slate-200 bg-slate-50 p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Selected plan</p>
+              <div className="mt-2 flex items-center justify-between">
+                <span className="text-lg font-bold text-slate-900">{selectedPlanDetails.name}</span>
+                <span className="text-lg font-bold text-slate-900">{selectedPlanDetails.price}</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setStep('plan')}
+                className="mt-3 text-sm font-semibold text-rose-600 hover:text-rose-700"
+              >
+                ← Change plan
+              </button>
+            </div>
+
+            <h2 className="mb-4 text-lg font-bold text-slate-900">Choose a payment method</h2>
+            {loadingMethods ? (
+              <p className="text-sm text-slate-500">Loading payment methods...</p>
+            ) : paymentMethods.length === 0 ? (
+              <p className="text-sm text-rose-600">No payment methods are currently available. Please contact support.</p>
+            ) : (
+              <div className="space-y-3">
+                {paymentMethods.map(({ key, label, desc }) => {
+                  const isSelected = selectedPaymentMethod === key;
+                  return (
+                    <label
+                      key={key}
+                      className={`flex cursor-pointer items-center justify-between gap-4 rounded-2xl border-2 p-4 transition-colors ${
+                        isSelected ? 'border-rose-400 bg-rose-50' : 'border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <input
+                          type="radio"
+                          name="paymentMethod"
+                          checked={isSelected}
+                          onChange={() => setSelectedPaymentMethod(key)}
+                        />
+                        <div>
+                          <p className="text-sm font-bold text-slate-900">{label}</p>
+                          <p className="text-xs text-slate-500">{desc}</p>
+                        </div>
+                      </div>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
+
+            {error ? (
+              <div className="mt-6 rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                {error}
+              </div>
+            ) : null}
+
+            <div className="mt-8 flex flex-col items-center justify-between gap-4 border-t border-slate-200 pt-6 sm:flex-row">
+              <div className="text-sm text-slate-500">
+                You'll be redirected to complete your payment securely.
+              </div>
+
+              <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={isSubmitting || !selectedPaymentMethod}
+                className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-rose-600 to-orange-500 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-rose-600/25 transition hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isSubmitting ? 'Processing...' : `Pay ${selectedPlanDetails.price} & continue`}
+              </button>
+            </div>
+          </>
+        )}
+      </div>
     </main>
   );
 }

@@ -10,6 +10,11 @@ const PLAN_PRICES: Record<string, number> = {
   pro: 149,
 };
 
+function parsePriceToNumber(price: string): number {
+  const match = String(price).replace(/,/g, '').match(/[\d.]+/);
+  return match ? parseFloat(match[0]) : 0;
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -25,14 +30,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { userId, plan, email, name, phone } = req.body;
 
-  if (!userId || !plan || !PLAN_PRICES[plan]) {
+  if (!userId || !plan) {
     return res.status(400).json({ error: 'A valid userId and plan are required' });
   }
   if (!email) {
     return res.status(400).json({ error: 'Email is required' });
   }
 
-  const amount = PLAN_PRICES[plan];
+  const { data: siteContent, error: siteContentError } = await supabaseAdmin
+    .from('site_content')
+    .select('content')
+    .eq('site', 'web-main')
+    .maybeSingle();
+
+  if (siteContentError) {
+    console.error('Error fetching pricing plans:', siteContentError);
+    return res.status(500).json({ error: 'Could not verify plan pricing' });
+  }
+
+  const pricingPlans = siteContent?.content?.pricingPlans || [];
+  const planDetails = pricingPlans.find((p: any) => p.id === plan);
+  const amount = planDetails ? parsePriceToNumber(planDetails.price) : PLAN_PRICES[plan];
+
+  if (!amount) {
+    return res.status(400).json({ error: 'Could not determine a valid amount for this plan' });
+  }
 
   try {
     const authRes = await fetch(`${PESAPAL_BASE}/api/Auth/RequestToken`, {
