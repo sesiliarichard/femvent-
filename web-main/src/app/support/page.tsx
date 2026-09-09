@@ -73,7 +73,6 @@ export default async function SupportPage() {
           </button>
         </div>
       </section>
-
       {/* Support topics */}
       <section className="mx-auto max-w-3xl px-6 pb-16 grid gap-4 sm:grid-cols-2">
         {supportTopics.map((topic, index) => {
@@ -81,34 +80,40 @@ export default async function SupportPage() {
           return (
             <div
               key={topic.title}
-              className="rounded-sm p-6 min-h-[190px] bg-cover bg-center"
-              style={{
-                backgroundImage: `linear-gradient(0deg, ${hexToRgba(s.color, 0.9)}, ${hexToRgba(
-                  s.color,
-                  0.78
-                )}), url('${s.image}')`,
-              }}
+              className="relative rounded-sm overflow-hidden min-h-[190px] bg-cover bg-center flex flex-col justify-end p-6"
+              style={{ backgroundImage: `url('${s.image}')` }}
             >
-              <p
-                className={`${heading} font-bold text-[13px] uppercase tracking-wider mb-3.5`}
-                style={{ color: s.text }}
-              >
-                {topic.title}
-              </p>
-              <ul className="m-0 p-0 list-none">
-                {topic.items.map((item, itemIndex) => (
-                  <li
-                    key={item}
-                    className={`${body} text-sm py-2`}
-                    style={{
-                      color: s.text,
-                      borderTop: itemIndex > 0 ? `1px solid ${s.border}` : "none",
-                    }}
-                  >
-                    {item}
-                  </li>
-                ))}
-              </ul>
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `linear-gradient(180deg, ${hexToRgba(s.color, 0)} 30%, ${hexToRgba(
+                    s.color,
+                    0.88
+                  )} 100%)`,
+                }}
+              />
+              <div className="relative z-10">
+                <p
+                  className={`${heading} font-bold text-[13px] uppercase tracking-wider mb-3.5`}
+                  style={{ color: s.text }}
+                >
+                  {topic.title}
+                </p>
+                <ul className="m-0 p-0 list-none">
+                  {topic.items.map((item, itemIndex) => (
+                    <li
+                      key={item}
+                      className={`${body} text-sm py-2`}
+                      style={{
+                        color: s.text,
+                        borderTop: itemIndex > 0 ? `1px solid ${s.border}` : "none",
+                      }}
+                    >
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           );
         })}
