@@ -120,9 +120,9 @@ export default async function OrganizersPage() {
           Start hosting events on FemVents — choose a plan and get access to your dashboard.
         </p>
         <div className="grid gap-5 md:grid-cols-3 items-start">
-          {pricingPlans.map((plan) => {
+        {pricingPlans.map((plan) => {
             const isHighlight = plan.id === "growth";
-            const features = planFeatures[plan.id] || [];
+            const features = plan.features?.length ? plan.features : planFeatures[plan.id] || []
             return (
               <div
                 key={plan.id}

@@ -6,7 +6,7 @@ export async function getSiteContent(): Promise<{
   about: Record<string, any>;
   organizersHero: Record<string, any>;
   howItWorks: string[];
-  pricingPlans: Array<{ id: string; name: string; price: string; description: string; badge: string }>;
+  pricingPlans: Array<{ id: string; name: string; price: string; description: string; badge: string; features?: { label: string; value: string }[] }>;
   brand: typeof defaults.brand;
   navLinks: typeof defaults.navLinks;
   destinations: typeof defaults.destinations;
@@ -33,7 +33,7 @@ export async function getSiteContent(): Promise<{
       about?: Record<string, any>;
       organizersHero?: Record<string, any>;
       howItWorks?: string[];
-      pricingPlans?: Array<{ id: string; name: string; price: string; description: string; badge: string }>;
+      pricingPlans?: Array<{ id: string; name: string; price: string; description: string; badge: string; features?: { label: string; value: string }[] }>;
     };
 
     const DEFAULT_PLANS = [

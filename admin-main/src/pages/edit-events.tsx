@@ -18,9 +18,15 @@ interface FeaturedEvent {
   image: string;
 }
 
+interface Destination {
+  city: string;
+  stat: string;
+}
+
 interface EventsContent {
   categories: Category[];
   featuredEvents: FeaturedEvent[];
+  destinations: Destination[];
 }
 
 const DEFAULTS: EventsContent = {
@@ -37,6 +43,12 @@ const DEFAULTS: EventsContent = {
     { title: "Midnight Sessions", city: "Lagos", date: "Feb 28 • 22:00 WAT", summary: "Live music and DJ sets under the stars.", tags: ["Music", "Nightlife", "18+"], image: "" },
     { title: "Wellness Weekend", city: "Kigali", date: "Mar 8 • 08:00 CAT", summary: "Three days of yoga, meditation, and healthy living.", tags: ["Wellness", "Retreat", "Limited"], image: "" },
     { title: "Art & Design Fair", city: "Cape Town", date: "Mar 22 • 11:00 SAST", summary: "Local artists showcase their work at this weekend marketplace.", tags: ["Art", "Shopping", "Weekend"], image: "" },
+  ],
+  destinations: [
+    { city: "Nairobi", stat: "48 upcoming events" },
+    { city: "Lagos", stat: "62 upcoming events" },
+    { city: "Kigali", stat: "21 upcoming events" },
+    { city: "Cape Town", stat: "35 upcoming events" },
   ],
 };
 
@@ -63,6 +75,7 @@ export default function EditEventsPage() {
         setContent({
           categories: data.content.categories || DEFAULTS.categories,
           featuredEvents: data.content.featuredEvents || DEFAULTS.featuredEvents,
+          destinations: data.content.destinations || DEFAULTS.destinations,
         });
       }
     } catch (err) {
@@ -81,11 +94,12 @@ export default function EditEventsPage() {
         .eq('site', 'web-main')
         .maybeSingle();
 
-      const mergedContent = {
-        ...(existing?.content || {}),
-        categories: content.categories,
-        featuredEvents: content.featuredEvents,
-      };
+        const mergedContent = {
+          ...(existing?.content || {}),
+          categories: content.categories,
+          featuredEvents: content.featuredEvents,
+          destinations: content.destinations,
+        };
 
       const { error } = await supabase
         .from('site_content')
@@ -142,6 +156,22 @@ export default function EditEventsPage() {
     setContent({ ...content, categories: [...content.categories, { title: '', copy: '', image: '' }] });
   };
 
+  const updateDestination = (i: number, field: keyof Destination, value: string) => {
+    const updated = [...content.destinations];
+    updated[i] = { ...updated[i], [field]: value };
+    setContent({ ...content, destinations: updated });
+  };
+
+  const removeDestination = (i: number) => {
+    const updated = [...content.destinations];
+    updated.splice(i, 1);
+    setContent({ ...content, destinations: updated });
+  };
+
+  const addDestination = () => {
+    setContent({ ...content, destinations: [...content.destinations, { city: '', stat: '' }] });
+  };
+
   if (loading) {
     return (
       <AdminLayout>
@@ -180,8 +210,29 @@ export default function EditEventsPage() {
               />
             </div>
           ))}
-          <button onClick={addCategory} className="w-full py-2 border-2 border-dashed border-[#D9C9E0] rounded-sm text-sm font-medium text-[#8A7A96] hover:border-[#9B1F5C] hover:text-[#9B1F5C] transition-colors">
+ <button onClick={addCategory} className="w-full py-2 border-2 border-dashed border-[#D9C9E0] rounded-sm text-sm font-medium text-[#8A7A96] hover:border-[#9B1F5C] hover:text-[#9B1F5C] transition-colors">
             + Add category
+          </button>
+        </div>
+      </div>
+
+      {/* Destinations */}
+      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
+        <div className="px-6 py-3 bg-[#C9508A] text-[#FBF3FA] font-bold text-sm">Browse By City (sidebar)</div>
+        <div className="p-6 space-y-4">
+          {content.destinations.map((dest, i) => (
+            <div key={i} className="border border-[#D9C9E0] rounded-sm p-4 space-y-3">
+              <div className="flex justify-between items-start">
+                <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">City {i + 1}</label>
+                <button onClick={() => removeDestination(i)} className="text-xs text-[#9B1F5C] font-bold hover:opacity-70">Remove</button>
+              </div>
+              <input type="text" value={dest.city} onChange={(e) => updateDestination(i, 'city', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Stat</label>
+              <input type="text" value={dest.stat} onChange={(e) => updateDestination(i, 'stat', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+            </div>
+          ))}
+          <button onClick={addDestination} className="w-full py-2 border-2 border-dashed border-[#D9C9E0] rounded-sm text-sm font-medium text-[#8A7A96] hover:border-[#9B1F5C] hover:text-[#9B1F5C] transition-colors">
+            + Add city
           </button>
         </div>
       </div>
