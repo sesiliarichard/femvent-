@@ -1,6 +1,5 @@
 /**
- * ENHANCED DASHBOARD PAGE (/dashboard)
- * Premium dashboard with advanced animations, glassmorphism effects, and modern UI
+ * DASHBOARD PAGE (/dashboard)
  */
 'use client';
 
@@ -29,13 +28,11 @@ function toDate(value: any): Date | null {
 
 import ProtectedRoute from '@/components/ProtectedRoute';
 
-// Main Dashboard Content - ENHANCED
 function DashboardContent() {
   const { userProfile } = useAuth();
   const router = useRouter();
   const [showChart, setShowChart] = useState(true);
   const [mounted, setMounted] = useState(false);
-  const [hoveredStat, setHoveredStat] = useState<number | null>(null);
   const [events, setEvents] = useState<any[]>([]);
   const [loadingStats, setLoadingStats] = useState(true);
   const [chartView, setChartView] = useState<'bar' | 'line'>('bar');
@@ -45,7 +42,6 @@ function DashboardContent() {
     totalRevenue: 0,
     conversionRate: 0,
   });
-  
 
   useEffect(() => {
     setMounted(true);
@@ -65,7 +61,6 @@ function DashboardContent() {
 
         const eventIds = (rows || []).map((row: any) => row.id);
 
-        // Count real ticket rows instead of trusting the cached tickets_sold column
         const attendeesByEvent: Record<string, number> = {};
         if (eventIds.length > 0) {
           const { data: ticketRows, error: ticketsError } = await supabase
@@ -81,7 +76,6 @@ function DashboardContent() {
           });
         }
 
-        // Map to the field names this page's JSX expects
         const data = (rows || []).map((row: any) => ({
           id: row.id,
           title: row.title,
@@ -150,56 +144,37 @@ function DashboardContent() {
     });
   };
 
+  // Each stat now defines its own correct colors directly — no string-patching.
   const stats_list = useMemo(() => {
     const totalRevenueK = stats.totalRevenue / 1000;
     return [
       {
         label: 'Total Events',
         value: stats.totalEvents,
-        icon: <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12c0 1.657-4.03 3-9 3s-9-1.343-9-3 4.03-3 9-3 9 1.343 9 3z" /><circle cx="12" cy="12" r="9" strokeWidth={2} /></svg>,
-        color: 'from-violet-500 via-purple-500 to-purple-600',
-        bgColor: 'bg-violet-50',
-        textColor: 'text-violet-600',
-        glowColor: 'shadow-violet-500/50',
+        icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><circle cx="12" cy="12" r="9" strokeWidth={2} /></svg>,
         trend: stats.totalEvents > 0 ? '+12%' : '0%',
         trendUp: stats.totalEvents > 0,
-        suffix: ''
       },
       {
         label: 'Total Attendees',
         value: stats.totalAttendees.toLocaleString(),
-        icon: <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" /></svg>,
-        color: 'from-blue-500 via-cyan-500 to-teal-500',
-        bgColor: 'bg-blue-50',
-        textColor: 'text-blue-600',
-        glowColor: 'shadow-blue-500/50',
+        icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a3 3 0 00-4.681 2.72 8.986 8.986 0 003.74.477m.94-3.197a5.971 5.971 0 00-.94 3.197M15 6.75a3 3 0 11-6 0 3 3 0 016 0zm6 3a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0zm-13.5 0a2.25 2.25 0 11-4.5 0 2.25 2.25 0 014.5 0z" /></svg>,
         trend: stats.totalAttendees > 0 ? '+24%' : '0%',
         trendUp: stats.totalAttendees > 0,
-        suffix: ''
       },
       {
         label: 'Total Revenue',
-        value: totalRevenueK > 0 ? totalRevenueK.toFixed(1) : '0',
-        icon: <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-        color: 'from-emerald-500 via-green-500 to-teal-600',
-        bgColor: 'bg-emerald-50',
-        textColor: 'text-emerald-600',
-        glowColor: 'shadow-emerald-500/50',
+        value: totalRevenueK > 0 ? `$${totalRevenueK.toFixed(1)}K` : '$0',
+        icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
         trend: stats.totalRevenue > 0 ? '+18%' : '0%',
         trendUp: stats.totalRevenue > 0,
-        suffix: 'K'
       },
       {
         label: 'Fill Rate',
-        value: stats.conversionRate,
-        icon: <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>,
-        color: 'from-amber-500 via-orange-500 to-red-500',
-        bgColor: 'bg-amber-50',
-        textColor: 'text-amber-600',
-        glowColor: 'shadow-amber-500/50',
+        value: `${stats.conversionRate}%`,
+        icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>,
         trend: stats.conversionRate > 0 ? '+8%' : '0%',
         trendUp: stats.conversionRate > 0,
-        suffix: '%'
       },
     ];
   }, [stats]);
@@ -240,154 +215,93 @@ function DashboardContent() {
   if (!mounted) {
     return (
       <DashboardLayout currentPage="dashboard">
-        <div className="text-center text-purple-500">Loading dashboard...</div>
+        <div className="text-center text-primary-500">Loading dashboard...</div>
       </DashboardLayout>
     );
   }
 
   return (
     <DashboardLayout currentPage="dashboard">
-        {/* Premium Header Section */}
-        <div className="mb-12 animate-[fadeIn_0.8s_ease-out]">
+        {/* Header */}
+        <div className="mb-10">
           <div className="flex items-center justify-between flex-wrap gap-6">
-            <div className="space-y-3">
-              <h1 className="text-6xl font-black bg-gradient-to-r from-purple-600 via-secondary-600 to-accent-600 bg-clip-text text-transparent leading-tight">
-              Welcome back, {userProfile?.name?.split(' ')[0] || 'Host'}!
-              <svg className="inline-block w-10 h-10 ml-2 align-middle" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.05 4.575a1.575 1.575 0 10-3.15 0v3m3.15-3v-1.5a1.575 1.575 0 013.15 0v1.5m-3.15 0l.075 5.925m3.075.75V4.575m0 0a1.575 1.575 0 013.15 0V15M6.9 7.575a1.575 1.575 0 10-3.15 0v8.175a6.75 6.75 0 006.75 6.75h2.018a5.25 5.25 0 003.712-1.538l1.732-1.732a5.25 5.25 0 001.538-3.712l.003-2.024a.668.668 0 01.198-.471 1.575 1.575 0 10-2.228-2.228 3.818 3.818 0 00-1.12 2.687M6.9 7.575V12" /></svg>
+            <div className="space-y-2">
+              <h1 className="text-4xl font-extrabold text-gray-900">
+                Welcome back, {userProfile?.name?.split(' ')[0] || 'Host'}
               </h1>
-              <p className="text-xl text-purple-400 font-medium">
+              <p className="text-base text-gray-500">
                 Here's what's happening with your events today
               </p>
             </div>
             <button
-              className="group relative bg-gradient-to-r from-secondary-500 via-secondary-600 to-accent-600 text-white px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl hover:shadow-secondary-500/40 hover:scale-105 transition-all duration-300 active:scale-95 overflow-hidden"
+              className="flex items-center gap-2 bg-secondary-500 hover:bg-secondary-600 text-white px-6 py-3.5 rounded-xl font-bold text-sm transition-colors"
               onClick={() => router.push('/events/create')}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-accent-600 to-secondary-600 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              <div className="relative flex items-center gap-3">
-                <svg className="w-6 h-6 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-                </svg>
-                <span>Create New Event</span>
-              </div>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+              </svg>
+              <span>Create New Event</span>
             </button>
           </div>
         </div>
 
-        {/* Premium Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-12">
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-10">
           {stats_list.map((stat, idx) => (
             <div
               key={idx}
-              onMouseEnter={() => setHoveredStat(idx)}
-              onMouseLeave={() => setHoveredStat(null)}
-              className="group relative bg-white/80 backdrop-blur-xl rounded-3xl p-8 border border-pink-200/50 hover:border-purple-300/50 hover:shadow-2xl transition-all duration-500 cursor-pointer overflow-hidden"
-              style={{
-                animation: `slideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) ${idx * 0.15}s backwards`
-              }}
+              className="bg-white rounded-2xl p-6 border border-gray-100 opacity-0"
+              style={{ animation: `fadeUp 0.5s ease-out ${idx * 0.08}s forwards` }}
             >
-              {/* Gradient overlay */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${stat.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
-              
-              {/* Glow effect on hover */}
-              <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl ${stat.glowColor}`}></div>
-              
-              {/* Animated mesh gradient background */}
-              <div className="absolute -right-12 -bottom-12 w-40 h-40 opacity-30 group-hover:opacity-50 transition-opacity duration-700">
-                <div className={`w-full h-full bg-gradient-to-br ${stat.color} rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700`}></div>
-              </div>
-              
-              <div className="relative z-10">
-                {/* Icon and Trend */}
-                <div className="flex items-start justify-between mb-6">
-                <div className={`${stat.bgColor.replace('bg-blue-50', 'bg-pink-50').replace('bg-violet-50', 'bg-purple-50').replace('bg-emerald-50', 'bg-rose-50').replace('bg-amber-50', 'bg-orange-50')} ${stat.textColor.replace('text-blue-600', 'text-purple-600').replace('text-violet-600', 'text-purple-600').replace('text-emerald-600', 'text-rose-600').replace('text-amber-600', 'text-orange-600')} p-4 rounded-2xl group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg`}>
-                    {stat.icon}
-                  </div>
-                  <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-sm ${
-                    stat.trendUp 
-                      ? 'bg-rose-50 text-rose-600' 
-                      : 'bg-red-50 text-red-600'
-                  }`}>
-                    <svg className={`w-4 h-4 ${stat.trendUp ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                    </svg>
-                    <span>{stat.trend}</span>
-                  </div>
+              <div className="flex items-start justify-between mb-5">
+                <div className="bg-primary-50 text-primary-600 p-3 rounded-xl">
+                  {stat.icon}
                 </div>
-
-                {/* Label */}
-                <p className="text-purple-500 text-sm font-bold mb-3 tracking-wider uppercase">
-                  {stat.label}
-                </p>
-
-                {/* Value */}
-                <div className="flex items-baseline gap-1">
-                  <p className={`text-5xl font-black ${stat.textColor.replace('text-blue-600', 'text-purple-600').replace('text-violet-600', 'text-purple-600').replace('text-emerald-600', 'text-rose-600').replace('text-amber-600', 'text-orange-600')} group-hover:scale-105 transition-transform duration-300`}>
-                    {loadingStats ? (
-                      <span className="animate-pulse">...</span>
-                    ) : (
-                      <>
-                        {stat.label === 'Total Revenue' && '$'}
-                        {stat.value}
-                      </>
-                    )}
-                  </p>
-                  {stat.suffix && (
-                    <span className={`text-2xl font-bold ${stat.textColor.replace('text-blue-600', 'text-purple-600').replace('text-violet-600', 'text-purple-600').replace('text-emerald-600', 'text-rose-600').replace('text-amber-600', 'text-orange-600')} opacity-60`}>
-                      {stat.suffix}
-                    </span>
-                  )}
-                </div>
-
-                {/* Progress bar */}
-                <div className="mt-4 h-2 bg-pink-100 rounded-full overflow-hidden">
-                  <div 
-                    className={`h-full bg-gradient-to-r ${stat.color.replace('from-blue-500 via-cyan-500 to-teal-500', 'from-secondary-500 via-secondary-600 to-accent-600').replace('from-violet-500 via-purple-500 to-purple-600', 'from-purple-500 via-secondary-500 to-purple-600').replace('from-emerald-500 via-green-500 to-teal-600', 'from-rose-500 via-secondary-600 to-accent-600').replace('from-amber-500 via-orange-500 to-red-500', 'from-orange-500 via-accent-600 to-rose-600')} transition-all duration-1000 ease-out`}
-                    style={{ 
-                      width: hoveredStat === idx ? '100%' : `${Math.min(100, (stat.value as number) || 50)}%`,
-                      animation: `growWidth 1.5s ease-out ${idx * 0.2}s backwards`
-                    }}
-                  ></div>
+                <div
+                  className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-bold text-xs ${
+                    stat.trendUp ? 'bg-emerald-50 text-emerald-600' : 'bg-red-50 text-red-600'
+                  }`}
+                >
+                  <svg className={`w-3.5 h-3.5 ${stat.trendUp ? '' : 'rotate-180'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                  </svg>
+                  <span>{stat.trend}</span>
                 </div>
               </div>
 
-              {/* Shine effect */}
-              <div className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12"></div>
+              <p className="text-gray-400 text-xs font-bold mb-2 tracking-wider uppercase">
+                {stat.label}
+              </p>
+
+              <p className="text-3xl font-extrabold text-gray-900">
+                {loadingStats ? <span className="animate-pulse">...</span> : stat.value}
+              </p>
             </div>
           ))}
         </div>
 
-        {/* Enhanced Charts & Analytics Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-          {/* Premium Chart Area */}
-          <div className="lg:col-span-2 bg-white/80 backdrop-blur-xl rounded-3xl p-10 border border-pink-200/50 shadow-2xl hover:shadow-3xl transition-all duration-500">
-            <div className="flex items-center justify-between mb-10">
+        {/* Chart + Performance */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+          <div className="lg:col-span-2 bg-white rounded-2xl p-8 border border-gray-100">
+            <div className="flex items-center justify-between mb-8">
               <div>
-                <h2 className="text-3xl font-black text-purple-900 mb-2">Attendee Growth</h2>
-                <p className="text-sm text-purple-500 flex items-center gap-2">
-                  <span className="w-2 h-2 bg-gradient-to-r from-secondary-500 to-accent-500 rounded-full"></span>
-                  Performance over the last 6 months
-                </p>
+                <h2 className="text-xl font-bold text-gray-900 mb-1">Attendee Growth</h2>
+                <p className="text-sm text-gray-500">Performance over the last 6 months</p>
               </div>
-              <div className="flex items-center gap-3">
-                {/* Chart Type Toggle */}
-                <div className="flex items-center gap-2 bg-pink-100 p-1.5 rounded-xl">
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 bg-gray-50 p-1 rounded-lg">
                   <button
                     onClick={() => setChartView('bar')}
-                    className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${
-                      chartView === 'bar'
-                        ? 'bg-white text-secondary-600 shadow-lg'
-                        : 'text-purple-600 hover:text-purple-900'
+                    className={`px-3.5 py-1.5 rounded-md font-semibold text-xs transition-colors ${
+                      chartView === 'bar' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500'
                     }`}
                   >
                     Bar
                   </button>
                   <button
                     onClick={() => setChartView('line')}
-                    className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-300 ${
-                      chartView === 'line'
-                        ? 'bg-white text-secondary-600 shadow-lg'
-                        : 'text-purple-600 hover:text-purple-900'
+                    className={`px-3.5 py-1.5 rounded-md font-semibold text-xs transition-colors ${
+                      chartView === 'line' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500'
                     }`}
                   >
                     Line
@@ -395,308 +309,159 @@ function DashboardContent() {
                 </div>
                 <button
                   onClick={() => setShowChart(!showChart)}
-                  className="p-3 hover:bg-pink-100 rounded-xl transition-all duration-300 group"
+                  className="p-2.5 hover:bg-gray-50 rounded-lg transition-colors"
                 >
-                  {showChart ? (
-                    <svg className="w-6 h-6 text-purple-600 group-hover:text-purple-900 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                  ) : (
-                    <svg className="w-6 h-6 text-purple-600 group-hover:text-purple-900 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                    </svg>
-                  )}
+                  <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
                 </button>
               </div>
             </div>
 
             {showChart && (
-              <div className="space-y-2">
-                {chartView === 'bar' ? (
-                  // Bar Chart
-                  <div className="h-80 flex items-end justify-around gap-4 pb-4 relative">
-                    {/* Grid lines */}
-                    <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-                      {[0, 25, 50, 75, 100].map((val) => (
-                        <div key={val} className="border-t border-pink-100 w-full">
-                          <span className="text-xs text-purple-400 -mt-2 inline-block">{val}%</span>
-                        </div>
-                      ))}
+              chartView === 'bar' ? (
+                <div className="h-72 flex items-end justify-around gap-4 pb-2">
+                  {chartData.map((height, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center gap-3">
+                      <div
+                        className="w-full bg-primary-500 rounded-t-lg origin-bottom opacity-0"
+                        style={{
+                          height: `${height}%`,
+                          animation: `growUp 0.6s ease-out ${i * 0.08}s forwards`,
+                        }}
+                        title={`${height}%`}
+                      />
+                      <span className="text-xs font-bold text-gray-500">{monthLabels[i]}</span>
                     </div>
-
-                    {chartData.map((height, i) => (
-                      <div key={i} className="flex-1 flex flex-col items-center gap-4 z-10">
-                        <div className="relative w-full group/bar">
-                          <div
-                            className="w-full bg-gradient-to-t from-secondary-500 via-accent-500 to-rose-500 rounded-t-3xl hover:shadow-2xl hover:shadow-secondary-500/50 transition-all duration-500 cursor-pointer relative overflow-hidden"
-                            style={{ 
-                              height: `${height}%`,
-                              animation: `growUp 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.15}s backwards`
-                            }}
-                          >
-                            {/* Shine effect */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/30 to-transparent opacity-0 group-hover/bar:opacity-100 transition-opacity duration-300"></div>
-                            
-                            {/* Premium Tooltip */}
-                            <div className="absolute -top-16 left-1/2 transform -translate-x-1/2 opacity-0 group-hover/bar:opacity-100 transition-all duration-300 pointer-events-none">
-                              <div className="bg-gradient-to-r from-purple-900 to-purple-800 text-white px-5 py-3 rounded-2xl shadow-2xl">
-                                <div className="text-center">
-                                  <div className="text-2xl font-black bg-gradient-to-r from-secondary-400 to-accent-400 bg-clip-text text-transparent">
-                                    {height}%
-                                  </div>
-                                  <div className="text-xs text-purple-300 mt-1">Growth</div>
-                                </div>
-                                <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 rotate-45 w-3 h-3 bg-purple-900"></div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        <span className="text-sm font-bold text-purple-700">{monthLabels[i]}</span>
-                      </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="h-72 relative">
+                  <svg className="w-full h-full" viewBox="0 0 600 280" preserveAspectRatio="none">
+                    {[0, 25, 50, 75, 100].map((val) => (
+                      <line key={val} x1="0" y1={280 - val * 2.8} x2="600" y2={280 - val * 2.8} stroke="#f1f0f4" strokeWidth="1" />
+                    ))}
+                    <path
+                      d={`M 0 ${280 - chartData[0] * 2.8} ${chartData.map((h, i) => `L ${(i * 600) / 5} ${280 - h * 2.8}`).join(' ')}`}
+                      fill="none"
+                      stroke="#6B5B9A"
+                      strokeWidth="3"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    {chartData.map((h, i) => (
+                      <circle key={i} cx={(i * 600) / 5} cy={280 - h * 2.8} r="5" fill="white" stroke="#6B5B9A" strokeWidth="2.5" />
+                    ))}
+                  </svg>
+                  <div className="flex justify-around mt-3">
+                    {monthLabels.map((label, i) => (
+                      <span key={i} className="text-xs font-bold text-gray-500">{label}</span>
                     ))}
                   </div>
-                ) : (
-                  // Line Chart
-                  <div className="h-80 relative">
-                    <svg className="w-full h-full" viewBox="0 0 600 320" preserveAspectRatio="none">
-                      {/* Grid */}
-                      {[0, 25, 50, 75, 100].map((val) => (
-                        <line
-                          key={val}
-                          x1="0"
-                          y1={320 - (val * 3.2)}
-                          x2="600"
-                          y2={320 - (val * 3.2)}
-                          stroke="#e2e8f0"
-                          strokeWidth="1"
-                        />
-                      ))}
-
-                      {/* Line path */}
-                      <defs>
-                        <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-                          <stop offset="0%" stopColor="#3b82f6" />
-                          <stop offset="50%" stopColor="#a855f7" />
-                          <stop offset="100%" stopColor="#ec4899" />
-                        </linearGradient>
-                        <linearGradient id="areaGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                          <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
-                          <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
-                        </linearGradient>
-                      </defs>
-
-                      {/* Area fill */}
-                      <path
-                        d={`M 0 ${320 - chartData[0] * 3.2} ${chartData.map((h, i) => 
-                          `L ${(i * 600) / 5} ${320 - h * 3.2}`
-                        ).join(' ')} L 600 320 L 0 320 Z`}
-                        fill="url(#areaGradient)"
-                        opacity="0.5"
-                      />
-
-                      {/* Line */}
-                      <path
-                        d={`M 0 ${320 - chartData[0] * 3.2} ${chartData.map((h, i) => 
-                          `L ${(i * 600) / 5} ${320 - h * 3.2}`
-                        ).join(' ')}`}
-                        fill="none"
-                        stroke="url(#lineGradient)"
-                        strokeWidth="4"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        style={{
-                          animation: 'drawLine 2s ease-out forwards',
-                          strokeDasharray: 1000,
-                          strokeDashoffset: 1000
-                        }}
-                      />
-
-                      {/* Data points */}
-                      {chartData.map((h, i) => (
-                        <g key={i}>
-                          <circle
-                            cx={(i * 600) / 5}
-                            cy={320 - h * 3.2}
-                            r="8"
-                            fill="white"
-                            stroke="#3b82f6"
-                            strokeWidth="3"
-                            style={{
-                              animation: `fadeIn 0.5s ease-out ${i * 0.2 + 0.5}s backwards`
-                            }}
-                          />
-                        </g>
-                      ))}
-                    </svg>
-                    <div className="flex justify-around mt-4">
-                      {monthLabels.map((label, i) => (
-                        <span key={i} className="text-sm font-bold text-slate-700">{label}</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+                </div>
+              )
             )}
           </div>
 
-          {/* Premium Performance Card */}
-          <div className="relative bg-gradient-to-br from-secondary-500 via-accent-500 to-rose-600 rounded-3xl p-10 text-white shadow-2xl overflow-hidden">
-            {/* Animated background elements */}
-            <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full blur-3xl animate-blob"></div>
-            <div className="absolute bottom-0 left-0 w-40 h-40 bg-rose-400/20 rounded-full blur-2xl animate-blob animation-delay-2000"></div>
-            <div className="absolute top-1/2 left-1/2 w-32 h-32 bg-purple-400/20 rounded-full blur-2xl animate-blob animation-delay-4000"></div>
-            
-            <div className="relative z-10">
-              <div className="flex items-center gap-3 mb-10">
-                <div className="w-3 h-3 bg-emerald-400 rounded-full animate-pulse"></div>
-                <h3 className="text-2xl font-black">Live Metrics</h3>
-              </div>
+          {/* Performance card — the one deliberate solid-color moment on the page */}
+          <div className="bg-primary-600 rounded-2xl p-8 text-white">
+            <div className="flex items-center gap-2 mb-8">
+              <div className="w-2 h-2 bg-emerald-400 rounded-full"></div>
+              <h3 className="text-lg font-bold">Live Metrics</h3>
+            </div>
 
-              <div className="space-y-6">
-                {[
-                                { label: 'Avg. Ticket', value: stats.totalAttendees > 0 ? `$${(stats.totalRevenue / Math.max(1, stats.totalAttendees)).toFixed(2)}` : '$0', icon: <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>, color: 'from-rose-400 to-accent-500' },
-                                { label: 'Active Events', value: events.filter((e: any) => e.isPublished).length.toString(), icon: <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><circle cx="12" cy="12" r="9" strokeWidth={2} /></svg>, color: 'from-secondary-400 to-purple-500' },
-                                { label: 'Total Reach', value: stats.totalAttendees.toLocaleString(), icon: <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.98 21.539a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>, color: 'from-purple-400 to-rose-500' },
-                                { label: 'Engagement', value: `${stats.conversionRate}%`, icon: <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>, color: 'from-accent-400 to-orange-500' }
-                ].map((item, i) => (
-                  <div 
-                    key={i} 
-                    className="group relative bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-6 hover:bg-white/20 transition-all duration-300 cursor-pointer overflow-hidden"
-                    style={{ animation: `slideRight 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.15}s backwards` }}
-                  >
-                    <div className={`absolute inset-0 bg-gradient-to-r ${item.color} opacity-0 group-hover:opacity-20 transition-opacity duration-300`}></div>
-                    <div className="relative flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                      <div className="w-7 h-7 group-hover:scale-125 transition-transform duration-300">
-                          {item.icon}
-                        </div>
-                        <div>
-                          <div className="text-sm font-semibold opacity-80 mb-1">{item.label}</div>
-                          <div className="text-3xl font-black group-hover:scale-110 transition-transform duration-300">
-                            {loadingStats ? '...' : item.value}
-                          </div>
-                        </div>
-                      </div>
-                      <svg className="w-6 h-6 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </div>
+            <div className="space-y-3">
+              {[
+                { label: 'Avg. Ticket', value: stats.totalAttendees > 0 ? `$${(stats.totalRevenue / Math.max(1, stats.totalAttendees)).toFixed(2)}` : '$0' },
+                { label: 'Active Events', value: events.filter((e: any) => e.isPublished).length.toString() },
+                { label: 'Total Reach', value: stats.totalAttendees.toLocaleString() },
+                { label: 'Engagement', value: `${stats.conversionRate}%` },
+              ].map((item, i) => (
+                <div key={i} className="bg-white/10 rounded-xl p-4">
+                  <div className="text-xs font-semibold opacity-75 mb-1">{item.label}</div>
+                  <div className="text-2xl font-extrabold">
+                    {loadingStats ? '...' : item.value}
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Premium Recent Events Section */}
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-500 mb-12">
-          <div className="px-10 py-8 border-b border-pink-200/50 bg-gradient-to-r from-pink-50/50 to-purple-50/30">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-3xl font-black text-purple-900 mb-2">Recent Events</h2>
-                <p className="text-sm text-purple-500 flex items-center gap-2">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                  Your latest 3 events at a glance
-                </p>
-              </div>
-              <button
-                className="group flex items-center gap-3 bg-gradient-to-r from-secondary-500 to-accent-600 text-white px-6 py-3 rounded-xl font-bold text-sm hover:shadow-xl hover:shadow-secondary-500/30 hover:scale-105 transition-all duration-300"
-                onClick={() => router.push('/events')}
-              >
-                <span>View All Events</span>
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
+        {/* Recent Events */}
+        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden mb-10">
+          <div className="px-8 py-6 border-b border-gray-100 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-gray-900 mb-1">Recent Events</h2>
+              <p className="text-sm text-gray-500">Your latest 3 events at a glance</p>
             </div>
+            <button
+              className="flex items-center gap-2 bg-secondary-500 hover:bg-secondary-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-colors"
+              onClick={() => router.push('/events')}
+            >
+              <span>View All Events</span>
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
           </div>
 
-          <div className="divide-y divide-pink-200/50">
+          <div className="divide-y divide-gray-100">
             {events.slice(0, 3).map((event: any, idx: number) => (
               <div
                 key={event.id}
-                className="group px-10 py-8 hover:bg-gradient-to-r hover:from-pink-50/50 hover:to-purple-50/30 transition-all duration-300 cursor-pointer relative overflow-hidden"
-                style={{ animation: `fadeIn 0.8s ease-out ${idx * 0.2}s backwards` }}
+                className="px-8 py-6 hover:bg-gray-50 transition-colors cursor-pointer flex items-center gap-5"
                 onClick={() => router.push(`/events/${event.id}`)}
               >
-                {/* Hover glow effect */}
-                <div className="absolute inset-0 bg-gradient-to-r from-secondary-500/0 via-accent-500/0 to-rose-500/0 group-hover:from-secondary-500/5 group-hover:via-accent-500/5 group-hover:to-rose-500/5 transition-all duration-500"></div>
-                
-                <div className="relative flex items-center gap-6">
-                  {/* Event Logo or Number Badge */}
-                  <div className="flex-shrink-0">
-                    {event.posterURL ? (
-                      <img
-                        src={event.posterURL}
-                        alt={event.title}
-                        className="w-16 h-16 object-cover rounded-2xl shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300"
-                      />
-                    ) : (
-                      <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center text-white font-black text-2xl shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
-                        {idx + 1}
-                      </div>
+                <div className="flex-shrink-0">
+                  {event.posterURL ? (
+                    <img
+                      src={event.posterURL}
+                      alt={event.title}
+                      className="w-14 h-14 object-cover rounded-xl"
+                    />
+                  ) : (
+                    <div className="w-14 h-14 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center font-extrabold text-xl">
+                      {idx + 1}
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-bold text-gray-900 mb-2.5 text-base truncate">
+                    {event.title}
+                  </h3>
+                  <div className="flex items-center flex-wrap gap-2">
+                    <span className="bg-gray-50 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-semibold">
+                      {formatDate(event.startAt)}
+                    </span>
+                    <span className="bg-gray-50 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-semibold">
+                      {event.attendeesCount || event.currentAttendees || 0} attendees
+                    </span>
+                    {event.price && (
+                      <span className="bg-gray-50 text-gray-600 px-3 py-1.5 rounded-lg text-xs font-semibold">
+                        ${event.price}
+                      </span>
                     )}
                   </div>
-
-                  {/* Event Details */}
-                  <div className="flex-1 min-w-0">
-                    <h3 className="font-black text-purple-900 mb-4 text-2xl group-hover:text-secondary-600 transition-colors duration-300 truncate">
-                      {event.title}
-                    </h3>
-                    <div className="flex items-center flex-wrap gap-4">
-                      <span className="flex items-center gap-2 bg-gradient-to-r from-pink-100 to-purple-50 px-4 py-2.5 rounded-xl group-hover:from-secondary-100 group-hover:to-secondary-50 group-hover:text-secondary-700 transition-all duration-300 font-semibold text-sm">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                        <span>{formatDate(event.startAt)}</span>
-                      </span>
-                      <span className="flex items-center gap-2 bg-gradient-to-r from-purple-100 to-rose-50 px-4 py-2.5 rounded-xl text-purple-700 transition-all duration-300 font-semibold text-sm">
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        <span>{event.attendeesCount || event.currentAttendees || 0} attendees</span>
-                      </span>
-                      {event.price && (
-                        <span className="flex items-center gap-2 bg-gradient-to-r from-rose-100 to-accent-50 px-4 py-2.5 rounded-xl text-rose-700 transition-all duration-300 font-semibold text-sm">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                          </svg>
-                          <span>${event.price}</span>
-                        </span>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Status and Action */}
-                  <div className="flex items-center gap-4 flex-shrink-0">
-                    <span
-                      className={`px-6 py-3 rounded-xl text-sm font-black transition-all duration-300 ${
-                        event.isPublished
-                          ? 'bg-gradient-to-r from-rose-50 to-accent-50 text-rose-700 group-hover:from-rose-100 group-hover:to-accent-100'
-                          : 'bg-gradient-to-r from-amber-50 to-orange-50 text-amber-700 group-hover:from-amber-100 group-hover:to-orange-100'
-                      }`}
-                    >
-                      {event.isPublished ? '✓ Live' : '○ Draft'}
-                    </span>
-                    <button className="p-4 hover:bg-secondary-100 rounded-xl transition-all duration-300 opacity-0 group-hover:opacity-100 hover:scale-110 active:scale-95">
-                      <svg className="w-6 h-6 text-secondary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
-                  </div>
                 </div>
+
+                <span
+                  className={`px-4 py-2 rounded-lg text-xs font-bold flex-shrink-0 ${
+                    event.isPublished ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                  }`}
+                >
+                  {event.isPublished ? '✓ Live' : '○ Draft'}
+                </span>
               </div>
             ))}
 
             {events.length === 0 && !loadingStats && (
-              <div className="px-10 py-20 text-center">
-                                <div className="w-16 h-16 mb-4 mx-auto text-purple-300"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><circle cx="12" cy="12" r="9" strokeWidth={1.5} /></svg></div>
-                <h3 className="text-2xl font-bold text-purple-900 mb-2">No events yet</h3>
-                <p className="text-purple-500 mb-6">Create your first event to get started</p>
-                <button className="bg-gradient-to-r from-secondary-500 to-accent-600 text-white px-8 py-4 rounded-xl font-bold hover:shadow-xl hover:shadow-secondary-500/30 hover:scale-105 transition-all duration-300">
+              <div className="px-8 py-16 text-center">
+                <h3 className="text-xl font-bold text-gray-900 mb-2">No events yet</h3>
+                <p className="text-gray-500 mb-6">Create your first event to get started</p>
+                <button className="bg-secondary-500 hover:bg-secondary-600 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors">
                   Create Your First Event
                 </button>
               </div>
@@ -704,132 +469,41 @@ function DashboardContent() {
           </div>
         </div>
 
-        {/* Premium Tips Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Tips */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {[
-                        {
-                          icon: <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" /></svg>,
-                          title: 'Visual Excellence',
+            {
+              icon: <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42" /></svg>,
+              title: 'Visual Excellence',
               desc: 'Use high-quality images and compelling descriptions to make your events irresistible',
-              color: 'from-secondary-500 via-accent-500 to-rose-500',
-              bgColor: 'from-pink-50 to-purple-50'
             },
             {
-              icon: <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>,
+              icon: <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg>,
               title: 'Social Amplification',
               desc: 'Share your events across social platforms to maximize reach and engagement',
-              color: 'from-purple-500 via-secondary-500 to-accent-500',
-              bgColor: 'from-purple-50 to-secondary-50'
             },
             {
-              icon: <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>,
+              icon: <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" /></svg>,
               title: 'Early Bird Strategy',
               desc: 'Offer early bird pricing to create urgency and boost initial ticket sales',
-              color: 'from-accent-500 via-rose-500 to-orange-500',
-              bgColor: 'from-rose-50 to-accent-50'
             },
           ].map((tip, i) => (
-            <div
-              key={i}
-              className="group relative bg-white/80 backdrop-blur-xl rounded-3xl p-8 border border-pink-200/50 hover:border-purple-300/50 hover:shadow-2xl transition-all duration-500 cursor-pointer overflow-hidden"
-              style={{ animation: `slideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) ${i * 0.15}s backwards` }}
-            >
-              <div className={`absolute inset-0 bg-gradient-to-br ${tip.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`}></div>
-              <div className={`absolute -right-12 -bottom-12 w-40 h-40 bg-gradient-to-br ${tip.bgColor} rounded-full blur-2xl opacity-50 group-hover:scale-150 transition-transform duration-700`}></div>
-              
-              <div className="relative z-10">
-              <div className="w-12 h-12 mb-5 group-hover:scale-125 group-hover:rotate-12 transition-transform duration-500 inline-block">
-                  {tip.icon}
-                </div>
-                <h3 className="font-black text-purple-900 mb-3 text-xl group-hover:bg-gradient-to-r group-hover:from-secondary-600 group-hover:to-accent-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300">
-                  {tip.title}
-                </h3>
-                <p className="text-sm text-purple-600 leading-relaxed font-medium">
-                  {tip.desc}
-                </p>
-              </div>
+            <div key={i} className="bg-white rounded-2xl p-7 border border-gray-100">
+              <div className="text-primary-500 mb-4">{tip.icon}</div>
+              <h3 className="font-bold text-gray-900 mb-2 text-base">{tip.title}</h3>
+              <p className="text-sm text-gray-500 leading-relaxed">{tip.desc}</p>
             </div>
           ))}
         </div>
 
       <style jsx global>{`
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(12px); }
+          to { opacity: 1; transform: translateY(0); }
         }
-
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(40px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slideRight {
-          from {
-            opacity: 0;
-            transform: translateX(-30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-
         @keyframes growUp {
-          from {
-            height: 0;
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
-        }
-
-        @keyframes growWidth {
-          from {
-            width: 0;
-          }
-        }
-
-        @keyframes drawLine {
-          to {
-            stroke-dashoffset: 0;
-          }
-        }
-
-        @keyframes blob {
-          0%, 100% {
-            transform: translate(0, 0) scale(1);
-          }
-          33% {
-            transform: translate(30px, -50px) scale(1.1);
-          }
-          66% {
-            transform: translate(-20px, 20px) scale(0.9);
-          }
-        }
-
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-
-        .animation-delay-4000 {
-          animation-delay: 4s;
+          from { transform: scaleY(0); opacity: 0; }
+          to { transform: scaleY(1); opacity: 1; }
         }
       `}</style>
     </DashboardLayout>
