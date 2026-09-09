@@ -16,11 +16,11 @@ const workSans = Work_Sans({
 const filters = ["All", "Trending", "Hybrid", "In-person", "Virtual"];
 
 const tagColors: Record<string, { bg: string; text: string }> = {
-  orange: { bg: "bg-[#E8743B]", text: "text-[#2E1F45]" },
-  plum: { bg: "bg-[#2E1F45]", text: "text-[#FBF3FA]" },
-  magenta: { bg: "bg-[#9B1F5C]", text: "text-[#FBF3FA]" },
-  purple: { bg: "bg-[#4A3B78]", text: "text-[#FBF3FA]" },
-  lavender: { bg: "bg-[#F3D9EE]", text: "text-[#2E1F45]" },
+  orange: { bg: "bg-[#FBEAE0]", text: "text-[#8A3E1A]" },
+  plum: { bg: "bg-[#F3F1F8]", text: "text-[#2E1F45]" },
+  magenta: { bg: "bg-[#F9E5F0]", text: "text-[#7A1745]" },
+  purple: { bg: "bg-[#EEEAF6]", text: "text-[#392C5E]" },
+  lavender: { bg: "bg-[#F3D9EE]", text: "text-[#7A1745]" },
 };
 const tagCycle = ["orange", "magenta", "plum", "purple", "lavender"];
 
@@ -177,20 +177,32 @@ export default async function EventsPage() {
             return (
               <div
                 key={category.title}
-                className="relative overflow-hidden rounded-sm p-5 min-h-[130px] bg-cover bg-center"
-                style={{
-                  backgroundImage: `linear-gradient(0deg, ${hexToRgba(s.color, 0.88)}, ${hexToRgba(
-                    s.color,
-                    0.7
-                  )}), url('${category.image || s.image}')`,
-                }}
+                className="group relative overflow-hidden rounded-sm min-h-[150px] bg-cover bg-center transition-transform duration-200 hover:scale-[1.015]"
+                style={{ backgroundImage: `url('${category.image || s.image}')` }}
               >
-                <p className={`${heading} font-bold text-sm`} style={{ color: s.text }}>
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    backgroundImage: `linear-gradient(180deg, ${hexToRgba(s.color, 0)} 35%, ${hexToRgba(
+                      s.color,
+                      0.85
+                    )} 100%)`,
+                  }}
+                />
+                <span
+                  className="absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full"
+                  style={{ backgroundColor: s.color, color: s.text }}
+                >
                   {category.title}
-                </p>
-                <p className={`${body} text-[13px] mt-1.5`} style={{ color: s.text }}>
-                  {category.copy}
-                </p>
+                </span>
+                <div className="absolute bottom-0 left-0 right-0 p-4">
+                  <p className={`${heading} font-bold text-sm`} style={{ color: s.text }}>
+                    {category.title}
+                  </p>
+                  <p className={`${body} text-[13px] mt-1`} style={{ color: s.text }}>
+                    {category.copy}
+                  </p>
+                </div>
               </div>
             );
           })}

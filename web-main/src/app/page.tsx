@@ -90,12 +90,12 @@ const exploringTogether = [
   "Build digital spaces that support movements without extracting from them.",
 ];
 
-const colorMap: Record<string, { bg: string; text: string }> = {
-  orange: { bg: "bg-[#E8743B]", text: "text-[#2E1F45]" },
-  plum: { bg: "bg-[#2E1F45]", text: "text-[#FBF3FA]" },
-  magenta: { bg: "bg-[#9B1F5C]", text: "text-[#FBF3FA]" },
-  purple: { bg: "bg-[#4A3B78]", text: "text-[#FBF3FA]" },
-  lavender: { bg: "bg-[#F3D9EE]", text: "text-[#2E1F45]" },
+const colorMap: Record<string, { bg: string; text: string; border: string }> = {
+  orange: { bg: "bg-[#FBEAE0]", text: "text-[#8A3E1A]", border: "border-[#E8743B]" },
+  plum: { bg: "bg-[#F3F1F8]", text: "text-[#2E1F45]", border: "border-[#2E1F45]" },
+  magenta: { bg: "bg-[#F9E5F0]", text: "text-[#7A1745]", border: "border-[#9B1F5C]" },
+  purple: { bg: "bg-[#EEEAF6]", text: "text-[#392C5E]", border: "border-[#4A3B78]" },
+  lavender: { bg: "bg-[#F3D9EE]", text: "text-[#7A1745]", border: "border-[#C98BC0]" },
 };
 const guideColors = ["orange", "plum", "magenta", "purple", "lavender"];
 
@@ -178,37 +178,30 @@ export default async function Home() {
             const c = colorMap[item.color];
             return (
               <div key={item.title} className={`${c.bg} rounded-sm px-5 py-4 min-w-[150px]`}>
-                <p className={`${heading} font-bold text-sm mb-1 ${c.text}`}>{item.title}</p>
-                <p className={`${body} text-xs ${c.text} opacity-90`}>{item.text}</p>
-              </div>
+              <p className={`${heading} font-bold text-sm mb-1 ${c.text}`}>{item.title}</p>
+              <p className={`${body} text-xs ${c.text}`}>{item.text}</p>
+            </div>
             );
           })}
         </div>
       </section>
 
-      {/* What guides us — stacked color blocks */}
-      <section>
-        <div className="mx-auto max-w-6xl px-6 pb-8">
-          <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-8`}>The values shaping how we build</h2>
-        </div>
-        {a.guides.map((item: any, index: number) => {
-          const c = colorMap[guideColors[index % guideColors.length]];
-          return (
-            <div key={item.title} className={c.bg}>
-              <div className="mx-auto max-w-6xl px-6 py-10 grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-6 items-start">
-                <p className={`${heading} font-medium text-xs opacity-75 ${c.text}`}>
-                  {String(index + 1).padStart(2, "0")} — Values
-                </p>
-                <div>
-                  <h3 className={`${heading} font-bold text-xl ${c.text}`}>{item.title}</h3>
-                  <p className={`${body} text-sm mt-2 max-w-lg ${c.text} opacity-90`}>{item.detail}</p>
-                </div>
+           {/* What guides us — accent-bordered value cards */}
+           <section className="mx-auto max-w-6xl px-6 py-16">
+        <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-8`}>The values shaping how we build</h2>
+        <div className="flex flex-col gap-[3px]">
+          {a.guides.map((item: any, index: number) => {
+            const c = colorMap[guideColors[index % guideColors.length]];
+            return (
+              <div key={item.title} className={`bg-[#F6EEF7] border-l-4 ${c.border} px-6 py-6`}>
+                <h3 className={`${heading} font-bold text-lg text-[#2E1F45]`}>{item.title}</h3>
+                <p className={`${body} text-sm mt-2 max-w-lg text-[#5C4A6B]`}>{item.detail}</p>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
       </section>
-
+      
       {/* Quote block */}
       <section className="bg-[#2E1F45]">
         <div className="mx-auto max-w-2xl px-6 py-16">
