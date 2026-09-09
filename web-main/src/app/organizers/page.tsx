@@ -20,17 +20,10 @@ const spotlightImageFallbacks = [
 ];
 
 const stepColors = [
-  { bg: "bg-[#E8743B]", text: "text-[#2E1F45]" },
-  { bg: "bg-[#9B1F5C]", text: "text-[#FBF3FA]" },
-  { bg: "bg-[#4A3B78]", text: "text-[#FBF3FA]" },
-  { bg: "bg-[#F3D9EE]", text: "text-[#2E1F45]" },
-];
-
-const statColors = [
-  { bg: "bg-[#E8743B]", text: "text-[#2E1F45]" },
-  { bg: "bg-[#9B1F5C]", text: "text-[#FBF3FA]" },
-  { bg: "bg-[#4A3B78]", text: "text-[#FBF3FA]" },
-  { bg: "bg-[#F3D9EE]", text: "text-[#2E1F45]" },
+  { border: "border-[#E8743B]" },
+  { border: "border-[#9B1F5C]" },
+  { border: "border-[#4A3B78]" },
+  { border: "border-[#C98BC0]" },
 ];
 
 const planFeatures: Record<string, { label: string; value: string }[]> = {
@@ -207,31 +200,28 @@ export default async function OrganizersPage() {
           {howItWorks.map((step, index) => {
             const c = stepColors[index % stepColors.length];
             return (
-              <div key={step} className={`${c.bg} rounded-sm p-[22px]`}>
-                <p className={`${heading} font-medium text-xs uppercase tracking-wider opacity-75 ${c.text}`}>
+              <div key={step} className={`bg-[#F6EEF7] border-l-4 ${c.border} rounded-r-sm p-[22px]`}>
+                <p className={`${heading} font-medium text-[10.5px] uppercase tracking-wider text-[#8A7A96]`}>
                   Step {index + 1}
                 </p>
-                <p className={`${body} font-medium text-base mt-2.5 ${c.text}`}>{step}</p>
+                <p className={`${body} font-medium text-base mt-2.5 text-[#2E1F45]`}>{step}</p>
               </div>
             );
           })}
         </div>
       </section>
 
-      {/* Impact stats */}
-      <section className="mx-auto max-w-6xl px-6 pb-20 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {impactStats.map((stat, index) => {
-          const c = statColors[index % statColors.length];
-          return (
-            <div key={stat.label} className={`${c.bg} rounded-sm p-5`}>
-              <p className={`${heading} font-medium text-[11px] uppercase tracking-wider opacity-70 ${c.text}`}>
-                {stat.label}
-              </p>
-              <p className={`${heading} font-bold text-[30px] mt-2.5 ${c.text}`}>{stat.value}</p>
-              <p className={`${body} text-[13px] mt-1.5 opacity-85 ${c.text}`}>{stat.detail}</p>
-            </div>
-          );
-        })}
+         {/* Impact stats */}
+         <section className="mx-auto max-w-6xl px-6 pb-20 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {impactStats.map((stat) => (
+          <div key={stat.label} className="bg-white border border-[#D9C9E0] rounded-sm p-5">
+            <p className={`${heading} font-medium text-[10.5px] uppercase tracking-wider text-[#8A7A96]`}>
+              {stat.label}
+            </p>
+            <p className={`${heading} font-bold text-[28px] mt-2.5 text-[#9B1F5C]`}>{stat.value}</p>
+            <p className={`${body} text-[13px] mt-1.5 text-[#5C4A6B]`}>{stat.detail}</p>
+          </div>
+        ))}
       </section>
     </main>
   );
