@@ -111,22 +111,48 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
               subject: `Your ${plan} plan is active`,
               body: `Thanks for subscribing! Your crypto payment was confirmed and your ${plan} plan is now active. Go to your dashboard: ${dashboardUrl}`,
               html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                  <h1>Subscription Active!</h1>
-                  <p>Thanks for subscribing to the <strong>${plan}</strong> plan.</p>
-                  <p>You now have full access to your host dashboard.</p>
-                  <p style="margin-top: 24px;">
-                    <a href="${dashboardUrl}" style="display: inline-block; background: linear-gradient(135deg, #e11d48, #f97316); color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 999px; font-weight: 600;">
-                      Go to your dashboard
-                    </a>
-                  </p>
-                </div>
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#EDE7ED; padding:48px 16px;">
+                <tr>
+                  <td align="center">
+                    <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px; background:#FBF3FA; padding:40px 32px; border-radius:4px;">
+                      <tr>
+                        <td style="font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; letter-spacing:2px; color:#9B1F5C; padding-bottom:28px;">FEMVENTS</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#2E1F45; border-radius:2px;">
+                            <tr>
+                              <td style="padding:32px 28px;">
+                                <span style="display:inline-block; background:#E8743B; color:#2E1F45; font-family:Arial,Helvetica,sans-serif; font-weight:800; font-size:10.5px; letter-spacing:1px; padding:5px 12px; border-radius:999px; margin-bottom:18px;">Subscription active</span>
+                                <p style="margin:18px 0 8px; font-family:Arial,Helvetica,sans-serif; font-size:26px; font-weight:800; color:#FBF3FA; line-height:1.2;">Your ${plan} plan is active</p>
+                                <p style="margin:0 0 24px; font-family:Arial,Helvetica,sans-serif; font-size:14px; color:#D9C9E0; line-height:1.6;">Thanks for subscribing — your payment was confirmed and your dashboard is unlocked.</p>
+                                <div style="border-top:1px solid rgba(255,255,255,0.15); margin:22px 0; height:0; line-height:0; font-size:0;">&nbsp;</div>
+                                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;">
+                                  <tr>
+                                    <td style="font-family:Arial,Helvetica,sans-serif; font-size:14px; color:#B9A9C4; padding-bottom:10px;">Plan</td>
+                                    <td align="right" style="font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:700; color:#FBF3FA; padding-bottom:10px;">${plan}</td>
+                                  </tr>
+                                  <tr>
+                                    <td style="font-family:Arial,Helvetica,sans-serif; font-size:14px; color:#B9A9C4;">Amount paid</td>
+                                    <td align="right" style="font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:700; color:#FBF3FA;">$${payment.amount}</td>
+                                  </tr>
+                                </table>
+                                <a href="${dashboardUrl}" style="display:block; text-align:center; background:#E8743B; color:#2E1F45; text-decoration:none; font-family:Arial,Helvetica,sans-serif; font-weight:800; font-size:14px; padding:14px; border-radius:999px;">Go to your dashboard</a>
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
               `,
-            });
-          }
-      } catch (emailError) {
-        console.error('Subscription confirmation email failed (payment still confirmed):', emailError);
-      }
+                          });
+                        }
+                    } catch (emailError) {
+                      console.error('Subscription confirmation email failed (payment still confirmed):', emailError);
+                    }
 
       return res.status(200).json({ received: true, type: 'subscription' });
     }
@@ -148,21 +174,68 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           to: recipientEmail,
           subject: `Your ticket for ${ticket.event.title}`,
           body: `Thanks for registering! Your crypto payment of $${ticket.payment_amount} was confirmed for ${ticket.event.title}. View your event: ${eventUrl}`,
-          html: `
-            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-              <h1>Ticket Confirmed!</h1>
-              <p>Thank you for registering for <strong>${ticket.event.title}</strong></p>
-              ${ticket.event.event_date ? `<p><strong>Date:</strong> ${new Date(ticket.event.event_date).toLocaleDateString()}</p>` : ''}
-              ${ticket.event.venue ? `<p><strong>Venue:</strong> ${ticket.event.venue}</p>` : ''}
-              <p><strong>Amount Paid:</strong> $${ticket.payment_amount}</p>
-              <p>See you there!</p>
-              <p style="margin-top: 24px;">
-                <a href="${eventUrl}" style="display: inline-block; background: linear-gradient(135deg, #e11d48, #f97316); color: #ffffff; text-decoration: none; padding: 12px 28px; border-radius: 999px; font-weight: 600;">
-                  View event details
-                </a>
-              </p>
-            </div>
-          `,
+                 html: `
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#EDE7ED; padding:48px 16px;">
+  <tr>
+    <td align="center">
+      <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px; background:#FBF3FA; padding:40px 32px; border-radius:4px;">
+        <tr>
+          <td style="font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; letter-spacing:2px; color:#9B1F5C; padding-bottom:28px;">FEMVENTS</td>
+        </tr>
+        <tr>
+          <td>
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff; border:1px solid #D9C9E0; border-radius:2px;">
+              <tr>
+                <td style="padding:28px 28px 24px;">
+                  <p style="margin:0 0 6px; font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:700; color:#9B1F5C;">Ticket confirmed</p>
+                  <p style="margin:0 0 20px; font-family:Arial,Helvetica,sans-serif; font-size:26px; font-weight:800; color:#2E1F45; line-height:1.15;">${ticket.event.title}</p>
+                  <table role="presentation" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td style="padding-right:28px;">
+                        <p style="margin:0 0 4px; font-family:Arial,Helvetica,sans-serif; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#8A7A97;">Date</p>
+                        <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:600; color:#2E1F45;">${ticket.event.event_date ? new Date(ticket.event.event_date).toLocaleDateString() : 'TBD'}</p>
+                      </td>
+                      <td>
+                        <p style="margin:0 0 4px; font-family:Arial,Helvetica,sans-serif; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#8A7A97;">Venue</p>
+                        <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:600; color:#2E1F45;">${ticket.event.venue || 'TBD'}</p>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:0 28px;">
+                  <div style="border-top:2px dashed #D9C9E0; height:0; line-height:0; font-size:0;">&nbsp;</div>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding:22px 28px 28px;">
+                  <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td>
+                        <p style="margin:0 0 2px; font-family:Arial,Helvetica,sans-serif; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#8A7A97;">Amount paid</p>
+                        <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:20px; font-weight:800; color:#2E1F45;">$${ticket.payment_amount}</p>
+                      </td>
+                      <td align="right">
+                        <a href="${eventUrl}" style="display:inline-block; background:#E8743B; color:#ffffff; text-decoration:none; font-family:Arial,Helvetica,sans-serif; font-weight:700; font-size:14px; padding:13px 26px; border-radius:999px;">View event details</a>
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td style="padding-top:26px; font-family:Arial,Helvetica,sans-serif; font-size:14px; color:#5C4A6B; line-height:1.6;">
+            See you there — bring this email or your account login for check-in.
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+</table>
+`,
         });
       }
     } catch (emailError) {

@@ -8,10 +8,25 @@
   --muted-foreground: #737373;
   --border: #e5e5e5;
 
-  /* Brand accents */
-  --accent: #FF3366;
-  /* Vibrant Rose */
+  /* Brand accents — sourced from logo */
+  --accent: #A82C60;
+  /* Magenta/Berry — primary CTA */
+  --accent-hover: #8F2451;
   --accent-foreground: #ffffff;
+  --accent-soft: #F9E5F0;
+  --accent-soft-foreground: #A82C60;
+
+  --secondary: #5A4485;
+  /* Indigo swirl */
+  --secondary-hover: #4A3770;
+  --secondary-foreground: #ffffff;
+
+  --tertiary: #E36C54;
+  /* Coral swirl — sparing use, icons/small highlights */
+  --tertiary-foreground: #ffffff;
+
+  --glow: #F1B3E6;
+  /* Pale lavender-pink from the logo's center glow */
 }
 
 @theme inline {
@@ -21,7 +36,16 @@
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
   --color-accent-foreground: var(--accent-foreground);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-soft-foreground: var(--accent-soft-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-foreground: var(--tertiary-foreground);
+  --color-glow: var(--glow);
 
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -35,7 +59,7 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
   overflow-x: hidden;
   /* Dot Pattern Background */
-  background-image: radial-gradient(#e5e5e5 1px, transparent 1px);
+  background-image: radial-gradient(#f1d9ee 1px, transparent 1px);
   background-size: 24px 24px;
   -webkit-font-smoothing: antialiased;
 }

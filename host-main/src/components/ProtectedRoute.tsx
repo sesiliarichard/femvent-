@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 
@@ -13,8 +13,11 @@ interface ProtectedRouteProps {
 export default function ProtectedRoute({ children, requireAdmin }: ProtectedRouteProps) {
   const { user, userProfile, loading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isPendingSubscription = searchParams?.get('subscription') === 'pending';
   const [isHost, setIsHost] = useState(false);
   const [checkingHost, setCheckingHost] = useState(true);
+  const [pendingRetries, setPendingRetries] = useState(0);
 
   useEffect(() => {
     const checkHostStatus = async () => {
@@ -40,16 +43,36 @@ export default function ProtectedRoute({ children, requireAdmin }: ProtectedRout
                   return;
                 }
       
-                // Hosts need both the role AND an active subscription
-                if (userProfile?.role === 'host' && userProfile?.subscription_status === 'active') {
-                  setIsHost(true);
-                  setCheckingHost(false);
-                  return;
-                }
-      
-                // No fallback based on having created events — access is gated on
-                // subscription_status only, set by the payment webhook on confirmed payment.
-                setIsHost(false);
+                        // Hosts need both the role AND an active subscription
+                        if (userProfile?.role === 'host' && userProfile?.subscription_status === 'active') {
+                          setIsHost(true);
+                          setCheckingHost(false);
+                          return;
+                        }
+        
+                        // Just came from checkout — the webhook may not have processed yet.
+                        // Poll briefly instead of immediately showing Access Denied.
+                        if (isPendingSubscription && pendingRetries < 5) {
+                          setTimeout(async () => {
+                            const { data: refreshed } = await supabase
+                              .from('users')
+                              .select('role, subscription_status')
+                              .eq('id', user.id)
+                              .maybeSingle();
+        
+                            if (refreshed?.role === 'host' && refreshed?.subscription_status === 'active') {
+                              setIsHost(true);
+                              setCheckingHost(false);
+                            } else {
+                              setPendingRetries((n) => n + 1);
+                            }
+                          }, 2000);
+                          return;
+                        }
+        
+                        // No fallback based on having created events — access is gated on
+                        // subscription_status only, set by the payment webhook on confirmed payment.
+                        setIsHost(false);
                 
         } catch (error) {
           console.error('Error checking host status:', error);
@@ -62,14 +85,16 @@ export default function ProtectedRoute({ children, requireAdmin }: ProtectedRout
     };
 
     checkHostStatus();
-  }, [user, userProfile, loading, router]);
+  }, [user, userProfile, loading, router, pendingRetries]);
 
   if (loading || checkingHost) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
+          <p className="mt-4 text-gray-600">
+            {isPendingSubscription ? 'Confirming your payment...' : 'Loading...'}
+          </p>
         </div>
       </div>
     );

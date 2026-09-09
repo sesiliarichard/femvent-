@@ -36,7 +36,7 @@ export default function SignupPlanPage() {
 function SignupPlanContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { signUp, signIn } = useAuth();
+  const { signUp, signIn, user } = useAuth();
   const planFromUrl = searchParams?.get('plan') || 'starter';
   const [plans, setPlans] = useState<PricingPlan[]>(DEFAULT_PLANS);
   const [loadingPlans, setLoadingPlans] = useState(true);
@@ -114,11 +114,12 @@ function SignupPlanContent() {
   const fullName = searchParams?.get('fullName') || '';
   const organizationName = searchParams?.get('organizationName') || '';
   const businessEmail = searchParams?.get('businessEmail') || '';
-  const email = searchParams?.get('email') || businessEmail;
+  const email = searchParams?.get('email') || businessEmail || user?.email || '';
   const password = searchParams?.get('password') || '';
+  const isReturningUser = !!user;
 
   const handleSubmit = async () => {
-    if (!fullName || !email || !password) {
+    if (!isReturningUser && (!fullName || !email || !password)) {
       router.push('/signup');
       return;
     }
@@ -133,31 +134,36 @@ function SignupPlanContent() {
 
     try {
       let userId: string;
-      try {
-        userId = await signUp(email, password, fullName, {
-          organizationName,
-          businessEmail,
-          plan: selectedPlan,
-        });
-      } catch (signUpErr: any) {
-        if (signUpErr.message?.toLowerCase().includes('already registered')) {
-          await signIn(email, password);
-          const { data: existing } = await supabase
-            .from('users')
-            .select('id, subscription_status')
-            .eq('email', email)
-            .maybeSingle();
 
-          if (!existing) throw signUpErr;
-          if (existing.subscription_status === 'active') {
-            throw new Error('This account is already active. Please log in instead.');
+      if (isReturningUser) {
+        userId = user!.id;
+      } else {
+        try {
+          userId = await signUp(email, password, fullName, {
+            organizationName,
+            businessEmail,
+            plan: selectedPlan,
+          });
+        } catch (signUpErr: any) {
+          if (signUpErr.message?.toLowerCase().includes('already registered')) {
+            await signIn(email, password);
+            const { data: existing } = await supabase
+              .from('users')
+              .select('id, subscription_status')
+              .eq('email', email)
+              .maybeSingle();
+
+            if (!existing) throw signUpErr;
+            if (existing.subscription_status === 'active') {
+              throw new Error('This account is already active. Please log in instead.');
+            }
+            userId = existing.id;
+          } else {
+            throw signUpErr;
           }
-          userId = existing.id;
-        } else {
-          throw signUpErr;
         }
       }
-
+      
       if (selectedPaymentMethod === 'pesapal') {
         const res = await fetch('/host/api/payments/create-subscription-checkout', {
           method: 'POST',
