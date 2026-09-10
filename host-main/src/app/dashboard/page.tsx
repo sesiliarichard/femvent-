@@ -342,16 +342,16 @@ function DashboardContent() {
                     {[0, 25, 50, 75, 100].map((val) => (
                       <line key={val} x1="0" y1={280 - val * 2.8} x2="600" y2={280 - val * 2.8} stroke="#f1f0f4" strokeWidth="1" />
                     ))}
-                    <path
+                     <path
                       d={`M 0 ${280 - chartData[0] * 2.8} ${chartData.map((h, i) => `L ${(i * 600) / 5} ${280 - h * 2.8}`).join(' ')}`}
                       fill="none"
-                      stroke="#6B5B9A"
+                      stroke="#5A4485"
                       strokeWidth="3"
                       strokeLinecap="round"
                       strokeLinejoin="round"
                     />
                     {chartData.map((h, i) => (
-                      <circle key={i} cx={(i * 600) / 5} cy={280 - h * 2.8} r="5" fill="white" stroke="#6B5B9A" strokeWidth="2.5" />
+                      <circle key={i} cx={(i * 600) / 5} cy={280 - h * 2.8} r="5" fill="white" stroke="#5A4485" strokeWidth="2.5" />
                     ))}
                   </svg>
                   <div className="flex justify-around mt-3">
@@ -489,7 +489,7 @@ function DashboardContent() {
             },
           ].map((tip, i) => (
             <div key={i} className="bg-white rounded-2xl p-7 border border-gray-100">
-              <div className="text-primary-500 mb-4">{tip.icon}</div>
+              <div className="text-accent-500 mb-4">{tip.icon}</div>
               <h3 className="font-bold text-gray-900 mb-2 text-base">{tip.title}</h3>
               <p className="text-sm text-gray-500 leading-relaxed">{tip.desc}</p>
             </div>

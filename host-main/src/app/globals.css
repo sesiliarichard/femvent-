@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 :root {
-  /* FemVents Brand Colors */
-  --primary-purple: #6B5B9A;
-  --primary-purple-dark: #5B4B8A;
-  --secondary-rose: #C9507B;
-  --secondary-rose-dark: #B4406C;
-  --accent-coral: #F08070;
-  --accent-coral-dark: #E87461;
+   /* FemVents Brand Colors — matched to logo */
+   --primary-purple: #5A4485;
+   --primary-purple-dark: #4A3770;
+   --secondary-rose: #A82C60;
+   --secondary-rose-dark: #8F2451;
+   --accent-coral: #E36C54;
+   --accent-coral-dark: #D1573F;
   
   --background: #ffffff;
   --foreground: #171717;
@@ -35,7 +35,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
 /* Animations */

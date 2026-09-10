@@ -32,45 +32,45 @@ function AttendeesPickerContent() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600"></div>
       </div>
     );
   }
 
   return (
     <div className="max-w-4xl mx-auto">
-     <h1 className="text-3xl font-black bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 bg-clip-text text-transparent mb-2">
+      <h1 className="text-2xl font-extrabold text-gray-900 mb-1.5">
         Attendees
       </h1>
-      <p className="text-slate-600 mb-8 font-medium">Select an event to view and manage its attendees</p>
+      <p className="text-gray-500 mb-7 text-sm">Select an event to view and manage its attendees</p>
 
       {events.length === 0 ? (
-        <div className="bg-white rounded-xl border border-slate-200 p-12 text-center">
-          <p className="text-slate-500">You haven't created any events yet.</p>
+        <div className="bg-white rounded-xl border border-gray-200 p-12 text-center">
+          <p className="text-gray-500">You haven't created any events yet.</p>
         </div>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-3">
         {events.map((event) => (
           <button
             key={event.id}
             onClick={() => router.push(`/events/${event.id}/attendees`)}
-            className="group text-left bg-white rounded-2xl border-2 border-slate-200 p-6 hover:border-blue-400 hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 flex items-center justify-between gap-4"
+            className="text-left bg-white rounded-2xl border border-gray-200 p-5 hover:border-primary-300 transition-colors flex items-center justify-between gap-4"
           >
             <div className="flex items-center gap-4 min-w-0">
-              <div className="w-12 h-12 shrink-0 rounded-2xl bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white text-lg font-black shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+              <div className="w-11 h-11 shrink-0 rounded-xl bg-primary-50 flex items-center justify-center text-primary-600 text-base font-extrabold">
                 {event.title?.charAt(0).toUpperCase() || '?'}
               </div>
               <div className="min-w-0">
-                <h3 className="text-lg font-black text-slate-900 group-hover:text-blue-600 transition-colors truncate">
+                <h3 className="text-[15px] font-bold text-gray-900 truncate">
                   {event.title}
                 </h3>
-                <p className="text-sm text-slate-500 font-medium mt-1">
+                <p className="text-xs text-gray-500 mt-0.5">
                   {event.event_date ? new Date(event.event_date).toLocaleDateString() : 'No date set'}
                 </p>
               </div>
             </div>
             <svg
-              className="w-5 h-5 text-slate-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all duration-300 shrink-0"
+              className="w-4 h-4 text-gray-300 shrink-0"
               fill="none" stroke="currentColor" viewBox="0 0 24 24"
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
