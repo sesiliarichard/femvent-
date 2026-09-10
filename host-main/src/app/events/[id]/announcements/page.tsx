@@ -30,7 +30,6 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Form state
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState('');
@@ -126,13 +125,13 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
     return (
       <ProtectedRoute>
         <DashboardLayout currentPage="events">
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 flex items-center justify-center">
+          <div className="min-h-screen bg-gray-50 flex items-center justify-center">
             <div className="text-center">
-              <div className="relative w-24 h-24 mx-auto mb-6">
-                <div className="absolute inset-0 rounded-full border-4 border-blue-200"></div>
-                <div className="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
+              <div className="relative w-16 h-16 mx-auto mb-5">
+                <div className="absolute inset-0 rounded-full border-4 border-primary-100"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-primary-600 border-t-transparent animate-spin"></div>
               </div>
-              <p className="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <p className="text-lg font-bold text-gray-700">
                 Loading announcements...
               </p>
             </div>
@@ -145,39 +144,34 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
   return (
     <ProtectedRoute>
       <DashboardLayout currentPage="events">
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 relative overflow-hidden">
-          <div className="fixed inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-blob"></div>
-            <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-          </div>
-
-          <div className="relative z-10 p-8">
+        <div className="min-h-screen bg-gray-50">
+          <div className="p-8 max-w-4xl mx-auto">
             {/* Header */}
-            <div className="mb-10 animate-[fadeIn_0.8s_ease-out]">
+            <div className="mb-8">
               <div className="flex items-center gap-4 mb-6">
                 <button
                   onClick={() => router.push(`/events/${eventId}`)}
-                  className="group p-3 hover:bg-white/80 backdrop-blur-sm rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg border border-slate-200/50"
+                  className="p-2.5 bg-white border border-gray-200 rounded-xl hover:border-primary-300 transition-colors"
                 >
-                  <svg className="w-6 h-6 text-slate-700 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                  <svg className="w-8 h-8 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
-                    <span className="text-sm font-bold text-slate-500">{event?.title}</span>
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
+                    <span className="text-sm font-bold text-gray-500">{event?.title}</span>
                   </div>
-                  <h1 className="text-4xl font-black bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+                  <h1 className="text-2xl font-extrabold text-gray-900">
                     Announcements
                   </h1>
                 </div>
                 {isEventOwner && !showForm && (
                   <button
                     onClick={() => setShowForm(true)}
-                    className="group flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-2xl hover:shadow-blue-500/40 hover:scale-105 transition-all duration-300"
+                    className="flex items-center gap-2 bg-secondary-500 hover:bg-secondary-600 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors"
                   >
-                    <svg className="w-5 h-5 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
                     </svg>
                     <span>New Announcement</span>
@@ -188,44 +182,44 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
 
             {/* Create / Edit form */}
             {showForm && (
-              <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl p-8 mb-8 animate-[fadeIn_0.4s_ease-out]">
-                <h2 className="text-xl font-black text-slate-900 mb-6">
+              <div className="bg-white rounded-2xl border border-gray-200 p-7 mb-7">
+                <h2 className="text-lg font-extrabold text-gray-900 mb-5">
                   {editingId ? 'Edit Announcement' : 'New Announcement'}
                 </h2>
 
                 <div className="space-y-5">
                   <div>
-                    <label className="block text-xs font-black text-slate-500 uppercase tracking-wide mb-2">Title</label>
+                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Title</label>
                     <input
                       type="text"
                       value={title}
                       onChange={(e) => setTitle(e.target.value)}
                       placeholder="e.g. Venue change for Workshop B"
-                      className="w-full px-5 py-3.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-medium text-slate-900"
+                      className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none font-medium text-gray-900 transition-colors"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black text-slate-500 uppercase tracking-wide mb-2">Message</label>
+                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Message</label>
                     <textarea
                       value={body}
                       onChange={(e) => setBody(e.target.value)}
                       placeholder="What do attendees need to know?"
                       rows={4}
-                      className="w-full px-5 py-3.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-medium text-slate-900 resize-none"
+                      className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none font-medium text-gray-900 resize-none transition-colors"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black text-slate-500 uppercase tracking-wide mb-2">Priority</label>
+                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Priority</label>
                     <div className="flex gap-3">
                       <button
                         type="button"
                         onClick={() => setPriority('normal')}
-                        className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                        className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${
                           priority === 'normal'
-                            ? 'bg-blue-600 text-white shadow-lg'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            ? 'bg-primary-600 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                         }`}
                       >
                         Normal
@@ -233,14 +227,14 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
                       <button
                         type="button"
                         onClick={() => setPriority('urgent')}
-                        className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                        className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${
                           priority === 'urgent'
-                            ? 'bg-red-500 text-white shadow-lg'
-                            : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                            ? 'bg-red-500 text-white'
+                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                         }`}
                       >
-                      <svg className="inline-block w-4 h-4 mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>Urgent
-                        </button>
+                        <svg className="inline-block w-4 h-4 mr-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>Urgent
+                      </button>
                     </div>
                   </div>
 
@@ -248,13 +242,13 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
                     <button
                       onClick={handleSave}
                       disabled={saving || !title.trim() || !body.trim()}
-                      className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3.5 rounded-2xl font-bold hover:shadow-xl hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100"
+                      className="flex-1 bg-secondary-500 hover:bg-secondary-600 text-white px-6 py-3.5 rounded-xl font-bold transition-colors disabled:opacity-50"
                     >
                       {saving ? 'Saving...' : editingId ? 'Save Changes' : 'Post Announcement'}
                     </button>
                     <button
                       onClick={resetForm}
-                      className="px-6 py-3.5 rounded-2xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all duration-300"
+                      className="px-6 py-3.5 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
                     >
                       Cancel
                     </button>
@@ -265,38 +259,39 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
 
             {/* List */}
             {announcements.length === 0 && !showForm ? (
-              <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl p-16 text-center">
-                                <div className="w-16 h-16 mb-4 mx-auto text-slate-300"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg></div>
-                <p className="text-xl font-black text-slate-900 mb-2">No announcements yet</p>
-                <p className="text-slate-500 font-medium">Post updates and attendees will see them instantly in the app.</p>
+              <div className="bg-white rounded-2xl border border-gray-200 p-14 text-center">
+                <div className="w-14 h-14 mb-4 mx-auto bg-primary-50 rounded-xl flex items-center justify-center text-primary-600">
+                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
+                </div>
+                <p className="text-lg font-extrabold text-gray-900 mb-1.5">No announcements yet</p>
+                <p className="text-gray-500 text-sm">Post updates and attendees will see them instantly in the app.</p>
               </div>
             ) : (
               <div className="space-y-4">
-                {announcements.map((a, idx) => (
+                {announcements.map((a) => (
                   <div
                     key={a.id}
-                    className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-xl p-6 animate-[fadeIn_0.5s_ease-out]"
-                    style={{ animationDelay: `${idx * 0.05}s` }}
+                    className="bg-white rounded-2xl border border-gray-200 p-6"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-3 mb-2">
                           {a.priority === 'urgent' ? (
-                                                        <span className="px-3 py-1 rounded-lg text-xs font-black bg-red-100 text-red-700 inline-flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>Urgent</span>
+                            <span className="px-3 py-1 rounded-lg text-xs font-bold bg-red-50 text-red-600 inline-flex items-center gap-1"><svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" /></svg>Urgent</span>
                           ) : (
-                            <span className="px-3 py-1 rounded-lg text-xs font-black bg-blue-100 text-blue-700">Normal</span>
+                            <span className="px-3 py-1 rounded-lg text-xs font-bold bg-primary-50 text-primary-600">Normal</span>
                           )}
-                          <span className="text-xs font-semibold text-slate-400">{formatRelativeTime(a.created_at)}</span>
+                          <span className="text-xs font-semibold text-gray-400">{formatRelativeTime(a.created_at)}</span>
                         </div>
-                        <h3 className="text-lg font-black text-slate-900 mb-1">{a.title}</h3>
-                        <p className="text-slate-600 font-medium leading-relaxed">{a.body}</p>
+                        <h3 className="text-base font-extrabold text-gray-900 mb-1">{a.title}</h3>
+                        <p className="text-gray-600 leading-relaxed">{a.body}</p>
                       </div>
 
                       {isEventOwner && (
                         <div className="flex gap-2 flex-shrink-0">
                           <button
                             onClick={() => startEdit(a)}
-                            className="p-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-blue-100 hover:text-blue-600 transition-all duration-200"
+                            className="p-2.5 bg-gray-50 text-gray-500 rounded-lg hover:bg-primary-50 hover:text-primary-600 transition-colors"
                             title="Edit"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -305,7 +300,7 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
                           </button>
                           <button
                             onClick={() => handleDelete(a.id)}
-                            className="p-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-red-100 hover:text-red-600 transition-all duration-200"
+                            className="p-2.5 bg-gray-50 text-gray-500 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
                             title="Delete"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -320,20 +315,6 @@ export default function AnnouncementsManagementPage({ params }: { params: Promis
               </div>
             )}
           </div>
-
-          <style jsx global>{`
-            @keyframes fadeIn {
-              from { opacity: 0; transform: translateY(20px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-            @keyframes blob {
-              0%, 100% { transform: translate(0, 0) scale(1); }
-              33% { transform: translate(30px, -50px) scale(1.1); }
-              66% { transform: translate(-20px, 20px) scale(0.9); }
-            }
-            .animate-blob { animation: blob 7s infinite; }
-            .animation-delay-2000 { animation-delay: 2s; }
-          `}</style>
         </div>
       </DashboardLayout>
     </ProtectedRoute>

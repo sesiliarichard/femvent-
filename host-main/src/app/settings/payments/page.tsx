@@ -95,8 +95,8 @@ export default function PaymentSettingsPage() {
                         fontWeight: 600,
                         padding: '8px 16px',
                         borderRadius: 8,
-                        border: '1px solid #4f46e5',
-                        color: '#4f46e5',
+                        border: '1px solid #5A4485',
+                        color: '#5A4485',
                         background: '#fff',
                         cursor: 'pointer',
                       }}
@@ -366,7 +366,7 @@ const inputStyle: React.CSSProperties = {
 const submitButtonStyle: React.CSSProperties = {
   padding: '10px 16px',
   borderRadius: 8,
-  background: '#4f46e5',
+  background: '#A82C60',
   color: '#fff',
   fontWeight: 600,
   border: 'none',
