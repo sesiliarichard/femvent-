@@ -1,200 +1,275 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../services/supabase';
-import { AdminLayout } from '../components/AdminLayout';
+import { getAllUsers } from '../services/firestore';
 
-interface PlatformPaymentSetting {
-  provider: 'pesapal' | 'crypto' | 'azampay';
+interface Payment {
+  id: string;
+  userId: string;
+  amount: number;
+  type: 'subscription' | 'ticket';
   status: string;
-  credentials?: Record<string, any>;
+  method: string;
+  description?: string;
+  createdAt: Date;
+  meta?: {
+    eventId?: string;
+    recordedBy?: string;
+    recordedAt?: Date;
+  };
+  currency?: string;
 }
 
-const PROVIDER_META: Record<string, { name: string; blurb: string }> = {
-  pesapal: { name: 'Pesapal', blurb: 'Card & mobile money — East/Southern Africa + international cards.' },
-  crypto: { name: 'Crypto (NOWPayments)', blurb: 'Accept crypto payments platform-wide via NOWPayments.' },
-  azampay: { name: 'AzamPay', blurb: 'Mobile money — Tanzania/Rwanda (M-Pesa, Tigo Pesa, Airtel Money, etc.)' },
-};
+interface User {
+  id: string;
+  name?: string;
+  email?: string;
+  role?: string;
+}
 
-const CRYPTO_OPTIONS = [
-  { label: 'USDT (TRC20)', code: 'usdttrc20' },
-  { label: 'USDT (ERC20)', code: 'usdterc20' },
-  { label: 'USDT (BEP20)', code: 'usdtbsc' },
-  { label: 'BTC', code: 'btc' },
-  { label: 'ETH (ERC20)', code: 'eth' },
-];
+interface PaymentListProps {
+  payments: Payment[];
+}
 
-export default function PaymentMethodsPage() {
-  const [settings, setSettings] = useState<PlatformPaymentSetting[]>([]);
+export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
+  const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState<string | null>(null);
-  const [cryptoAddress, setCryptoAddress] = useState('');
-  const [payoutCurrency, setPayoutCurrency] = useState(CRYPTO_OPTIONS[0].code);
-  const [savingCrypto, setSavingCrypto] = useState(false);
-
-  const loadSettings = async () => {
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.from('platform_payment_settings').select('provider, status, credentials');
-      if (error) throw error;
-      setSettings(data || []);
-    } catch (err) {
-      console.error('Error loading platform payment settings:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    loadSettings();
+    const loadUsers = async () => {
+      try {
+        const usersData = await getAllUsers();
+        setUsers(usersData);
+      } catch (error) {
+        console.error('Error loading users:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadUsers();
   }, []);
 
-  useEffect(() => {
-    const crypto = settings.find((s) => s.provider === 'crypto');
-    setCryptoAddress(crypto?.credentials?.cryptoAddress || '');
-    setPayoutCurrency(crypto?.credentials?.payoutCurrency || CRYPTO_OPTIONS[0].code);
-  }, [settings]);
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount / 100); // Convert from cents
+  };
 
-  const isActive = (provider: string) =>
-    settings.find((s) => s.provider === provider)?.status === 'active';
+  const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    }).format(date);
+  };
 
-  const toggleProvider = async (provider: string, currentlyActive: boolean) => {
-    setSaving(provider);
-    try {
-      const existing = settings.find((s) => s.provider === provider);
-      const { error } = await supabase
-        .from('platform_payment_settings')
-        .upsert(
-          {
-            provider,
-            status: currentlyActive ? 'inactive' : 'active',
-            credentials: existing?.credentials ?? {},
-            display_label: PROVIDER_META[provider].name,
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: 'provider' }
-        );
-      if (error) throw error;
-      await loadSettings();
-    } catch (err) {
-      console.error('Error toggling provider:', err);
-      alert('Failed to update');
-    } finally {
-      setSaving(null);
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'succeeded':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800 border-yellow-200';
+      case 'failed':
+        return 'bg-red-100 text-red-800 border-red-200';
+      case 'refunded':
+        return 'bg-gray-100 text-gray-800 border-gray-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
-  const saveCryptoAddress = async () => {
-    if (!cryptoAddress.trim() || !payoutCurrency) {
-      alert('Please enter a wallet address and select a currency/network');
-      return;
+  const getTypeColor = (type: string) => {
+    switch (type) {
+      case 'subscription':
+        return 'bg-pink-100 text-secondary-800 border-pink-200';
+      case 'ticket':
+        return 'bg-purple-100 text-purple-800 border-purple-200';
+      default:
+        return 'bg-gray-100 text-gray-800 border-gray-200';
     }
-    setSavingCrypto(true);
-    try {
-      const existing = settings.find((s) => s.provider === 'crypto');
-      const { error } = await supabase
-        .from('platform_payment_settings')
-        .upsert(
-          {
-            provider: 'crypto',
-            status: existing?.status ?? 'inactive',
-            credentials: { cryptoAddress: cryptoAddress.trim(), payoutCurrency },
-            display_label: PROVIDER_META.crypto.name,
-            updated_at: new Date().toISOString(),
-          },
-          { onConflict: 'provider' }
+  };
+
+  const getUserInfo = (userId: string) => {
+    const user = users.find(u => u.id === userId);
+    return {
+      name: user?.name || 'Unknown User',
+      email: user?.email || 'N/A',
+      role: user?.role || 'N/A',
+    };
+  };
+
+  const getMethodIcon = (method: string) => {
+    switch (method.toLowerCase()) {
+      case 'manual':
+        return (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+          </svg>
         );
-      if (error) throw error;
-      await loadSettings();
-      alert('Crypto receiving address saved');
-    } catch (err) {
-      console.error('Error saving crypto address:', err);
-      alert('Failed to save address');
-    } finally {
-      setSavingCrypto(false);
+      case 'cash':
+        return (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+        );
+      case 'bank_transfer':
+        return (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+          </svg>
+        );
+      default:
+        return (
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+          </svg>
+        );
     }
   };
 
   if (loading) {
     return (
-      <AdminLayout>
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-primary-600"></div>
+      <div className="p-8 text-center">
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-gray-500">Loading payment data...</p>
+      </div>
+    );
+  }
+
+  if (payments.length === 0) {
+    return (
+      <div className="p-12 text-center">
+        <div className="w-16 h-16 mx-auto mb-4 text-gray-400">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" className="w-16 h-16">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
         </div>
-      </AdminLayout>
+        <h3 className="text-lg font-semibold text-gray-900 mb-2">No payments found</h3>
+        <p className="text-gray-500">No payment transactions have been recorded yet.</p>
+      </div>
     );
   }
 
   return (
-    <AdminLayout>
-      <div className="p-6">
-        <div className="mb-6">
-          <h1 className="text-2xl font-extrabold text-gray-900">Platform Payment Methods</h1>
-          <p className="text-sm text-gray-500 mt-1 max-w-2xl">
-            Choose which payment providers hosts can use to pay for dashboard access.
-            API credentials are configured separately in the hosting environment.
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-3 max-w-2xl">
-          {Object.entries(PROVIDER_META).map(([provider, meta]) => {
-            const active = isActive(provider);
-            return (
-              <div key={provider} className="border border-gray-100 rounded-2xl bg-white overflow-hidden">
-                <label className="flex items-center justify-between p-5 hover:bg-gray-50 cursor-pointer transition-colors">
-                  <div>
-                    <p className="font-bold text-gray-900 text-sm">{meta.name}</p>
-                    <p className="text-xs text-gray-500 mt-0.5">{meta.blurb}</p>
-                  </div>
-                  <div className="relative w-12 h-7 flex-shrink-0">
-                    <input
-                      type="checkbox"
-                      checked={active}
-                      disabled={saving === provider}
-                      onChange={() => toggleProvider(provider, active)}
-                      className="sr-only"
-                    />
-                    <div className={`w-12 h-7 rounded-full transition-colors ${active ? 'bg-primary-600' : 'bg-gray-300'}`}>
-                      <div className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform ${active ? 'translate-x-5' : 'translate-x-0'}`}></div>
-                    </div>
-                  </div>
-                </label>
-
-                {provider === 'crypto' && (
-                  <div className="p-5 pt-0 flex flex-col gap-2 border-t border-gray-100">
-                    <label className="text-xs font-bold text-gray-700 uppercase tracking-wide mt-3">Receiving wallet address</label>
-                    <input
-                      type="text"
-                      value={cryptoAddress}
-                      onChange={(e) => setCryptoAddress(e.target.value)}
-                      placeholder="e.g. 0x1234... or bc1q..."
-                      className="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
-                    />
-                    <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">Currency & network</label>
-                    <select
-                      value={payoutCurrency}
-                      onChange={(e) => setPayoutCurrency(e.target.value)}
-                      className="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
-                    >
-                      {CRYPTO_OPTIONS.map((opt) => (
-                        <option key={opt.code} value={opt.code}>
-                          {opt.label}
-                        </option>
-                      ))}
-                    </select>
-                    <button
-                      type="button"
-                      onClick={saveCryptoAddress}
-                      disabled={savingCrypto}
-                      className="self-start mt-2 px-5 py-2.5 text-sm font-bold text-white bg-secondary-500 rounded-xl hover:bg-secondary-600 disabled:opacity-50 transition-colors"
-                    >
-                      {savingCrypto ? 'Saving...' : 'Save address'}
-                    </button>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+    <div className="overflow-hidden">
+      <div className="px-6 py-4 border-b border-gray-200 bg-gray-50">
+        <h2 className="text-lg font-semibold text-gray-900">Recent Payments</h2>
+        <p className="text-sm text-gray-600 mt-1">All payment transactions from users</p>
       </div>
-    </AdminLayout>
+      
+      <div className="overflow-x-auto">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                User
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Amount
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Type
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Method
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Date
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Description
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {payments.map((payment) => {
+              const userInfo = getUserInfo(payment.userId);
+              return (
+                <tr key={payment.id} className="hover:bg-gray-50 transition-colors duration-150">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="flex-shrink-0 h-10 w-10">
+                        <div className="h-10 w-10 rounded-full bg-gradient-to-r from-secondary-500 to-accent-500 flex items-center justify-center">
+                          <span className="text-white font-semibold text-sm">
+                            {userInfo.name.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">{userInfo.name}</div>
+                        <div className="text-sm text-gray-500">{userInfo.email}</div>
+                        <div className="text-xs text-gray-400">{userInfo.role}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-lg font-semibold text-gray-900">
+                      {formatCurrency(payment.amount)}
+                    </div>
+                    <div className="text-xs text-gray-500">{payment.currency?.toUpperCase() || 'USD'}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full border ${getTypeColor(payment.type)}`}>
+                      {payment.type === 'subscription' ? '💳 Host Subscription' : '🎫 Event Ticket'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full border ${getStatusColor(payment.status)}`}>
+                      {payment.status === 'succeeded' && '✅'}
+                      {payment.status === 'pending' && '⏳'}
+                      {payment.status === 'failed' && '❌'}
+                      {payment.status === 'refunded' && '🔄'}
+                      {' '}{payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center text-sm text-gray-900">
+                      <span className="mr-2 text-gray-400">
+                        {getMethodIcon(payment.method)}
+                      </span>
+                      {payment.method.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <div>{formatDate(payment.createdAt)}</div>
+                    {payment.meta?.recordedAt && (
+                      <div className="text-xs text-gray-500">
+                        Recorded: {formatDate(payment.meta.recordedAt)}
+                      </div>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-gray-900 max-w-xs">
+                    <div className="truncate" title={payment.description}>
+                      {payment.description || (
+                        <span className="text-gray-400 italic">No description</span>
+                      )}
+                    </div>
+                    {payment.meta?.eventId && (
+                      <div className="text-xs text-secondary-600 mt-1">
+                        Event ID: {payment.meta.eventId}
+                      </div>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+      
+      {payments.length > 0 && (
+        <div className="bg-gray-50 px-6 py-3 border-t border-gray-200">
+          <div className="flex items-center justify-between text-sm text-gray-600">
+            <span>Showing {payments.length} payment{payments.length !== 1 ? 's' : ''}</span>
+            <span>Last updated: {new Date().toLocaleTimeString()}</span>
+          </div>
+        </div>
+      )}
+    </div>
   );
-}
+};

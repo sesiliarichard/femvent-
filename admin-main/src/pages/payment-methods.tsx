@@ -117,7 +117,7 @@ export default function PaymentMethodsPage() {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-primary-600"></div>
         </div>
       </AdminLayout>
     );
@@ -127,47 +127,52 @@ export default function PaymentMethodsPage() {
     <AdminLayout>
       <div className="p-6">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Platform Payment Methods</h1>
-          <p className="text-gray-600">
+          <h1 className="text-2xl font-extrabold text-gray-900">Platform Payment Methods</h1>
+          <p className="text-sm text-gray-500 mt-1 max-w-2xl">
             Choose which payment providers hosts can use to pay for dashboard access.
             API credentials are configured separately in the hosting environment.
           </p>
         </div>
 
         <div className="flex flex-col gap-3 max-w-2xl">
-        {Object.entries(PROVIDER_META).map(([provider, meta]) => {
+          {Object.entries(PROVIDER_META).map(([provider, meta]) => {
             const active = isActive(provider);
             return (
-              <div key={provider} className="border border-gray-200 rounded-xl bg-white overflow-hidden">
-                <label className="flex items-center justify-between p-4 hover:bg-gray-50 cursor-pointer transition-colors">
+              <div key={provider} className="border border-gray-100 rounded-2xl bg-white overflow-hidden">
+                <label className="flex items-center justify-between p-5 hover:bg-gray-50 cursor-pointer transition-colors">
                   <div>
-                    <p className="font-semibold text-gray-900">{meta.name}</p>
-                    <p className="text-sm text-gray-500">{meta.blurb}</p>
+                    <p className="font-bold text-gray-900 text-sm">{meta.name}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">{meta.blurb}</p>
                   </div>
-                  <input
-                    type="checkbox"
-                    checked={active}
-                    disabled={saving === provider}
-                    onChange={() => toggleProvider(provider, active)}
-                    className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
-                  />
+                  <div className="relative w-12 h-7 flex-shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={active}
+                      disabled={saving === provider}
+                      onChange={() => toggleProvider(provider, active)}
+                      className="sr-only"
+                    />
+                    <div className={`w-12 h-7 rounded-full transition-colors ${active ? 'bg-primary-600' : 'bg-gray-300'}`}>
+                      <div className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform ${active ? 'translate-x-5' : 'translate-x-0'}`}></div>
+                    </div>
+                  </div>
                 </label>
 
                 {provider === 'crypto' && (
-                  <div className="p-4 pt-0 flex flex-col gap-2 border-t border-gray-100">
-                    <label className="text-sm font-medium text-gray-700 mt-2">Receiving wallet address</label>
+                  <div className="p-5 pt-0 flex flex-col gap-2 border-t border-gray-100">
+                    <label className="text-xs font-bold text-gray-700 uppercase tracking-wide mt-3">Receiving wallet address</label>
                     <input
                       type="text"
                       value={cryptoAddress}
                       onChange={(e) => setCryptoAddress(e.target.value)}
                       placeholder="e.g. 0x1234... or bc1q..."
-                      className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      className="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
                     />
-                                       <label className="text-sm font-medium text-gray-700">Currency & network</label>
+                    <label className="text-xs font-bold text-gray-700 uppercase tracking-wide">Currency & network</label>
                     <select
                       value={payoutCurrency}
                       onChange={(e) => setPayoutCurrency(e.target.value)}
-                      className="border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      className="border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors"
                     >
                       {CRYPTO_OPTIONS.map((opt) => (
                         <option key={opt.code} value={opt.code}>
@@ -179,7 +184,7 @@ export default function PaymentMethodsPage() {
                       type="button"
                       onClick={saveCryptoAddress}
                       disabled={savingCrypto}
-                      className="self-start mt-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                      className="self-start mt-2 px-5 py-2.5 text-sm font-bold text-white bg-secondary-500 rounded-xl hover:bg-secondary-600 disabled:opacity-50 transition-colors"
                     >
                       {savingCrypto ? 'Saving...' : 'Save address'}
                     </button>
