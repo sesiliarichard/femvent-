@@ -76,7 +76,7 @@ export default function EditBlogPage() {
         );
 
       if (error) throw error;
-      alert('✅ Blog page saved!');
+      alert('Blog page saved!');
     } catch (err) {
       console.error('Error saving blog content:', err);
       alert('Failed to save');
@@ -104,8 +104,8 @@ export default function EditBlogPage() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="flex items-center justify-center min-h-screen bg-[#FBF3FA]">
-          <div className="animate-spin rounded-full h-10 w-10 border-2 border-[#D9C9E0] border-t-[#9B1F5C]"></div>
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+          <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-primary-600"></div>
         </div>
       </AdminLayout>
     );
@@ -114,30 +114,30 @@ export default function EditBlogPage() {
   return (
     <AdminLayout>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[#2E1F45]">Edit Blog Page</h1>
-        <p className="text-sm text-[#5C4A6B] mt-1">Update the text and images shown on femvents.netlify.app/blog.</p>
+        <h1 className="text-2xl font-extrabold text-gray-900">Edit Blog Page</h1>
+        <p className="text-sm text-gray-500 mt-1">Update the text and images shown on femvents.netlify.app/blog.</p>
       </div>
 
-      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
-        <div className="px-6 py-3 bg-[#4A3B78] text-[#FBF3FA] font-bold text-sm">Blog Posts</div>
+      <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
+        <div className="px-6 py-3.5 bg-primary-600 text-white font-extrabold text-sm">Blog Posts</div>
         <div className="p-6 space-y-4">
           {content.blogPosts.map((post, i) => (
-            <div key={i} className="border border-[#D9C9E0] rounded-sm p-4 space-y-3">
+            <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3">
               <div className="flex justify-between items-start">
-                <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Post {i + 1} — Title</label>
-                <button onClick={() => removePost(i)} className="text-xs text-[#9B1F5C] font-bold hover:opacity-70">Remove</button>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Post {i + 1} — Title</label>
+                <button onClick={() => removePost(i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
               </div>
-              <input type="text" value={post.title} onChange={(e) => updatePost(i, 'title', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Excerpt</label>
-              <textarea value={post.excerpt} onChange={(e) => updatePost(i, 'excerpt', e.target.value)} rows={2} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+              <input type="text" value={post.title} onChange={(e) => updatePost(i, 'title', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Excerpt</label>
+              <textarea value={post.excerpt} onChange={(e) => updatePost(i, 'excerpt', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Author</label>
-                  <input type="text" value={post.author} onChange={(e) => updatePost(i, 'author', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Author</label>
+                  <input type="text" value={post.author} onChange={(e) => updatePost(i, 'author', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Date</label>
-                  <input type="text" value={post.date} onChange={(e) => updatePost(i, 'date', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Date</label>
+                  <input type="text" value={post.date} onChange={(e) => updatePost(i, 'date', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
               </div>
               <ImageUploadWidget
@@ -148,14 +148,14 @@ export default function EditBlogPage() {
               />
             </div>
           ))}
-          <button onClick={addPost} className="w-full py-2 border-2 border-dashed border-[#D9C9E0] rounded-sm text-sm font-medium text-[#8A7A96] hover:border-[#9B1F5C] hover:text-[#9B1F5C] transition-colors">
+          <button onClick={addPost} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
             + Add blog post
           </button>
         </div>
       </div>
 
       <div className="flex justify-end sticky bottom-4">
-        <button onClick={handleSave} disabled={saving} className="px-6 py-3 bg-[#2E1F45] text-[#FBF3FA] rounded-sm hover:bg-[#3D2A5C] disabled:opacity-50 font-bold text-sm shadow-lg">
+        <button onClick={handleSave} disabled={saving} className="px-6 py-3.5 bg-secondary-500 hover:bg-secondary-600 text-white rounded-xl disabled:opacity-50 font-bold text-sm transition-colors shadow-lg">
           {saving ? 'Saving...' : 'Save Blog Page'}
         </button>
       </div>

@@ -161,13 +161,13 @@ export default function VenueMapEditorPage({ params }: { params: Promise<{ id: s
     return (
       <ProtectedRoute>
         <DashboardLayout currentPage="events">
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 flex items-center justify-center">
+          <div className="min-h-screen bg-gray-50 flex items-center justify-center">
             <div className="text-center">
-              <div className="relative w-24 h-24 mx-auto mb-6">
-                <div className="absolute inset-0 rounded-full border-4 border-blue-200"></div>
-                <div className="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
+              <div className="relative w-16 h-16 mx-auto mb-5">
+                <div className="absolute inset-0 rounded-full border-4 border-primary-100"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-primary-600 border-t-transparent animate-spin"></div>
               </div>
-              <p className="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <p className="text-lg font-bold text-gray-700">
                 Loading venue map...
               </p>
             </div>
@@ -180,86 +180,81 @@ export default function VenueMapEditorPage({ params }: { params: Promise<{ id: s
   return (
     <ProtectedRoute>
       <DashboardLayout currentPage="events">
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 relative overflow-hidden">
-          <div className="fixed inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-blob"></div>
-            <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-          </div>
-
-          <div className="relative z-10 p-8">
+        <div className="min-h-screen bg-gray-50">
+          <div className="p-8 max-w-4xl mx-auto">
             {/* Header */}
-            <div className="mb-10 animate-[fadeIn_0.8s_ease-out]">
-              <div className="flex items-center gap-4 mb-6">
+            <div className="mb-8">
+              <div className="flex items-center gap-4 mb-2">
                 <button
                   onClick={() => router.push(`/events/${eventId}`)}
-                  className="group p-3 hover:bg-white/80 backdrop-blur-sm rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg border border-slate-200/50"
+                  className="p-2.5 bg-white border border-gray-200 rounded-xl hover:border-primary-300 transition-colors"
                 >
-                  <svg className="w-6 h-6 text-slate-700 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                  <svg className="w-8 h-8 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" /></svg>
-                    <span className="text-sm font-bold text-slate-500">{event?.title}</span>
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" /></svg>
+                    <span className="text-sm font-bold text-gray-500">{event?.title}</span>
                   </div>
-                  <h1 className="text-4xl font-black bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+                  <h1 className="text-2xl font-extrabold text-gray-900">
                     Venue Map
                   </h1>
                 </div>
                 {isEventOwner && !showForm && (
                   <button
                     onClick={() => setShowForm(true)}
-                    className="group flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-2xl hover:shadow-blue-500/40 hover:scale-105 transition-all duration-300"
+                    className="flex items-center gap-2 bg-secondary-500 hover:bg-secondary-600 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors"
                   >
-                    <svg className="w-5 h-5 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
                     </svg>
                     <span>Add Area</span>
                   </button>
                 )}
               </div>
-              <p className="text-sm text-slate-500 font-medium ml-16">
+              <p className="text-sm text-gray-500 ml-14">
                 Use the arrows to control the order areas appear in the app.
               </p>
             </div>
 
             {/* Create / Edit form */}
             {showForm && (
-              <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl p-8 mb-8 animate-[fadeIn_0.4s_ease-out]">
-                <h2 className="text-xl font-black text-slate-900 mb-6">
+              <div className="bg-white rounded-2xl border border-gray-200 p-7 mb-7">
+                <h2 className="text-lg font-extrabold text-gray-900 mb-5">
                   {editingId ? 'Edit Area' : 'Add Area'}
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-black text-slate-500 uppercase tracking-wide mb-2">Name</label>
+                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Name</label>
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. Main Auditorium"
-                      className="w-full px-5 py-3.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-medium text-slate-900"
+                      className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none font-medium text-gray-900 transition-colors"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black text-slate-500 uppercase tracking-wide mb-2">Floor</label>
+                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Floor</label>
                     <input
                       type="text"
                       value={floor}
                       onChange={(e) => setFloor(e.target.value)}
                       placeholder="e.g. Ground Floor"
-                      className="w-full px-5 py-3.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-medium text-slate-900"
+                      className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none font-medium text-gray-900 transition-colors"
                     />
                   </div>
 
                   <div className="md:col-span-3">
-                    <label className="block text-xs font-black text-slate-500 uppercase tracking-wide mb-2">Icon</label>
+                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Icon</label>
                     <select
                       value={icon}
                       onChange={(e) => setIcon(e.target.value)}
-                      className="w-full px-5 py-3.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-medium text-slate-900 bg-white"
+                      className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none font-medium text-gray-900 bg-white transition-colors"
                     >
                       {ICON_OPTIONS.map((opt) => (
                         <option key={opt.value} value={opt.value}>
@@ -270,17 +265,17 @@ export default function VenueMapEditorPage({ params }: { params: Promise<{ id: s
                   </div>
                 </div>
 
-                <div className="flex gap-3 pt-6">
+                <div className="flex gap-3 pt-5">
                   <button
                     onClick={handleSave}
                     disabled={saving || !name.trim()}
-                    className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3.5 rounded-2xl font-bold hover:shadow-xl hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100"
+                    className="flex-1 bg-secondary-500 hover:bg-secondary-600 text-white px-6 py-3.5 rounded-xl font-bold transition-colors disabled:opacity-50"
                   >
                     {saving ? 'Saving...' : editingId ? 'Save Changes' : 'Add Area'}
                   </button>
                   <button
                     onClick={resetForm}
-                    className="px-6 py-3.5 rounded-2xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all duration-300"
+                    className="px-6 py-3.5 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
                   >
                     Cancel
                   </button>
@@ -290,26 +285,27 @@ export default function VenueMapEditorPage({ params }: { params: Promise<{ id: s
 
             {/* List */}
             {areas.length === 0 && !showForm ? (
-              <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl p-16 text-center">
-                                <div className="w-16 h-16 mb-4 mx-auto text-slate-300"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" /></svg></div>
-                <p className="text-xl font-black text-slate-900 mb-2">No areas yet</p>
-                <p className="text-slate-500 font-medium">Add rooms and areas so attendees can find their way around.</p>
+              <div className="bg-white rounded-2xl border border-gray-200 p-14 text-center">
+                <div className="w-14 h-14 mb-4 mx-auto bg-primary-50 rounded-xl flex items-center justify-center text-primary-600">
+                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" /></svg>
+                </div>
+                <p className="text-lg font-extrabold text-gray-900 mb-1.5">No areas yet</p>
+                <p className="text-gray-500 text-sm">Add rooms and areas so attendees can find their way around.</p>
               </div>
             ) : (
               <div className="space-y-3">
-                               {areas.map((a, idx) => {
+                {areas.map((a, idx) => {
                   return (
                     <div
                       key={a.id}
-                      className="bg-white/80 backdrop-blur-xl rounded-2xl border border-slate-200/50 shadow-lg p-5 flex items-center gap-4 animate-[fadeIn_0.5s_ease-out]"
-                      style={{ animationDelay: `${idx * 0.05}s` }}
+                      className="bg-white rounded-2xl border border-gray-200 p-5 flex items-center gap-4"
                     >
                       {isEventOwner && (
                         <div className="flex flex-col gap-1 flex-shrink-0">
                           <button
                             onClick={() => moveArea(idx, -1)}
                             disabled={idx === 0}
-                            className="p-1 text-slate-400 hover:text-blue-600 disabled:opacity-20 disabled:hover:text-slate-400 transition-colors"
+                            className="p-1 text-gray-400 hover:text-primary-600 disabled:opacity-20 disabled:hover:text-gray-400 transition-colors"
                             title="Move up"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -319,7 +315,7 @@ export default function VenueMapEditorPage({ params }: { params: Promise<{ id: s
                           <button
                             onClick={() => moveArea(idx, 1)}
                             disabled={idx === areas.length - 1}
-                            className="p-1 text-slate-400 hover:text-blue-600 disabled:opacity-20 disabled:hover:text-slate-400 transition-colors"
+                            className="p-1 text-gray-400 hover:text-primary-600 disabled:opacity-20 disabled:hover:text-gray-400 transition-colors"
                             title="Move down"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -329,20 +325,20 @@ export default function VenueMapEditorPage({ params }: { params: Promise<{ id: s
                         </div>
                       )}
 
-                     <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-blue-100 to-purple-100 rounded-xl flex items-center justify-center text-purple-600">
+                      <div className="w-11 h-11 flex-shrink-0 bg-primary-50 rounded-xl flex items-center justify-center text-primary-600">
                         {ICON_SVGS[a.icon] || ICON_SVGS['location-outline']}
                       </div>
 
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-base font-black text-slate-900">{a.name}</h3>
-                        {a.floor && <p className="text-sm text-slate-500 font-semibold">{a.floor}</p>}
+                        <h3 className="text-base font-extrabold text-gray-900">{a.name}</h3>
+                        {a.floor && <p className="text-sm text-gray-500">{a.floor}</p>}
                       </div>
 
                       {isEventOwner && (
                         <div className="flex gap-2 flex-shrink-0">
                           <button
                             onClick={() => startEdit(a)}
-                            className="p-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-blue-100 hover:text-blue-600 transition-all duration-200"
+                            className="p-2.5 bg-gray-50 text-gray-500 rounded-lg hover:bg-primary-50 hover:text-primary-600 transition-colors"
                             title="Edit"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -351,7 +347,7 @@ export default function VenueMapEditorPage({ params }: { params: Promise<{ id: s
                           </button>
                           <button
                             onClick={() => handleDelete(a.id)}
-                            className="p-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-red-100 hover:text-red-600 transition-all duration-200"
+                            className="p-2.5 bg-gray-50 text-gray-500 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
                             title="Delete"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -366,20 +362,6 @@ export default function VenueMapEditorPage({ params }: { params: Promise<{ id: s
               </div>
             )}
           </div>
-
-          <style jsx global>{`
-            @keyframes fadeIn {
-              from { opacity: 0; transform: translateY(20px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-            @keyframes blob {
-              0%, 100% { transform: translate(0, 0) scale(1); }
-              33% { transform: translate(30px, -50px) scale(1.1); }
-              66% { transform: translate(-20px, 20px) scale(0.9); }
-            }
-            .animate-blob { animation: blob 7s infinite; }
-            .animation-delay-2000 { animation-delay: 2s; }
-          `}</style>
         </div>
       </DashboardLayout>
     </ProtectedRoute>

@@ -105,7 +105,7 @@ export default function WaitlistPage({ params }: { params: Promise<{ id: string 
                 <DashboardLayout currentPage="events">
                     <div className="flex items-center justify-center min-h-screen">
                         <div className="text-center">
-                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600 mx-auto"></div>
                             <p className="mt-4 text-gray-600">Loading waitlist...</p>
                         </div>
                     </div>
@@ -133,41 +133,41 @@ export default function WaitlistPage({ params }: { params: Promise<{ id: string 
                             Back to Event
                         </button>
 
-                        <h1 className="text-3xl font-bold text-gray-900">Waitlist Management</h1>
-                        <p className="text-gray-600 mt-1">{event?.title}</p>
+                        <h1 className="text-2xl font-extrabold text-gray-900">Waitlist Management</h1>
+                        <p className="text-gray-500 mt-1">{event?.title}</p>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                        <div className="bg-white rounded-lg border border-gray-200 p-4">
-                            <p className="text-sm text-gray-600">Total Waitlist</p>
+                        <div className="bg-white rounded-xl border border-gray-200 p-4">
+                            <p className="text-sm text-gray-500">Total Waitlist</p>
                             <p className="text-2xl font-bold text-gray-900">{waitlist.length}</p>
                         </div>
-                        <div className="bg-orange-50 rounded-lg border border-orange-200 p-4">
+                        <div className="bg-orange-50 rounded-xl border border-orange-200 p-4">
                             <p className="text-sm text-orange-600">Active</p>
                             <p className="text-2xl font-bold text-orange-900">{activeWaitlist.length}</p>
                         </div>
-                        <div className="bg-blue-50 rounded-lg border border-blue-200 p-4">
+                        <div className="bg-blue-50 rounded-xl border border-blue-200 p-4">
                             <p className="text-sm text-blue-600">Notified</p>
                             <p className="text-2xl font-bold text-blue-900">{notifiedWaitlist.length}</p>
                         </div>
-                        <div className="bg-green-50 rounded-lg border border-green-200 p-4">
-                            <p className="text-sm text-green-600">Converted</p>
-                            <p className="text-2xl font-bold text-green-900">{convertedWaitlist.length}</p>
+                        <div className="bg-emerald-50 rounded-xl border border-emerald-200 p-4">
+                            <p className="text-sm text-emerald-600">Converted</p>
+                            <p className="text-2xl font-bold text-emerald-900">{convertedWaitlist.length}</p>
                         </div>
                     </div>
 
                     {activeWaitlist.length > 0 && (
-                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 mb-6">
-                            <div className="flex items-center justify-between">
+                        <div className="bg-primary-50 border border-primary-100 rounded-xl p-5 mb-6">
+                            <div className="flex items-center justify-between flex-wrap gap-3">
                                 <div>
-                                    <p className="font-semibold text-gray-900">Notify Waitlist</p>
-                                    <p className="text-sm text-gray-600">Send email notifications when spots become available</p>
+                                    <p className="font-bold text-gray-900">Notify Waitlist</p>
+                                    <p className="text-sm text-gray-500">Send email notifications when spots become available</p>
                                 </div>
                                 <div className="flex gap-2">
                                     <button
                                         onClick={() => handleNotify(1)}
                                         disabled={notifying}
-                                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                                        className="px-4 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-bold text-sm disabled:opacity-50 transition-colors"
                                     >
                                         Notify Next 1
                                     </button>
@@ -175,7 +175,7 @@ export default function WaitlistPage({ params }: { params: Promise<{ id: string 
                                         <button
                                             onClick={() => handleNotify(5)}
                                             disabled={notifying}
-                                            className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 disabled:opacity-50"
+                                            className="px-4 py-2.5 bg-secondary-500 hover:bg-secondary-600 text-white rounded-lg font-bold text-sm disabled:opacity-50 transition-colors"
                                         >
                                             Notify Next 5
                                         </button>
@@ -185,17 +185,17 @@ export default function WaitlistPage({ params }: { params: Promise<{ id: string 
                         </div>
                     )}
 
-                    <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
                         <div className="overflow-x-auto">
                             <table className="min-w-full divide-y divide-gray-200">
                                 <thead className="bg-gray-50">
                                     <tr>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Position</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Position</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Name</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Email</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Joined</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Status</th>
+                                        <th className="px-6 py-3 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
@@ -207,8 +207,8 @@ export default function WaitlistPage({ params }: { params: Promise<{ id: string 
                                         </tr>
                                     ) : (
                                         waitlist.map((entry, index) => (
-                                            <tr key={entry.id} className={entry.converted_to_ticket ? 'bg-green-50' : entry.notified ? 'bg-blue-50' : ''}>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{index + 1}</td>
+                                            <tr key={entry.id} className={entry.converted_to_ticket ? 'bg-emerald-50' : entry.notified ? 'bg-blue-50' : ''}>
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">#{index + 1}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{entry.user_name}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{entry.user_email}</td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
@@ -216,17 +216,17 @@ export default function WaitlistPage({ params }: { params: Promise<{ id: string 
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                     {entry.converted_to_ticket ? (
-                                                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Converted</span>
+                                                        <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-emerald-100 text-emerald-800">Converted</span>
                                                     ) : entry.notified ? (
-                                                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Notified</span>
+                                                        <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-800">Notified</span>
                                                     ) : (
-                                                        <span className="px-2 py-1 text-xs font-semibold rounded-full bg-orange-100 text-orange-800">Waiting</span>
+                                                        <span className="px-2.5 py-1 text-xs font-bold rounded-full bg-orange-100 text-orange-800">Waiting</span>
                                                     )}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                                                     <button
                                                         onClick={() => handleRemove(entry.id, entry.user_name)}
-                                                        className="text-red-600 hover:text-red-900"
+                                                        className="text-red-600 hover:text-red-700 font-semibold"
                                                     >
                                                         Remove
                                                     </button>

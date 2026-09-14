@@ -104,7 +104,7 @@ const BulkEmailModalWithTemplates: React.FC<BulkEmailModalWithTemplatesProps> = 
                             id="template"
                             value={selectedTemplate}
                             onChange={(e) => handleTemplateChange(e.target.value)}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                             disabled={sending}
                         >
                             <option value="none">Plain Text (No Template)</option>
@@ -115,7 +115,7 @@ const BulkEmailModalWithTemplates: React.FC<BulkEmailModalWithTemplatesProps> = 
                             ))}
                         </select>
                         {selectedTemplate !== 'none' && (
-                            <p className="mt-1 text-xs text-blue-600">
+                            <p className="mt-1 text-xs text-primary-600">
                                 ✨ Using professional HTML template with branded styling
                             </p>
                         )}
@@ -132,7 +132,7 @@ const BulkEmailModalWithTemplates: React.FC<BulkEmailModalWithTemplatesProps> = 
                             value={subject}
                             onChange={(e) => setSubject(e.target.value)}
                             placeholder="Enter email subject..."
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                             disabled={sending}
                         />
                     </div>
@@ -148,7 +148,7 @@ const BulkEmailModalWithTemplates: React.FC<BulkEmailModalWithTemplatesProps> = 
                             onChange={(e) => setBody(e.target.value)}
                             placeholder={selectedTemplate !== 'none' ? "This will be formatted with the selected template..." : "Enter your message..."}
                             rows={8}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
                             disabled={sending}
                         />
                         <p className="mt-1 text-xs text-gray-500">
@@ -158,12 +158,12 @@ const BulkEmailModalWithTemplates: React.FC<BulkEmailModalWithTemplatesProps> = 
 
                     {/* Template Info */}
                     {selectedTemplate !== 'none' && (
-                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-md p-4">
+                        <div className="bg-primary-50 border border-primary-100 rounded-md p-4">
                             <div className="flex items-start">
-                                <svg className="w-5 h-5 text-blue-600 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5 text-primary-600 mr-2 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
-                                <div className="text-sm text-blue-800">
+                                <div className="text-sm text-primary-800">
                                     <p className="font-medium mb-1">Professional Email Template Selected</p>
                                     <ul className="list-disc list-inside space-y-1 text-xs">
                                         <li>Responsive design for all devices</li>
@@ -181,7 +181,7 @@ const BulkEmailModalWithTemplates: React.FC<BulkEmailModalWithTemplatesProps> = 
                 <div className="px-6 py-4 bg-gray-50 rounded-b-lg flex justify-between items-center sticky bottom-0">
                     <button
                         onClick={() => setShowPreview(!showPreview)}
-                        className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                        className="text-sm text-primary-600 hover:text-primary-700 font-medium"
                     >
                         {showPreview ? '📧 Hide' : '👁️ Preview'}
                     </button>
@@ -197,7 +197,7 @@ const BulkEmailModalWithTemplates: React.FC<BulkEmailModalWithTemplatesProps> = 
                         <button
                             onClick={handleSend}
                             disabled={sending || !subject.trim() || !body.trim()}
-                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            className="px-4 py-2 bg-secondary-500 text-white rounded-md hover:bg-secondary-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                         >
                             {sending ? (
                                 <>

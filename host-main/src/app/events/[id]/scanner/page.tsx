@@ -241,11 +241,11 @@ function QRScannerContent() {
 
     return (
         <DashboardLayout>
-            <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50/30 to-blue-50/20 p-8">
+            <div className="min-h-screen bg-gray-50 p-8">
                 <div className="mb-8">
                     <button
                         onClick={() => router.push(`/events/${eventId}/attendees`)}
-                        className="flex items-center gap-2 text-slate-600 hover:text-slate-900 mb-4 font-semibold transition-colors"
+                        className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-4 font-semibold transition-colors"
                     >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -253,51 +253,49 @@ function QRScannerContent() {
                         Back to Attendees
                     </button>
 
-                    <h1 className="text-5xl font-black bg-gradient-to-r from-slate-900 via-purple-900 to-blue-900 bg-clip-text text-transparent mb-2">
+                    <h1 className="text-3xl font-extrabold text-gray-900 mb-1">
                         QR Scanner
                     </h1>
-                    <p className="text-xl text-slate-600 font-medium">{event?.title || 'Loading...'}</p>
+                    <p className="text-base text-gray-500">{event?.title || 'Loading...'}</p>
                 </div>
 
-                <div className="grid grid-cols-3 gap-6 mb-8">
-                    <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 border border-slate-200/50 shadow-xl">
-                        <p className="text-sm text-slate-500 font-bold uppercase mb-2">Total Tickets</p>
-                        <p className="text-4xl font-black text-slate-900">{stats.totalTickets}</p>
+                <div className="grid grid-cols-3 gap-5 mb-8">
+                    <div className="bg-white rounded-2xl p-5 border border-gray-100">
+                        <p className="text-xs text-gray-400 font-bold uppercase mb-2">Total Tickets</p>
+                        <p className="text-3xl font-extrabold text-gray-900">{stats.totalTickets}</p>
                     </div>
-                    <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 border border-green-200/50 shadow-xl">
-                        <p className="text-sm text-green-600 font-bold uppercase mb-2">Checked In</p>
-                        <p className="text-4xl font-black text-green-600">{stats.checkedIn}</p>
+                    <div className="bg-white rounded-2xl p-5 border border-emerald-100">
+                        <p className="text-xs text-emerald-600 font-bold uppercase mb-2">Checked In</p>
+                        <p className="text-3xl font-extrabold text-emerald-600">{stats.checkedIn}</p>
                     </div>
-                    <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-6 border border-amber-200/50 shadow-xl">
-                        <p className="text-sm text-amber-600 font-bold uppercase mb-2">Pending</p>
-                        <p className="text-4xl font-black text-amber-600">{stats.pending}</p>
+                    <div className="bg-white rounded-2xl p-5 border border-amber-100">
+                        <p className="text-xs text-amber-600 font-bold uppercase mb-2">Pending</p>
+                        <p className="text-3xl font-extrabold text-amber-600">{stats.pending}</p>
                     </div>
                 </div>
 
-                <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl p-8 mb-8">
-                    <h2 className="text-2xl font-black mb-6">Scan Ticket QR Code</h2>
-                    <div id="qr-reader" className="rounded-2xl overflow-hidden"></div>
-                    <p className="text-center text-slate-500 mt-4 font-semibold">
+                <div className="bg-white rounded-2xl border border-gray-100 p-7 mb-8">
+                    <h2 className="text-lg font-extrabold text-gray-900 mb-5">Scan Ticket QR Code</h2>
+                    <div id="qr-reader" className="rounded-xl overflow-hidden"></div>
+                    <p className="text-center text-gray-500 mt-4 font-medium text-sm">
                         Position the QR code within the frame to scan
                     </p>
                 </div>
 
                 {showResult && validationResult && (
-                    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                        <div className="bg-white rounded-3xl max-w-md w-full p-8">
+                    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+                        <div className="bg-white rounded-2xl max-w-md w-full p-7">
                             <div
-                                className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6 ${
-                                    validationResult.valid
-                                        ? 'bg-gradient-to-br from-emerald-400 to-green-500'
-                                        : 'bg-gradient-to-br from-red-400 to-pink-500'
+                                className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-5 ${
+                                    validationResult.valid ? 'bg-emerald-500' : 'bg-red-500'
                                 }`}
                             >
-                                <span className="text-5xl text-white">
+                                <span className="text-3xl text-white">
                                     {validationResult.valid ? (validationResult.alreadyCheckedIn ? '✓✓' : '✓') : '✕'}
                                 </span>
                             </div>
 
-                            <h3 className="text-2xl font-black text-center mb-4">
+                            <h3 className="text-xl font-extrabold text-center mb-3">
                                 {validationResult.valid
                                     ? validationResult.alreadyCheckedIn
                                         ? 'Already Checked In'
@@ -305,37 +303,37 @@ function QRScannerContent() {
                                     : 'Invalid Ticket'}
                             </h3>
 
-                            <p className="text-center text-slate-600 mb-6 font-semibold text-lg">{validationResult.message}</p>
+                            <p className="text-center text-gray-600 mb-5 font-medium">{validationResult.message}</p>
 
                             {validationResult.valid && validationResult.ticket && (
-                                <div className="bg-gradient-to-br from-slate-50 to-blue-50 rounded-2xl p-6 mb-6 space-y-3">
+                                <div className="bg-gray-50 rounded-xl p-5 mb-5 space-y-2.5 border border-gray-100">
                                     <div className="flex justify-between">
-                                        <span className="text-slate-600 font-semibold">Attendee:</span>
-                                        <span className="font-bold text-slate-900">{validationResult.ticket.user_name || 'Unknown'}</span>
+                                        <span className="text-gray-500 font-medium text-sm">Attendee:</span>
+                                        <span className="font-bold text-gray-900 text-sm">{validationResult.ticket.user_name || 'Unknown'}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-slate-600 font-semibold">Email:</span>
-                                        <span className="font-bold text-slate-900 text-sm">{validationResult.ticket.user_email || 'N/A'}</span>
+                                        <span className="text-gray-500 font-medium text-sm">Email:</span>
+                                        <span className="font-bold text-gray-900 text-xs">{validationResult.ticket.user_email || 'N/A'}</span>
                                     </div>
                                     <div className="flex justify-between">
-                                        <span className="text-slate-600 font-semibold">Ticket Type:</span>
-                                        <span className="font-bold text-slate-900">{validationResult.ticket.ticket_type || 'General'}</span>
+                                        <span className="text-gray-500 font-medium text-sm">Ticket Type:</span>
+                                        <span className="font-bold text-gray-900 text-sm">{validationResult.ticket.ticket_type || 'General'}</span>
                                     </div>
                                 </div>
                             )}
 
-                            <div className="flex gap-4">
+                            <div className="flex gap-3">
                                 {validationResult.valid && !validationResult.alreadyCheckedIn ? (
                                     <>
                                         <button
                                             onClick={handleDismiss}
-                                            className="flex-1 px-6 py-4 rounded-2xl border-2 border-slate-200 text-slate-700 font-bold hover:bg-slate-50 transition-all"
+                                            className="flex-1 px-5 py-3.5 rounded-xl border border-gray-200 text-gray-700 font-bold hover:bg-gray-50 transition-colors"
                                         >
                                             Cancel
                                         </button>
                                         <button
                                             onClick={handleCheckIn}
-                                            className="flex-1 px-6 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-green-500 text-white font-bold hover:shadow-xl transition-all"
+                                            className="flex-1 px-5 py-3.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold transition-colors"
                                         >
                                             ✓ Check In
                                         </button>
@@ -343,7 +341,7 @@ function QRScannerContent() {
                                 ) : (
                                     <button
                                         onClick={handleDismiss}
-                                        className="w-full px-6 py-4 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold hover:shadow-xl transition-all"
+                                        className="w-full px-5 py-3.5 rounded-xl bg-primary-600 hover:bg-primary-700 text-white font-bold transition-colors"
                                     >
                                         Scan Another
                                     </button>

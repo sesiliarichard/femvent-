@@ -31,7 +31,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template, onUse, onEdit, on
                             <p className="text-sm text-gray-600 line-clamp-2">{template.description}</p>
                         )}
                     </div>
-                    <span className="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                    <span className="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-700">
                         {template.category}
                     </span>
                 </div>
@@ -68,7 +68,7 @@ const TemplateCard: React.FC<TemplateCardProps> = ({ template, onUse, onEdit, on
                 <div className="flex gap-2 mt-4">
                     <button
                         onClick={() => onUse(template.id)}
-                        className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors duration-200 text-sm font-medium"
+                        className="flex-1 bg-primary-600 text-white px-4 py-2 rounded-md hover:bg-primary-700 transition-colors duration-200 text-sm font-medium"
                     >
                         Use Template
                     </button>

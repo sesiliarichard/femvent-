@@ -112,30 +112,30 @@ export default function TemplatesPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50">
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-secondary-600 mx-auto"></div>
-                    <p className="mt-4 text-purple-600">Loading templates...</p>
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Loading templates...</p>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <div className="mb-8">
                     <div className="flex items-center justify-between">
                         <div>
-                            <h1 className="text-3xl font-bold text-purple-900">Event Templates</h1>
-                            <p className="mt-2 text-sm text-purple-600">
+                            <h1 className="text-2xl font-extrabold text-gray-900">Event Templates</h1>
+                            <p className="mt-1.5 text-sm text-gray-500">
                                 Create events faster with reusable templates
                             </p>
                         </div>
                         <button
                             onClick={() => router.push('/events')}
-                            className="px-4 py-2 bg-gradient-to-r from-secondary-500 to-accent-500 text-white rounded-md hover:shadow-lg hover:shadow-secondary-500/30 transition-all duration-200"
+                            className="px-5 py-2.5 bg-secondary-500 hover:bg-secondary-600 text-white rounded-xl font-bold text-sm transition-colors"
                         >
                             View Events
                         </button>
@@ -143,7 +143,7 @@ export default function TemplatesPage() {
                 </div>
 
                 {/* Search and Filter */}
-                <div className="mb-6 bg-white/80 backdrop-blur-xl rounded-lg shadow-lg p-4 border border-pink-200/50">
+                <div className="mb-6 bg-white rounded-2xl border border-gray-200 p-5">
                     <div className="flex flex-col md:flex-row gap-4">
                         {/* Search */}
                         <div className="flex-1">
@@ -152,7 +152,7 @@ export default function TemplatesPage() {
                                 placeholder="Search templates..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full px-4 py-2 border-2 border-pink-200 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 text-purple-900 placeholder-purple-400 font-medium"
+                                className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 text-gray-900 placeholder-gray-400 font-medium transition-colors"
                             />
                         </div>
 
@@ -161,7 +161,7 @@ export default function TemplatesPage() {
                             <select
                                 value={selectedCategory}
                                 onChange={(e) => setSelectedCategory(e.target.value)}
-                                className="px-4 py-2 border-2 border-pink-200 rounded-md focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500 text-purple-900 font-medium"
+                                className="px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 text-gray-900 font-medium transition-colors"
                             >
                                 {categories.map(cat => (
                                     <option key={cat} value={cat}>
@@ -175,7 +175,7 @@ export default function TemplatesPage() {
 
                 {/* Templates Grid */}
                 {filteredTemplates.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                         {filteredTemplates.map(template => (
                             <TemplateCard
                                 key={template.id}
@@ -187,9 +187,9 @@ export default function TemplatesPage() {
                         ))}
                     </div>
                 ) : (
-                    <div className="text-center py-12 bg-white/80 backdrop-blur-xl rounded-lg shadow-lg border border-pink-200/50">
+                    <div className="text-center py-14 bg-white rounded-2xl border border-gray-200">
                         <svg
-                            className="mx-auto h-12 w-12 text-purple-400"
+                            className="mx-auto h-10 w-10 text-primary-400"
                             fill="none"
                             viewBox="0 0 24 24"
                             stroke="currentColor"
@@ -201,8 +201,8 @@ export default function TemplatesPage() {
                                 d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
                             />
                         </svg>
-                        <h3 className="mt-2 text-sm font-medium text-purple-900">No templates found</h3>
-                        <p className="mt-1 text-sm text-purple-500">
+                        <h3 className="mt-3 text-sm font-bold text-gray-900">No templates found</h3>
+                        <p className="mt-1 text-sm text-gray-500">
                             {searchQuery || selectedCategory !== 'all'
                                 ? 'Try adjusting your search or filter'
                                 : 'Save your first event as a template to get started'}
@@ -210,7 +210,7 @@ export default function TemplatesPage() {
                         <div className="mt-6">
                             <button
                                 onClick={() => router.push('/events')}
-                                className="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-gradient-to-r from-secondary-500 to-accent-500 hover:shadow-lg hover:shadow-secondary-500/30 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary-500"
+                                className="inline-flex items-center px-5 py-2.5 text-sm font-bold rounded-xl text-white bg-secondary-500 hover:bg-secondary-600 transition-colors"
                             >
                                 Go to Events
                             </button>

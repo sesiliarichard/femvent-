@@ -89,7 +89,7 @@ export default function EditSupportPage() {
         );
 
       if (error) throw error;
-      alert('✅ Support page saved!');
+      alert('Support page saved!');
     } catch (err) {
       console.error('Error saving support content:', err);
       alert('Failed to save');
@@ -139,8 +139,8 @@ export default function EditSupportPage() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="flex items-center justify-center min-h-screen bg-[#FBF3FA]">
-          <div className="animate-spin rounded-full h-10 w-10 border-2 border-[#D9C9E0] border-t-[#9B1F5C]"></div>
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+          <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-primary-600"></div>
         </div>
       </AdminLayout>
     );
@@ -149,27 +149,27 @@ export default function EditSupportPage() {
   return (
     <AdminLayout>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[#2E1F45]">Edit Support Page</h1>
-        <p className="text-sm text-[#5C4A6B] mt-1">Update the text and images shown on femvents.netlify.app/support.</p>
+        <h1 className="text-2xl font-extrabold text-gray-900">Edit Support Page</h1>
+        <p className="text-sm text-gray-500 mt-1">Update the text and images shown on femvents.netlify.app/support.</p>
       </div>
 
       {/* Support Topics */}
-      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
-        <div className="px-6 py-3 bg-[#9B1F5C] text-[#FBF3FA] font-bold text-sm">Support Topics</div>
+      <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
+        <div className="px-6 py-3.5 bg-secondary-600 text-white font-extrabold text-sm">Support Topics</div>
         <div className="p-6 space-y-4">
           {content.supportTopics.map((topic, i) => (
-            <div key={i} className="border border-[#D9C9E0] rounded-sm p-4 space-y-3">
+            <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3">
               <div className="flex justify-between items-start">
-                <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Topic {i + 1} — Title</label>
-                <button onClick={() => removeTopic(i)} className="text-xs text-[#9B1F5C] font-bold hover:opacity-70">Remove</button>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Topic {i + 1} — Title</label>
+                <button onClick={() => removeTopic(i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
               </div>
-              <input type="text" value={topic.title} onChange={(e) => updateTopicField(i, 'title', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Items (one per line)</label>
+              <input type="text" value={topic.title} onChange={(e) => updateTopicField(i, 'title', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Items (one per line)</label>
               <textarea
                 value={topic.items.join('\n')}
                 onChange={(e) => updateTopicItems(i, e.target.value)}
                 rows={3}
-                className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500"
               />
               <ImageUploadWidget
                 label="Topic Background Image"
@@ -179,35 +179,35 @@ export default function EditSupportPage() {
               />
             </div>
           ))}
-          <button onClick={addTopic} className="w-full py-2 border-2 border-dashed border-[#D9C9E0] rounded-sm text-sm font-medium text-[#8A7A96] hover:border-[#9B1F5C] hover:text-[#9B1F5C] transition-colors">
+          <button onClick={addTopic} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
             + Add support topic
           </button>
         </div>
       </div>
 
       {/* FAQ */}
-      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
-        <div className="px-6 py-3 bg-[#4A3B78] text-[#FBF3FA] font-bold text-sm">FAQ</div>
+      <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
+        <div className="px-6 py-3.5 bg-primary-600 text-white font-extrabold text-sm">FAQ</div>
         <div className="p-6 space-y-4">
           {content.faq.map((item, i) => (
-            <div key={i} className="border border-[#D9C9E0] rounded-sm p-4 space-y-2">
+            <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
               <div className="flex justify-between items-start">
-                <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Question {i + 1}</label>
-                <button onClick={() => removeFaq(i)} className="text-xs text-[#9B1F5C] font-bold hover:opacity-70">Remove</button>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Question {i + 1}</label>
+                <button onClick={() => removeFaq(i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
               </div>
-              <input type="text" value={item.question} onChange={(e) => updateFaq(i, 'question', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Answer</label>
-              <textarea value={item.answer} onChange={(e) => updateFaq(i, 'answer', e.target.value)} rows={3} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+              <input type="text" value={item.question} onChange={(e) => updateFaq(i, 'question', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Answer</label>
+              <textarea value={item.answer} onChange={(e) => updateFaq(i, 'answer', e.target.value)} rows={3} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
           ))}
-          <button onClick={addFaq} className="w-full py-2 border-2 border-dashed border-[#D9C9E0] rounded-sm text-sm font-medium text-[#8A7A96] hover:border-[#9B1F5C] hover:text-[#9B1F5C] transition-colors">
+          <button onClick={addFaq} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
             + Add FAQ item
           </button>
         </div>
       </div>
 
       <div className="flex justify-end sticky bottom-4">
-        <button onClick={handleSave} disabled={saving} className="px-6 py-3 bg-[#2E1F45] text-[#FBF3FA] rounded-sm hover:bg-[#3D2A5C] disabled:opacity-50 font-bold text-sm shadow-lg">
+        <button onClick={handleSave} disabled={saving} className="px-6 py-3.5 bg-secondary-500 hover:bg-secondary-600 text-white rounded-xl disabled:opacity-50 font-bold text-sm transition-colors shadow-lg">
           {saving ? 'Saving...' : 'Save Support Page'}
         </button>
       </div>
