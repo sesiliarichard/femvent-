@@ -69,10 +69,11 @@ export default function FeedbackViewingPage({ params }: { params: Promise<{ id: 
   const formatDate = (iso: string) =>
     new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
+  // Star ratings stay amber/gold — that's a universal rating convention, not brand color
   const renderStars = (rating: number, size = 'text-base') => (
     <span className={`${size} text-amber-400`}>
       {'★'.repeat(rating)}
-      <span className="text-slate-200">{'★'.repeat(5 - rating)}</span>
+      <span className="text-gray-200">{'★'.repeat(5 - rating)}</span>
     </span>
   );
 
@@ -80,13 +81,13 @@ export default function FeedbackViewingPage({ params }: { params: Promise<{ id: 
     return (
       <ProtectedRoute>
         <DashboardLayout currentPage="events">
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 flex items-center justify-center">
+          <div className="min-h-screen bg-gray-50 flex items-center justify-center">
             <div className="text-center">
-              <div className="relative w-24 h-24 mx-auto mb-6">
-                <div className="absolute inset-0 rounded-full border-4 border-blue-200"></div>
-                <div className="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
+              <div className="relative w-16 h-16 mx-auto mb-5">
+                <div className="absolute inset-0 rounded-full border-4 border-primary-100"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-primary-600 border-t-transparent animate-spin"></div>
               </div>
-              <p className="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <p className="text-lg font-bold text-gray-700">
                 Loading feedback...
               </p>
             </div>
@@ -99,30 +100,25 @@ export default function FeedbackViewingPage({ params }: { params: Promise<{ id: 
   return (
     <ProtectedRoute>
       <DashboardLayout currentPage="events">
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 relative overflow-hidden">
-          <div className="fixed inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-blob"></div>
-            <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-          </div>
-
-          <div className="relative z-10 p-8">
+        <div className="min-h-screen bg-gray-50">
+          <div className="p-8 max-w-4xl mx-auto">
             {/* Header */}
-            <div className="mb-10 animate-[fadeIn_0.8s_ease-out]">
+            <div className="mb-7">
               <div className="flex items-center gap-4 mb-2">
                 <button
                   onClick={() => router.push(`/events/${eventId}`)}
-                  className="group p-3 hover:bg-white/80 backdrop-blur-sm rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg border border-slate-200/50"
+                  className="p-2.5 bg-white border border-gray-200 rounded-xl hover:border-primary-300 transition-colors"
                 >
-                  <svg className="w-6 h-6 text-slate-700 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                  <svg className="w-8 h-8 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.98 21.539a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>
-                    <span className="text-sm font-bold text-slate-500">{event?.title}</span>
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.98 21.539a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>
+                    <span className="text-sm font-bold text-gray-500">{event?.title}</span>
                   </div>
-                  <h1 className="text-4xl font-black bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+                  <h1 className="text-2xl font-extrabold text-gray-900">
                     Feedback
                   </h1>
                 </div>
@@ -131,14 +127,14 @@ export default function FeedbackViewingPage({ params }: { params: Promise<{ id: 
 
             {/* Stats summary */}
             {stats.total > 0 && (
-              <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl p-8 mb-8 animate-[fadeIn_0.5s_ease-out]">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
-                  <div className="text-center md:border-r md:border-slate-200">
-                    <p className="text-6xl font-black bg-gradient-to-r from-amber-500 to-orange-500 bg-clip-text text-transparent">
+              <div className="bg-white rounded-2xl border border-gray-200 p-7 mb-7">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-7 items-center">
+                  <div className="text-center md:border-r md:border-gray-200">
+                    <p className="text-5xl font-extrabold text-amber-500">
                       {stats.average.toFixed(1)}
                     </p>
-                    <div className="flex justify-center my-2">{renderStars(Math.round(stats.average), 'text-2xl')}</div>
-                    <p className="text-sm font-bold text-slate-500">
+                    <div className="flex justify-center my-2">{renderStars(Math.round(stats.average), 'text-xl')}</div>
+                    <p className="text-sm font-bold text-gray-500">
                       {stats.total} {stats.total === 1 ? 'response' : 'responses'}
                     </p>
                   </div>
@@ -151,20 +147,20 @@ export default function FeedbackViewingPage({ params }: { params: Promise<{ id: 
                         <button
                           key={star}
                           onClick={() => setRatingFilter(ratingFilter === star ? 'all' : star)}
-                          className={`w-full flex items-center gap-3 group ${
+                          className={`w-full flex items-center gap-3 ${
                             ratingFilter === star ? 'opacity-100' : 'opacity-80 hover:opacity-100'
                           }`}
                         >
-                          <span className="text-xs font-bold text-slate-500 w-10 flex-shrink-0">{star} ★</span>
-                          <div className="flex-1 h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                          <span className="text-xs font-bold text-gray-500 w-10 flex-shrink-0">{star} ★</span>
+                          <div className="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
                             <div
-                              className={`h-full rounded-full transition-all duration-500 ${
-                                ratingFilter === star ? 'bg-blue-600' : 'bg-amber-400'
+                              className={`h-full rounded-full transition-all duration-300 ${
+                                ratingFilter === star ? 'bg-primary-600' : 'bg-amber-400'
                               }`}
                               style={{ width: `${pct}%` }}
                             />
                           </div>
-                          <span className="text-xs font-bold text-slate-400 w-8 flex-shrink-0 text-right">{count}</span>
+                          <span className="text-xs font-bold text-gray-400 w-8 flex-shrink-0 text-right">{count}</span>
                         </button>
                       );
                     })}
@@ -174,7 +170,7 @@ export default function FeedbackViewingPage({ params }: { params: Promise<{ id: 
                 {ratingFilter !== 'all' && (
                   <button
                     onClick={() => setRatingFilter('all')}
-                    className="mt-4 text-xs font-bold text-blue-600 hover:underline"
+                    className="mt-4 text-xs font-bold text-primary-600 hover:underline"
                   >
                     Clear filter ({ratingFilter} ★ only) ✕
                   </button>
@@ -184,49 +180,36 @@ export default function FeedbackViewingPage({ params }: { params: Promise<{ id: 
 
             {/* List */}
             {feedback.length === 0 ? (
-              <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl p-16 text-center">
-                                <div className="w-16 h-16 mb-4 mx-auto text-slate-300"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.98 21.539a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg></div>
-                <p className="text-xl font-black text-slate-900 mb-2">No feedback yet</p>
-                <p className="text-slate-500 font-medium">
+              <div className="bg-white rounded-2xl border border-gray-200 p-14 text-center">
+                <div className="w-14 h-14 mb-4 mx-auto bg-primary-50 rounded-xl flex items-center justify-center text-primary-600">
+                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.562.562 0 00-.586 0L6.98 21.539a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.562.562 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" /></svg>
+                </div>
+                <p className="text-lg font-extrabold text-gray-900 mb-1.5">No feedback yet</p>
+                <p className="text-gray-500 text-sm">
                   Attendees can submit feedback from the app once your event is underway.
                 </p>
               </div>
             ) : (
               <div className="space-y-4">
-                {filteredFeedback.map((f, idx) => (
+                {filteredFeedback.map((f) => (
                   <div
                     key={f.id}
-                    className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-xl p-6 animate-[fadeIn_0.5s_ease-out]"
-                    style={{ animationDelay: `${idx * 0.05}s` }}
+                    className="bg-white rounded-2xl border border-gray-200 p-6"
                   >
                     <div className="flex items-start justify-between gap-4 mb-2">
                       {renderStars(f.rating)}
-                      <span className="text-xs font-semibold text-slate-400 flex-shrink-0">{formatDate(f.created_at)}</span>
+                      <span className="text-xs font-semibold text-gray-400 flex-shrink-0">{formatDate(f.created_at)}</span>
                     </div>
                     {f.comment ? (
-                      <p className="text-slate-700 font-medium leading-relaxed">{f.comment}</p>
+                      <p className="text-gray-700 leading-relaxed">{f.comment}</p>
                     ) : (
-                      <p className="text-slate-400 font-medium italic text-sm">No comment left</p>
+                      <p className="text-gray-400 italic text-sm">No comment left</p>
                     )}
                   </div>
                 ))}
               </div>
             )}
           </div>
-
-          <style jsx global>{`
-            @keyframes fadeIn {
-              from { opacity: 0; transform: translateY(20px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-            @keyframes blob {
-              0%, 100% { transform: translate(0, 0) scale(1); }
-              33% { transform: translate(30px, -50px) scale(1.1); }
-              66% { transform: translate(-20px, 20px) scale(0.9); }
-            }
-            .animate-blob { animation: blob 7s infinite; }
-            .animation-delay-2000 { animation-delay: 2s; }
-          `}</style>
         </div>
       </DashboardLayout>
     </ProtectedRoute>

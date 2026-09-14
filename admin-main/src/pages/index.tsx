@@ -24,50 +24,20 @@ export default function AdminDashboard() {
     return null; // Will redirect in useEffect
   }
 
-  // Temporarily allow all authenticated users (remove role check for now)
-  // if (user.role !== 'admin') {
-  //   return <div>Access denied. Admin privileges required.</div>;
-  // }
-
   return (
     <AdminLayout>
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-rose-50 relative overflow-hidden">
-        {/* Animated Background Blobs */}
-        <div className="fixed inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-0 right-1/4 w-96 h-96 bg-primary-400/10 rounded-full blur-3xl animate-blob"></div>
-          <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-secondary-400/10 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-accent-400/10 rounded-full blur-3xl animate-blob animation-delay-4000"></div>
-        </div>
-
+      <div className="min-h-screen bg-gray-50">
         {/* Header */}
-        <div style={{
-          background: 'white',
-          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-          borderBottom: '1px solid #e5e7eb',
-          padding: '1.5rem 2rem',
-          position: 'relative',
-          zIndex: 10
-        }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div className="bg-white border-b border-gray-100 px-8 py-6">
+          <div className="flex items-center justify-between">
             <div>
-              <h1 style={{ fontSize: '1.875rem', fontWeight: 'bold', background: 'linear-gradient(to right, #6B5B9A, #C9507B, #F08070)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', margin: 0 }}>FemVents Dashboard</h1>
-              <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.875rem', color: '#6b7280' }}>Empowering Women Through Events</p>
+              <h1 className="text-2xl font-extrabold text-gray-900">FemVents Dashboard</h1>
+              <p className="text-sm text-gray-500 mt-1">Empowering Women Through Events</p>
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-              <div style={{ fontSize: '0.875rem', color: '#6b7280' }}>
-                Welcome back, {user.name}
-              </div>
-              <div style={{
-                width: '2rem',
-                height: '2rem',
-                background: 'linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                border: '2px solid #C9507B'
-              }}>
-                <span style={{ fontSize: '0.875rem', fontWeight: '600', color: '#C9507B' }}>
+            <div className="flex items-center gap-4">
+              <div className="text-sm text-gray-500">Welcome back, {user.name}</div>
+              <div className="w-9 h-9 bg-primary-50 border-2 border-secondary-500 rounded-full flex items-center justify-center">
+                <span className="text-sm font-bold text-secondary-600">
                   {user.name.charAt(0).toUpperCase()}
                 </span>
               </div>
@@ -76,131 +46,62 @@ export default function AdminDashboard() {
         </div>
 
         {/* Main Content */}
-        <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+        <div className="p-8 max-w-6xl mx-auto">
           <DashboardStats />
 
-          <div style={{
-            marginTop: '2rem',
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-            gap: '2rem'
-          }}>
+          <div className="mt-8 grid gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))' }}>
             <RecentActivity />
 
             {/* Quick Actions */}
-            <div style={{
-              background: 'white',
-              borderRadius: '0.75rem',
-              boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)',
-              border: '1px solid #e5e7eb'
-            }}>
-              <div style={{ padding: '1.5rem', borderBottom: '1px solid #e5e7eb' }}>
-                <h3 style={{ fontSize: '1.125rem', fontWeight: '600', color: '#111827', margin: 0 }}>Quick Actions</h3>
+            <div className="bg-white rounded-2xl border border-gray-100">
+              <div className="p-6 border-b border-gray-100">
+                <h3 className="text-base font-extrabold text-gray-900">Quick Actions</h3>
               </div>
-              <div style={{ padding: '1.5rem' }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  <a
-                    href="/payments"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: '1rem',
-                      background: 'linear-gradient(135deg, #fdf2f8 0%, #fce7f3 100%)',
-                      borderRadius: '0.5rem',
-                      textDecoration: 'none',
-                      transition: 'all 0.2s',
-                      border: '1px solid #fbcfe8'
-                    }}
-                  >
-                    <div style={{
-                      width: '2.5rem',
-                      height: '2.5rem',
-                      background: 'linear-gradient(135deg, #C9507B 0%, #B4406C 100%)',
-                      borderRadius: '0.5rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginRight: '1rem',
-                      flexShrink: 0
-                    }}>
-                      <svg style={{ width: '1.25rem', height: '1.25rem', color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#111827', margin: 0 }}>Payment Management</p>
-                      <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Track and manage manual payments</p>
-                    </div>
-                  </a>
+              <div className="p-6 space-y-3">
+                <a
+                  href="/payments"
+                  className="flex items-center p-4 rounded-xl border border-gray-100 hover:border-secondary-200 transition-colors"
+                >
+                  <div className="w-10 h-10 bg-secondary-500 rounded-lg flex items-center justify-center flex-shrink-0 mr-4">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900">Payment Management</p>
+                    <p className="text-xs text-gray-500 mt-0.5">Track and manage manual payments</p>
+                  </div>
+                </a>
 
-                  <a
-                    href="/events"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: '1rem',
-                      background: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)',
-                      borderRadius: '0.5rem',
-                      textDecoration: 'none',
-                      transition: 'all 0.2s',
-                      border: '1px solid #e9d5ff'
-                    }}
-                  >
-                    <div style={{
-                      width: '2.5rem',
-                      height: '2.5rem',
-                      background: 'linear-gradient(135deg, #6B5B9A 0%, #5B4B8A 100%)',
-                      borderRadius: '0.5rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginRight: '1rem',
-                      flexShrink: 0
-                    }}>
-                      <svg style={{ width: '1.25rem', height: '1.25rem', color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#111827', margin: 0 }}>Event Management</p>
-                      <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Create and manage events</p>
-                    </div>
-                  </a>
+                <a
+                  href="/events"
+                  className="flex items-center p-4 rounded-xl border border-gray-100 hover:border-primary-200 transition-colors"
+                >
+                  <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center flex-shrink-0 mr-4">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900">Event Management</p>
+                    <p className="text-xs text-gray-500 mt-0.5">Create and manage events</p>
+                  </div>
+                </a>
 
-                  <a
-                    href="/users"
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      padding: '1rem',
-                      background: 'linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%)',
-                      borderRadius: '0.5rem',
-                      textDecoration: 'none',
-                      transition: 'all 0.2s',
-                      border: '1px solid #fed7aa'
-                    }}
-                  >
-                    <div style={{
-                      width: '2.5rem',
-                      height: '2.5rem',
-                      background: 'linear-gradient(135deg, #F08070 0%, #E87461 100%)',
-                      borderRadius: '0.5rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      marginRight: '1rem',
-                      flexShrink: 0
-                    }}>
-                      <svg style={{ width: '1.25rem', height: '1.25rem', color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <p style={{ fontSize: '0.875rem', fontWeight: '500', color: '#111827', margin: 0 }}>User Management</p>
-                      <p style={{ fontSize: '0.875rem', color: '#6b7280', margin: 0 }}>Manage users and permissions</p>
-                    </div>
-                  </a>
-                </div>
+                <a
+                  href="/users"
+                  className="flex items-center p-4 rounded-xl border border-gray-100 hover:border-accent-200 transition-colors"
+                >
+                  <div className="w-10 h-10 bg-accent-500 rounded-lg flex items-center justify-center flex-shrink-0 mr-4">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900">User Management</p>
+                    <p className="text-xs text-gray-500 mt-0.5">Manage users and permissions</p>
+                  </div>
+                </a>
               </div>
             </div>
           </div>

@@ -94,12 +94,12 @@ export default function EditEventsPage() {
         .eq('site', 'web-main')
         .maybeSingle();
 
-        const mergedContent = {
-          ...(existing?.content || {}),
-          categories: content.categories,
-          featuredEvents: content.featuredEvents,
-          destinations: content.destinations,
-        };
+      const mergedContent = {
+        ...(existing?.content || {}),
+        categories: content.categories,
+        featuredEvents: content.featuredEvents,
+        destinations: content.destinations,
+      };
 
       const { error } = await supabase
         .from('site_content')
@@ -109,7 +109,7 @@ export default function EditEventsPage() {
         );
 
       if (error) throw error;
-      alert('✅ Events page saved!');
+      alert('Events page saved!');
     } catch (err) {
       console.error('Error saving events content:', err);
       alert('Failed to save');
@@ -175,8 +175,8 @@ export default function EditEventsPage() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="flex items-center justify-center min-h-screen bg-[#FBF3FA]">
-          <div className="animate-spin rounded-full h-10 w-10 border-2 border-[#D9C9E0] border-t-[#9B1F5C]"></div>
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+          <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-primary-600"></div>
         </div>
       </AdminLayout>
     );
@@ -185,23 +185,23 @@ export default function EditEventsPage() {
   return (
     <AdminLayout>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[#2E1F45]">Edit Events Page</h1>
-        <p className="text-sm text-[#5C4A6B] mt-1">Update the text and images shown on femvents.netlify.app/events.</p>
+        <h1 className="text-2xl font-extrabold text-gray-900">Edit Events Page</h1>
+        <p className="text-sm text-gray-500 mt-1">Update the text and images shown on femvents.netlify.app/events.</p>
       </div>
 
       {/* Categories */}
-      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
-        <div className="px-6 py-3 bg-[#E8743B] text-[#2E1F45] font-bold text-sm">Categories</div>
+      <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
+        <div className="px-6 py-3.5 bg-accent-500 text-white font-extrabold text-sm">Categories</div>
         <div className="p-6 space-y-4">
           {content.categories.map((cat, i) => (
-            <div key={i} className="border border-[#D9C9E0] rounded-sm p-4 space-y-3">
+            <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3">
               <div className="flex justify-between items-start">
-                <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Category {i + 1} — Title</label>
-                <button onClick={() => removeCategory(i)} className="text-xs text-[#9B1F5C] font-bold hover:opacity-70">Remove</button>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Category {i + 1} — Title</label>
+                <button onClick={() => removeCategory(i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
               </div>
-              <input type="text" value={cat.title} onChange={(e) => updateCategory(i, 'title', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Description</label>
-              <input type="text" value={cat.copy} onChange={(e) => updateCategory(i, 'copy', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+              <input type="text" value={cat.title} onChange={(e) => updateCategory(i, 'title', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Description</label>
+              <input type="text" value={cat.copy} onChange={(e) => updateCategory(i, 'copy', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
               <ImageUploadWidget
                 label="Category Image"
                 value={cat.image}
@@ -210,62 +210,62 @@ export default function EditEventsPage() {
               />
             </div>
           ))}
- <button onClick={addCategory} className="w-full py-2 border-2 border-dashed border-[#D9C9E0] rounded-sm text-sm font-medium text-[#8A7A96] hover:border-[#9B1F5C] hover:text-[#9B1F5C] transition-colors">
+          <button onClick={addCategory} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
             + Add category
           </button>
         </div>
       </div>
 
       {/* Destinations */}
-      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
-        <div className="px-6 py-3 bg-[#C9508A] text-[#FBF3FA] font-bold text-sm">Browse By City (sidebar)</div>
+      <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
+        <div className="px-6 py-3.5 bg-secondary-500 text-white font-extrabold text-sm">Browse By City (sidebar)</div>
         <div className="p-6 space-y-4">
           {content.destinations.map((dest, i) => (
-            <div key={i} className="border border-[#D9C9E0] rounded-sm p-4 space-y-3">
+            <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3">
               <div className="flex justify-between items-start">
-                <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">City {i + 1}</label>
-                <button onClick={() => removeDestination(i)} className="text-xs text-[#9B1F5C] font-bold hover:opacity-70">Remove</button>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">City {i + 1}</label>
+                <button onClick={() => removeDestination(i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
               </div>
-              <input type="text" value={dest.city} onChange={(e) => updateDestination(i, 'city', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Stat</label>
-              <input type="text" value={dest.stat} onChange={(e) => updateDestination(i, 'stat', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+              <input type="text" value={dest.city} onChange={(e) => updateDestination(i, 'city', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Stat</label>
+              <input type="text" value={dest.stat} onChange={(e) => updateDestination(i, 'stat', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
           ))}
-          <button onClick={addDestination} className="w-full py-2 border-2 border-dashed border-[#D9C9E0] rounded-sm text-sm font-medium text-[#8A7A96] hover:border-[#9B1F5C] hover:text-[#9B1F5C] transition-colors">
+          <button onClick={addDestination} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
             + Add city
           </button>
         </div>
       </div>
 
       {/* Featured Events */}
-      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
-        <div className="px-6 py-3 bg-[#4A3B78] text-[#FBF3FA] font-bold text-sm">Featured Events</div>
+      <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
+        <div className="px-6 py-3.5 bg-primary-600 text-white font-extrabold text-sm">Featured Events</div>
         <div className="p-6 space-y-4">
           {content.featuredEvents.map((event, i) => (
-            <div key={i} className="border border-[#D9C9E0] rounded-sm p-4 space-y-3">
+            <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3">
               <div className="flex justify-between items-start">
-                <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Event {i + 1} — Title</label>
-                <button onClick={() => removeEvent(i)} className="text-xs text-[#9B1F5C] font-bold hover:opacity-70">Remove</button>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Event {i + 1} — Title</label>
+                <button onClick={() => removeEvent(i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
               </div>
-              <input type="text" value={event.title} onChange={(e) => updateEvent(i, 'title', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+              <input type="text" value={event.title} onChange={(e) => updateEvent(i, 'title', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">City</label>
-                  <input type="text" value={event.city} onChange={(e) => updateEvent(i, 'city', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">City</label>
+                  <input type="text" value={event.city} onChange={(e) => updateEvent(i, 'city', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Date</label>
-                  <input type="text" value={event.date} onChange={(e) => updateEvent(i, 'date', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Date</label>
+                  <input type="text" value={event.date} onChange={(e) => updateEvent(i, 'date', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
               </div>
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Summary</label>
-              <textarea value={event.summary} onChange={(e) => updateEvent(i, 'summary', e.target.value)} rows={2} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Tags (comma separated)</label>
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Summary</label>
+              <textarea value={event.summary} onChange={(e) => updateEvent(i, 'summary', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Tags (comma separated)</label>
               <input
                 type="text"
                 value={event.tags.join(', ')}
                 onChange={(e) => updateEventTags(i, e.target.value)}
-                className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]"
+                className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500"
               />
               <ImageUploadWidget
                 label="Event Image"
@@ -275,14 +275,14 @@ export default function EditEventsPage() {
               />
             </div>
           ))}
-          <button onClick={addEvent} className="w-full py-2 border-2 border-dashed border-[#D9C9E0] rounded-sm text-sm font-medium text-[#8A7A96] hover:border-[#9B1F5C] hover:text-[#9B1F5C] transition-colors">
+          <button onClick={addEvent} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
             + Add event
           </button>
         </div>
       </div>
 
       <div className="flex justify-end sticky bottom-4">
-        <button onClick={handleSave} disabled={saving} className="px-6 py-3 bg-[#2E1F45] text-[#FBF3FA] rounded-sm hover:bg-[#3D2A5C] disabled:opacity-50 font-bold text-sm shadow-lg">
+        <button onClick={handleSave} disabled={saving} className="px-6 py-3.5 bg-secondary-500 hover:bg-secondary-600 text-white rounded-xl disabled:opacity-50 font-bold text-sm transition-colors shadow-lg">
           {saving ? 'Saving...' : 'Save Events Page'}
         </button>
       </div>

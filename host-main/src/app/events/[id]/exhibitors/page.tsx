@@ -32,7 +32,6 @@ export default function ExhibitorsManagementPage({ params }: { params: Promise<{
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
-  // Form state
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState('');
@@ -128,13 +127,13 @@ export default function ExhibitorsManagementPage({ params }: { params: Promise<{
     return (
       <ProtectedRoute>
         <DashboardLayout currentPage="events">
-          <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 flex items-center justify-center">
+          <div className="min-h-screen bg-gray-50 flex items-center justify-center">
             <div className="text-center">
-              <div className="relative w-24 h-24 mx-auto mb-6">
-                <div className="absolute inset-0 rounded-full border-4 border-blue-200"></div>
-                <div className="absolute inset-0 rounded-full border-4 border-blue-600 border-t-transparent animate-spin"></div>
+              <div className="relative w-16 h-16 mx-auto mb-5">
+                <div className="absolute inset-0 rounded-full border-4 border-primary-100"></div>
+                <div className="absolute inset-0 rounded-full border-4 border-primary-600 border-t-transparent animate-spin"></div>
               </div>
-              <p className="text-2xl font-black bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <p className="text-lg font-bold text-gray-700">
                 Loading exhibitors...
               </p>
             </div>
@@ -147,39 +146,34 @@ export default function ExhibitorsManagementPage({ params }: { params: Promise<{
   return (
     <ProtectedRoute>
       <DashboardLayout currentPage="events">
-        <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-purple-50/20 relative overflow-hidden">
-          <div className="fixed inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-0 right-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-blob"></div>
-            <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl animate-blob animation-delay-2000"></div>
-          </div>
-
-          <div className="relative z-10 p-8">
+        <div className="min-h-screen bg-gray-50">
+          <div className="p-8 max-w-4xl mx-auto">
             {/* Header */}
-            <div className="mb-10 animate-[fadeIn_0.8s_ease-out]">
+            <div className="mb-8">
               <div className="flex items-center gap-4 mb-6">
                 <button
                   onClick={() => router.push(`/events/${eventId}`)}
-                  className="group p-3 hover:bg-white/80 backdrop-blur-sm rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg border border-slate-200/50"
+                  className="p-2.5 bg-white border border-gray-200 rounded-xl hover:border-primary-300 transition-colors"
                 >
-                  <svg className="w-6 h-6 text-slate-700 group-hover:text-blue-600 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                   </svg>
                 </button>
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                  <svg className="w-8 h-8 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>
-                    <span className="text-sm font-bold text-slate-500">{event?.title}</span>
+                  <div className="flex items-center gap-2.5 mb-1.5">
+                    <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>
+                    <span className="text-sm font-bold text-gray-500">{event?.title}</span>
                   </div>
-                  <h1 className="text-4xl font-black bg-gradient-to-r from-slate-900 via-blue-900 to-purple-900 bg-clip-text text-transparent">
+                  <h1 className="text-2xl font-extrabold text-gray-900">
                     Exhibitors
                   </h1>
                 </div>
                 {isEventOwner && !showForm && (
                   <button
                     onClick={() => setShowForm(true)}
-                    className="group flex items-center gap-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-8 py-4 rounded-2xl font-bold hover:shadow-2xl hover:shadow-blue-500/40 hover:scale-105 transition-all duration-300"
+                    className="flex items-center gap-2 bg-secondary-500 hover:bg-secondary-600 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors"
                   >
-                    <svg className="w-5 h-5 group-hover:rotate-90 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
                     </svg>
                     <span>Add Exhibitor</span>
@@ -190,79 +184,79 @@ export default function ExhibitorsManagementPage({ params }: { params: Promise<{
 
             {/* Create / Edit form */}
             {showForm && (
-              <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl p-8 mb-8 animate-[fadeIn_0.4s_ease-out]">
-                <h2 className="text-xl font-black text-slate-900 mb-6">
+              <div className="bg-white rounded-2xl border border-gray-200 p-7 mb-7">
+                <h2 className="text-lg font-extrabold text-gray-900 mb-5">
                   {editingId ? 'Edit Exhibitor' : 'Add Exhibitor'}
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-black text-slate-500 uppercase tracking-wide mb-2">Name</label>
+                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Name</label>
                     <input
                       type="text"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g. TechCorp Africa"
-                      className="w-full px-5 py-3.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-medium text-slate-900"
+                      className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none font-medium text-gray-900 transition-colors"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black text-slate-500 uppercase tracking-wide mb-2">Booth</label>
+                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Booth</label>
                     <input
                       type="text"
                       value={booth}
                       onChange={(e) => setBooth(e.target.value)}
                       placeholder="e.g. A1"
-                      className="w-full px-5 py-3.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-medium text-slate-900"
+                      className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none font-medium text-gray-900 transition-colors"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black text-slate-500 uppercase tracking-wide mb-2">Category</label>
+                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Category</label>
                     <input
                       type="text"
                       value={category}
                       onChange={(e) => setCategory(e.target.value)}
                       placeholder="e.g. Technology"
-                      className="w-full px-5 py-3.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-medium text-slate-900"
+                      className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none font-medium text-gray-900 transition-colors"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-black text-slate-500 uppercase tracking-wide mb-2">Website</label>
+                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Website</label>
                     <input
                       type="text"
                       value={website}
                       onChange={(e) => setWebsite(e.target.value)}
                       placeholder="https://..."
-                      className="w-full px-5 py-3.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-medium text-slate-900"
+                      className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none font-medium text-gray-900 transition-colors"
                     />
                   </div>
 
                   <div className="md:col-span-2">
-                    <label className="block text-xs font-black text-slate-500 uppercase tracking-wide mb-2">Description</label>
+                    <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">Description</label>
                     <textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="What does this exhibitor offer?"
                       rows={3}
-                      className="w-full px-5 py-3.5 rounded-2xl border-2 border-slate-200 focus:border-blue-500 focus:outline-none font-medium text-slate-900 resize-none"
+                      className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 outline-none font-medium text-gray-900 resize-none transition-colors"
                     />
                   </div>
                 </div>
 
-                <div className="flex gap-3 pt-6">
+                <div className="flex gap-3 pt-5">
                   <button
                     onClick={handleSave}
                     disabled={saving || !name.trim()}
-                    className="flex-1 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-3.5 rounded-2xl font-bold hover:shadow-xl hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:hover:scale-100"
+                    className="flex-1 bg-secondary-500 hover:bg-secondary-600 text-white px-6 py-3.5 rounded-xl font-bold transition-colors disabled:opacity-50"
                   >
                     {saving ? 'Saving...' : editingId ? 'Save Changes' : 'Add Exhibitor'}
                   </button>
                   <button
                     onClick={resetForm}
-                    className="px-6 py-3.5 rounded-2xl font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 transition-all duration-300"
+                    className="px-6 py-3.5 rounded-xl font-bold text-gray-600 bg-gray-100 hover:bg-gray-200 transition-colors"
                   >
                     Cancel
                   </button>
@@ -272,41 +266,42 @@ export default function ExhibitorsManagementPage({ params }: { params: Promise<{
 
             {/* List */}
             {exhibitors.length === 0 && !showForm ? (
-              <div className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-2xl p-16 text-center">
-                                <div className="w-16 h-16 mb-4 mx-auto text-slate-300"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg></div>
-                <p className="text-xl font-black text-slate-900 mb-2">No exhibitors yet</p>
-                <p className="text-slate-500 font-medium">Add exhibitors and attendees will see them in the app.</p>
+              <div className="bg-white rounded-2xl border border-gray-200 p-14 text-center">
+                <div className="w-14 h-14 mb-4 mx-auto bg-primary-50 rounded-xl flex items-center justify-center text-primary-600">
+                  <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg>
+                </div>
+                <p className="text-lg font-extrabold text-gray-900 mb-1.5">No exhibitors yet</p>
+                <p className="text-gray-500 text-sm">Add exhibitors and attendees will see them in the app.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {exhibitors.map((ex, idx) => (
+                {exhibitors.map((ex) => (
                   <div
                     key={ex.id}
-                    className="bg-white/80 backdrop-blur-xl rounded-3xl border border-slate-200/50 shadow-xl p-6 animate-[fadeIn_0.5s_ease-out]"
-                    style={{ animationDelay: `${idx * 0.05}s` }}
+                    className="bg-white rounded-2xl border border-gray-200 p-6"
                   >
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex items-start gap-4 flex-1 min-w-0">
-                        <div className="w-12 h-12 flex-shrink-0 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-black shadow-lg">
+                        <div className="w-11 h-11 flex-shrink-0 bg-primary-50 text-primary-600 rounded-xl flex items-center justify-center font-extrabold text-sm">
                           {ex.booth || '—'}
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-lg font-black text-slate-900">{ex.name}</h3>
+                          <h3 className="text-base font-extrabold text-gray-900">{ex.name}</h3>
                           {ex.category && (
-                            <span className="inline-block text-xs font-bold text-purple-600 mb-2">{ex.category}</span>
+                            <span className="inline-block text-xs font-bold text-secondary-600 mb-1.5">{ex.category}</span>
                           )}
                           {ex.description && (
-                            <p className="text-sm text-slate-600 font-medium leading-relaxed">{ex.description}</p>
+                            <p className="text-sm text-gray-600 leading-relaxed">{ex.description}</p>
                           )}
                           {ex.website && (
                             <a
                               href={ex.website}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 mt-2 hover:underline"
+                              className="inline-flex items-center gap-1 text-xs font-bold text-primary-600 mt-2 hover:underline"
                             >
-                               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>Visit website
-                                   </a>
+                              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" /></svg>Visit website
+                            </a>
                           )}
                         </div>
                       </div>
@@ -315,7 +310,7 @@ export default function ExhibitorsManagementPage({ params }: { params: Promise<{
                         <div className="flex gap-2 flex-shrink-0">
                           <button
                             onClick={() => startEdit(ex)}
-                            className="p-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-blue-100 hover:text-blue-600 transition-all duration-200"
+                            className="p-2.5 bg-gray-50 text-gray-500 rounded-lg hover:bg-primary-50 hover:text-primary-600 transition-colors"
                             title="Edit"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -324,7 +319,7 @@ export default function ExhibitorsManagementPage({ params }: { params: Promise<{
                           </button>
                           <button
                             onClick={() => handleDelete(ex.id)}
-                            className="p-2.5 bg-slate-100 text-slate-600 rounded-xl hover:bg-red-100 hover:text-red-600 transition-all duration-200"
+                            className="p-2.5 bg-gray-50 text-gray-500 rounded-lg hover:bg-red-50 hover:text-red-600 transition-colors"
                             title="Delete"
                           >
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -339,20 +334,6 @@ export default function ExhibitorsManagementPage({ params }: { params: Promise<{
               </div>
             )}
           </div>
-
-          <style jsx global>{`
-            @keyframes fadeIn {
-              from { opacity: 0; transform: translateY(20px); }
-              to { opacity: 1; transform: translateY(0); }
-            }
-            @keyframes blob {
-              0%, 100% { transform: translate(0, 0) scale(1); }
-              33% { transform: translate(30px, -50px) scale(1.1); }
-              66% { transform: translate(-20px, 20px) scale(0.9); }
-            }
-            .animate-blob { animation: blob 7s infinite; }
-            .animation-delay-2000 { animation-delay: 2s; }
-          `}</style>
         </div>
       </DashboardLayout>
     </ProtectedRoute>

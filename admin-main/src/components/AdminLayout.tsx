@@ -74,13 +74,13 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         {/* Brand */}
         <div className="p-8 pb-6">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary-600 via-secondary-500 to-accent-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-200 p-0.5">
+            <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center p-0.5">
               <div className="bg-white rounded-lg w-full h-full flex items-center justify-center">
                 <img src="/icon.png" alt="FemVents" className="w-8 h-8 rounded-lg" />
               </div>
             </div>
             <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-primary-600 via-secondary-500 to-accent-600 bg-clip-text text-transparent tracking-tight">FemVents</h1>
+              <h1 className="text-xl font-bold text-primary-600 tracking-tight">FemVents</h1>
               <p className="text-xs text-gray-500 font-medium">Admin Portal</p>
             </div>
           </div>
@@ -123,7 +123,7 @@ export const AdminLayout: React.FC<{ children: React.ReactNode }> = ({ children 
         {/* User Profile & Logout */}
         <div className="p-4 border-t border-gray-100 bg-gray-50/50">
           <div className="flex items-center gap-3 mb-4 px-2">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-100 to-secondary-100 rounded-full flex items-center justify-center text-secondary-700 font-bold border-2 border-white shadow-sm">
+            <div className="w-10 h-10 bg-primary-50 rounded-full flex items-center justify-center text-secondary-700 font-bold border-2 border-white shadow-sm">
               {user?.name?.[0]?.toUpperCase() || 'A'}
             </div>
             <div className="flex-1 min-w-0">
