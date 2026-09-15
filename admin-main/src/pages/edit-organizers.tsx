@@ -162,7 +162,7 @@ export default function EditOrganizersPage() {
         );
 
       if (error) throw error;
-      alert('✅ Organizers page saved!');
+      alert('Organizers page saved!');
     } catch (err) {
       console.error('Error saving organizers content:', err);
       alert('Failed to save');
@@ -206,8 +206,8 @@ export default function EditOrganizersPage() {
   if (loading) {
     return (
       <AdminLayout>
-        <div className="flex items-center justify-center min-h-screen bg-[#FBF3FA]">
-          <div className="animate-spin rounded-full h-10 w-10 border-2 border-[#D9C9E0] border-t-[#9B1F5C]"></div>
+        <div className="flex items-center justify-center min-h-screen bg-gray-50">
+          <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-primary-600"></div>
         </div>
       </AdminLayout>
     );
@@ -216,39 +216,39 @@ export default function EditOrganizersPage() {
   return (
     <AdminLayout>
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-[#2E1F45]">Edit Organizers Page</h1>
-        <p className="text-sm text-[#5C4A6B] mt-1">Update the text and images shown on femvents.netlify.app/organizers.</p>
+        <h1 className="text-2xl font-extrabold text-gray-900">Edit Organizers Page</h1>
+        <p className="text-sm text-gray-500 mt-1">Update the text and images shown on femvents.netlify.app/organizers.</p>
       </div>
 
       {/* Hero */}
-      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
-        <div className="px-6 py-3 bg-[#2E1F45] text-[#FBF3FA] font-bold text-sm">Hero</div>
+      <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
+        <div className="px-6 py-3.5 bg-primary-600 text-white font-extrabold text-sm">Hero</div>
         <div className="p-6 space-y-5">
           <div>
-            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Title</label>
-            <input type="text" value={content.heroTitle} onChange={(e) => setContent({ ...content, heroTitle: e.target.value })} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Title</label>
+            <input type="text" value={content.heroTitle} onChange={(e) => setContent({ ...content, heroTitle: e.target.value })} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-[#2E1F45] mb-2">Description</label>
-            <textarea value={content.heroDescription} onChange={(e) => setContent({ ...content, heroDescription: e.target.value })} rows={3} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Description</label>
+            <textarea value={content.heroDescription} onChange={(e) => setContent({ ...content, heroDescription: e.target.value })} rows={3} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
           </div>
         </div>
       </div>
 
       {/* Organizer Stories */}
-      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
-        <div className="px-6 py-3 bg-[#E8743B] text-[#2E1F45] font-bold text-sm">Organizer Stories (3 spotlight cards)</div>
+      <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
+        <div className="px-6 py-3.5 bg-accent-500 text-white font-extrabold text-sm">Organizer Stories (3 spotlight cards)</div>
         <div className="p-6 space-y-4">
           {content.organizerSpotlights.map((org, i) => (
-            <div key={i} className="border border-[#D9C9E0] rounded-sm p-4 space-y-3">
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Organizer {i + 1} — Name</label>
-              <input type="text" value={org.name} onChange={(e) => updateSpotlight(i, 'name', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Focus</label>
-              <input type="text" value={org.focus} onChange={(e) => updateSpotlight(i, 'focus', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Stat</label>
-              <input type="text" value={org.stat} onChange={(e) => updateSpotlight(i, 'stat', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Blurb</label>
-              <textarea value={org.blurb} onChange={(e) => updateSpotlight(i, 'blurb', e.target.value)} rows={2} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+            <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3">
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Organizer {i + 1} — Name</label>
+              <input type="text" value={org.name} onChange={(e) => updateSpotlight(i, 'name', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Focus</label>
+              <input type="text" value={org.focus} onChange={(e) => updateSpotlight(i, 'focus', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Stat</label>
+              <input type="text" value={org.stat} onChange={(e) => updateSpotlight(i, 'stat', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Blurb</label>
+              <textarea value={org.blurb} onChange={(e) => updateSpotlight(i, 'blurb', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
               <ImageUploadWidget
                 label="Spotlight Image"
                 value={org.image}
@@ -261,30 +261,30 @@ export default function EditOrganizersPage() {
       </div>
 
       {/* Pricing Plans */}
-      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
-        <div className="px-6 py-3 bg-[#9B1F5C] text-[#FBF3FA] font-bold text-sm">Pricing Plans (3 plans)</div>
+      <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
+        <div className="px-6 py-3.5 bg-secondary-600 text-white font-extrabold text-sm">Pricing Plans (3 plans)</div>
         <div className="p-6 space-y-4">
           {content.pricingPlans.map((plan, i) => (
-            <div key={i} className="border border-[#D9C9E0] rounded-sm p-4 space-y-3">
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Plan {i + 1} — ID</label>
-              <input type="text" value={plan.id} onChange={(e) => updatePlan(i, 'id', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Name</label>
-              <input type="text" value={plan.name} onChange={(e) => updatePlan(i, 'name', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+            <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3">
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Plan {i + 1} — ID</label>
+              <input type="text" value={plan.id} onChange={(e) => updatePlan(i, 'id', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Name</label>
+              <input type="text" value={plan.name} onChange={(e) => updatePlan(i, 'name', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Price</label>
-                  <input type="text" value={plan.price} onChange={(e) => updatePlan(i, 'price', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Price</label>
+                  <input type="text" value={plan.price} onChange={(e) => updatePlan(i, 'price', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Badge</label>
-                  <input type="text" value={plan.badge} onChange={(e) => updatePlan(i, 'badge', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Badge</label>
+                  <input type="text" value={plan.badge} onChange={(e) => updatePlan(i, 'badge', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
               </div>
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Description</label>
-              <textarea value={plan.description} onChange={(e) => updatePlan(i, 'description', e.target.value)} rows={2} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Description</label>
+              <textarea value={plan.description} onChange={(e) => updatePlan(i, 'description', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
 
-              <div className="border-t border-[#D9C9E0] pt-3">
-                <p className="text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-2">Feature breakdown (shown on the pricing cards)</p>
+              <div className="border-t border-gray-200 pt-3">
+                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Feature breakdown (shown on the pricing cards)</p>
                 <div className="space-y-2">
                   {(plan.features || []).map((feature, fi) => (
                     <div key={fi} className="grid grid-cols-[100px_1fr] gap-2">
@@ -293,14 +293,14 @@ export default function EditOrganizersPage() {
                         value={feature.label}
                         onChange={(e) => updatePlanFeature(i, fi, 'label', e.target.value)}
                         placeholder="Label"
-                        className="px-2 py-1.5 border border-[#D9C9E0] rounded-sm text-xs outline-none focus:ring-2 focus:ring-[#9B1F5C]"
+                        className="px-2 py-1.5 border border-gray-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-primary-500"
                       />
                       <input
                         type="text"
                         value={feature.value}
                         onChange={(e) => updatePlanFeature(i, fi, 'value', e.target.value)}
                         placeholder="Value"
-                        className="px-2 py-1.5 border border-[#D9C9E0] rounded-sm text-xs outline-none focus:ring-2 focus:ring-[#9B1F5C]"
+                        className="px-2 py-1.5 border border-gray-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-primary-500"
                       />
                     </div>
                   ))}
@@ -308,39 +308,39 @@ export default function EditOrganizersPage() {
               </div>
             </div>
           ))}
-          <p className="text-xs text-[#8A7A96] italic">The plan with id "growth" shows the "Most popular" badge on the live page.</p>
+          <p className="text-xs text-gray-400 italic">The plan with id "growth" shows the "Most popular" badge on the live page.</p>
         </div>
       </div>
 
       {/* How It Works */}
-      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
-        <div className="px-6 py-3 bg-[#4A3B78] text-[#FBF3FA] font-bold text-sm">How It Works (4 steps)</div>
+      <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
+        <div className="px-6 py-3.5 bg-primary-600 text-white font-extrabold text-sm">How It Works (4 steps)</div>
         <div className="p-6 space-y-3">
           {content.howItWorks.map((step, i) => (
             <div key={i}>
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Step {i + 1}</label>
-              <input type="text" value={step} onChange={(e) => updateStep(i, e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Step {i + 1}</label>
+              <input type="text" value={step} onChange={(e) => updateStep(i, e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
             </div>
           ))}
         </div>
       </div>
 
       {/* Impact Stats */}
-      <div className="bg-white rounded-sm border border-[#D9C9E0] mb-5 overflow-hidden">
-        <div className="px-6 py-3 bg-[#C9508A] text-[#FBF3FA] font-bold text-sm">Impact Stats (4 stats)</div>
+      <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
+        <div className="px-6 py-3.5 bg-secondary-500 text-white font-extrabold text-sm">Impact Stats (4 stats)</div>
         <div className="p-6 space-y-4">
           {content.impactStats.map((stat, i) => (
-            <div key={i} className="border border-[#D9C9E0] rounded-sm p-4 space-y-2">
-              <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider">Stat {i + 1} — Label</label>
-              <input type="text" value={stat.label} onChange={(e) => updateStat(i, 'label', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+            <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
+              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Stat {i + 1} — Label</label>
+              <input type="text" value={stat.label} onChange={(e) => updateStat(i, 'label', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Value</label>
-                  <input type="text" value={stat.value} onChange={(e) => updateStat(i, 'value', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Value</label>
+                  <input type="text" value={stat.value} onChange={(e) => updateStat(i, 'value', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold text-[#8A7A96] uppercase tracking-wider mb-1">Detail</label>
-                  <input type="text" value={stat.detail} onChange={(e) => updateStat(i, 'detail', e.target.value)} className="w-full px-3 py-2 border border-[#D9C9E0] rounded-sm text-sm outline-none focus:ring-2 focus:ring-[#9B1F5C]" />
+                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Detail</label>
+                  <input type="text" value={stat.detail} onChange={(e) => updateStat(i, 'detail', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
                 </div>
               </div>
             </div>
@@ -349,7 +349,7 @@ export default function EditOrganizersPage() {
       </div>
 
       <div className="flex justify-end sticky bottom-4">
-        <button onClick={handleSave} disabled={saving} className="px-6 py-3 bg-[#2E1F45] text-[#FBF3FA] rounded-sm hover:bg-[#3D2A5C] disabled:opacity-50 font-bold text-sm shadow-lg">
+        <button onClick={handleSave} disabled={saving} className="px-6 py-3.5 bg-secondary-500 hover:bg-secondary-600 text-white rounded-xl disabled:opacity-50 font-bold text-sm transition-colors shadow-lg">
           {saving ? 'Saving...' : 'Save Organizers Page'}
         </button>
       </div>

@@ -16,6 +16,42 @@ interface ContentReport {
     action?: 'none' | 'warning' | 'suspend' | 'ban' | 'delete';
 }
 
+const FILTERS = [
+    { id: 'all', label: 'All', icon: (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 10h18" /></svg>
+    )},
+    { id: 'pending', label: 'Pending', icon: (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" /></svg>
+    )},
+    { id: 'reviewed', label: 'Reviewed', icon: (
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M20 6L9 17l-5-5" /></svg>
+    )},
+] as const;
+
+const contentTypeIcon = (type: ContentReport['content_type']) => {
+    switch (type) {
+        case 'event':
+            return <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><rect x="3" y="4" width="18" height="16" rx="2" /><path d="M3 10h18M8 3v4M16 3v4" /></svg>;
+        case 'comment':
+            return <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z" /></svg>;
+        default:
+            return <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="8" r="4" /><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" /></svg>;
+    }
+};
+
+const statusPill = (status: ContentReport['status']) => {
+    switch (status) {
+        case 'pending':
+            return { label: 'pending', style: 'background:#fdf2f8;color:#A82C60;border:1px solid #f6d9e4;' };
+        case 'resolved':
+            return { label: 'resolved', style: 'background:#f4f1f9;color:#5A4485;border:1px solid #E9E3EF;' };
+        case 'dismissed':
+            return { label: 'dismissed', style: 'background:#f9fafb;color:#6b7280;border:1px solid #E9E3EF;' };
+        default:
+            return { label: status, style: 'background:#f9fafb;color:#6b7280;border:1px solid #E9E3EF;' };
+    }
+};
+
 const ModerationQueue: React.FC = () => {
     const [reports, setReports] = useState<ContentReport[]>([]);
     const [loading, setLoading] = useState(true);
@@ -80,7 +116,7 @@ const ModerationQueue: React.FC = () => {
                 if (banError) throw banError;
             }
 
-            alert(`✅ Action "${action}" completed successfully!`);
+            alert(`Action "${action}" completed successfully.`);
             fetchReports();
         } catch (error) {
             console.error('Error taking action:', error);
@@ -89,103 +125,109 @@ const ModerationQueue: React.FC = () => {
     };
 
     if (loading) {
-        return <div className="p-8 text-center">Loading reports...</div>;
+        return (
+            <div style={{ background: '#EDE7ED', borderRadius: 20, padding: '28px 16px' }}>
+                <div style={{ maxWidth: 800, margin: '0 auto', textAlign: 'center', padding: '60px 0', color: '#6b7280', fontSize: 13 }}>
+                    Loading reports...
+                </div>
+            </div>
+        );
     }
 
     return (
-        <div className="p-6">
-            <div className="mb-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Content Moderation</h2>
-                <p className="text-gray-600">Review and manage reported content</p>
-            </div>
+        <div style={{ background: '#EDE7ED', borderRadius: 20, padding: '28px 16px' }}>
+            <div style={{ maxWidth: 800, margin: '0 auto', background: '#F7F5FA', borderRadius: 20, padding: 32 }}>
 
-            <div className="flex gap-2 mb-6">
-                <button
-                    onClick={() => setFilter('all')}
-                    className={`px-4 py-2 rounded-md ${filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'}`}
-                >
-                    All ({reports.length})
-                </button>
-                <button
-                    onClick={() => setFilter('pending')}
-                    className={`px-4 py-2 rounded-md ${filter === 'pending' ? 'bg-orange-600 text-white' : 'bg-gray-100 text-gray-700'}`}
-                >
-                    Pending
-                </button>
-                <button
-                    onClick={() => setFilter('reviewed')}
-                    className={`px-4 py-2 rounded-md ${filter === 'reviewed' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-700'}`}
-                >
-                    Reviewed
-                </button>
-            </div>
+                <div style={{ marginBottom: 20 }}>
+                    <p style={{ fontSize: 24, fontWeight: 800, color: '#171717', margin: '0 0 4px' }}>Content Moderation</p>
+                    <p style={{ fontSize: 13, color: '#6b7280', margin: 0 }}>Review and manage reported content</p>
+                </div>
 
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-                <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Reason</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Reported</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {reports.length === 0 ? (
-                            <tr>
-                                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                                    No reports found
-                                </td>
-                            </tr>
-                        ) : (
-                            reports.map((report) => (
-                                <tr key={report.id} className="hover:bg-gray-50">
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span className="px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800">
-                                            {report.content_type}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div>
-                                            <p className="font-medium text-gray-900">{report.reason}</p>
-                                            <p className="text-sm text-gray-500 truncate max-w-xs">{report.description}</p>
-                                        </div>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                        {new Date(report.created_at).toLocaleDateString()}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        <span
-                                            className={`px-2 py-1 text-xs font-semibold rounded ${
-                                                report.status === 'pending'
-                                                    ? 'bg-orange-100 text-orange-800'
-                                                    : report.status === 'resolved'
-                                                    ? 'bg-green-100 text-green-800'
-                                                    : 'bg-gray-100 text-gray-800'
-                                            }`}
-                                        >
-                                            {report.status}
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
-                                        {report.status === 'pending' && (
-                                            <div className="flex gap-2">
-                                                <button onClick={() => handleAction(report.id, 'warning')} className="text-yellow-600 hover:text-yellow-900 text-sm">Warn</button>
-                                                <button onClick={() => handleAction(report.id, 'suspend')} className="text-orange-600 hover:text-orange-900 text-sm">Suspend</button>
-                                                <button onClick={() => handleAction(report.id, 'ban')} className="text-red-600 hover:text-red-900 text-sm">Ban</button>
-                                                <button onClick={() => handleAction(report.id, 'dismiss')} className="text-gray-600 hover:text-gray-900 text-sm">Dismiss</button>
+                <div style={{ display: 'flex', gap: 6, background: '#fff', border: '1px solid #E9E3EF', borderRadius: 14, padding: 6, marginBottom: 18 }}>
+                    {FILTERS.map((f) => (
+                        <button
+                            key={f.id}
+                            onClick={() => setFilter(f.id)}
+                            style={{
+                                flex: 1,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                gap: 7,
+                                padding: '11px 18px',
+                                borderRadius: 10,
+                                border: 'none',
+                                cursor: 'pointer',
+                                fontSize: 12.5,
+                                fontWeight: 700,
+                                background: filter === f.id ? '#5A4485' : 'transparent',
+                                color: filter === f.id ? '#fff' : '#6b7280',
+                            }}
+                        >
+                            {f.icon}
+                            {f.label}{f.id === 'all' ? ` (${reports.length})` : ''}
+                        </button>
+                    ))}
+                </div>
+
+                <div style={{ background: '#fff', border: '1px solid #E9E3EF', borderRadius: 16, padding: 26 }}>
+                    {reports.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '40px 0', color: '#9ca3af', fontSize: 13 }}>
+                            No reports found
+                        </div>
+                    ) : (
+                        reports.map((report, i) => {
+                            const pill = statusPill(report.status);
+                            return (
+                                <div key={report.id} style={{ marginBottom: i === reports.length - 1 ? 0 : 10 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 18px', border: '1px solid #E9E3EF', borderRadius: 12 }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                                            <div style={{ width: 38, height: 38, borderRadius: 10, background: '#f4f1f9', color: '#5A4485', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                                {contentTypeIcon(report.content_type)}
                                             </div>
-                                        )}
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                                            <div>
+                                                <div style={{ fontSize: 13.5, fontWeight: 700, color: '#171717' }}>{report.reason}</div>
+                                                <div style={{ fontSize: 11.5, color: '#6b7280', marginTop: 2 }}>
+                                                    {report.description} · {new Date(report.created_at).toLocaleDateString()}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <span style={{ padding: '5px 12px', borderRadius: 999, fontSize: 11, fontWeight: 700, flexShrink: 0, ...cssToObj(pill.style) }}>
+                                            {pill.label}
+                                        </span>
+                                    </div>
+
+                                    {report.status === 'pending' && (
+                                        <div style={{ display: 'flex', gap: 8, margin: '10px 0 0', paddingLeft: 2 }}>
+                                            {(['warning', 'suspend', 'ban', 'dismiss'] as const).map((action) => (
+                                                <button
+                                                    key={action}
+                                                    onClick={() => handleAction(report.id, action)}
+                                                    style={{ padding: '7px 14px', borderRadius: 8, background: '#fff', border: '1px solid #E9E3EF', color: '#6b7280', fontSize: 11.5, fontWeight: 700, cursor: 'pointer' }}
+                                                >
+                                                    {action === 'warning' ? 'Warn' : action.charAt(0).toUpperCase() + action.slice(1)}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })
+                    )}
+                </div>
             </div>
         </div>
     );
 };
+
+function cssToObj(css: string): React.CSSProperties {
+    const obj: Record<string, string> = {};
+    css.split(';').filter(Boolean).forEach((rule) => {
+        const [prop, val] = rule.split(':');
+        const camel = prop.trim().replace(/-([a-z])/g, (_, c) => c.toUpperCase());
+        obj[camel] = val.trim();
+    });
+    return obj as React.CSSProperties;
+}
 
 export default ModerationQueue;

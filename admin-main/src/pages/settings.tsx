@@ -26,6 +26,15 @@ interface PlatformSettings {
     };
 }
 
+const ToggleSwitch = ({ checked, onChange, activeColor = 'bg-primary-600' }: { checked: boolean; onChange: (v: boolean) => void; activeColor?: string }) => (
+    <div className="relative w-12 h-7 flex-shrink-0">
+        <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} className="sr-only" />
+        <div onClick={() => onChange(!checked)} className={`w-12 h-7 rounded-full cursor-pointer transition-colors ${checked ? activeColor : 'bg-gray-300'}`}>
+            <div className={`absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform ${checked ? 'translate-x-5' : 'translate-x-0'}`}></div>
+        </div>
+    </div>
+);
+
 export default function SettingsPage() {
     const [settings, setSettings] = useState<PlatformSettings>({
         fees: {
@@ -142,7 +151,7 @@ export default function SettingsPage() {
                 .eq('id', (await supabase.from('platform_settings').select('id').maybeSingle()).data?.id);
 
             if (error) throw error;
-            alert('✅ Settings saved successfully!');
+            alert('Settings saved successfully!');
         } catch (error) {
             console.error('Error saving settings:', error);
             alert('Failed to save settings');
@@ -156,35 +165,37 @@ export default function SettingsPage() {
             <AdminLayout>
                 <div className="flex items-center justify-center min-h-screen">
                     <div className="text-center">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-                        <p className="mt-4 text-gray-600">Loading settings...</p>
+                        <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-primary-600 mx-auto"></div>
+                        <p className="mt-4 text-gray-500 text-sm">Loading settings...</p>
                     </div>
                 </div>
             </AdminLayout>
         );
     }
 
+    const tabs = [
+        { key: 'fees', label: 'Fees & Commission', icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0" /><circle cx="12" cy="12" r="9" strokeWidth={2} /></svg> },
+        { key: 'features', label: 'Feature Flags', icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M8 6v4M14 12h6M14 12v4M4 18h10" /></svg> },
+        { key: 'maintenance', label: 'Maintenance Mode', icon: <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766m-3.704 3.796l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085" /></svg> },
+    ];
+
     return (
         <AdminLayout>
             <div className="p-6">
                 <div className="mb-6">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Platform Settings</h1>
-                    <p className="text-gray-600">Configure platform-wide settings and features</p>
+                    <h1 className="text-2xl font-extrabold text-gray-900">Platform Settings</h1>
+                    <p className="text-sm text-gray-500 mt-1">Configure platform-wide settings and features</p>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex gap-2 mb-6 border-b border-gray-200">
-                {[
-                        { key: 'fees', label: 'Fees & Commission', icon: '💰' },
-                        { key: 'features', label: ' Feature Flags', icon: '🎚️' },
-                        { key: 'maintenance', label: 'Maintenance Mode', icon: '🔧' },
-                    ].map(tab => (
+                <div className="flex gap-2 mb-6 bg-white border border-gray-100 rounded-2xl p-2 w-fit">
+                    {tabs.map(tab => (
                         <button
                             key={tab.key}
                             onClick={() => setActiveTab(tab.key as any)}
-                            className={`px-4 py-2 font-medium transition-colors ${activeTab === tab.key
-                                ? 'text-blue-600 border-b-2 border-blue-600'
-                                : 'text-gray-600 hover:text-gray-900'
+                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl font-bold text-sm transition-colors ${activeTab === tab.key
+                                ? 'bg-primary-600 text-white'
+                                : 'text-gray-500 hover:bg-gray-50'
                                 }`}
                         >
                             {tab.icon} {tab.label}
@@ -192,12 +203,12 @@ export default function SettingsPage() {
                     ))}
                 </div>
 
-                <div className="bg-white rounded-lg border border-gray-200 p-6">
+                <div className="bg-white rounded-2xl border border-gray-100 p-6">
                     {/* Fees Tab */}
                     {activeTab === 'fees' && (
                         <div className="space-y-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-bold text-gray-900 mb-2">
                                     Platform Fee (%)
                                 </label>
                                 <input
@@ -207,16 +218,16 @@ export default function SettingsPage() {
                                         ...settings,
                                         fees: { ...settings.fees, platformFee: parseFloat(e.target.value) || 0 }
                                     })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                                     step="0.1"
                                     min="0"
                                     max="100"
                                 />
-                                <p className="text-sm text-gray-500 mt-1">Percentage charged on each ticket sale</p>
+                                <p className="text-xs text-gray-500 mt-1.5">Percentage charged on each ticket sale</p>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                <label className="block text-sm font-bold text-gray-900 mb-2">
                                     Payment Processing Fee (%)
                                 </label>
                                 <input
@@ -226,17 +237,17 @@ export default function SettingsPage() {
                                         ...settings,
                                         fees: { ...settings.fees, paymentProcessingFee: parseFloat(e.target.value) || 0 }
                                     })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                                     step="0.1"
                                     min="0"
                                     max="10"
                                 />
-                                <p className="text-sm text-gray-500 mt-1">Payment gateway processing fee (e.g., Stripe)</p>
+                                <p className="text-xs text-gray-500 mt-1.5">Payment gateway processing fee (e.g., Stripe)</p>
                             </div>
 
-                            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                <p className="text-sm text-blue-900">
-                                    <strong>Total Fee:</strong> {(settings.fees.platformFee + settings.fees.paymentProcessingFee).toFixed(1)}%
+                            <div className="bg-primary-50 border border-primary-100 rounded-xl p-4">
+                                <p className="text-sm text-primary-800 font-semibold">
+                                    Total Fee: {(settings.fees.platformFee + settings.fees.paymentProcessingFee).toFixed(1)}%
                                 </p>
                             </div>
                         </div>
@@ -246,15 +257,15 @@ export default function SettingsPage() {
                     {activeTab === 'features' && (
                         <div className="space-y-3">
                             {Object.entries(settings.features).map(([feature, enabled]) => (
-                                <label
+                                <div
                                     key={feature}
-                                    className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
+                                    className="flex items-center justify-between p-4 border border-gray-200 rounded-xl"
                                 >
                                     <div>
-                                        <p className="font-medium text-gray-900 capitalize">
+                                        <p className="font-bold text-gray-900 text-sm capitalize">
                                             {feature.replace(/([A-Z])/g, ' $1').trim()}
                                         </p>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-xs text-gray-500 mt-0.5">
                                             {feature === 'userRegistration' && 'Allow new users to register'}
                                             {feature === 'eventCreation' && 'Allow hosts to create new events'}
                                             {feature === 'ticketSales' && 'Enable ticket purchasing'}
@@ -263,50 +274,48 @@ export default function SettingsPage() {
                                             {feature === 'waitlist' && 'Enable waitlist for sold-out events'}
                                         </p>
                                     </div>
-                                    <input
-                                        type="checkbox"
+                                    <ToggleSwitch
                                         checked={enabled}
-                                        onChange={(e) => setSettings({
+                                        onChange={(v) => setSettings({
                                             ...settings,
-                                            features: { ...settings.features, [feature]: e.target.checked }
+                                            features: { ...settings.features, [feature]: v }
                                         })}
-                                        className="w-5 h-5 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
                                     />
-                                </label>
+                                </div>
                             ))}
                         </div>
                     )}
 
-                                {/* Maintenance Tab */}
-                                {activeTab === 'maintenance' && (
+                    {/* Maintenance Tab */}
+                    {activeTab === 'maintenance' && (
                         <div className="space-y-6">
-                            <div className={`p-4 border-2 rounded-lg ${settings.maintenanceMode.enabled ? 'border-red-300 bg-red-50' : 'border-gray-200'
+                            <div className={`p-5 border-2 rounded-xl ${settings.maintenanceMode.enabled ? 'border-red-200 bg-red-50' : 'border-gray-200'
                                 }`}>
-                                <label className="flex items-center justify-between cursor-pointer">
+                                <div className="flex items-center justify-between">
                                     <div>
-                                        <p className="font-medium text-gray-900">Enable Maintenance Mode</p>
-                                        <p className="text-sm text-gray-600">
+                                        <p className="font-bold text-gray-900 text-sm">Enable Maintenance Mode</p>
+                                        <p className={`text-xs mt-1 font-semibold flex items-center gap-1.5 ${settings.maintenanceMode.enabled ? 'text-red-600' : 'text-emerald-600'}`}>
+                                            <span className={`w-1.5 h-1.5 rounded-full ${settings.maintenanceMode.enabled ? 'bg-red-500' : 'bg-emerald-500'}`}></span>
                                             {settings.maintenanceMode.enabled
-                                                ? '🔴 Platform is in maintenance mode'
-                                                : '🟢 Platform is operational'
+                                                ? 'Platform is in maintenance mode'
+                                                : 'Platform is operational'
                                             }
                                         </p>
                                     </div>
-                                    <input
-                                        type="checkbox"
+                                    <ToggleSwitch
                                         checked={settings.maintenanceMode.enabled}
-                                        onChange={(e) => setSettings({
+                                        onChange={(v) => setSettings({
                                             ...settings,
-                                            maintenanceMode: { ...settings.maintenanceMode, enabled: e.target.checked }
+                                            maintenanceMode: { ...settings.maintenanceMode, enabled: v }
                                         })}
-                                        className="w-6 h-6 text-red-600 rounded focus:ring-2 focus:ring-red-500"
+                                        activeColor="bg-red-600"
                                     />
-                                </label>
+                                </div>
                             </div>
 
                             {settings.maintenanceMode.enabled && (
                                 <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    <label className="block text-sm font-bold text-gray-900 mb-2">
                                         Maintenance Message
                                     </label>
                                     <textarea
@@ -315,11 +324,11 @@ export default function SettingsPage() {
                                             ...settings,
                                             maintenanceMode: { ...settings.maintenanceMode, message: e.target.value }
                                         })}
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                                         rows={4}
                                         placeholder="Enter the message users will see during maintenance..."
                                     />
-                                    <p className="text-sm text-gray-500 mt-1">This message will be displayed to all users</p>
+                                    <p className="text-xs text-gray-500 mt-1.5">This message will be displayed to all users</p>
                                 </div>
                             )}
                         </div>
@@ -330,7 +339,7 @@ export default function SettingsPage() {
                         <button
                             onClick={handleSave}
                             disabled={saving}
-                            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors flex items-center gap-2"
+                            className="px-6 py-3 bg-secondary-500 hover:bg-secondary-600 text-white rounded-xl disabled:opacity-50 font-bold text-sm transition-colors flex items-center gap-2"
                         >
                             {saving ? (
                                 <>
@@ -342,7 +351,8 @@ export default function SettingsPage() {
                                 </>
                             ) : (
                                 <>
-                                    💾 Save Settings
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 21v-8H7v8M7 3v5h8" /></svg>
+                                    Save Settings
                                 </>
                             )}
                         </button>

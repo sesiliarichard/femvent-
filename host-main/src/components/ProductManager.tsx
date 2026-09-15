@@ -85,7 +85,7 @@ export default function ProductManager({ eventId }: { eventId: string }) {
                 <h2 className="text-2xl font-bold">Event Merchandise</h2>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                    className="flex items-center gap-2 px-4 py-2 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600"
                 >
                     <Plus size={20} />
                     Add Product
@@ -108,7 +108,7 @@ export default function ProductManager({ eventId }: { eventId: string }) {
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                                     placeholder="Event T-Shirt"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                                 />
                             </div>
 
@@ -120,7 +120,7 @@ export default function ProductManager({ eventId }: { eventId: string }) {
                                     value={formData.description}
                                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                                     rows={3}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                                 />
                             </div>
 
@@ -132,7 +132,7 @@ export default function ProductManager({ eventId }: { eventId: string }) {
                                     <select
                                         value={formData.category}
                                         onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                                     >
                                         <option value="apparel">Apparel</option>
                                         <option value="accessories">Accessories</option>
@@ -150,7 +150,7 @@ export default function ProductManager({ eventId }: { eventId: string }) {
                                         type="number"
                                         value={formData.basePrice}
                                         onChange={(e) => setFormData({ ...formData, basePrice: Number(e.target.value) })}
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                                     />
                                 </div>
                             </div>
@@ -163,7 +163,7 @@ export default function ProductManager({ eventId }: { eventId: string }) {
                                     type="number"
                                     value={formData.totalStock}
                                     onChange={(e) => setFormData({ ...formData, totalStock: Number(e.target.value) })}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                                 />
                             </div>
 
@@ -199,7 +199,7 @@ export default function ProductManager({ eventId }: { eventId: string }) {
                             </button>
                             <button
                                 onClick={createProduct}
-                                className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                                className="flex-1 px-4 py-2 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600"
                             >
                                 Create Product
                             </button>
@@ -221,7 +221,7 @@ export default function ProductManager({ eventId }: { eventId: string }) {
                             <p className="text-sm text-gray-600 mt-1">{product.description}</p>
 
                             <div className="flex items-center justify-between mt-4">
-                                <span className="text-2xl font-bold text-indigo-600">
+                                <span className="text-2xl font-bold text-primary-600">
                                     ${product.basePrice}
                                 </span>
                                 <span className="text-sm text-gray-600">
@@ -230,7 +230,7 @@ export default function ProductManager({ eventId }: { eventId: string }) {
                             </div>
 
                             <div className="flex gap-2 mt-4">
-                                <button className="flex-1 px-3 py-2 bg-indigo-600 text-white rounded text-sm hover:bg-indigo-700">
+                                <button className="flex-1 px-3 py-2 bg-primary-600 text-white rounded text-sm hover:bg-primary-700">
                                     Edit
                                 </button>
                                 <button className="px-3 py-2 border border-red-600 text-red-600 rounded hover:bg-red-50">

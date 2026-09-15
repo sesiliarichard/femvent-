@@ -9,37 +9,37 @@ interface FeaturedEvent {
     summary: string;
     tags: string[];
   }
-  
+
   interface Category {
     title: string;
     copy: string;
   }
-  
+
   interface OrganizerSpotlight {
     name: string;
     focus: string;
     stat: string;
     blurb: string;
   }
-  
+
   interface ImpactStat {
     label: string;
     value: string;
     detail: string;
   }
-  
+
   interface BlogPost {
     title: string;
     excerpt: string;
     author: string;
     date: string;
   }
-  
+
   interface FaqItem {
     question: string;
     answer: string;
   }
-  
+
   interface SupportTopic {
     title: string;
     items: string[];
@@ -229,7 +229,7 @@ export default function SiteContentPage() {
         );
 
       if (error) throw error;
-      alert('✅ Site content saved! Changes will appear on the live site shortly.');
+      alert('Site content saved! Changes will appear on the live site shortly.');
     } catch (error) {
       console.error('Error saving site content:', error);
       alert('Failed to save site content');
@@ -295,37 +295,39 @@ export default function SiteContentPage() {
     return (
       <AdminLayout>
         <div className="flex items-center justify-center min-h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-primary-600"></div>
         </div>
       </AdminLayout>
     );
   }
 
+  const tabs = [
+    { key: 'brand', label: 'Brand & Home' },
+    { key: 'categories', label: 'Categories' },
+    { key: 'events', label: 'Featured Events' },
+    { key: 'organizers', label: 'Organizer Stories' },
+    { key: 'stats', label: 'Impact Stats' },
+    { key: 'blog', label: 'Blog Posts' },
+    { key: 'faq', label: 'FAQ' },
+    { key: 'support', label: 'Support Topics' },
+    { key: 'pricing', label: 'Pricing Plans' },
+  ];
+
   return (
     <AdminLayout>
       <div className="p-6">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Website Content</h1>
-          <p className="text-gray-600">Edit the text shown on femvents.netlify.app — no code needed.</p>
+          <h1 className="text-2xl font-extrabold text-gray-900">Website Content</h1>
+          <p className="text-sm text-gray-500 mt-1">Edit the text shown on femvents.netlify.app — no code needed.</p>
         </div>
 
-        <div className="flex gap-2 mb-6 border-b border-gray-200">
-        {[
-            { key: 'brand', label: 'Brand & Home' },
-            { key: 'categories', label: 'Categories' },
-            { key: 'events', label: 'Featured Events' },
-            { key: 'organizers', label: 'Organizer Stories' },
-            { key: 'stats', label: 'Impact Stats' },
-            { key: 'blog', label: 'Blog Posts' },
-            { key: 'faq', label: 'FAQ' },
-            { key: 'support', label: 'Support Topics' },
-            { key: 'pricing', label: 'Pricing Plans' },
-          ].map((tab) => (
+        <div className="flex gap-1 mb-6 bg-white border border-gray-100 rounded-2xl p-1.5 overflow-x-auto">
+          {tabs.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key as any)}
-              className={`px-4 py-2 font-medium transition-colors ${
-                activeTab === tab.key ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-600 hover:text-gray-900'
+              className={`px-4 py-2.5 rounded-xl font-bold text-xs whitespace-nowrap transition-colors ${
+                activeTab === tab.key ? 'bg-primary-600 text-white' : 'text-gray-500 hover:bg-gray-50'
               }`}
             >
               {tab.label}
@@ -333,65 +335,65 @@ export default function SiteContentPage() {
           ))}
         </div>
 
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
+        <div className="bg-white rounded-2xl border border-gray-100 p-6">
           {activeTab === 'brand' && (
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Site Name</label>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Site Name</label>
                 <input
                   type="text"
                   value={content.brand.name}
                   onChange={(e) => setContent({ ...content, brand: { ...content.brand, name: e.target.value } })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Tagline</label>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Tagline</label>
                 <input
                   type="text"
                   value={content.brand.tagline}
                   onChange={(e) => setContent({ ...content, brand: { ...content.brand, tagline: e.target.value } })}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                <label className="block text-sm font-bold text-gray-900 mb-2">Description</label>
                 <textarea
                   value={content.brand.description}
                   onChange={(e) => setContent({ ...content, brand: { ...content.brand, description: e.target.value } })}
                   rows={4}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                 />
               </div>
             </div>
           )}
 
-{activeTab === 'categories' && (
+          {activeTab === 'categories' && (
             <div className="space-y-4">
               {content.categories.map((cat, i) => (
-                <div key={i} className="border border-gray-200 rounded-lg p-4">
+                <div key={i} className="border border-gray-200 rounded-xl p-4">
                   <div className="flex justify-between items-start mb-2">
-                    <label className="block text-xs font-medium text-gray-500">Category {i + 1} — Title</label>
-                    <button onClick={() => removeItem('categories', i)} className="text-xs text-red-600 font-semibold hover:text-red-700">Remove</button>
+                    <label className="block text-xs font-semibold text-gray-500">Category {i + 1} — Title</label>
+                    <button onClick={() => removeItem('categories', i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
                   </div>
                   <input
                     type="text"
                     value={cat.title}
                     onChange={(e) => updateCategory(i, 'title', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg mb-2 focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg mb-2 focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                   />
-                  <label className="block text-xs font-medium text-gray-500 mb-1">Description</label>
+                  <label className="block text-xs font-semibold text-gray-500 mb-1">Description</label>
                   <input
                     type="text"
                     value={cat.copy}
                     onChange={(e) => updateCategory(i, 'copy', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                   />
                 </div>
               ))}
               <button
                 onClick={() => addItem('categories', { title: 'New Category', copy: '' })}
-                className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors"
+                className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors"
               >
                 + Add category
               </button>
@@ -401,49 +403,49 @@ export default function SiteContentPage() {
           {activeTab === 'events' && (
             <div className="space-y-4">
               {content.featuredEvents.map((event, i) => (
-                <div key={i} className="border border-gray-200 rounded-lg p-4 space-y-2">
+                <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
                   <div className="flex justify-between items-start">
-                    <label className="block text-xs font-medium text-gray-500">Event {i + 1} — Title</label>
-                    <button onClick={() => removeItem('featuredEvents', i)} className="text-xs text-red-600 font-semibold hover:text-red-700">Remove</button>
+                    <label className="block text-xs font-semibold text-gray-500">Event {i + 1} — Title</label>
+                    <button onClick={() => removeItem('featuredEvents', i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
                   </div>
                   <input
                     type="text"
                     value={event.title}
                     onChange={(e) => updateEvent(i, 'title', e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                   />
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-xs font-medium text-gray-500">City</label>
+                      <label className="block text-xs font-semibold text-gray-500">City</label>
                       <input
                         type="text"
                         value={event.city}
                         onChange={(e) => updateEvent(i, 'city', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-500">Date</label>
+                      <label className="block text-xs font-semibold text-gray-500">Date</label>
                       <input
                         type="text"
                         value={event.date}
                         onChange={(e) => updateEvent(i, 'date', e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                       />
                     </div>
                   </div>
-                  <label className="block text-xs font-medium text-gray-500">Summary</label>
+                  <label className="block text-xs font-semibold text-gray-500">Summary</label>
                   <textarea
                     value={event.summary}
                     onChange={(e) => updateEvent(i, 'summary', e.target.value)}
                     rows={2}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                   />
                 </div>
               ))}
               <button
                 onClick={() => addItem('featuredEvents', { title: 'New Event', city: '', date: '', summary: '', tags: [] })}
-                className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors"
+                className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors"
               >
                 + Add event
               </button>
@@ -453,21 +455,21 @@ export default function SiteContentPage() {
           {activeTab === 'organizers' && (
             <div className="space-y-4">
               {content.organizerSpotlights.map((org, i) => (
-                <div key={i} className="border border-gray-200 rounded-lg p-4 space-y-2">
+                <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
                   <div className="flex justify-between items-start">
-                    <label className="block text-xs font-medium text-gray-500">Organizer {i + 1} — Name</label>
-                    <button onClick={() => removeItem('organizerSpotlights', i)} className="text-xs text-red-600 font-semibold hover:text-red-700">Remove</button>
+                    <label className="block text-xs font-semibold text-gray-500">Organizer {i + 1} — Name</label>
+                    <button onClick={() => removeItem('organizerSpotlights', i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
                   </div>
-                  <input type="text" value={org.name} onChange={(e) => updateListItem('organizerSpotlights', i, 'name', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                  <label className="block text-xs font-medium text-gray-500">Focus</label>
-                  <input type="text" value={org.focus} onChange={(e) => updateListItem('organizerSpotlights', i, 'focus', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                  <label className="block text-xs font-medium text-gray-500">Stat</label>
-                  <input type="text" value={org.stat} onChange={(e) => updateListItem('organizerSpotlights', i, 'stat', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                  <label className="block text-xs font-medium text-gray-500">Blurb</label>
-                  <textarea value={org.blurb} onChange={(e) => updateListItem('organizerSpotlights', i, 'blurb', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  <input type="text" value={org.name} onChange={(e) => updateListItem('organizerSpotlights', i, 'name', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
+                  <label className="block text-xs font-semibold text-gray-500">Focus</label>
+                  <input type="text" value={org.focus} onChange={(e) => updateListItem('organizerSpotlights', i, 'focus', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
+                  <label className="block text-xs font-semibold text-gray-500">Stat</label>
+                  <input type="text" value={org.stat} onChange={(e) => updateListItem('organizerSpotlights', i, 'stat', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
+                  <label className="block text-xs font-semibold text-gray-500">Blurb</label>
+                  <textarea value={org.blurb} onChange={(e) => updateListItem('organizerSpotlights', i, 'blurb', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
                 </div>
               ))}
-              <button onClick={() => addItem('organizerSpotlights', { name: '', focus: '', stat: '', blurb: '' })} className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
+              <button onClick={() => addItem('organizerSpotlights', { name: '', focus: '', stat: '', blurb: '' })} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
                 + Add organizer story
               </button>
             </div>
@@ -476,25 +478,25 @@ export default function SiteContentPage() {
           {activeTab === 'stats' && (
             <div className="space-y-4">
               {content.impactStats.map((stat, i) => (
-                <div key={i} className="border border-gray-200 rounded-lg p-4 space-y-2">
+                <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
                   <div className="flex justify-between items-start">
-                    <label className="block text-xs font-medium text-gray-500">Stat {i + 1} — Label</label>
-                    <button onClick={() => removeItem('impactStats', i)} className="text-xs text-red-600 font-semibold hover:text-red-700">Remove</button>
+                    <label className="block text-xs font-semibold text-gray-500">Stat {i + 1} — Label</label>
+                    <button onClick={() => removeItem('impactStats', i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
                   </div>
-                  <input type="text" value={stat.label} onChange={(e) => updateListItem('impactStats', i, 'label', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  <input type="text" value={stat.label} onChange={(e) => updateListItem('impactStats', i, 'label', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-xs font-medium text-gray-500">Value</label>
-                      <input type="text" value={stat.value} onChange={(e) => updateListItem('impactStats', i, 'value', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                      <label className="block text-xs font-semibold text-gray-500">Value</label>
+                      <input type="text" value={stat.value} onChange={(e) => updateListItem('impactStats', i, 'value', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-500">Detail</label>
-                      <input type="text" value={stat.detail} onChange={(e) => updateListItem('impactStats', i, 'detail', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                      <label className="block text-xs font-semibold text-gray-500">Detail</label>
+                      <input type="text" value={stat.detail} onChange={(e) => updateListItem('impactStats', i, 'detail', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
                     </div>
                   </div>
                 </div>
               ))}
-              <button onClick={() => addItem('impactStats', { label: '', value: '', detail: '' })} className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
+              <button onClick={() => addItem('impactStats', { label: '', value: '', detail: '' })} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
                 + Add stat
               </button>
             </div>
@@ -503,27 +505,27 @@ export default function SiteContentPage() {
           {activeTab === 'blog' && (
             <div className="space-y-4">
               {content.blogPosts.map((post, i) => (
-                <div key={i} className="border border-gray-200 rounded-lg p-4 space-y-2">
+                <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
                   <div className="flex justify-between items-start">
-                    <label className="block text-xs font-medium text-gray-500">Post {i + 1} — Title</label>
-                    <button onClick={() => removeItem('blogPosts', i)} className="text-xs text-red-600 font-semibold hover:text-red-700">Remove</button>
+                    <label className="block text-xs font-semibold text-gray-500">Post {i + 1} — Title</label>
+                    <button onClick={() => removeItem('blogPosts', i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
                   </div>
-                  <input type="text" value={post.title} onChange={(e) => updateListItem('blogPosts', i, 'title', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                  <label className="block text-xs font-medium text-gray-500">Excerpt</label>
-                  <textarea value={post.excerpt} onChange={(e) => updateListItem('blogPosts', i, 'excerpt', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  <input type="text" value={post.title} onChange={(e) => updateListItem('blogPosts', i, 'title', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
+                  <label className="block text-xs font-semibold text-gray-500">Excerpt</label>
+                  <textarea value={post.excerpt} onChange={(e) => updateListItem('blogPosts', i, 'excerpt', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-xs font-medium text-gray-500">Author</label>
-                      <input type="text" value={post.author} onChange={(e) => updateListItem('blogPosts', i, 'author', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                      <label className="block text-xs font-semibold text-gray-500">Author</label>
+                      <input type="text" value={post.author} onChange={(e) => updateListItem('blogPosts', i, 'author', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-500">Date</label>
-                      <input type="text" value={post.date} onChange={(e) => updateListItem('blogPosts', i, 'date', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                      <label className="block text-xs font-semibold text-gray-500">Date</label>
+                      <input type="text" value={post.date} onChange={(e) => updateListItem('blogPosts', i, 'date', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
                     </div>
                   </div>
                 </div>
               ))}
-              <button onClick={() => addItem('blogPosts', { title: '', excerpt: '', author: '', date: '' })} className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
+              <button onClick={() => addItem('blogPosts', { title: '', excerpt: '', author: '', date: '' })} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
                 + Add blog post
               </button>
             </div>
@@ -532,17 +534,17 @@ export default function SiteContentPage() {
           {activeTab === 'faq' && (
             <div className="space-y-4">
               {content.faq.map((item, i) => (
-                <div key={i} className="border border-gray-200 rounded-lg p-4 space-y-2">
+                <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
                   <div className="flex justify-between items-start">
-                    <label className="block text-xs font-medium text-gray-500">Question {i + 1}</label>
-                    <button onClick={() => removeItem('faq', i)} className="text-xs text-red-600 font-semibold hover:text-red-700">Remove</button>
+                    <label className="block text-xs font-semibold text-gray-500">Question {i + 1}</label>
+                    <button onClick={() => removeItem('faq', i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
                   </div>
-                  <input type="text" value={item.question} onChange={(e) => updateListItem('faq', i, 'question', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                  <label className="block text-xs font-medium text-gray-500">Answer</label>
-                  <textarea value={item.answer} onChange={(e) => updateListItem('faq', i, 'answer', e.target.value)} rows={3} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  <input type="text" value={item.question} onChange={(e) => updateListItem('faq', i, 'question', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
+                  <label className="block text-xs font-semibold text-gray-500">Answer</label>
+                  <textarea value={item.answer} onChange={(e) => updateListItem('faq', i, 'answer', e.target.value)} rows={3} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
                 </div>
               ))}
-              <button onClick={() => addItem('faq', { question: '', answer: '' })} className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
+              <button onClick={() => addItem('faq', { question: '', answer: '' })} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
                 + Add FAQ item
               </button>
             </div>
@@ -551,13 +553,13 @@ export default function SiteContentPage() {
           {activeTab === 'support' && (
             <div className="space-y-4">
               {content.supportTopics.map((topic, i) => (
-                <div key={i} className="border border-gray-200 rounded-lg p-4 space-y-2">
+                <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
                   <div className="flex justify-between items-start">
-                    <label className="block text-xs font-medium text-gray-500">Topic {i + 1} — Title</label>
-                    <button onClick={() => removeItem('supportTopics', i)} className="text-xs text-red-600 font-semibold hover:text-red-700">Remove</button>
+                    <label className="block text-xs font-semibold text-gray-500">Topic {i + 1} — Title</label>
+                    <button onClick={() => removeItem('supportTopics', i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
                   </div>
-                  <input type="text" value={topic.title} onChange={(e) => updateListItem('supportTopics', i, 'title', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                  <label className="block text-xs font-medium text-gray-500">Items (one per line)</label>
+                  <input type="text" value={topic.title} onChange={(e) => updateListItem('supportTopics', i, 'title', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
+                  <label className="block text-xs font-semibold text-gray-500">Items (one per line)</label>
                   <textarea
                     value={topic.items.join('\n')}
                     onChange={(e) => {
@@ -566,11 +568,11 @@ export default function SiteContentPage() {
                       setContent({ ...content, supportTopics: updated });
                     }}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                   />
                 </div>
               ))}
-                     <button onClick={() => addItem('supportTopics', { title: '', items: [] })} className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
+              <button onClick={() => addItem('supportTopics', { title: '', items: [] })} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
                 + Add support topic
               </button>
             </div>
@@ -579,28 +581,28 @@ export default function SiteContentPage() {
           {activeTab === 'pricing' && (
             <div className="space-y-4">
               {content.pricingPlans.map((plan, i) => (
-                <div key={i} className="border border-gray-200 rounded-lg p-4 space-y-2">
+                <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">
                   <div className="flex justify-between items-start">
-                    <label className="block text-xs font-medium text-gray-500">Plan {i + 1} — ID (used in signup links, e.g. "starter")</label>
-                    <button onClick={() => removeItem('pricingPlans', i)} className="text-xs text-red-600 font-semibold hover:text-red-700">Remove</button>
+                    <label className="block text-xs font-semibold text-gray-500">Plan {i + 1} — ID (used in signup links, e.g. "starter")</label>
+                    <button onClick={() => removeItem('pricingPlans', i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
                   </div>
-                  <input type="text" value={plan.id} onChange={(e) => updateListItem('pricingPlans', i, 'id', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
-                  <label className="block text-xs font-medium text-gray-500">Name</label>
-                  <input type="text" value={plan.name} onChange={(e) => updateListItem('pricingPlans', i, 'name', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  <input type="text" value={plan.id} onChange={(e) => updateListItem('pricingPlans', i, 'id', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
+                  <label className="block text-xs font-semibold text-gray-500">Name</label>
+                  <input type="text" value={plan.name} onChange={(e) => updateListItem('pricingPlans', i, 'name', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <label className="block text-xs font-medium text-gray-500">Price</label>
-                      <input type="text" value={plan.price} onChange={(e) => updateListItem('pricingPlans', i, 'price', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                      <label className="block text-xs font-semibold text-gray-500">Price</label>
+                      <input type="text" value={plan.price} onChange={(e) => updateListItem('pricingPlans', i, 'price', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
                     </div>
                     <div>
-                      <label className="block text-xs font-medium text-gray-500">Badge (small label above price)</label>
-                      <input type="text" value={plan.badge} onChange={(e) => updateListItem('pricingPlans', i, 'badge', e.target.value)} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                      <label className="block text-xs font-semibold text-gray-500">Badge (small label above price)</label>
+                      <input type="text" value={plan.badge} onChange={(e) => updateListItem('pricingPlans', i, 'badge', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
                     </div>
                   </div>
-                  <label className="block text-xs font-medium text-gray-500">Description</label>
-                  <textarea value={plan.description} onChange={(e) => updateListItem('pricingPlans', i, 'description', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                  <label className="block text-xs font-semibold text-gray-500">Description</label>
+                  <textarea value={plan.description} onChange={(e) => updateListItem('pricingPlans', i, 'description', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500" />
 
-                  <label className="block text-xs font-medium text-gray-500 mt-3">Features</label>
+                  <label className="block text-xs font-semibold text-gray-500 mt-3">Features</label>
                   <div className="space-y-2">
                     {plan.features.map((feature, fi) => (
                       <div key={fi} className="flex gap-2 items-center">
@@ -609,27 +611,27 @@ export default function SiteContentPage() {
                           placeholder="Label (e.g. Events)"
                           value={feature.label}
                           onChange={(e) => updatePlanFeature(i, fi, 'label', e.target.value)}
-                          className="w-1/3 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                          className="w-1/3 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                         />
                         <input
                           type="text"
                           placeholder="Value (e.g. 1 live event at a time)"
                           value={feature.value}
                           onChange={(e) => updatePlanFeature(i, fi, 'value', e.target.value)}
-                          className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500"
+                          className="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                         />
-                        <button onClick={() => removePlanFeature(i, fi)} className="text-xs text-red-600 font-semibold hover:text-red-700 whitespace-nowrap">
+                        <button onClick={() => removePlanFeature(i, fi)} className="text-xs text-secondary-600 font-bold hover:opacity-70 whitespace-nowrap">
                           Remove
                         </button>
                       </div>
                     ))}
-                    <button onClick={() => addPlanFeature(i)} className="w-full py-1.5 border-2 border-dashed border-gray-300 rounded-lg text-xs font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
+                    <button onClick={() => addPlanFeature(i)} className="w-full py-1.5 border-2 border-dashed border-gray-200 rounded-lg text-xs font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
                       + Add feature row
                     </button>
                   </div>
                 </div>
               ))}
-              <button onClick={() => addItem('pricingPlans', { id: '', name: '', price: '', description: '', badge: '', features: [] })} className="w-full py-2 border-2 border-dashed border-gray-300 rounded-lg text-sm font-medium text-gray-500 hover:border-blue-400 hover:text-blue-600 transition-colors">
+              <button onClick={() => addItem('pricingPlans', { id: '', name: '', price: '', description: '', badge: '', features: [] })} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
                 + Add plan
               </button>
               <p className="text-xs text-gray-400 italic">
@@ -637,14 +639,15 @@ export default function SiteContentPage() {
               </p>
             </div>
           )}
-          
+
           <div className="mt-8 flex justify-end">
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium transition-colors"
+              className="px-6 py-3 bg-secondary-500 hover:bg-secondary-600 text-white rounded-xl disabled:opacity-50 font-bold text-sm transition-colors flex items-center gap-2"
             >
-              {saving ? 'Saving...' : '💾 Save Changes'}
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 21v-8H7v8M7 3v5h8" /></svg>
+              {saving ? 'Saving...' : 'Save Changes'}
             </button>
           </div>
         </div>

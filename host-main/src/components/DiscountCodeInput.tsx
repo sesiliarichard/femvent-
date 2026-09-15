@@ -97,13 +97,13 @@ export default function DiscountCodeInput({
                                 }}
                                 onKeyPress={(e) => e.key === 'Enter' && handleApply()}
                                 placeholder="Enter code"
-                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                             />
                         </div>
                         <button
                             onClick={handleApply}
                             disabled={loading || !code.trim()}
-                            className="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            className="px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                         >
                             {loading ? 'Checking...' : 'Apply'}
                         </button>

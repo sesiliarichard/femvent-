@@ -100,7 +100,7 @@ const CustomFormBuilder: React.FC<CustomFormBuilderProps> = ({ eventId, onSave }
 
             {/* Fields List */}
             {fields.length === 0 ? (
-                <div className="text-center py-8 text-gray-500border border-dashed border-gray-300 rounded-lg">
+                <div className="text-center py-8 text-gray-500 border border-dashed border-gray-300 rounded-lg">
                     <p>No custom fields yet. Click above to add fields.</p>
                 </div>
             ) : (
@@ -174,7 +174,7 @@ const CustomFormBuilder: React.FC<CustomFormBuilderProps> = ({ eventId, onSave }
                 <div className="mt-6 flex justify-end">
                     <button
                         onClick={() => onSave(fields)}
-                        className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                        className="px-6 py-2 bg-secondary-500 text-white rounded-md hover:bg-secondary-600"
                     >
                         Save Custom Fields
                     </button>

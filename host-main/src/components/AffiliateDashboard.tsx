@@ -50,7 +50,7 @@ export default function AffiliateDashboard({ userId }: { userId: string }) {
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
             </div>
         );
     }
@@ -75,7 +75,7 @@ export default function AffiliateDashboard({ userId }: { userId: string }) {
                                 {affiliate?.stats?.totalClicks || 0}
                             </p>
                         </div>
-                        <MousePointer className="h-12 w-12 text-blue-500" />
+                        <MousePointer className="h-12 w-12 text-primary-500" />
                     </div>
                 </div>
 
@@ -102,7 +102,7 @@ export default function AffiliateDashboard({ userId }: { userId: string }) {
                                 ${affiliate?.stats?.totalRevenue?.toFixed(2) || '0.00'}
                             </p>
                         </div>
-                        <DollarSign className="h-12 w-12 text-purple-500" />
+                        <DollarSign className="h-12 w-12 text-secondary-500" />
                     </div>
                     <p className="text-sm text-gray-500 mt-2">
                         Avg: ${affiliate?.stats?.averageOrderValue?.toFixed(2) || '0.00'} per sale
@@ -143,7 +143,7 @@ export default function AffiliateDashboard({ userId }: { userId: string }) {
                         />
                         <button
                             onClick={() => copyReferralLink()}
-                            className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 flex items-center gap-2"
+                            className="px-4 py-2 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 flex items-center gap-2"
                         >
                             {copied ? <Check size={20} /> : <Copy size={20} />}
                             {copied ? 'Copied!' : 'Copy'}
@@ -224,7 +224,7 @@ export default function AffiliateDashboard({ userId }: { userId: string }) {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <span className={`px-2 py-1 text-xs rounded-full ${commission.status === 'paid' ? 'bg-green-100 text-green-800' :
-                                            commission.status === 'approved' ? 'bg-blue-100 text-blue-800' :
+                                            commission.status === 'approved' ? 'bg-primary-100 text-primary-800' :
                                                 'bg-yellow-100 text-yellow-800'
                                         }`}>
                                         {commission.status}
@@ -246,7 +246,7 @@ export default function AffiliateDashboard({ userId }: { userId: string }) {
             {/* Request Payout Button */}
             {(affiliate?.stats?.totalCommission || 0) > 50 && (
                 <div className="mt-6 flex justify-end">
-                    <button className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 font-semibold">
+                    <button className="px-6 py-3 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 font-semibold">
                         Request Payout (${affiliate.stats.totalCommission.toFixed(2)})
                     </button>
                 </div>
