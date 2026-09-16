@@ -97,9 +97,9 @@ const CheckInAnalytics: React.FC<CheckInAnalyticsProps> = ({ eventId }) => {
 
             {/* Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-blue-50 rounded-lg border border-blue-200 p-4">
-                    <p className="text-sm text-blue-600 mb-1">Total Tickets</p>
-                    <p className="text-3xl font-bold text-blue-900">{stats.totalTickets}</p>
+                <div className="bg-primary-50 rounded-lg border border-primary-100 p-4">
+                    <p className="text-sm text-primary-600 mb-1">Total Tickets</p>
+                    <p className="text-3xl font-bold text-primary-900">{stats.totalTickets}</p>
                 </div>
                 <div className="bg-green-50 rounded-lg border border-green-200 p-4">
                     <p className="text-sm text-green-600 mb-1">Checked In</p>
@@ -109,9 +109,9 @@ const CheckInAnalytics: React.FC<CheckInAnalyticsProps> = ({ eventId }) => {
                     <p className="text-sm text-orange-600 mb-1">Not Checked In</p>
                     <p className="text-3xl font-bold text-orange-900">{stats.notCheckedIn}</p>
                 </div>
-                <div className="bg-purple-50 rounded-lg border border-purple-200 p-4">
-                    <p className="text-sm text-purple-600 mb-1">Check-In Rate</p>
-                    <p className="text-3xl font-bold text-purple-900">{stats.checkInRate.toFixed(1)}%</p>
+                <div className="bg-secondary-50 rounded-lg border border-secondary-100 p-4">
+                    <p className="text-sm text-secondary-600 mb-1">Check-In Rate</p>
+                    <p className="text-3xl font-bold text-secondary-900">{stats.checkInRate.toFixed(1)}%</p>
                 </div>
             </div>
 
@@ -123,7 +123,7 @@ const CheckInAnalytics: React.FC<CheckInAnalyticsProps> = ({ eventId }) => {
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-4">
                     <div
-                        className="bg-gradient-to-r from-green-500 to-emerald-600 h-4 rounded-full transition-all duration-500"
+                        className="bg-emerald-500 h-4 rounded-full transition-all duration-500"
                         style={{ width: `${stats.checkInRate}%` }}
                     />
                 </div>
@@ -153,7 +153,7 @@ const CheckInAnalytics: React.FC<CheckInAnalyticsProps> = ({ eventId }) => {
                             const height = (count / maxCount) * 100;
                             return (
                                 <div key={hour} className="flex flex-col items-center flex-1">
-                                    <div className="w-full bg-blue-500 rounded-t" style={{ height: `${height}%` }} title={`${count} check-ins`} />
+                                    <div className="w-full bg-primary-500 rounded-t" style={{ height: `${height}%` }} title={`${count} check-ins`} />
                                     <p className="text-xs text-gray-600 mt-1">{hour}</p>
                                 </div>
                             );

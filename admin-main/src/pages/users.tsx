@@ -117,7 +117,7 @@ export default function UsersPage() {
       alert(error instanceof Error ? error.message : 'Failed to remove user');
     }
   };
-  
+
   const handleApproveHost = async (userId: string) => {
     try {
       await approveHostApplication(userId);
@@ -186,321 +186,106 @@ export default function UsersPage() {
     fetchData();
   };
 
+  const pendingApplicants = users.filter(user => user.hostApplication?.status === 'pending');
+
   return (
     <AdminLayout>
-      <div style={{ minHeight: '100vh', background: 'linear-gradient(to bottom, #f8fafc, #f1f5f9)' }}>
+      <div className="min-h-screen bg-gray-50">
         {/* Header */}
-        <div style={{ 
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-          padding: '2rem 2rem',
-          borderBottom: '3px solid rgba(255, 255, 255, 0.1)'
-        }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-            <h1 style={{ 
-              fontSize: '2.25rem', 
-              fontWeight: '800', 
-              color: 'white', 
-              margin: 0,
-              letterSpacing: '-0.025em',
-              textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-            }}>
-              Mobile App Users
-            </h1>
-            <p style={{ 
-              margin: '0.5rem 0 0 0', 
-              fontSize: '1rem', 
-              color: 'rgba(255, 255, 255, 0.9)',
-              fontWeight: '500'
-            }}>
-              Manage mobile app users and host applications
-            </p>
+        <div className="bg-primary-600 px-8 py-8">
+          <div className="max-w-6xl mx-auto">
+            <h1 className="text-3xl font-extrabold text-white tracking-tight">Mobile App Users</h1>
+            <p className="mt-1.5 text-sm text-white/85 font-medium">Manage mobile app users and host applications</p>
           </div>
         </div>
 
         {/* Main Content */}
-        <div style={{ padding: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+        <div className="p-8 max-w-6xl mx-auto">
           {/* Pending Host Applications */}
-          {users.filter(user => user.hostApplication?.status === 'pending').length > 0 && (
-            <div style={{
-              background: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-              border: '2px solid #f59e0b',
-              borderRadius: '1rem',
-              padding: '1.75rem',
-              marginBottom: '2rem',
-              boxShadow: '0 4px 6px -1px rgba(245, 158, 11, 0.1), 0 2px 4px -1px rgba(245, 158, 11, 0.06)',
-              position: 'relative',
-              overflow: 'hidden'
-            }}>
-              <div style={{
-                position: 'absolute',
-                top: 0,
-                right: 0,
-                width: '200px',
-                height: '200px',
-                background: 'radial-gradient(circle, rgba(251, 191, 36, 0.15) 0%, transparent 70%)',
-                borderRadius: '50%',
-                transform: 'translate(50%, -50%)'
-              }} />
-              <h3 style={{ 
-                fontSize: '1.25rem', 
-                fontWeight: '700', 
-                color: '#92400e', 
-                margin: '0 0 1.25rem 0',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem'
-              }}>
-                <span style={{ fontSize: '1.5rem' }}>⚠️</span> Pending Host Applications
+          {pendingApplicants.length > 0 && (
+            <div className="bg-accent-50 border border-accent-200 rounded-2xl p-6 mb-8">
+              <h3 className="text-sm font-extrabold text-accent-800 mb-4 flex items-center gap-2">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" /></svg>
+                Pending Host Applications
               </h3>
-              {users.filter(user => user.hostApplication?.status === 'pending').map(user => (
-                <div key={user.id} style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '1rem 1.25rem',
-                  backgroundColor: 'white',
-                  borderRadius: '0.75rem',
-                  marginBottom: '0.75rem',
-                  boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)',
-                  transition: 'transform 0.2s, box-shadow 0.2s',
-                  cursor: 'pointer'
-                }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ 
-                      fontWeight: '600', 
-                      color: '#111827', 
-                      marginBottom: '0.5rem',
-                      fontSize: '1.05rem'
-                    }}>
+              {pendingApplicants.map(user => (
+                <div key={user.id} className="flex justify-between items-center px-5 py-4 bg-white rounded-xl mb-3 last:mb-0">
+                  <div className="flex-1">
+                    <div className="font-bold text-gray-900 mb-1.5 text-[15px]">
                       {user.name || user.email}
                     </div>
-                    <div style={{ 
-                      fontSize: '0.875rem', 
-                      color: '#6b7280', 
-                      marginBottom: '0.25rem',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem'
-                    }}>
-                      <span>📅</span> Applied: {user.hostApplication?.appliedAt?.toLocaleDateString()}
+                    <div className="text-xs text-gray-500 mb-1">
+                      Applied: {user.hostApplication?.appliedAt?.toLocaleDateString()}
                     </div>
-                    <div style={{ 
-                      fontSize: '0.875rem', 
-                      color: '#6b7280',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.5rem'
-                    }}>
-                      <span>📧</span> {user.hostApplication?.contactMethod === 'email' 
-                        ? user.hostApplication?.contactEmail 
+                    <div className="text-xs text-gray-500">
+                      {user.hostApplication?.contactMethod === 'email'
+                        ? user.hostApplication?.contactEmail
                         : user.hostApplication?.contactPhone}
                     </div>
                   </div>
-                  <div>
-                    <button
-                      onClick={() => handleOpenHostApplicationModal(user)}
-                      style={{
-                        padding: '0.875rem 1.75rem',
-                        background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                        color: 'white',
-                        border: 'none',
-                        borderRadius: '0.5rem',
-                        cursor: 'pointer',
-                        fontSize: '0.9rem',
-                        fontWeight: '600',
-                        boxShadow: '0 2px 4px rgba(59, 130, 246, 0.3)',
-                        transition: 'transform 0.2s, box-shadow 0.2s'
-                      }}
-                      onMouseEnter={(e) => {
-                        e.currentTarget.style.transform = 'translateY(-2px)';
-                        e.currentTarget.style.boxShadow = '0 4px 6px rgba(59, 130, 246, 0.4)';
-                      }}
-                      onMouseLeave={(e) => {
-                        e.currentTarget.style.transform = 'translateY(0)';
-                        e.currentTarget.style.boxShadow = '0 2px 4px rgba(59, 130, 246, 0.3)';
-                      }}
-                    >
-                      Review Application →
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => handleOpenHostApplicationModal(user)}
+                    className="px-5 py-2.5 bg-primary-600 hover:bg-primary-700 text-white rounded-xl text-sm font-bold transition-colors"
+                  >
+                    Review Application →
+                  </button>
                 </div>
               ))}
             </div>
           )}
 
           {/* User Stats */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-            gap: '1.5rem',
-            marginBottom: '2rem'
-          }}>
-            <div style={{ 
-              background: 'white', 
-              borderRadius: '1rem', 
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', 
-              border: '1px solid #e5e7eb',
-              padding: '1.75rem',
-              position: 'relative',
-              overflow: 'hidden',
-              transition: 'transform 0.2s, box-shadow 0.2s'
-            }}>
-              <div style={{
-                position: 'absolute',
-                top: '-20px',
-                right: '-20px',
-                width: '100px',
-                height: '100px',
-                background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%)',
-                borderRadius: '50%'
-              }} />
-              <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
-                <div style={{ 
-                  width: '3.5rem', 
-                  height: '3.5rem', 
-                  background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', 
-                  borderRadius: '1rem', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  marginRight: '1rem',
-                  boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.3)'
-                }}>
-                  <svg style={{ width: '1.75rem', height: '1.75rem', color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="grid gap-4 mb-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+            <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-primary-50 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                  <svg className="w-6 h-6 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
                   </svg>
                 </div>
                 <div>
-                  <p style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6b7280', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Total Mobile Users</p>
-                  <p style={{ fontSize: '2rem', fontWeight: '800', color: '#111827', margin: '0.25rem 0 0 0' }}>{userStats.totalUsers.toLocaleString()}</p>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wide">Total Mobile Users</p>
+                  <p className="text-2xl font-extrabold text-gray-900 mt-0.5">{userStats.totalUsers.toLocaleString()}</p>
                 </div>
               </div>
             </div>
 
-            <div style={{ 
-              background: 'white', 
-              borderRadius: '1rem', 
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', 
-              border: '1px solid #e5e7eb',
-              padding: '1.75rem',
-              position: 'relative',
-              overflow: 'hidden',
-              transition: 'transform 0.2s, box-shadow 0.2s'
-            }}>
-              <div style={{
-                position: 'absolute',
-                top: '-20px',
-                right: '-20px',
-                width: '100px',
-                height: '100px',
-                background: 'radial-gradient(circle, rgba(16, 185, 129, 0.1) 0%, transparent 70%)',
-                borderRadius: '50%'
-              }} />
-              <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
-                <div style={{ 
-                  width: '3.5rem', 
-                  height: '3.5rem', 
-                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)', 
-                  borderRadius: '1rem', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  marginRight: '1rem',
-                  boxShadow: '0 4px 6px -1px rgba(16, 185, 129, 0.3)'
-                }}>
-                  <svg style={{ width: '1.75rem', height: '1.75rem', color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-emerald-50 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                  <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </div>
                 <div>
-                  <p style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6b7280', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Online Now (last 10 min)</p>
-                  <p style={{ fontSize: '2rem', fontWeight: '800', color: '#111827', margin: '0.25rem 0 0 0' }}>{userStats.activeUsers.toLocaleString()}</p>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wide">Online Now (last 10 min)</p>
+                  <p className="text-2xl font-extrabold text-gray-900 mt-0.5">{userStats.activeUsers.toLocaleString()}</p>
                 </div>
               </div>
             </div>
 
-            <div style={{ 
-              background: 'white', 
-              borderRadius: '1rem', 
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', 
-              border: '1px solid #e5e7eb',
-              padding: '1.75rem',
-              position: 'relative',
-              overflow: 'hidden',
-              transition: 'transform 0.2s, box-shadow 0.2s'
-            }}>
-              <div style={{
-                position: 'absolute',
-                top: '-20px',
-                right: '-20px',
-                width: '100px',
-                height: '100px',
-                background: 'radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%)',
-                borderRadius: '50%'
-              }} />
-              <div style={{ display: 'flex', alignItems: 'center', position: 'relative' }}>
-                <div style={{ 
-                  width: '3.5rem', 
-                  height: '3.5rem', 
-                  background: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)', 
-                  borderRadius: '1rem', 
-                  display: 'flex', 
-                  alignItems: 'center', 
-                  justifyContent: 'center',
-                  marginRight: '1rem',
-                  boxShadow: '0 4px 6px -1px rgba(245, 158, 11, 0.3)'
-                }}>
-                  <svg style={{ width: '1.75rem', height: '1.75rem', color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="bg-white rounded-2xl border border-gray-100 p-6">
+              <div className="flex items-center">
+                <div className="w-12 h-12 bg-accent-50 rounded-xl flex items-center justify-center mr-4 flex-shrink-0">
+                  <svg className="w-6 h-6 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
                 </div>
                 <div>
-                  <p style={{ fontSize: '0.8rem', fontWeight: '600', color: '#6b7280', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Pending Host Apps</p>
-                  <p style={{ fontSize: '2rem', fontWeight: '800', color: '#111827', margin: '0.25rem 0 0 0' }}>{userStats.pendingHosts.toLocaleString()}</p>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-wide">Pending Host Apps</p>
+                  <p className="text-2xl font-extrabold text-gray-900 mt-0.5">{userStats.pendingHosts.toLocaleString()}</p>
                 </div>
               </div>
             </div>
           </div>
 
           {/* Users Table */}
-          <div style={{ 
-            background: 'white', 
-            borderRadius: '1rem', 
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)', 
-            border: '1px solid #e5e7eb',
-            overflow: 'hidden'
-          }}>
-            <div style={{ 
-              padding: '1.75rem 2rem', 
-              borderBottom: '2px solid #f3f4f6',
-              background: 'linear-gradient(to right, #fafafa, #ffffff)'
-            }}>
-              <h3 style={{ 
-                fontSize: '1.375rem', 
-                fontWeight: '700', 
-                color: '#111827', 
-                margin: 0,
-                letterSpacing: '-0.025em'
-              }}>
-                Mobile App Users
-              </h3>
+          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <div className="px-8 py-6 border-b border-gray-100">
+              <h3 className="text-lg font-extrabold text-gray-900">Mobile App Users</h3>
             </div>
-            <div style={{ padding: '1.5rem 2rem' }}>
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr auto', 
-                gap: '1rem',
-                padding: '1rem 0.75rem',
-                background: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
-                borderRadius: '0.75rem',
-                marginBottom: '1rem',
-                fontWeight: '700',
-                fontSize: '0.8rem',
-                color: '#475569',
-                textTransform: 'uppercase',
-                letterSpacing: '0.05em'
-              }}>
+            <div className="p-6">
+              <div className="hidden md:grid gap-4 px-3 py-3 bg-gray-50 rounded-xl mb-3 font-extrabold text-xs text-gray-400 uppercase tracking-wide" style={{ gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr auto' }}>
                 <div>Name</div>
                 <div>Email</div>
                 <div>Role</div>
@@ -508,61 +293,39 @@ export default function UsersPage() {
                 <div>Host App</div>
                 <div>Actions</div>
               </div>
-              
+
               {loading ? (
-                <div style={{ textAlign: 'center', padding: '3rem', color: '#6b7280' }}>
-                  <div style={{ 
-                    display: 'inline-block',
-                    width: '40px',
-                    height: '40px',
-                    border: '4px solid #f3f4f6',
-                    borderTop: '4px solid #3b82f6',
-                    borderRadius: '50%',
-                    animation: 'spin 1s linear infinite'
-                  }} />
-                  <p style={{ marginTop: '1rem', fontWeight: '500' }}>Loading mobile app users...</p>
+                <div className="text-center py-12 text-gray-500">
+                  <div className="inline-block w-9 h-9 border-4 border-gray-200 border-t-primary-600 rounded-full animate-spin" />
+                  <p className="mt-4 font-semibold text-sm">Loading mobile app users...</p>
                 </div>
               ) : users.length === 0 ? (
-                <div style={{ textAlign: 'center', padding: '3rem', color: '#6b7280' }}>
-                  <svg style={{ width: '3rem', height: '3rem', margin: '0 auto 1rem', color: '#d1d5db' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div className="text-center py-12 text-gray-500">
+                  <svg className="w-10 h-10 mx-auto mb-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                   </svg>
-                  <p style={{ fontWeight: '500', fontSize: '1rem' }}>No mobile app users found</p>
+                  <p className="font-semibold text-sm">No mobile app users found</p>
                 </div>
               ) : (
-                users.map((user, index) => (
-                  <div key={user.id} style={{ 
-                    display: 'grid', 
-                    gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr auto', 
-                    gap: '1rem',
-                    padding: '1rem 0.75rem',
-                    borderBottom: index < users.length - 1 ? '1px solid #f3f4f6' : 'none',
-                    alignItems: 'center',
-                    transition: 'background-color 0.15s',
-                    borderRadius: '0.5rem'
-                  }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fafafa'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                users.map((user) => (
+                  <div
+                    key={user.id}
+                    className="grid gap-4 px-3 py-4 border-b border-gray-100 last:border-0 items-center hover:bg-gray-50 rounded-xl transition-colors"
+                    style={{ gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr auto' }}
                   >
-                    <div style={{ fontWeight: '600', color: '#111827', fontSize: '0.95rem' }}>
+                    <div className="font-bold text-gray-900 text-sm">
                       {user.name || user.email?.split('@')[0]}
                     </div>
-                    <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{user.email}</div>
+                    <div className="text-gray-500 text-sm">{user.email}</div>
                     <div>
-                      <select 
-                        value={user.role || 'attendee'} 
+                      <select
+                        value={user.role || 'attendee'}
                         onChange={(e) => handleUpdateRole(user.id, e.target.value)}
-                        style={{ 
-                          padding: '0.5rem 0.75rem', 
-                          borderRadius: '0.5rem', 
-                          fontSize: '0.8rem',
-                          fontWeight: '600',
-                          backgroundColor: user.role === 'admin' ? '#eef2ff' : user.role === 'host' ? '#ecfdf5' : '#f3f4f6',
-                          color: user.role === 'admin' ? '#4f46e5' : user.role === 'host' ? '#059669' : '#6b7280',
-                          border: user.role === 'admin' ? '2px solid #c7d2fe' : user.role === 'host' ? '2px solid #a7f3d0' : '2px solid #e5e7eb',
-                          cursor: 'pointer',
-                          outline: 'none'
-                        }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold border-2 outline-none cursor-pointer ${
+                          user.role === 'admin' ? 'bg-primary-50 text-primary-700 border-primary-200' :
+                          user.role === 'host' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                          'bg-gray-50 text-gray-600 border-gray-200'
+                        }`}
                       >
                         <option value="attendee">Attendee</option>
                         <option value="host">Host</option>
@@ -570,179 +333,64 @@ export default function UsersPage() {
                       </select>
                     </div>
                     <div>
-                      <span style={{ 
-                        padding: '0.375rem 0.75rem', 
-                        borderRadius: '9999px', 
-                        fontSize: '0.75rem',
-                        fontWeight: '600',
-                        backgroundColor: user.isSuspended ? '#fef3c7' : '#d1fae5',
-                        color: user.isSuspended ? '#d97706' : '#065f46',
-                        border: user.isSuspended ? '2px solid #fde68a' : '2px solid #a7f3d0'
-                      }}>
-                        {user.isSuspended ? '🔒 Suspended' : '✓ Active'}
+                      <span className={`px-3 py-1 rounded-full text-xs font-bold border-2 ${
+                        user.isSuspended ? 'bg-accent-50 text-accent-700 border-accent-200' : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      }`}>
+                        {user.isSuspended ? 'Suspended' : 'Active'}
                       </span>
                     </div>
                     <div>
                       {user.hostApplication?.status ? (
-                        <span style={{ 
-                          padding: '0.375rem 0.75rem', 
-                          borderRadius: '9999px', 
-                          fontSize: '0.75rem',
-                          fontWeight: '600',
-                          backgroundColor: user.hostApplication.status === 'pending' ? '#fef3c7' : 
-                                          user.hostApplication.status === 'approved' ? '#d1fae5' : '#fee2e2',
-                          color: user.hostApplication.status === 'pending' ? '#d97706' : 
-                                 user.hostApplication.status === 'approved' ? '#065f46' : '#991b1b',
-                          border: user.hostApplication.status === 'pending' ? '2px solid #fde68a' : 
-                                 user.hostApplication.status === 'approved' ? '2px solid #a7f3d0' : '2px solid #fecaca'
-                        }}>
-                          {user.hostApplication.status === 'pending' ? '⏳' : 
-                           user.hostApplication.status === 'approved' ? '✓' : '✗'} {user.hostApplication.status}
+                        <span className={`px-3 py-1 rounded-full text-xs font-bold border-2 ${
+                          user.hostApplication.status === 'pending' ? 'bg-accent-50 text-accent-700 border-accent-200' :
+                          user.hostApplication.status === 'approved' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' :
+                          'bg-red-50 text-red-700 border-red-200'
+                        }`}>
+                          {user.hostApplication.status}
                         </span>
                       ) : (
-                        <span style={{ color: '#9ca3af', fontSize: '0.8rem', fontWeight: '500' }}>—</span>
+                        <span className="text-gray-400 text-xs font-semibold">—</span>
                       )}
                     </div>
-                    <div style={{ display: 'flex', gap: '0.5rem', flexDirection: 'column' }}>
+                    <div className="flex flex-col gap-1.5">
                       {user.hostApplication?.status === 'pending' && (
-                        <div style={{ display: 'flex', gap: '0.375rem' }}>
-                          <button 
+                        <div className="flex gap-1.5">
+                          <button
                             onClick={() => handleReviewHostApplication(user.id, 'approved')}
-                            style={{ 
-                              padding: '0.5rem 0.875rem', 
-                              fontSize: '0.8rem',
-                              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '0.5rem',
-                              cursor: 'pointer',
-                              fontWeight: '600',
-                              boxShadow: '0 2px 4px rgba(16, 185, 129, 0.3)',
-                              transition: 'transform 0.2s, box-shadow 0.2s'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.transform = 'translateY(-1px)';
-                              e.currentTarget.style.boxShadow = '0 4px 6px rgba(16, 185, 129, 0.4)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.transform = 'translateY(0)';
-                              e.currentTarget.style.boxShadow = '0 2px 4px rgba(16, 185, 129, 0.3)';
-                            }}
+                            className="px-3 py-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
                           >
-                            ✓ Approve
+                            Approve
                           </button>
-                          <button 
+                          <button
                             onClick={() => {
                               const reason = prompt('Rejection reason:');
                               if (reason) handleReviewHostApplication(user.id, 'rejected', reason);
                             }}
-                            style={{ 
-                              padding: '0.5rem 0.875rem', 
-                              fontSize: '0.8rem',
-                              background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                              color: 'white',
-                              border: 'none',
-                              borderRadius: '0.5rem',
-                              cursor: 'pointer',
-                              fontWeight: '600',
-                              boxShadow: '0 2px 4px rgba(239, 68, 68, 0.3)',
-                              transition: 'transform 0.2s, box-shadow 0.2s'
-                            }}
-                            onMouseEnter={(e) => {
-                              e.currentTarget.style.transform = 'translateY(-1px)';
-                              e.currentTarget.style.boxShadow = '0 4px 6px rgba(239, 68, 68, 0.4)';
-                            }}
-                            onMouseLeave={(e) => {
-                              e.currentTarget.style.transform = 'translateY(0)';
-                              e.currentTarget.style.boxShadow = '0 2px 4px rgba(239, 68, 68, 0.3)';
-                            }}
+                            className="px-3 py-1.5 text-xs font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
                           >
-                            ✗ Reject
+                            Reject
                           </button>
                         </div>
                       )}
-                      <button 
+                      <button
                         onClick={() => handleSuspendUser(user.id, !user.isSuspended)}
-                        style={{ 
-                          padding: '0.5rem 0.875rem', 
-                          fontSize: '0.8rem',
-                          background: user.isSuspended 
-                            ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' 
-                            : 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '0.5rem',
-                          cursor: 'pointer',
-                          fontWeight: '600',
-                          boxShadow: user.isSuspended 
-                            ? '0 2px 4px rgba(16, 185, 129, 0.3)' 
-                            : '0 2px 4px rgba(245, 158, 11, 0.3)',
-                          transition: 'transform 0.2s, box-shadow 0.2s'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = user.isSuspended 
-                            ? '0 4px 6px rgba(16, 185, 129, 0.4)' 
-                            : '0 4px 6px rgba(245, 158, 11, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = user.isSuspended 
-                            ? '0 2px 4px rgba(16, 185, 129, 0.3)' 
-                            : '0 2px 4px rgba(245, 158, 11, 0.3)';
-                        }}
+                        className={`px-3 py-1.5 text-xs font-bold text-white rounded-lg transition-colors ${
+                          user.isSuspended ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-accent-500 hover:bg-accent-600'
+                        }`}
                       >
-                        {user.isSuspended ? '🔓 Activate' : '🔒 Suspend'}
+                        {user.isSuspended ? 'Activate' : 'Suspend'}
                       </button>
-                             <button 
+                      <button
                         onClick={() => handleRecordPayment(user)}
-                        style={{ 
-                          padding: '0.5rem 0.875rem', 
-                          fontSize: '0.8rem',
-                          background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '0.5rem',
-                          cursor: 'pointer',
-                          fontWeight: '600',
-                          boxShadow: '0 2px 4px rgba(59, 130, 246, 0.3)',
-                          transition: 'transform 0.2s, box-shadow 0.2s'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 6px rgba(59, 130, 246, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 4px rgba(59, 130, 246, 0.3)';
-                        }}
+                        className="px-3 py-1.5 text-xs font-bold bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-colors"
                       >
-                        💳 Record Payment
+                        Record Payment
                       </button>
-                      <button 
+                      <button
                         onClick={() => handleDeleteUser(user.id, user.name || user.email)}
-                        style={{ 
-                          padding: '0.5rem 0.875rem', 
-                          fontSize: '0.8rem',
-                          background: 'linear-gradient(135deg, #991b1b 0%, #7f1d1d 100%)',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '0.5rem',
-                          cursor: 'pointer',
-                          fontWeight: '600',
-                          boxShadow: '0 2px 4px rgba(153, 27, 27, 0.3)',
-                          transition: 'transform 0.2s, box-shadow 0.2s'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'translateY(-1px)';
-                          e.currentTarget.style.boxShadow = '0 4px 6px rgba(153, 27, 27, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'translateY(0)';
-                          e.currentTarget.style.boxShadow = '0 2px 4px rgba(153, 27, 27, 0.3)';
-                        }}
+                        className="px-3 py-1.5 text-xs font-bold bg-red-700 hover:bg-red-800 text-white rounded-lg transition-colors"
                       >
-                        🗑️ Delete
+                        Delete
                       </button>
                     </div>
                   </div>
@@ -775,13 +423,6 @@ export default function UsersPage() {
           onRecordPayment={handleRecordPayment}
         />
       )}
-
-      <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-      `}</style>
     </AdminLayout>
   );
 }
