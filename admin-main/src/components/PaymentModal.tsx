@@ -49,7 +49,6 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
         createdAt: new Date(),
       });
 
-      alert('Payment recorded successfully!');
       onPaymentRecorded();
       onClose();
       setPaymentData({
@@ -71,67 +70,30 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '0.75rem',
-        padding: '2rem',
-        width: '90%',
-        maxWidth: '500px',
-        maxHeight: '90vh',
-        overflowY: 'auto'
-      }}>
-        <h2 style={{ margin: '0 0 1.5rem 0', fontSize: '1.5rem', fontWeight: 'bold' }}>
-          Record Payment for {userName}
-        </h2>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-[1000] p-4">
+      <div className="bg-white rounded-2xl p-8 w-full max-w-[500px] max-h-[90vh] overflow-y-auto shadow-2xl">
+        <h2 className="text-lg font-extrabold text-gray-900 mb-6">Record payment for {userName}</h2>
 
-        <form onSubmit={handleSubmit}>
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-              Amount *
-            </label>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Amount *</label>
             <input
               type="number"
               step="0.01"
               min="0"
               value={paymentData.amount}
               onChange={(e) => setPaymentData({ ...paymentData, amount: e.target.value })}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.5rem',
-                fontSize: '1rem'
-              }}
+              className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
               required
             />
           </div>
 
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-              Currency
-            </label>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Currency</label>
             <select
               value={paymentData.currency}
               onChange={(e) => setPaymentData({ ...paymentData, currency: e.target.value })}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.5rem',
-                fontSize: '1rem'
-              }}
+              className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
             >
               <option value="USD">USD</option>
               <option value="EUR">EUR</option>
@@ -140,95 +102,56 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({
             </select>
           </div>
 
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-              Payment Type
-            </label>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Payment type</label>
             <select
               value={paymentData.type}
               onChange={(e) => setPaymentData({ ...paymentData, type: e.target.value as 'subscription' | 'ticket' })}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.5rem',
-                fontSize: '1rem'
-              }}
+              className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
             >
-              <option value="subscription">Host Subscription</option>
-              <option value="ticket">Event Ticket</option>
+              <option value="subscription">Host subscription</option>
+              <option value="ticket">Event ticket</option>
             </select>
           </div>
 
-          <div style={{ marginBottom: '1rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-              Payment Method
-            </label>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Payment method</label>
             <select
               value={paymentData.method}
               onChange={(e) => setPaymentData({ ...paymentData, method: e.target.value as 'manual' | 'cash' | 'bank_transfer' })}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.5rem',
-                fontSize: '1rem'
-              }}
+              className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
             >
-              <option value="manual">Manual Entry</option>
+              <option value="manual">Manual entry</option>
               <option value="cash">Cash</option>
-              <option value="bank_transfer">Bank Transfer</option>
+              <option value="bank_transfer">Bank transfer</option>
             </select>
           </div>
 
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: '500' }}>
-              Description (optional)
-            </label>
+          <div>
+            <label className="block text-sm font-bold text-gray-900 mb-2">Description (optional)</label>
             <textarea
               value={paymentData.description}
               onChange={(e) => setPaymentData({ ...paymentData, description: e.target.value })}
               rows={3}
-              style={{
-                width: '100%',
-                padding: '0.75rem',
-                border: '1px solid #d1d5db',
-                borderRadius: '0.5rem',
-                fontSize: '1rem',
-                resize: 'vertical'
-              }}
+              className="w-full px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-y"
               placeholder="Additional notes about this payment..."
             />
           </div>
 
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+          <div className="flex gap-2.5 justify-end pt-2">
             <button
               type="button"
               onClick={onClose}
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: '#6b7280',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.5rem',
-                cursor: 'pointer'
-              }}
+              className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl text-sm font-bold transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              style={{
-                padding: '0.75rem 1.5rem',
-                backgroundColor: loading ? '#9ca3af' : '#3b82f6',
-                color: 'white',
-                border: 'none',
-                borderRadius: '0.5rem',
-                cursor: loading ? 'not-allowed' : 'pointer'
-              }}
+              className="px-5 py-2.5 bg-secondary-500 hover:bg-secondary-600 disabled:opacity-50 text-white rounded-xl text-sm font-bold transition-colors"
             >
-              {loading ? 'Recording...' : 'Record Payment'}
+              {loading ? 'Recording...' : 'Record payment'}
             </button>
           </div>
         </form>

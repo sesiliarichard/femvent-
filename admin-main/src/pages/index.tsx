@@ -17,7 +17,14 @@ export default function AdminDashboard() {
   }, [user, loading, router]);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-50">
+        <div className="text-center">
+          <div className="inline-block w-9 h-9 border-4 border-gray-200 border-t-primary-600 rounded-full animate-spin" />
+          <p className="mt-4 text-sm text-gray-500 font-semibold">Loading...</p>
+        </div>
+      </div>
+    );
   }
 
   if (!user) {

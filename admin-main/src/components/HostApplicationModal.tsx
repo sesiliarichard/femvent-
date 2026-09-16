@@ -50,327 +50,135 @@ export const HostApplicationModal: React.FC<HostApplicationModalProps> = ({
   };
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-      padding: '1rem'
-    }}>
-      <div style={{
-        backgroundColor: 'white',
-        borderRadius: '0.75rem',
-        padding: '2rem',
-        maxWidth: '600px',
-        width: '100%',
-        maxHeight: '90vh',
-        overflowY: 'auto',
-        boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
-      }}>
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl">
         {/* Header */}
-        <div style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          marginBottom: '1.5rem',
-          paddingBottom: '1rem',
-          borderBottom: '1px solid #e5e7eb'
-        }}>
-          <h2 style={{
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            color: '#111827',
-            margin: 0
-          }}>
-            Host Application Review
-          </h2>
-          <button
-            onClick={onClose}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '1.5rem',
-              cursor: 'pointer',
-              color: '#6b7280',
-              padding: '0.25rem'
-            }}
-          >
-            ×
-          </button>
+        <div className="flex justify-between items-center px-6 py-5 border-b border-gray-100">
+          <h2 className="text-lg font-extrabold text-gray-900">Host application review</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-2xl leading-none">×</button>
         </div>
 
-        {/* Applicant Info */}
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h3 style={{
-            fontSize: '1.125rem',
-            fontWeight: '600',
-            color: '#111827',
-            marginBottom: '0.75rem'
-          }}>
-            Applicant Information
-          </h3>
-          <div style={{
-            backgroundColor: '#f9fafb',
-            padding: '1rem',
-            borderRadius: '0.5rem',
-            border: '1px solid #e5e7eb'
-          }}>
-            <div style={{ marginBottom: '0.5rem' }}>
-              <strong>Name:</strong> {user.name || 'Not provided'}
-            </div>
-            <div style={{ marginBottom: '0.5rem' }}>
-              <strong>Email:</strong> {user.email}
-            </div>
-            <div style={{ marginBottom: '0.5rem' }}>
-              <strong>Applied:</strong> {application.appliedAt ? formatDate(application.appliedAt) : 'Unknown'}
-            </div>
-            <div>
-              <strong>Current Role:</strong> {user.role || 'attendee'}
+        <div className="p-6">
+          {/* Applicant Info */}
+          <div className="mb-6">
+            <p className="text-xs font-extrabold text-gray-400 uppercase tracking-wide mb-2">Applicant information</p>
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-sm space-y-1.5">
+              <div><span className="font-bold text-gray-900">Name:</span> <span className="text-gray-600">{user.name || 'Not provided'}</span></div>
+              <div><span className="font-bold text-gray-900">Email:</span> <span className="text-gray-600">{user.email}</span></div>
+              <div><span className="font-bold text-gray-900">Applied:</span> <span className="text-gray-600">{application.appliedAt ? formatDate(application.appliedAt) : 'Unknown'}</span></div>
+              <div><span className="font-bold text-gray-900">Current role:</span> <span className="text-gray-600">{user.role || 'attendee'}</span></div>
             </div>
           </div>
-        </div>
 
-        {/* Contact Information */}
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h3 style={{
-            fontSize: '1.125rem',
-            fontWeight: '600',
-            color: '#111827',
-            marginBottom: '0.75rem'
-          }}>
-            Contact Information
-          </h3>
-          <div style={{
-            backgroundColor: '#f0f9ff',
-            padding: '1rem',
-            borderRadius: '0.5rem',
-            border: '1px solid #0ea5e9'
-          }}>
-            <div style={{ marginBottom: '0.5rem' }}>
-              <strong>Preferred Contact Method:</strong> 
-              <span style={{
-                marginLeft: '0.5rem',
-                padding: '0.25rem 0.5rem',
-                backgroundColor: '#0ea5e9',
-                color: 'white',
-                borderRadius: '0.25rem',
-                fontSize: '0.875rem'
-              }}>
-                {application.contactMethod || 'Not specified'}
-              </span>
-            </div>
-            {application.contactMethod === 'email' && application.contactEmail && (
-              <div style={{ marginBottom: '0.5rem' }}>
-                <strong>Contact Email:</strong> 
-                <a 
-                  href={`mailto:${application.contactEmail}`}
-                  style={{
-                    marginLeft: '0.5rem',
-                    color: '#0ea5e9',
-                    textDecoration: 'none'
-                  }}
-                >
-                  {application.contactEmail}
-                </a>
+          {/* Contact Information */}
+          <div className="mb-6">
+            <p className="text-xs font-extrabold text-gray-400 uppercase tracking-wide mb-2">Contact information</p>
+            <div className="bg-primary-50 border border-primary-100 rounded-xl p-4 text-sm space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-gray-900">Preferred contact method:</span>
+                <span className="px-2.5 py-1 bg-primary-600 text-white rounded-md text-xs font-bold">
+                  {application.contactMethod || 'Not specified'}
+                </span>
               </div>
-            )}
-            {application.contactMethod === 'phone' && application.contactPhone && (
-              <div style={{ marginBottom: '0.5rem' }}>
-                <strong>Contact Phone:</strong> 
-                <a 
-                  href={`tel:${application.contactPhone}`}
-                  style={{
-                    marginLeft: '0.5rem',
-                    color: '#0ea5e9',
-                    textDecoration: 'none'
-                  }}
-                >
-                  {application.contactPhone}
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Application Details */}
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h3 style={{
-            fontSize: '1.125rem',
-            fontWeight: '600',
-            color: '#111827',
-            marginBottom: '0.75rem'
-          }}>
-            Application Details
-          </h3>
-          <div style={{
-            backgroundColor: '#f9fafb',
-            padding: '1rem',
-            borderRadius: '0.5rem',
-            border: '1px solid #e5e7eb'
-          }}>
-            <div style={{ marginBottom: '1rem' }}>
-              <strong>Motivation:</strong>
-              <div style={{
-                marginTop: '0.5rem',
-                padding: '0.75rem',
-                backgroundColor: 'white',
-                borderRadius: '0.375rem',
-                border: '1px solid #d1d5db',
-                minHeight: '80px'
-              }}>
-                {application.motivation || 'Not provided'}
-              </div>
-            </div>
-            
-            {application.experience && (
-              <div style={{ marginBottom: '1rem' }}>
-                <strong>Previous Experience:</strong>
-                <div style={{
-                  marginTop: '0.5rem',
-                  padding: '0.75rem',
-                  backgroundColor: 'white',
-                  borderRadius: '0.375rem',
-                  border: '1px solid #d1d5db',
-                  minHeight: '60px'
-                }}>
-                  {application.experience}
+              {application.contactMethod === 'email' && application.contactEmail && (
+                <div>
+                  <span className="font-bold text-gray-900">Contact email:</span>{' '}
+                  <a href={`mailto:${application.contactEmail}`} className="text-primary-700 font-semibold no-underline hover:underline">
+                    {application.contactEmail}
+                  </a>
                 </div>
-              </div>
-            )}
-            
-            {application.eventTypes && (
+              )}
+              {application.contactMethod === 'phone' && application.contactPhone && (
+                <div>
+                  <span className="font-bold text-gray-900">Contact phone:</span>{' '}
+                  <a href={`tel:${application.contactPhone}`} className="text-primary-700 font-semibold no-underline hover:underline">
+                    {application.contactPhone}
+                  </a>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Application Details */}
+          <div className="mb-6">
+            <p className="text-xs font-extrabold text-gray-400 uppercase tracking-wide mb-2">Application details</p>
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 space-y-4">
               <div>
-                <strong>Planned Event Types:</strong>
-                <div style={{
-                  marginTop: '0.5rem',
-                  padding: '0.75rem',
-                  backgroundColor: 'white',
-                  borderRadius: '0.375rem',
-                  border: '1px solid #d1d5db',
-                  minHeight: '40px'
-                }}>
-                  {application.eventTypes}
+                <p className="text-sm font-bold text-gray-900 mb-1.5">Motivation</p>
+                <div className="bg-white border border-gray-200 rounded-lg p-3 text-sm text-gray-700 min-h-[80px]">
+                  {application.motivation || 'Not provided'}
                 </div>
               </div>
-            )}
-          </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div style={{
-          display: 'flex',
-          gap: '0.75rem',
-          justifyContent: 'flex-end',
-          paddingTop: '1rem',
-          borderTop: '1px solid #e5e7eb'
-        }}>
-          {!showRejectForm ? (
-            <>
-              <button
-                onClick={handleRecordPayment}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: '#3b82f6',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '500'
-                }}
-              >
-                Record Payment
-              </button>
-              <button
-                onClick={handleApprove}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: '#10b981',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '500'
-                }}
-              >
-                Approve Application
-              </button>
-              <button
-                onClick={() => setShowRejectForm(true)}
-                style={{
-                  padding: '0.75rem 1.5rem',
-                  backgroundColor: '#ef4444',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '500'
-                }}
-              >
-                Reject Application
-              </button>
-            </>
-          ) : (
-            <>
-              <div style={{ flex: 1, marginRight: '0.75rem' }}>
+              {application.experience && (
+                <div>
+                  <p className="text-sm font-bold text-gray-900 mb-1.5">Previous experience</p>
+                  <div className="bg-white border border-gray-200 rounded-lg p-3 text-sm text-gray-700 min-h-[60px]">
+                    {application.experience}
+                  </div>
+                </div>
+              )}
+
+              {application.eventTypes && (
+                <div>
+                  <p className="text-sm font-bold text-gray-900 mb-1.5">Planned event types</p>
+                  <div className="bg-white border border-gray-200 rounded-lg p-3 text-sm text-gray-700 min-h-[40px]">
+                    {application.eventTypes}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-2.5 justify-end pt-4 border-t border-gray-100">
+            {!showRejectForm ? (
+              <>
+                <button
+                  onClick={handleRecordPayment}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-primary-50 hover:bg-primary-100 text-primary-700 rounded-xl text-sm font-bold transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" strokeWidth={2} /><path strokeWidth={2} d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2" /></svg>
+                  Record payment
+                </button>
+                <button
+                  onClick={handleApprove}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  Approve
+                </button>
+                <button
+                  onClick={() => setShowRejectForm(true)}
+                  className="flex items-center gap-2 px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-bold transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  Reject
+                </button>
+              </>
+            ) : (
+              <>
                 <textarea
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
                   placeholder="Enter reason for rejection..."
-                  style={{
-                    width: '100%',
-                    padding: '0.75rem',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '0.375rem',
-                    fontSize: '0.875rem',
-                    resize: 'vertical',
-                    minHeight: '80px'
-                  }}
+                  className="flex-1 px-3.5 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500 resize-y min-h-[80px]"
                 />
-              </div>
-              <button
-                onClick={() => {
-                  setShowRejectForm(false);
-                  setRejectionReason('');
-                }}
-                style={{
-                  padding: '0.75rem 1rem',
-                  backgroundColor: '#6b7280',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '500'
-                }}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleReject}
-                style={{
-                  padding: '0.75rem 1rem',
-                  backgroundColor: '#ef4444',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '0.375rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  fontWeight: '500'
-                }}
-              >
-                Confirm Reject
-              </button>
-            </>
-          )}
+                <button
+                  onClick={() => { setShowRejectForm(false); setRejectionReason(''); }}
+                  className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 rounded-xl text-sm font-bold transition-colors flex-shrink-0 self-start"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleReject}
+                  className="px-4 py-2.5 bg-red-600 hover:bg-red-700 text-white rounded-xl text-sm font-bold transition-colors flex-shrink-0 self-start"
+                >
+                  Confirm reject
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

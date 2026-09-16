@@ -83,9 +83,9 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
   const getTypeColor = (type: string) => {
     switch (type) {
       case 'subscription':
-        return 'bg-pink-100 text-secondary-800 border-pink-200';
+        return 'bg-secondary-50 text-secondary-700 border-secondary-100';
       case 'ticket':
-        return 'bg-purple-100 text-purple-800 border-purple-200';
+        return 'bg-primary-50 text-primary-700 border-primary-100';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -132,7 +132,7 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
   if (loading) {
     return (
       <div className="p-8 text-center">
-        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600 mx-auto mb-4"></div>
         <p className="text-gray-500">Loading payment data...</p>
       </div>
     );
@@ -215,16 +215,12 @@ export const PaymentList: React.FC<PaymentListProps> = ({ payments }) => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full border ${getTypeColor(payment.type)}`}>
-                      {payment.type === 'subscription' ? '💳 Host Subscription' : '🎫 Event Ticket'}
+                    {payment.type === 'subscription' ? 'Host Subscription' : 'Event Ticket'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full border ${getStatusColor(payment.status)}`}>
-                      {payment.status === 'succeeded' && '✅'}
-                      {payment.status === 'pending' && '⏳'}
-                      {payment.status === 'failed' && '❌'}
-                      {payment.status === 'refunded' && '🔄'}
-                      {' '}{payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+                    {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">

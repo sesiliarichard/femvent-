@@ -55,20 +55,22 @@ export const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
           <button
             type="button"
             onClick={() => setTab('upload')}
-            className={`flex-1 py-2 text-sm font-semibold transition-colors ${
-              tab === 'upload' ? 'text-blue-600 bg-white border-b-2 border-blue-500 -mb-0.5' : 'text-gray-400 bg-gray-50'
+            className={`flex-1 py-2 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors ${
+              tab === 'upload' ? 'text-primary-600 bg-white border-b-2 border-primary-500 -mb-0.5' : 'text-gray-400 bg-gray-50'
             }`}
           >
-            📤 Upload from Device
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v12m0-12l4 4m-4-4L8 7M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" /></svg>
+            Upload from device
           </button>
           <button
             type="button"
             onClick={() => setTab('url')}
-            className={`flex-1 py-2 text-sm font-semibold transition-colors ${
-              tab === 'url' ? 'text-blue-600 bg-white border-b-2 border-blue-500 -mb-0.5' : 'text-gray-400 bg-gray-50'
+            className={`flex-1 py-2 flex items-center justify-center gap-1.5 text-sm font-semibold transition-colors ${
+              tab === 'url' ? 'text-primary-600 bg-white border-b-2 border-primary-500 -mb-0.5' : 'text-gray-400 bg-gray-50'
             }`}
           >
-            🔗 Paste URL
+            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 13a5 5 0 007.07 0l2.83-2.83a5 5 0 00-7.07-7.07L11.5 4.5M14 11a5 5 0 00-7.07 0L4.1 13.83a5 5 0 007.07 7.07L12.5 19.5" /></svg>
+            Paste URL
           </button>
         </div>
 
@@ -84,7 +86,7 @@ export const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
                 if (file) upload(file);
               }}
               className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors cursor-pointer ${
-                dragOver ? 'border-blue-400 bg-blue-50' : 'border-gray-200 bg-gray-50 hover:border-gray-300'
+                dragOver ? 'border-primary-400 bg-primary-50' : 'border-gray-200 bg-gray-50 hover:border-gray-300'
               }`}
               onClick={() => inputRef.current?.click()}
             >
@@ -92,8 +94,8 @@ export const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
                 {uploading ? 'Uploading...' : 'Drag & drop an image here, or'}
               </p>
               {!uploading && (
-                <span className="inline-block px-4 py-1.5 bg-blue-600 text-white rounded text-sm font-semibold">
-                  Choose File
+                <span className="inline-block px-4 py-1.5 bg-primary-600 text-white rounded text-sm font-semibold">
+                  Choose file
                 </span>
               )}
               <input
@@ -115,7 +117,7 @@ export const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
               onChange={(e) => setUrlDraft(e.target.value)}
               onBlur={() => onChange(urlDraft)}
               placeholder="https://example.com/image.jpg"
-              className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-3 py-2 border-2 border-gray-200 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
             />
           )}
         </div>
@@ -126,9 +128,9 @@ export const ImageUploadWidget: React.FC<ImageUploadWidgetProps> = ({
             <button
               type="button"
               onClick={() => { onChange(''); setUrlDraft(''); }}
-              className="absolute top-5 right-5 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center text-xs hover:bg-black/80"
+              className="absolute top-5 right-5 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80"
             >
-              ✕
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" /></svg>
             </button>
           </div>
         )}

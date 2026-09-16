@@ -50,7 +50,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
             setEditing(false);
           }
         }}
-        className={`${className} w-full bg-yellow-50 border-2 border-blue-400 rounded outline-none resize-y`}
+        className={`${className} w-full bg-primary-50 border-2 border-primary-400 rounded outline-none resize-y`}
         rows={3}
       />
     ) : (
@@ -66,7 +66,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
             setEditing(false);
           }
         }}
-        className={`${className} w-full bg-yellow-50 border-2 border-blue-400 rounded outline-none`}
+        className={`${className} w-full bg-primary-50 border-2 border-primary-400 rounded outline-none`}
       />
     );
   }
@@ -75,7 +75,7 @@ export const EditableText: React.FC<EditableTextProps> = ({
     Tag,
     {
       onClick: () => setEditing(true),
-      className: `${className} cursor-text outline-dashed outline-1 outline-transparent hover:outline-blue-400 hover:bg-blue-50/40 transition-colors rounded px-0.5`,
+      className: `${className} cursor-text outline-dashed outline-1 outline-transparent hover:outline-primary-400 hover:bg-primary-50/40 transition-colors rounded px-0.5`,
       title: 'Click to edit',
     },
     value || React.createElement('span', { className: 'text-gray-400 italic' }, placeholder)
