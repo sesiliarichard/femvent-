@@ -96,13 +96,13 @@ export default function EmailWorkflowBuilder({ eventId }: { eventId: string }) {
                         type="text"
                         value={workflowName}
                         onChange={(e) => setWorkflowName(e.target.value)}
-                        className="mt-2 text-lg border-b border-gray-300 focus:border-indigo-600 outline-none"
+                        className="mt-2 text-lg border-b border-gray-300 focus:border-primary-600 outline-none"
                     />
                 </div>
                 <div className="flex gap-2">
                     <button
                         onClick={saveWorkflow}
-                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                        className="flex items-center gap-2 px-4 py-2 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600"
                     >
                         <Save size={20} />
                         Save Workflow
@@ -117,7 +117,7 @@ export default function EmailWorkflowBuilder({ eventId }: { eventId: string }) {
                     <button
                         onClick={() => setTrigger('registration')}
                         className={`p-4 border-2 rounded-lg text-left transition-colors ${trigger === 'registration'
-                                ? 'border-indigo-600 bg-indigo-50'
+                                ? 'border-primary-600 bg-primary-50'
                                 : 'border-gray-200 hover:border-gray-300'
                             }`}
                     >
@@ -130,7 +130,7 @@ export default function EmailWorkflowBuilder({ eventId }: { eventId: string }) {
                     <button
                         onClick={() => setTrigger('date_based')}
                         className={`p-4 border-2 rounded-lg text-left transition-colors ${trigger === 'date_based'
-                                ? 'border-indigo-600 bg-indigo-50'
+                                ? 'border-primary-600 bg-primary-50'
                                 : 'border-gray-200 hover:border-gray-300'
                             }`}
                     >
@@ -158,7 +158,7 @@ export default function EmailWorkflowBuilder({ eventId }: { eventId: string }) {
                         <h3 className="text-lg font-semibold">Email Steps</h3>
                         <button
                             onClick={addStep}
-                            className="flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm"
+                            className="flex items-center gap-2 px-3 py-2 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 text-sm"
                         >
                             <Plus size={16} />
                             Add Step
@@ -171,13 +171,13 @@ export default function EmailWorkflowBuilder({ eventId }: { eventId: string }) {
                                 key={step.id}
                                 onClick={() => setSelectedStep(step.id)}
                                 className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${selectedStep === step.id
-                                        ? 'border-indigo-600 bg-indigo-50'
+                                        ? 'border-primary-600 bg-primary-50'
                                         : 'border-gray-200 hover:border-gray-300'
                                     }`}
                             >
                                 <div className="flex items-start justify-between mb-2">
                                     <div className="flex items-center gap-2">
-                                        <Mail size={18} className="text-indigo-600" />
+                                        <Mail size={18} className="text-primary-600" />
                                         <span className="font-semibold">Step {index + 1}</span>
                                     </div>
                                     <button
@@ -235,7 +235,7 @@ export default function EmailWorkflowBuilder({ eventId }: { eventId: string }) {
                                         onChange={(e) =>
                                             updateStep(selectedStep!, { delay: Number(e.target.value) })
                                         }
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                                     />
                                     <p className="text-sm text-gray-500 mt-1">
                                         {selectedStepData.delay === 0
@@ -256,7 +256,7 @@ export default function EmailWorkflowBuilder({ eventId }: { eventId: string }) {
                                             updateStep(selectedStep!, { subject: e.target.value })
                                         }
                                         placeholder="Welcome to {{eventTitle}}!"
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                                     />
                                     <p className="text-sm text-gray-500 mt-1">
                                         Use {"{{eventTitle}}"}, {"{{userName}}"} for personalization
@@ -275,7 +275,7 @@ export default function EmailWorkflowBuilder({ eventId }: { eventId: string }) {
                                         }
                                         rows={12}
                                         placeholder="Hi {{userName}},&#10;&#10;Thank you for registering for {{eventTitle}}!&#10;&#10;We're excited to see you there."
-                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 font-mono text-sm"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 font-mono text-sm"
                                     />
                                 </div>
 

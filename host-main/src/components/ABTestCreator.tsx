@@ -120,7 +120,7 @@ export default function ABTestCreator({ eventId }: { eventId: string }) {
                                 value={testName}
                                 onChange={(e) => setTestName(e.target.value)}
                                 placeholder="Homepage CTA Test"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                             />
                         </div>
 
@@ -133,7 +133,7 @@ export default function ABTestCreator({ eventId }: { eventId: string }) {
                                 onChange={(e) => setHypothesis(e.target.value)}
                                 placeholder="Changing the CTA button from 'Register' to 'Get Tickets Now' will increase conversion by 15%"
                                 rows={3}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                             />
                         </div>
 
@@ -145,7 +145,7 @@ export default function ABTestCreator({ eventId }: { eventId: string }) {
                                 <select
                                     value={testType}
                                     onChange={(e) => setTestType(e.target.value as any)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                                 >
                                     <option value="headline">Headline</option>
                                     <option value="cta">Call to Action</option>
@@ -161,7 +161,7 @@ export default function ABTestCreator({ eventId }: { eventId: string }) {
                                 <select
                                     value={goalMetric}
                                     onChange={(e) => setGoalMetric(e.target.value as any)}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500/20 focus:border-primary-500"
                                 >
                                     <option value="ticket_purchase">Ticket Purchase</option>
                                     <option value="registration">Registration Started</option>
@@ -178,7 +178,7 @@ export default function ABTestCreator({ eventId }: { eventId: string }) {
                         <h3 className="text-lg font-semibold">Variants</h3>
                         <button
                             onClick={addVariant}
-                            className="flex items-center gap-2 px-3 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm"
+                            className="flex items-center gap-2 px-3 py-2 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 text-sm"
                         >
                             <Plus size={16} />
                             Add Variant
@@ -194,7 +194,7 @@ export default function ABTestCreator({ eventId }: { eventId: string }) {
                                             type="text"
                                             value={variant.name}
                                             onChange={(e) => updateVariant(variant.id, { name: e.target.value })}
-                                            className="text-lg font-semibold bg-transparent border-b border-transparent hover:border-gray-300 focus:border-indigo-600 outline-none"
+                                            className="text-lg font-semibold bg-transparent border-b border-transparent hover:border-gray-300 focus:border-primary-600 outline-none"
                                         />
                                         {variant.isControl && (
                                             <span className="ml-2 px-2 py-1 bg-gray-100 text-gray-600 text-xs rounded">
@@ -268,7 +268,7 @@ export default function ABTestCreator({ eventId }: { eventId: string }) {
                                                 <label className="block text-sm text-gray-600 mb-1">CTA Color</label>
                                                 <input
                                                     type="color"
-                                                    value={variant.changes.ctaColor || '#4F46E5'}
+                                                    value={variant.changes.ctaColor || '#A82C60'}
                                                     onChange={(e) => updateVariant(variant.id, {
                                                         changes: { ...variant.changes, ctaColor: e.target.value }
                                                     })}
@@ -316,7 +316,7 @@ export default function ABTestCreator({ eventId }: { eventId: string }) {
                     <button
                         onClick={createTest}
                         disabled={variants.reduce((sum, v) => sum + v.trafficPercentage, 0) !== 100}
-                        className="flex items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                        className="flex items-center gap-2 px-6 py-3 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
                     >
                         <TrendingUp size={20} />
                         Start Test
