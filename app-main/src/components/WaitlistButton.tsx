@@ -12,6 +12,7 @@ import {
     Alert,
     StyleSheet
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../services/AuthContext';
 import {
     joinWaitlist,
@@ -75,7 +76,7 @@ export const WaitlistButton: React.FC<WaitlistButtonProps> = ({
             );
 
             Alert.alert(
-                'Added to Waitlist! ✅',
+                'Added to Waitlist',
                 `You'll receive a notification if a spot opens up for "${eventTitle}".`
             );
 
@@ -117,13 +118,13 @@ export const WaitlistButton: React.FC<WaitlistButtonProps> = ({
     };
 
     if (!isSoldOut) {
-        return null; // Don't show button if not sold out
+        return null;
     }
 
     if (loading) {
         return (
             <View style={styles.container}>
-                <ActivityIndicator size="small" color="#007AFF" />
+                <ActivityIndicator size="small" color="#5A4485" />
             </View>
         );
     }
@@ -149,7 +150,10 @@ export const WaitlistButton: React.FC<WaitlistButtonProps> = ({
                     style={[styles.button, styles.joinButton]}
                     onPress={handleJoinWaitlist}
                 >
-                    <Text style={styles.joinButtonText}>📋 Join Waitlist</Text>
+                    <View style={styles.joinButtonContent}>
+                        <Ionicons name="checkmark-circle-outline" size={18} color="#FFFFFF" />
+                        <Text style={styles.joinButtonText}>Join Waitlist</Text>
+                    </View>
                 </TouchableOpacity>
             )}
             <Text style={styles.infoText}>
@@ -171,7 +175,12 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     joinButton: {
-        backgroundColor: '#007AFF',
+        backgroundColor: '#5A4485',
+    },
+    joinButtonContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
     },
     leaveButton: {
         backgroundColor: '#FFFFFF',
@@ -190,7 +199,7 @@ const styles = StyleSheet.create({
     },
     positionText: {
         textAlign: 'center',
-        color: '#007AFF',
+        color: '#5A4485',
         fontSize: 14,
         fontWeight: '500',
         marginTop: 4,

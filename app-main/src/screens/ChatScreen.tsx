@@ -259,7 +259,7 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
     return (
       <View style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#6366f1" />
+        <ActivityIndicator size="large" color="#5A4485" />
           <Text style={styles.loadingText}>Loading networking...</Text>
         </View>
       </View>
@@ -290,7 +290,7 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
 
         <View style={styles.restrictedContainer}>
           <View style={styles.eventIcon}>
-            <Ionicons name="chatbubble-outline" size={32} color="#6366f1" />
+          <Ionicons name="chatbubble-outline" size={32} color="#5A4485" />
           </View>
           <Text style={styles.restrictedTitle}>Registration Required</Text>
           <Text style={styles.restrictedDescription}>
@@ -330,7 +330,7 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
               Alert.alert('Networking Tips', '• Start conversations with people who share your interests\n• Ask about their experience in the field\n• Exchange contact information for future collaboration');
             }}
           >
-            <Ionicons name="help-circle-outline" size={24} color="#6366f1" />
+                       <Ionicons name="help-circle-outline" size={24} color="#5A4485" />
           </TouchableOpacity>
         </View>
       </View>
@@ -341,7 +341,7 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
         <View style={styles.eventCard}>
           <View style={styles.eventHeader}>
             <View style={styles.eventIcon}>
-              <Ionicons name="calendar" size={24} color="#6366f1" />
+            <Ionicons name="calendar" size={24} color="#5A4485" />
             </View>
             <View style={styles.eventInfo}>
               <Text style={styles.eventTitle}>{event?.title}</Text>
@@ -386,7 +386,7 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
             }}
           >
             <View style={styles.cardIcon}>
-              <Ionicons name="people" size={28} color="#6366f1" />
+            <Ionicons name="people" size={28} color="#5A4485" />
             </View>
             <View style={styles.cardContent}>
               <Text style={styles.cardTitle}>Private Messages</Text>
@@ -412,7 +412,7 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
             }}
           >
             <View style={styles.cardIcon}>
-              <Ionicons name="chatbubbles" size={28} color="#6366f1" />
+            <Ionicons name="chatbubbles" size={28} color="#5A4485" />
             </View>
             <View style={styles.cardContent}>
               <Text style={styles.cardTitle}>Group Discussions</Text>
@@ -434,7 +434,7 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
             }}
           >
             <View style={styles.cardIcon}>
-              <Ionicons name="videocam" size={28} color="#6366f1" />
+            <Ionicons name="videocam" size={28} color="#5A4485" />
             </View>
             <View style={styles.cardContent}>
               <Text style={styles.cardTitle}>Video Networking</Text>
@@ -476,7 +476,7 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
             {attendeeCount > 0 && (
               <View style={styles.activityItem}>
                 <View style={styles.activityIcon}>
-                  <Ionicons name="people" size={16} color="#6366f1" />
+                <Ionicons name="people" size={16} color="#5A4485" />
                 </View>
                 <Text style={styles.activityText}>{attendeeCount} attendees registered</Text>
               </View>
@@ -497,7 +497,7 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
               <Text style={styles.tipText}>Ask about their interests and goals</Text>
             </View>
             <View style={styles.tipItem}>
-              <Ionicons name="people" size={20} color="#8b5cf6" />
+            <Ionicons name="people" size={20} color="#5A4485" />
               <Text style={styles.tipText}>Exchange contact information</Text>
             </View>
           </View>
@@ -564,7 +564,7 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
             // Stay on chat page
           }}
         >
-          <Ionicons name="chatbubble" size={24} color="#6366f1" />
+                   <Ionicons name="chatbubble" size={24} color="#5A4485" />
           <Text style={[styles.bottomNavLabel, styles.activeNavLabel]}>Chat</Text>
         </TouchableOpacity>
       </View>
@@ -653,7 +653,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 16,
@@ -731,7 +731,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 16,
@@ -790,7 +790,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#f0f9ff',
+    backgroundColor: '#f4f1f9',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -844,7 +844,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   registerButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     paddingHorizontal: 32,
     paddingVertical: 16,
     borderRadius: 12,
@@ -878,10 +878,10 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   activeNavLabel: {
-    color: '#6366f1',
+    color: '#5A4485',
     fontWeight: '600',
   },
   activeNavItem: {
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
   },
 });

@@ -223,7 +223,7 @@ export default function ChatMessage({ message, isOwnMessage, currentUserId, onRe
                     <Ionicons name="checkmark-done" size={14} color="#ffffff" />
                   )}
                   {message.status === 'read' && (
-                    <Ionicons name="checkmark-done" size={14} color="#a5b4fc" />
+                    <Ionicons name="checkmark-done" size={14} color="#D7CBEC" />
                   )}
                 </View>
               )}
@@ -325,7 +325,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   messageAvatar: {
-    backgroundColor: '#6D3FE0',
+    backgroundColor: '#5A4485',
     marginRight: 8,
   },
   avatarSpacer: {
@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   userName: {
-    color: '#6D3FE0',
+    color: '#5A4485',
     fontSize: 13,
     fontWeight: '600',
     marginBottom: 4,
@@ -351,11 +351,11 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     paddingLeft: 8,
     borderLeftWidth: 3,
-    borderLeftColor: '#6366f1',
+    borderLeftColor: '#5A4485',
   },
   replyLine: {
     width: 3,
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     marginRight: 8,
   },
   replyContent: {
@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
   replyName: {
     fontSize: 12,
     fontWeight: '600',
-    color: '#6D3FE0',
+    color: '#5A4485',
     marginBottom: 2,
   },
   replyText: {
@@ -385,7 +385,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   ownBubble: {
-    backgroundColor: '#6D3FE0',
+    backgroundColor: '#5A4485',
     borderBottomRightRadius: 4,
   },
   otherBubble: {

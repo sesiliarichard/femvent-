@@ -251,7 +251,7 @@ useEffect(() => {
     return (
       <View style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#6366f1" />
+          <ActivityIndicator size="large" color="#5A4485" />
           <Text style={styles.loadingText}>Loading sponsors...</Text>
         </View>
       </View>
@@ -284,7 +284,7 @@ useEffect(() => {
               Alert.alert('Sponsors Info', 'Our valued partners and sponsors');
             }}
           >
-            <Ionicons name="information-circle-outline" size={24} color="#6366f1" />
+            <Ionicons name="information-circle-outline" size={24} color="#5A4485" />
           </TouchableOpacity>
         </View>
       </View>
@@ -438,7 +438,7 @@ useEffect(() => {
             // Stay on sponsors page
           }}
         >
-          <Ionicons name="business" size={24} color="#6366f1" />
+          <Ionicons name="business" size={24} color="#5A4485"/>
           <Text style={[styles.bottomNavLabel, styles.activeNavLabel]}>Partners</Text>
         </TouchableOpacity>
         <TouchableOpacity 
@@ -639,14 +639,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 8,
     paddingHorizontal: 12,
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
     borderRadius: 8,
     flex: 1,
     marginHorizontal: 4,
     justifyContent: 'center',
   },
   actionButtonText: {
-    color: '#6366f1',
+    color: '#5A4485',
     fontSize: 12,
     fontWeight: '500',
     marginLeft: 4,
@@ -682,7 +682,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   contactUsButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     paddingHorizontal: 32,
     paddingVertical: 12,
     borderRadius: 8,
@@ -716,9 +716,9 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   activeNavItem: {
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
   },
   activeNavLabel: {
-    color: '#6366f1',
+    color: '#5A4485',
   },
 });

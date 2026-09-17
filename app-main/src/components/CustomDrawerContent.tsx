@@ -46,7 +46,7 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
                     onPress={item.onPress}
                     activeOpacity={0.7}
                 >
-                    <Ionicons name={item.icon} size={20} color="#E0D4F7" />
+                    <Ionicons name={item.icon} size={20} color="#D7CBEC" />
                     <Text style={styles.itemLabel}>{item.label}</Text>
                 </TouchableOpacity>
             ))}
@@ -55,11 +55,11 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
 
     return (
         <LinearGradient
-            colors={['#6D3FE0', '#5A2FC2']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.container}
-        >
+        colors={['#5A4485', '#3d2d5c']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.container}
+    >
             <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
                 <View style={styles.header}>
                     {user?.photoURL ? (

@@ -100,7 +100,7 @@ export const FavoritesScreen: React.FC = () => {
         return (
             <SafeAreaView style={styles.container} edges={['top']}>
                 <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#6D3FE0" />
+                <ActivityIndicator size="large" color="#5A4485" />
                 <Text style={styles.loadingText}>Loading favorites...</Text>
                 </View>
             </SafeAreaView>
@@ -109,8 +109,8 @@ export const FavoritesScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-            <LinearGradient
-                colors={['#6D3FE0', '#5A2FC2']}
+                       <LinearGradient
+                colors={['#5A4485', '#3d2d5c']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.header}
@@ -156,8 +156,8 @@ export const FavoritesScreen: React.FC = () => {
                                 onPress={() => handleEventPress(event)}
                                 activeOpacity={0.7}
                             >
-                                <LinearGradient
-                                    colors={['#f093fb', '#f5576c']}
+                                 <LinearGradient
+                                    colors={['#A82C60', '#E36C54']}
                                     start={{ x: 0, y: 0 }}
                                     end={{ x: 1, y: 1 }}
                                     style={styles.eventGradient}
@@ -171,7 +171,7 @@ export const FavoritesScreen: React.FC = () => {
                                     </Text>
                                     <View style={styles.eventDetails}>
                                         <View style={styles.eventDetailRow}>
-                                        <Ionicons name="calendar" size={16} color="#6D3FE0" />
+                                        <Ionicons name="calendar" size={16} color="#5A4485" />
                                             <Text style={styles.eventDetailText}>
                                                 {event.date.toLocaleDateString('en-US', {
                                                     month: 'short',
@@ -181,7 +181,7 @@ export const FavoritesScreen: React.FC = () => {
                                             </Text>
                                         </View>
                                         <View style={styles.eventDetailRow}>
-                                            <Ionicons name="location" size={16} color="#f093fb" />
+                                            <Ionicons name="location" size={16} color="#E36C54" />
                                             <Text style={styles.eventDetailText} numberOfLines={1}>
                                                 {event.location}
                                             </Text>
@@ -192,7 +192,7 @@ export const FavoritesScreen: React.FC = () => {
                                 <FavoriteButton
                                     eventId={event.id}
                                     size={24}
-                                    color="#ff6b6b"
+                                    color="#E36C54"
                                     style={styles.favoriteButton}
                                 />
                             </TouchableOpacity>

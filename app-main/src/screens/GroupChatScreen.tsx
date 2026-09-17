@@ -377,7 +377,7 @@ export default function GroupChatScreen({ navigation, route }: GroupChatScreenPr
     return (
       <View style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#6366f1" />
+        <ActivityIndicator size="large" color="#5A4485" />
           <Text style={styles.loadingText}>Loading group chat...</Text>
         </View>
       </View>
@@ -408,7 +408,7 @@ export default function GroupChatScreen({ navigation, route }: GroupChatScreenPr
 
         <View style={styles.restrictedContainer}>
           <View style={styles.restrictedIcon}>
-            <Ionicons name="chatbubbles-outline" size={64} color="#6366f1" />
+          <Ionicons name="chatbubbles-outline" size={64} color="#5A4485" />
           </View>
           <Text style={styles.restrictedTitle}>Registration Required</Text>
           <Text style={styles.restrictedDescription}>
@@ -449,7 +449,7 @@ export default function GroupChatScreen({ navigation, route }: GroupChatScreenPr
               style={styles.headerAction}
               onPress={() => setShowSearch(!showSearch)}
             >
-              <Ionicons name={showSearch ? "close" : "search"} size={24} color="#6366f1" />
+              <Ionicons name={showSearch ? "close" : "search"} size={24} color="#5A4485" />
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.headerAction}
@@ -461,7 +461,7 @@ export default function GroupChatScreen({ navigation, route }: GroupChatScreenPr
                 );
               }}
             >
-              <Ionicons name="information-circle-outline" size={24} color="#6366f1" />
+               <Ionicons name="information-circle-outline" size={24} color="#5A4485" />
             </TouchableOpacity>
           </View>
         </View>
@@ -521,8 +521,8 @@ export default function GroupChatScreen({ navigation, route }: GroupChatScreenPr
           keyboardShouldPersistTaps="handled"
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="chatbubbles-outline" size={64} color="#6366f1" />
-            <Text style={styles.emptyTitle}>Start the conversation</Text>
+              <Ionicons name="chatbubbles-outline" size={64} color="#5A4485" />
+              <Text style={styles.emptyTitle}>Start the conversation</Text>
             <Text style={styles.emptyDescription}>
               Be the first to share your thoughts with the group!
             </Text>
@@ -531,8 +531,8 @@ export default function GroupChatScreen({ navigation, route }: GroupChatScreenPr
         ListFooterComponent={
           typingUsers.length > 0 ? (
             <View style={styles.typingIndicator}>
-              <ActivityIndicator size="small" color="#6366f1" />
-              <Text style={styles.typingText}>
+               <ActivityIndicator size="small" color="#5A4485" />
+                  <Text style={styles.typingText}>
                 {typingUsers.length === 1 
                   ? `${typingUsers[0]} is typing...`
                   : `${typingUsers.length} people are typing...`}
@@ -836,7 +836,7 @@ const styles = StyleSheet.create({
     paddingRight: 8,
   },
   sendButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -859,7 +859,7 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 60,
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 24,
@@ -879,11 +879,11 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   registerButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     paddingHorizontal: 32,
     paddingVertical: 16,
     borderRadius: 12,
-    shadowColor: '#6366f1',
+    shadowColor: '#5A4485',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -924,7 +924,7 @@ const styles = StyleSheet.create({
   replyPreviewLine: {
     width: 3,
     height: 40,
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     borderRadius: 2,
     marginRight: 12,
   },
@@ -934,7 +934,7 @@ const styles = StyleSheet.create({
   replyPreviewName: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6366f1',
+    color: '#5A4485',
     marginBottom: 2,
   },
   replyPreviewMessage: {

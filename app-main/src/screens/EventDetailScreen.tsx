@@ -261,7 +261,7 @@ useEffect(() => {
     return (
       <View style={[styles.container, styles.centerContent]}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#6366f1" />
+        <ActivityIndicator size="large" color="#5A4485" />
           <Text style={styles.loadingText}>Loading event details...</Text>
         </View>
       </View>
@@ -280,7 +280,7 @@ useEffect(() => {
     );
   }
 
-  const scheduleColors = ['#8b5cf6', '#6366f1', '#10b981', '#f59e0b', '#ec4899', '#0ea5e9'];
+  const scheduleColors = ['#5A4485', '#A82C60', '#E36C54', '#3d2d5c', '#8F2451', '#D1573F'];
 
   const scheduleItems = (Array.isArray(event.agenda) ? event.agenda : [])
   .map((item: any, index: number) => {
@@ -362,7 +362,7 @@ useEffect(() => {
       >
         {/* Hero Section with Gradient */}
         <LinearGradient
-          colors={['#6366f1', '#8b5cf6', '#ec4899']}
+          colors={['#5A4485', '#A82C60', '#E36C54']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.heroGradient}
@@ -441,7 +441,7 @@ useEffect(() => {
             activeOpacity={0.8}
           >
             <LinearGradient
-              colors={isRegistered ? ['#10b981', '#059669'] : ['#6366f1', '#8b5cf6']}
+              colors={isRegistered ? ['#10b981', '#059669'] : ['#5A4485', '#A82C60']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.ctaGradient}
@@ -669,7 +669,7 @@ useEffect(() => {
       {/* Enhanced Bottom Navigation */}
       <View style={[styles.bottomNav, { paddingBottom: insets.bottom + 12 }]}>
         <TouchableOpacity style={[styles.navItem, styles.navItemActive]}>
-          <Ionicons name="home" size={24} color="#6366f1" />
+        <Ionicons name="home" size={24} color="#5A4485" />
           <Text style={[styles.navLabel, styles.navLabelActive]}>Home</Text>
         </TouchableOpacity>
 
@@ -792,7 +792,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   heroBadgeText: {
-    color: '#6366f1',
+    color: '#5A4485',
     fontSize: 12,
     fontWeight: '700',
     marginLeft: 6,
@@ -877,7 +877,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: 'hidden',
     marginBottom: 24,
-    shadowColor: '#6366f1',
+    shadowColor: '#5A4485',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
@@ -1108,7 +1108,7 @@ const styles = StyleSheet.create({
     minWidth: 70,
   },
   navItemActive: {
-    backgroundColor: '#eff6ff',
+    backgroundColor: '#f4f1f9',
   },
   navLabel: {
     fontSize: 11,
@@ -1117,7 +1117,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   navLabelActive: {
-    color: '#6366f1',
+    color: '#5A4485',
     fontWeight: '700',
   },
 });

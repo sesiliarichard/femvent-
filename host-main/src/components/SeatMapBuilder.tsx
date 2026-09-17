@@ -39,7 +39,7 @@ export default function SeatMapBuilder({ eventId }: { eventId: string }) {
         const newSection: Section = {
             id: `section-${Date.now()}`,
             name: `Section ${sections.length + 1}`,
-            color: '#3B82F6',
+            color: '#5A4485',
             basePrice: 50,
             rows: []
         };
@@ -98,20 +98,20 @@ export default function SeatMapBuilder({ eventId }: { eventId: string }) {
                         type="text"
                         value={mapName}
                         onChange={(e) => setMapName(e.target.value)}
-                        className="mt-2 text-lg border-b border-gray-300 focus:border-indigo-600 outline-none"
+                        className="mt-2 text-lg border-b border-gray-300 focus:border-primary-600 outline-none"
                     />
                 </div>
                 <div className="flex gap-2">
                     <button
                         onClick={addSection}
-                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                        className="flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700"
                     >
                         <Plus size={20} />
                         Add Section
                     </button>
                     <button
                         onClick={saveSeatMap}
-                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                        className="flex items-center gap-2 px-4 py-2 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600"
                     >
                         <Save size={20} />
                         Save Map
@@ -127,7 +127,7 @@ export default function SeatMapBuilder({ eventId }: { eventId: string }) {
                         <div
                             key={section.id}
                             className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${selectedSection === section.id
-                                    ? 'border-indigo-600 bg-indigo-50'
+                                    ? 'border-primary-600 bg-primary-50'
                                     : 'border-gray-200 hover:border-gray-300'
                                 }`}
                             onClick={() => setSelectedSection(section.id)}

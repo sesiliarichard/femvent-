@@ -52,7 +52,7 @@ export const FeedbackScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-            <LinearGradient colors={['#667eea', '#764ba2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
+                       <LinearGradient colors={['#5A4485', '#3d2d5c']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
                 <View style={styles.headerContent}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Ionicons name="arrow-back" size={24} color="#fff" />
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
         shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 2,
     },
     submitButton: {
-        backgroundColor: '#667eea', borderRadius: 16, paddingVertical: 16, alignItems: 'center',
+    backgroundColor: '#5A4485', borderRadius: 16, paddingVertical: 16, alignItems: 'center',
     },
     submitButtonDisabled: { opacity: 0.7 },
     submitButtonText: { fontSize: 16, fontWeight: '700', color: '#fff' },
@@ -135,6 +135,6 @@ const styles = StyleSheet.create({
     successIcon: { marginBottom: 20 },
     successTitle: { fontSize: 24, fontWeight: '800', color: '#1a1a1a', marginBottom: 8 },
     successText: { fontSize: 15, color: '#666', textAlign: 'center', marginBottom: 32, lineHeight: 22 },
-    doneButton: { backgroundColor: '#667eea', borderRadius: 16, paddingVertical: 14, paddingHorizontal: 48 },
+    doneButton: { backgroundColor: '#5A4485', borderRadius: 16, paddingVertical: 14, paddingHorizontal: 48 },
     doneButtonText: { fontSize: 16, fontWeight: '700', color: '#fff' },
 });

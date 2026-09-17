@@ -99,7 +99,7 @@ export const EditProfileScreen: React.FC = () => {
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
              <LinearGradient
-                colors={['#6D3FE0', '#5A2FC2']}
+                colors={['#5A4485', '#3d2d5c']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.header}
@@ -151,7 +151,7 @@ export const EditProfileScreen: React.FC = () => {
                     <Text style={styles.sectionTitle}>BASIC INFORMATION</Text>
 
                     <View style={styles.inputContainer}>
-                    <Ionicons name="person-outline" size={20} color="#6D3FE0" />
+                    <Ionicons name="person-outline" size={20} color="#5A4485" />
                         <TextInput
                             style={styles.input}
                             placeholder="Full Name"
@@ -162,7 +162,7 @@ export const EditProfileScreen: React.FC = () => {
                     </View>
 
                     <View style={styles.inputContainer}>
-                    <Ionicons name="mail-outline" size={20} color="#6D3FE0" />
+                    <Ionicons name="mail-outline" size={20} color="#5A4485" />
                         <TextInput
                             style={[styles.input, styles.disabledInput]}
                             value={user?.email}
@@ -172,7 +172,7 @@ export const EditProfileScreen: React.FC = () => {
                     </View>
 
                     <View style={styles.inputContainer}>
-                    <Ionicons name="call-outline" size={20} color="#6D3FE0" />
+                    <Ionicons name="call-outline" size={20} color="#5A4485" />
                         <TextInput
                             style={styles.input}
                             placeholder="Phone Number"
@@ -184,7 +184,7 @@ export const EditProfileScreen: React.FC = () => {
                     </View>
 
                     <View style={[styles.inputContainer, styles.bioContainer]}>
-                    <Ionicons name="document-text-outline" size={20} color="#6D3FE0" style={styles.bioIcon} />
+                    <Ionicons name="document-text-outline" size={20} color="#5A4485" style={styles.bioIcon} />
                         <TextInput
                             style={[styles.input, styles.bioInput]}
                             placeholder="Bio (Tell us about yourself)"
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: '#6D3FE0',
+        backgroundColor: '#5A4485',
         justifyContent: 'center',
         alignItems: 'center',
         borderWidth: 3,

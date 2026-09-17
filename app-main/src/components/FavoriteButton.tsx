@@ -16,7 +16,7 @@ interface FavoriteButtonProps {
 export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
     eventId,
     size = 28,
-    color = '#ff6b6b',
+    color = '#E36C54',
     style,
     onToggle,
 }) => {

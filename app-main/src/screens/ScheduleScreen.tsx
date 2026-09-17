@@ -505,7 +505,7 @@ useEffect(() => {
     return (
       <View style={[styles.container, styles.centerContent]}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#6366f1" />
+          <ActivityIndicator size="large" color="#5A4485" />
           <Text style={styles.loadingText}>Loading schedule...</Text>
         </View>
       </View>
@@ -564,14 +564,14 @@ useEffect(() => {
       >
         {/* Hero Section with Gradient */}
         <LinearGradient
-          colors={['#6366f1', '#8b5cf6']}
+          colors={['#5A4485', '#A82C60']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.heroGradient}
         >
           <View style={styles.heroContent}>
             <View style={styles.heroBadge}>
-              <Ionicons name="calendar" size={14} color="#6366f1" />
+              <Ionicons name="calendar" size={14} color="#5A4485"/>
               <Text style={styles.heroBadgeText}>SCHEDULE</Text>
             </View>
             <Text style={styles.heroTitle}>{eventData?.title || 'Event Schedule'}</Text>
@@ -687,7 +687,7 @@ useEffect(() => {
                     {/* Time & Duration */}
                     <View style={styles.timeContainer}>
                       <View style={styles.timeInfo}>
-                        <Ionicons name="time-outline" size={18} color="#6366f1" />
+                        <Ionicons name="time-outline" size={18} color="#5A4485" />
                         <Text style={styles.timeText}>{session.time}</Text>
                       </View>
                       <View style={styles.durationPill}>
@@ -754,7 +754,7 @@ useEffect(() => {
                         <Ionicons 
                           name={isExpanded ? "chevron-up" : "chevron-down"} 
                           size={16} 
-                          color="#6366f1" 
+                         color="#5A4485"
                         />
                       </TouchableOpacity>
                     )}
@@ -772,7 +772,7 @@ useEffect(() => {
                           style={styles.actionButton}
                           onPress={() => handleAddToCalendar(session)}
                         >
-                          <Ionicons name="calendar-outline" size={18} color="#6366f1" />
+                          <Ionicons name="calendar-outline" size={18} color="#5A4485" />
                           <Text style={styles.actionButtonText}>Add to Calendar</Text>
                         </TouchableOpacity>
                       </View>
@@ -803,7 +803,7 @@ useEffect(() => {
         </TouchableOpacity>
         
         <TouchableOpacity style={[styles.navItem, styles.navItemActive]}>
-          <Ionicons name="calendar" size={24} color="#6366f1" />
+          <Ionicons name="calendar" size={24} color="#5A4485" />
           <Text style={[styles.navLabel, styles.navLabelActive]}>Schedule</Text>
         </TouchableOpacity>
         
@@ -925,7 +925,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   heroBadgeText: {
-    color: '#6366f1',
+    color: '#5A4485',
     fontSize: 12,
     fontWeight: '700',
     marginLeft: 6,
@@ -999,9 +999,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   activeDayTab: {
-    backgroundColor: '#6366f1',
-    borderColor: '#6366f1',
-    shadowColor: '#6366f1',
+    backgroundColor: '#5A4485',
+    borderColor: '#5A4485',
+    shadowColor: '#5A4485',
     shadowOpacity: 0.3,
   },
   dayTabLabel: {
@@ -1135,7 +1135,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
@@ -1145,7 +1145,7 @@ const styles = StyleSheet.create({
   avatarText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#6366f1',
+    color: '#5A4485',
   },
   speakerInfo: {
     flex: 1,
@@ -1176,7 +1176,7 @@ const styles = StyleSheet.create({
   descriptionToggleText: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#6366f1',
+    color: '#5A4485',
     marginRight: 4,
   },
   descriptionContainer: {
@@ -1203,17 +1203,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: '#6366f1',
+    borderColor: '#5A4485',
   },
   actionButtonText: {
     fontSize: 14,
     fontWeight: '700',
-    color: '#6366f1',
+    color: '#5A4485',
     marginLeft: 8,
   },
   sessionConnector: {
@@ -1250,7 +1250,7 @@ const styles = StyleSheet.create({
     minWidth: 70,
   },
   navItemActive: {
-    backgroundColor: '#eff6ff',
+    backgroundColor: '#f4f1f9',
   },
   navLabel: {
     fontSize: 11,
@@ -1259,7 +1259,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   navLabelActive: {
-    color: '#6366f1',
+    color: '#5A4485',
     fontWeight: '700',
   },
 });

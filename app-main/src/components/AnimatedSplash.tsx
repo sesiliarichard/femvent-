@@ -31,7 +31,7 @@ export default function AnimatedSplash() {
   const spin = rotate.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '360deg'] });
 
   return (
-    <LinearGradient colors={["#fde7f2", "#fff"]} style={styles.container}>
+    <LinearGradient colors={["#fbeef3", "#fff"]} style={styles.container}>
       <Animated.View style={[styles.logoWrap, { transform: [{ rotate: spin }, { scale }], opacity: fade }]}>
         <Image
           source={require('../../assets/femvents-icon1.png')}

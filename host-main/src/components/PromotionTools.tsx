@@ -64,7 +64,7 @@ const PromotionTools: React.FC<PromotionToolsProps> = ({ event, eventId }) => {
                 <button
                     onClick={() => setActiveTab('social')}
                     className={`px-4 py-2 font-medium transition-colors ${activeTab === 'social'
-                            ? 'text-blue-600 border-b-2 border-blue-600'
+                            ? 'text-primary-600 border-b-2 border-primary-600'
                             : 'text-gray-600 hover:text-gray-900'
                         }`}
                 >
@@ -73,7 +73,7 @@ const PromotionTools: React.FC<PromotionToolsProps> = ({ event, eventId }) => {
                 <button
                     onClick={() => setActiveTab('qr')}
                     className={`px-4 py-2 font-medium transition-colors ${activeTab === 'qr'
-                            ? 'text-blue-600 border-b-2 border-blue-600'
+                            ? 'text-primary-600 border-b-2 border-primary-600'
                             : 'text-gray-600 hover:text-gray-900'
                         }`}
                 >
@@ -82,7 +82,7 @@ const PromotionTools: React.FC<PromotionToolsProps> = ({ event, eventId }) => {
                 <button
                     onClick={() => setActiveTab('embed')}
                     className={`px-4 py-2 font-medium transition-colors ${activeTab === 'embed'
-                            ? 'text-blue-600 border-b-2 border-blue-600'
+                            ? 'text-primary-600 border-b-2 border-primary-600'
                             : 'text-gray-600 hover:text-gray-900'
                         }`}
                 >
@@ -99,7 +99,7 @@ const PromotionTools: React.FC<PromotionToolsProps> = ({ event, eventId }) => {
                                 <h4 className="font-semibold text-gray-900 capitalize">{platform}</h4>
                                 <button
                                     onClick={() => copyToClipboard(template)}
-                                    className="text-sm text-blue-600 hover:text-blue-700 font-medium"
+                                    className="text-sm text-primary-600 hover:text-primary-700 font-medium"
                                 >
                                     Copy
                                 </button>
@@ -126,7 +126,7 @@ const PromotionTools: React.FC<PromotionToolsProps> = ({ event, eventId }) => {
                                 <a
                                     href={qrCode}
                                     download={`${event.title}-qr-code.png`}
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                                    className="px-4 py-2 bg-secondary-500 text-white rounded-md hover:bg-secondary-600"
                                 >
                                     Download QR Code
                                 </a>
@@ -155,7 +155,7 @@ const PromotionTools: React.FC<PromotionToolsProps> = ({ event, eventId }) => {
                     </div>
                     <button
                         onClick={() => copyToClipboard(embedCode)}
-                        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                        className="mt-4 px-4 py-2 bg-secondary-500 text-white rounded-md hover:bg-secondary-600"
                     >
                         Copy Embed Code
                     </button>

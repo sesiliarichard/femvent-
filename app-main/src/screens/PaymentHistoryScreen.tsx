@@ -122,33 +122,33 @@ export const PaymentHistoryScreen: React.FC = () => {
     switch (status) {
       case 'succeeded':
         return {
-          gradient: ['#43e97b', '#38f9d7'] as [string, string],
+          gradient: ['#059669', '#047857'] as [string, string],
           icon: 'checkmark-circle',
           color: '#059669',
         };
       case 'pending':
         return {
-          gradient: ['#fa709a', '#fee140'] as [string, string],
+          gradient: ['#d97706', '#b45309'] as [string, string],
           icon: 'time',
           color: '#d97706',
         };
       case 'failed':
         return {
-          gradient: ['#ff9a9e', '#fecfef'] as [string, string],
+          gradient: ['#dc2626', '#b91c1c'] as [string, string],
           icon: 'close-circle',
           color: '#dc2626',
         };
       case 'refunded':
         return {
-          gradient: ['#a8edea', '#fed6e3'] as [string, string],
+          gradient: ['#6b7280', '#4b5563'] as [string, string],
           icon: 'refresh',
-          color: '#059669',
+          color: '#6b7280',
         };
       default:
         return {
-          gradient: ['#667eea', '#764ba2'] as [string, string],
+          gradient: ['#5A4485', '#3d2d5c'] as [string, string],
           icon: 'help-circle',
-          color: '#666',
+          color: '#5A4485',
         };
     }
   };
@@ -201,9 +201,9 @@ export const PaymentHistoryScreen: React.FC = () => {
         activeOpacity={0.7}
       >
         {selected ? (
-          <LinearGradient
-            colors={['#667eea', '#764ba2']}
-            style={styles.filterChip}
+                    <LinearGradient
+                    colors={['#5A4485', '#3d2d5c']}
+                    style={styles.filterChip}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
           >
@@ -355,8 +355,8 @@ export const PaymentHistoryScreen: React.FC = () => {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#667eea" />
-          <Text style={styles.loadingText}>Loading payment history...</Text>
+        <ActivityIndicator size="large" color="#5A4485" />
+        <Text style={styles.loadingText}>Loading payment history...</Text>
         </View>
       </SafeAreaView>
     );
@@ -367,8 +367,8 @@ export const PaymentHistoryScreen: React.FC = () => {
       <StatusBar barStyle="light-content" />
 
       {/* Header */}
-      <LinearGradient
-        colors={['#667eea', '#764ba2']}
+           <LinearGradient
+        colors={['#5A4485', '#3d2d5c']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -385,7 +385,7 @@ export const PaymentHistoryScreen: React.FC = () => {
           </View>
           <TouchableOpacity style={styles.headerIconButton}>
             <View style={styles.iconButtonCircle}>
-              <Ionicons name="download-outline" size={22} color="#667eea" />
+            <Ionicons name="download-outline" size={22} color="#5A4485" />
             </View>
           </TouchableOpacity>
         </View>
@@ -423,11 +423,11 @@ export const PaymentHistoryScreen: React.FC = () => {
           keyExtractor={(item) => item.id}
           refreshControl={
             <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={['#667eea']}
-              tintColor="#667eea"
-            />
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#5A4485']}
+            tintColor="#5A4485"
+          />
           }
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}

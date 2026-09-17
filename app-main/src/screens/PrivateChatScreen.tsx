@@ -346,7 +346,7 @@ try {
     return (
       <View style={styles.container}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#6366f1" />
+        <ActivityIndicator size="large" color="#5A4485" />
           <Text style={styles.loadingText}>Loading chat...</Text>
         </View>
       </View>
@@ -386,7 +386,7 @@ try {
               style={styles.headerAction}
               onPress={() => setShowSearch(!showSearch)}
             >
-              <Ionicons name={showSearch ? "close" : "search"} size={24} color="#6366f1" />
+              <Ionicons name={showSearch ? "close" : "search"} size={24} color="#5A4485" />
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.headerAction}
@@ -394,7 +394,7 @@ try {
                 Alert.alert('Chat Info', `Private conversation with ${recipientName}`);
               }}
             >
-              <Ionicons name="information-circle-outline" size={24} color="#6366f1" />
+              <Ionicons name="information-circle-outline" size={24} color="#5A4485" />
             </TouchableOpacity>
           </View>
         </View>
@@ -452,7 +452,7 @@ try {
           keyboardShouldPersistTaps="handled"
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="chatbubble-outline" size={60} color="#6366f1" />
+            <Ionicons name="chatbubble-outline" size={60} color="#5A4485" />
             <Text style={styles.emptyTitle}>Start the conversation</Text>
             <Text style={styles.emptyDescription}>
               Send a message to {recipientName} to begin your private chat
@@ -462,7 +462,7 @@ try {
         ListFooterComponent={
           recipientTyping ? (
             <View style={styles.typingIndicator}>
-              <ActivityIndicator size="small" color="#6366f1" />
+              <ActivityIndicator size="small" color="#5A4485" />
               <Text style={styles.typingText}>{recipientName} is typing...</Text>
             </View>
           ) : null
@@ -571,7 +571,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   recipientAvatar: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     marginRight: 12,
   },
   recipientDetails: {
@@ -648,7 +648,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   navAvatar: {
-    backgroundColor: '#8b5cf6',
+    backgroundColor: '#5A4485',
     marginRight: 12,
   },
   navTitleText: {
@@ -684,14 +684,14 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
   },
   messageAvatar: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     marginRight: 8,
   },
   messageContent: {
     maxWidth: width * 0.7,
   },
   senderName: {
-    color: '#6366f1',
+    color: '#5A4485',
     fontSize: 12,
     fontWeight: '600',
     marginBottom: 4,
@@ -703,7 +703,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   ownBubble: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     borderBottomRightRadius: 4,
   },
   otherBubble: {
@@ -784,7 +784,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   sendButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     width: 40,
     height: 40,
     borderRadius: 20,
@@ -818,7 +818,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   activeNavItem: {
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
   },
   typingIndicator: {
     flexDirection: 'row',
@@ -850,7 +850,7 @@ const styles = StyleSheet.create({
   replyPreviewLine: {
     width: 3,
     height: 40,
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     borderRadius: 2,
     marginRight: 12,
   },
@@ -860,7 +860,7 @@ const styles = StyleSheet.create({
   replyPreviewName: {
     fontSize: 13,
     fontWeight: '600',
-    color: '#6366f1',
+    color: '#5A4485',
     marginBottom: 2,
   },
   replyPreviewMessage: {

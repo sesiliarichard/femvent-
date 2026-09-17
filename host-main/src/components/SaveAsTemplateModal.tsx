@@ -75,7 +75,7 @@ const SaveAsTemplateModal: React.FC<SaveAsTemplateModalProps> = ({
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             placeholder="e.g., Monthly Networking Event"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
                             disabled={saving}
                         />
                     </div>
@@ -91,14 +91,14 @@ const SaveAsTemplateModal: React.FC<SaveAsTemplateModalProps> = ({
                             onChange={(e) => setDescription(e.target.value)}
                             placeholder="Brief description of when to use this template..."
                             rows={3}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
                             disabled={saving}
                         />
                     </div>
 
                     {/* Info Box */}
-                    <div className="bg-blue-50 border border-blue-200 rounded-md p-3">
-                        <p className="text-sm text-blue-800">
+                    <div className="bg-primary-50 border border-primary-100 rounded-md p-3">
+                        <p className="text-sm text-primary-800">
                             <strong>What will be saved:</strong> Title, category, location, capacity, pricing, ticket types, agenda, and requirements.
                         </p>
                     </div>
@@ -116,7 +116,7 @@ const SaveAsTemplateModal: React.FC<SaveAsTemplateModalProps> = ({
                     <button
                         onClick={handleSave}
                         disabled={saving || !name.trim()}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="px-4 py-2 bg-secondary-500 text-white rounded-md hover:bg-secondary-600 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                         {saving ? (
                             <>

@@ -157,7 +157,7 @@ export const VenueLocationCard: React.FC<VenueLocationCardProps> = ({
     <View style={styles.container}>
       <View style={styles.header}>
         <View style={styles.iconContainer}>
-        <Ionicons name="location" size={24} color="#6D3FE0" />
+        <Ionicons name="location" size={24} color="#5A4485" />
         </View>
         <View style={styles.headerText}>
           <Text style={styles.label}>VENUE</Text>
@@ -179,8 +179,8 @@ export const VenueLocationCard: React.FC<VenueLocationCardProps> = ({
             onPress={openInNativeMaps}
             activeOpacity={0.7}
           >
-            <LinearGradient
-              colors={['#6D3FE0', '#5A2FC2']}
+           <LinearGradient
+              colors={['#5A4485', '#3d2d5c']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.actionGradient}
@@ -195,8 +195,8 @@ export const VenueLocationCard: React.FC<VenueLocationCardProps> = ({
             onPress={getDirections}
             activeOpacity={0.7}
           >
-            <LinearGradient
-              colors={['#10b981', '#059669']}
+          <LinearGradient
+              colors={['#E36C54', '#D1573F']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={styles.actionGradient}
@@ -243,7 +243,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 12,
-    backgroundColor: '#eff6ff',
+    backgroundColor: '#f4f1f9',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,

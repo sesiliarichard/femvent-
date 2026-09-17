@@ -132,7 +132,7 @@ export default function SeatSelector({ eventId, onSeatsSelected }: SeatSelectorP
     if (loading) {
         return (
             <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
             </div>
         );
     }
@@ -164,7 +164,7 @@ export default function SeatSelector({ eventId, onSeatsSelected }: SeatSelectorP
                     <span>Available</span>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 border-2 border-indigo-600 bg-indigo-100 rounded"></div>
+                    <div className="w-6 h-6 border-2 border-primary-600 bg-primary-100 rounded"></div>
                     <span>Selected</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -219,7 +219,7 @@ export default function SeatSelector({ eventId, onSeatsSelected }: SeatSelectorP
                             w-10 h-10 rounded border-2 flex items-center justify-center text-xs font-medium
                             transition-all relative group
                             ${isSelected
-                                                            ? 'border-indigo-600 bg-indigo-100 text-indigo-900'
+                                                            ? 'border-primary-600 bg-primary-100 text-primary-900'
                                                             : isAvailable
                                                                 ? 'border-green-500 bg-white hover:bg-green-50 cursor-pointer'
                                                                 : isSold
@@ -251,7 +251,7 @@ export default function SeatSelector({ eventId, onSeatsSelected }: SeatSelectorP
 
             {/* Selected Seats Summary */}
             {selectedSeats.length > 0 && (
-                <div className="bg-white border-2 border-indigo-600 rounded-lg p-6">
+                <div className="bg-white border-2 border-primary-600 rounded-lg p-6">
                     <h3 className="text-lg font-semibold mb-4">Selected Seats ({selectedSeats.length})</h3>
 
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
@@ -259,7 +259,7 @@ export default function SeatSelector({ eventId, onSeatsSelected }: SeatSelectorP
                             <div key={seat.id} className="bg-gray-50 rounded p-3">
                                 <div className="font-medium">{seat.section}</div>
                                 <div className="text-sm text-gray-600">Row {seat.row}, Seat {seat.number}</div>
-                                <div className="text-sm font-semibold text-indigo-600">${seat.price}</div>
+                                <div className="text-sm font-semibold text-primary-600">${seat.price}</div>
                             </div>
                         ))}
                     </div>
@@ -270,7 +270,7 @@ export default function SeatSelector({ eventId, onSeatsSelected }: SeatSelectorP
                         </div>
                         <button
                             onClick={handleConfirm}
-                            className="px-8 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-semibold"
+                            className="px-8 py-3 bg-secondary-500 text-white rounded-lg hover:bg-secondary-600 font-semibold"
                         >
                             Continue to Payment
                         </button>

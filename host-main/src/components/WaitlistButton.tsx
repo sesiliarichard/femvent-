@@ -59,7 +59,7 @@ const WaitlistButton: React.FC<WaitlistButtonProps> = ({
     }
 
     return (
-        <div className={`bg-gradient-to-r from-orange-50 to-red-50 border border-orange-200 rounded-lg p-4 ${className}`}>
+        <div className={`bg-orange-50 border border-orange-200 rounded-lg p-4 ${className}`}>
             <div className="flex items-start justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-2 mb-2">
@@ -74,7 +74,7 @@ const WaitlistButton: React.FC<WaitlistButtonProps> = ({
                     <button
                         onClick={handleJoinWaitlist}
                         disabled={isJoining}
-                        className="bg-gradient-to-r from-orange-600 to-red-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:from-orange-700 hover:to-red-700 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                        className="bg-orange-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-orange-700 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                     >
                         {isJoining ? (
                             <>

@@ -87,7 +87,7 @@ export const EventSplashScreen: React.FC<EventSplashScreenProps> = ({
 
   return (
     <LinearGradient
-      colors={['#0f0c29', '#24243e', '#302b63']}
+      colors={['#3d2d5c', '#5A4485']}
       style={styles.container}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 1 }}
@@ -131,7 +131,7 @@ export const EventSplashScreen: React.FC<EventSplashScreenProps> = ({
             },
           ]}
         >
-          Eventify
+          FemVents
         </Animated.Text>
 
         {/* Event Title */}

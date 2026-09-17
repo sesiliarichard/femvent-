@@ -157,7 +157,7 @@ export default function SpeakerDetailScreen({ navigation, route }: SpeakerDetail
     return (
       <View style={[styles.container, styles.centerContent]}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#6366f1" />
+          <ActivityIndicator size="large" color="#5A4485" />
           <Text style={styles.loadingText}>Loading speaker...</Text>
         </View>
       </View>
@@ -236,7 +236,7 @@ export default function SpeakerDetailScreen({ navigation, route }: SpeakerDetail
         {/* Hero Section with Profile */}
         <View style={styles.heroSection}>
           <LinearGradient
-            colors={['#6366f1', '#8b5cf6', '#ec4899']}
+            colors={['#5A4485', '#A82C60', '#E36C54']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.heroGradient}
@@ -271,7 +271,7 @@ export default function SpeakerDetailScreen({ navigation, route }: SpeakerDetail
             <Text style={styles.speakerTitle}>{speakerData.title}</Text>
             {speakerData.company && (
               <View style={styles.companyRow}>
-                <Ionicons name="business-outline" size={16} color="#6366f1" />
+                <Ionicons name="business-outline" size={16} color="#5A4485" />
                 <Text style={styles.speakerCompany}>{speakerData.company}</Text>
               </View>
             )}
@@ -296,7 +296,7 @@ export default function SpeakerDetailScreen({ navigation, route }: SpeakerDetail
                 style={styles.secondaryButton}
                 onPress={handleEmailPress}
               >
-                <Ionicons name="mail-outline" size={20} color="#6366f1" />
+                <Ionicons name="mail-outline" size={20} color="#5A4485" />
                 <Text style={styles.secondaryButtonText}>Message</Text>
               </TouchableOpacity>
             </View>
@@ -348,7 +348,7 @@ export default function SpeakerDetailScreen({ navigation, route }: SpeakerDetail
           {speakerData.bio && (
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Ionicons name="information-circle-outline" size={24} color="#6366f1" />
+                <Ionicons name="information-circle-outline" size={24} color="#5A4485" />
                 <Text style={styles.sectionTitle}>About</Text>
               </View>
               <View style={styles.bioCard}>
@@ -362,7 +362,7 @@ export default function SpeakerDetailScreen({ navigation, route }: SpeakerDetail
            event.agenda.filter((session: any) => session?.speaker === speakerData.name).length > 0 && (
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Ionicons name="calendar-outline" size={24} color="#6366f1" />
+                <Ionicons name="calendar-outline" size={24} color="#5A4485" />
                 <Text style={styles.sectionTitle}>Sessions</Text>
               </View>
               {event.agenda
@@ -376,7 +376,7 @@ export default function SpeakerDetailScreen({ navigation, route }: SpeakerDetail
                     
                     <View style={styles.sessionMeta}>
                       <View style={styles.sessionMetaItem}>
-                        <Ionicons name="time-outline" size={16} color="#6366f1" />
+                        <Ionicons name="time-outline" size={16} color="#5A4485" />
                         <Text style={styles.sessionMetaText}>
                           {session.time ? session.time.toLocaleTimeString('en-US', {
                             hour: '2-digit',
@@ -405,7 +405,7 @@ export default function SpeakerDetailScreen({ navigation, route }: SpeakerDetail
           {event?.speakers && Array.isArray(event.speakers) && event.speakers.length > 1 && (
             <View style={styles.section}>
               <View style={styles.sectionHeader}>
-                <Ionicons name="people-outline" size={24} color="#6366f1" />
+                <Ionicons name="people-outline" size={24} color="#5A4485" />
                 <Text style={styles.sectionTitle}>Other Speakers</Text>
               </View>
               <ScrollView 
@@ -489,7 +489,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   errorButton: {
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     paddingHorizontal: 32,
     paddingVertical: 14,
     borderRadius: 12,
@@ -566,7 +566,7 @@ const styles = StyleSheet.create({
   placeholderText: {
     fontSize: 42,
     fontWeight: '800',
-    color: '#6366f1',
+    color: '#5A4485',
   },
   verifiedBadge: {
     position: 'absolute',
@@ -599,7 +599,7 @@ const styles = StyleSheet.create({
   },
   speakerTitle: {
     fontSize: 16,
-    color: '#6366f1',
+    color: '#5A4485',
     marginBottom: 12,
     textAlign: 'center',
     fontWeight: '600',
@@ -623,14 +623,14 @@ const styles = StyleSheet.create({
   primaryButton: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#6366f1',
+    backgroundColor: '#5A4485',
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 8,
-    shadowColor: '#6366f1',
+    shadowColor: '#5A4485',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -653,7 +653,7 @@ const styles = StyleSheet.create({
   secondaryButton: {
     flex: 1,
     flexDirection: 'row',
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
     paddingVertical: 14,
     paddingHorizontal: 20,
     borderRadius: 12,
@@ -661,10 +661,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 8,
     borderWidth: 2,
-    borderColor: '#6366f1',
+    borderColor: '#5A4485',
   },
   secondaryButtonText: {
-    color: '#6366f1',
+    color: '#5A4485',
     fontSize: 15,
     fontWeight: '700',
     marginLeft: 8,
@@ -738,11 +738,11 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 2,
     borderLeftWidth: 4,
-    borderLeftColor: '#6366f1',
+    borderLeftColor: '#5A4485',
   },
   sessionBadge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 8,
@@ -751,7 +751,7 @@ const styles = StyleSheet.create({
   sessionBadgeText: {
     fontSize: 11,
     fontWeight: '700',
-    color: '#6366f1',
+    color: '#5A4485',
     letterSpacing: 0.5,
   },
   sessionTitle: {
@@ -812,14 +812,14 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     borderRadius: 40,
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
     justifyContent: 'center',
     alignItems: 'center',
   },
   speakerCardInitials: {
     fontSize: 24,
     fontWeight: '700',
-    color: '#6366f1',
+    color: '#5A4485',
   },
   speakerCardName: {
     fontSize: 14,

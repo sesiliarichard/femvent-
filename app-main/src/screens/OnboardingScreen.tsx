@@ -28,25 +28,25 @@ const SLIDES: Slide[] = [
     icon: 'calendar',
     title: 'Your Events, All in One Place',
     description: "See every event you've registered for, with agendas, speakers, and updates right at your fingertips.",
-    colors: ['#6D3FE0', '#5A2FC2'],
+    colors: ['#5A4485', '#3d2d5c'],
   },
   {
     icon: 'qr-code',
     title: 'Skip the Line',
     description: 'Your ticket is a QR code. Just show it at the door for instant, fast check-in.',
-    colors: ['#43e97b', '#38f9d7'],
+    colors: ['#E36C54', '#D1573F'],
   },
   {
     icon: 'people',
     title: 'Connect with Attendees',
     description: 'Network, chat, and engage with speakers and other attendees before and during the event.',
-    colors: ['#fa709a', '#fee140'],
+    colors: ['#A82C60', '#8F2451'],
   },
   {
     icon: 'notifications',
     title: 'Never Miss a Moment',
     description: 'Get real-time announcements, schedule changes, and reminders so you never miss a session.',
-    colors: ['#4facfe', '#00f2fe'],
+    colors: ['#5A4485', '#A82C60'],
   },
 ];
 
@@ -163,5 +163,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8,
     backgroundColor: '#fff', borderRadius: 16, paddingVertical: 16, marginHorizontal: 24, marginBottom: 12,
   },
-  nextButtonText: { fontSize: 16, fontWeight: '700', color: '#6D3FE0' },
+  nextButtonText: { fontSize: 16, fontWeight: '700', color: '#5A4485' },
 });

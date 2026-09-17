@@ -146,7 +146,7 @@ useEffect(() => {
     return (
       <View style={[styles.container, styles.centerContent]}>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#6366f1" />
+          <ActivityIndicator size="large" color="#5A4485"/>
           <Text style={styles.loadingText}>Loading speakers...</Text>
         </View>
       </View>
@@ -201,14 +201,14 @@ useEffect(() => {
         )}
       >
         <LinearGradient
-          colors={['#6366f1', '#8b5cf6', '#ec4899']}
+          colors={['#5A4485', '#A82C60', '#E36C54']}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.heroGradient}
         >
           <View style={styles.heroContent}>
             <View style={styles.heroBadge}>
-              <Ionicons name="people" size={14} color="#6366f1" />
+              <Ionicons name="people" size={14} color="#5A4485" />
               <Text style={styles.heroBadgeText}>SPEAKERS</Text>
             </View>
             <Text style={styles.heroTitle}>Meet Our Speakers</Text>
@@ -325,7 +325,7 @@ useEffect(() => {
 
                   <View style={styles.viewProfileButton}>
                     <Text style={styles.viewProfileText}>View Profile</Text>
-                    <Ionicons name="arrow-forward" size={14} color="#6366f1" />
+                    <Ionicons name="arrow-forward" size={14} color="#5A4485" />
                   </View>
                 </TouchableOpacity>
               ))
@@ -364,7 +364,7 @@ useEffect(() => {
         </TouchableOpacity>
         
         <TouchableOpacity style={[styles.navItem, styles.navItemActive]}>
-          <Ionicons name="people" size={24} color="#6366f1" />
+          <Ionicons name="people" size={24} color="#5A4485" />
           <Text style={[styles.navLabel, styles.navLabelActive]}>Speakers</Text>
         </TouchableOpacity>
         
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   heroBadgeText: {
-    color: '#6366f1',
+    color: '#5A4485',
     fontSize: 12,
     fontWeight: '700',
     marginLeft: 6,
@@ -539,8 +539,8 @@ const styles = StyleSheet.create({
     borderColor: '#e2e8f0',
   },
   activeCategoryChip: {
-    backgroundColor: '#6366f1',
-    borderColor: '#6366f1',
+    backgroundColor: '#5A4485',
+    borderColor: '#5A4485',
   },
   categoryText: {
     fontSize: 14,
@@ -574,14 +574,14 @@ const styles = StyleSheet.create({
     width: '100%',
     aspectRatio: 1,
     borderRadius: 16,
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
     justifyContent: 'center',
     alignItems: 'center',
   },
   speakerAvatarText: {
     fontSize: 32,
     fontWeight: '800',
-    color: '#6366f1',
+    color: '#5A4485',
   },
   speakerBadge: {
     position: 'absolute',
@@ -615,7 +615,7 @@ const styles = StyleSheet.create({
   },
   speakerTitle: {
     fontSize: 13,
-    color: '#6366f1',
+    color: '#5A4485',
     marginBottom: 6,
     fontWeight: '600',
   },
@@ -635,17 +635,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#f0f4ff',
+    backgroundColor: '#f4f1f9',
     borderRadius: 12,
     paddingVertical: 10,
     marginTop: 8,
     borderWidth: 1,
-    borderColor: '#6366f1',
+    borderColor: '#5A4485',
   },
   viewProfileText: {
     fontSize: 13,
     fontWeight: '700',
-    color: '#6366f1',
+    color: '#5A4485',
     marginRight: 4,
   },
   emptyState: {
@@ -692,7 +692,7 @@ const styles = StyleSheet.create({
     minWidth: 70,
   },
   navItemActive: {
-    backgroundColor: '#eff6ff',
+    backgroundColor: '#f4f1f9',
   },
   navLabel: {
     fontSize: 11,
@@ -701,7 +701,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   navLabelActive: {
-    color: '#6366f1',
+    color: '#5A4485',
     fontWeight: '700',
   },
 });
