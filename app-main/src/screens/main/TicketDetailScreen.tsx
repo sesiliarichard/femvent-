@@ -114,14 +114,14 @@ export const TicketDetailScreen: React.FC = () => {
         switch (status) {
             case 'confirmed':
                 return {
-                    gradient: ['#43e97b', '#38f9d7'] as [string, string],
+                    gradient: ['#059669', '#047857'] as [string, string],
                     icon: 'checkmark-circle',
                     color: '#059669',
                     label: 'CONFIRMED',
                 };
             case 'pending':
                 return {
-                    gradient: ['#fa709a', '#fee140'] as [string, string],
+                    gradient: ['#d97706', '#b45309'] as [string, string],
                     icon: 'time',
                     color: '#d97706',
                     label: 'PENDING',
@@ -129,14 +129,14 @@ export const TicketDetailScreen: React.FC = () => {
             case 'cancelled':
             case 'refunded':
                 return {
-                    gradient: ['#ff9a9e', '#fecfef'] as [string, string],
+                    gradient: ['#dc2626', '#b91c1c'] as [string, string],
                     icon: 'close-circle',
                     color: '#dc2626',
                     label: status.toUpperCase(),
                 };
                 default:
                     return {
-                        gradient: ['#6D3FE0', '#5A2FC2'] as [string, string],
+                        gradient: ['#5A4485', '#3d2d5c'] as [string, string],
                         icon: 'help-circle',
                         color: '#666',
                         label: 'UNKNOWN',
@@ -173,9 +173,9 @@ export const TicketDetailScreen: React.FC = () => {
         return {
             key: 'general',
             label: 'GENERAL',
-            gradient: ['#6D3FE0', '#5A2FC2'] as [string, string],
-            accent: '#6D3FE0',
-            badgeGradient: ['#6D3FE0', '#5A2FC2'] as [string, string],
+            gradient: ['#5A4485', '#3d2d5c'] as [string, string],
+            accent: '#5A4485',
+            badgeGradient: ['#5A4485', '#3d2d5c'] as [string, string],
             icon: 'ticket' as const,
         };
     };
@@ -201,7 +201,7 @@ export const TicketDetailScreen: React.FC = () => {
         return (
             <SafeAreaView style={styles.container}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#6D3FE0" />
+                    <ActivityIndicator size="large" color="#5A4485" />
                     <Text style={styles.loadingText}>Loading ticket...</Text>
                 </View>
             </SafeAreaView>
@@ -288,7 +288,7 @@ export const TicketDetailScreen: React.FC = () => {
                     <View style={styles.detailsContainer}>
                         <View style={styles.detailRow}>
                             <View style={styles.detailIcon}>
-                            <Ionicons name="calendar-outline" size={22} color="#6D3FE0" />
+                            <Ionicons name="calendar-outline" size={22} color="#5A4485"/>
                             </View>
                             <View style={styles.detailContent}>
                                 <Text style={styles.detailLabel}>Date</Text>
@@ -298,7 +298,7 @@ export const TicketDetailScreen: React.FC = () => {
 
                         <View style={styles.detailRow}>
                             <View style={styles.detailIcon}>
-                                <Ionicons name="time-outline" size={22} color="#f093fb" />
+                                <Ionicons name="time-outline" size={22} color="#A82C60" />
                             </View>
                             <View style={styles.detailContent}>
                                 <Text style={styles.detailLabel}>Time</Text>
@@ -308,7 +308,7 @@ export const TicketDetailScreen: React.FC = () => {
 
                         <View style={styles.detailRow}>
                             <View style={styles.detailIcon}>
-                                <Ionicons name="location-outline" size={22} color="#4facfe" />
+                                <Ionicons name="location-outline" size={22} color="#E36C54" />
                             </View>
                             <View style={styles.detailContent}>
                                 <Text style={styles.detailLabel}>Location</Text>
@@ -394,7 +394,7 @@ export const TicketDetailScreen: React.FC = () => {
 
                 {/* Help Card */}
                 <View style={styles.helpCard}>
-                <Ionicons name="information-circle-outline" size={20} color="#6D3FE0" />
+                <Ionicons name="information-circle-outline" size={20} color="#5A4485"/>
                     <Text style={styles.helpText}>
                         Need help? Contact the event organizer or support team.
                     </Text>
@@ -667,7 +667,7 @@ const styles = StyleSheet.create({
     helpCard: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#eff6ff',
+        backgroundColor: '#f4f1f9',
         borderRadius: 16,
         padding: 16,
         gap: 12,
@@ -675,7 +675,7 @@ const styles = StyleSheet.create({
     helpText: {
         flex: 1,
         fontSize: 13,
-        color: '#1e40af',
+        color: '#3d2d5c',
         fontWeight: '600',
         lineHeight: 18,
     },

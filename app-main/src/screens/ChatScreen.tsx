@@ -629,6 +629,63 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  messageContainer: {
+    marginVertical: 4,
+    maxWidth: '80%',
+  },
+  ownMessage: {
+    alignSelf: 'flex-end',
+  },
+  otherMessage: {
+    alignSelf: 'flex-start',
+  },
+  messageHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 4,
+    marginLeft: 4,
+  },
+  userName: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#5A4485',
+    marginRight: 8,
+  },
+  messageTime: {
+    fontSize: 10,
+    color: '#9ca3af',
+  },
+  messageBubble: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 18,
+  },
+  ownBubble: {
+    backgroundColor: '#5A4485',
+    borderBottomRightRadius: 4,
+  },
+  otherBubble: {
+    backgroundColor: '#ffffff',
+    borderBottomLeftRadius: 4,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+  },
+  messageText: {
+    fontSize: 15,
+    lineHeight: 20,
+  },
+  ownText: {
+    color: '#ffffff',
+  },
+  otherText: {
+    color: '#1e293b',
+  },
+  ownMessageTime: {
+    fontSize: 10,
+    color: '#9ca3af',
+    textAlign: 'right',
+    marginTop: 4,
+  },
   content: {
     flex: 1,
     paddingHorizontal: 20,

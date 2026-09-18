@@ -108,7 +108,7 @@ export const QRScannerScreen: React.FC = () => {
         return (
             <SafeAreaView style={styles.container}>
                 <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#6D3FE0" />
+                <ActivityIndicator size="large" color="#5A4485" />
                 <Text style={styles.loadingText}>Requesting camera permission...</Text>
                 </View>
             </SafeAreaView>
@@ -119,7 +119,7 @@ export const QRScannerScreen: React.FC = () => {
         return (
             <SafeAreaView style={styles.container}>
                 <View style={styles.permissionContainer}>
-                    <Ionicons name="camera-off" size={80} color="#dc2626" />
+                <Ionicons name="videocam-off-outline" size={80} color="#dc2626" />
                     <Text style={styles.permissionTitle}>Camera Access Needed</Text>
                     <Text style={styles.permissionText}>
                         Please grant camera permission to scan QR codes
@@ -128,8 +128,8 @@ export const QRScannerScreen: React.FC = () => {
                         style={styles.permissionButton}
                         onPress={requestCameraPermission}
                     >
-                        <LinearGradient
-                            colors={['#6D3FE0', '#5A2FC2']}
+                                                <LinearGradient
+                            colors={['#5A4485', '#3d2d5c']}
                             style={styles.permissionButtonGradient}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
@@ -313,8 +313,8 @@ export const QRScannerScreen: React.FC = () => {
                                         style={styles.modalButtonFull}
                                         onPress={handleDismiss}
                                     >
-                                        <LinearGradient
-                                            colors={['#6D3FE0', '#5A2FC2']}
+                                                                               <LinearGradient
+                                            colors={['#5A4485', '#3d2d5c']}
                                                 style={styles.modalButtonGradient}
                                                 start={{ x: 0, y: 0 }}
                                                 end={{ x: 1, y: 1 }}
@@ -391,7 +391,7 @@ const styles = StyleSheet.create({
         padding: 12,
     },
     backTextButtonText: {
-        color: '#6D3FE0',
+        color: '#5A4485',
         fontSize: 16,
         fontWeight: '600',
     },

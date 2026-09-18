@@ -256,16 +256,16 @@ useEffect(() => {
               hour12: true
                    });
                  }
-               } else if (item.time instanceof Date) {
-                 // Date object
-                 timeDate = item.time;
-                 if (!isNaN(timeDate.getTime())) {
-                   timeString = timeDate.toLocaleTimeString('en-US', {
-                     hour: '2-digit',
-                     minute: '2-digit',
-                     hour12: true
-                   });
-                 }
+                } else if (item.time instanceof Date) {
+                  // Date object
+                  timeDate = item.time;
+                  if (timeDate && !isNaN(timeDate.getTime())) {
+                    timeString = timeDate.toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit',
+                      hour12: true
+                    });
+                  }
                 } else if (typeof item.time === 'string') {
                   // Try parsing as a full ISO datetime first (what the host dashboard actually stores)
                   const isoDate = new Date(item.time);
@@ -390,11 +390,11 @@ useEffect(() => {
            console.error(`Error converting agenda item at index ${index}:`, itemError, item);
            // Add a fallback session for this item
            convertedSessions.push({
-             id: `session-${index}`,
-            time: 'TBA',
-            duration: '30 min',
-            type: 'Session',
-             title: item?.title || 'Untitled Session',
+            id: `session-${index}`,
+           time: 'TBA',
+           duration: '30 min',
+           type: 'Workshop' as Session['type'],
+            title: item?.title || 'Untitled Session',
              speaker: item?.speaker || 'TBA',
              location: eventData.venue?.name || 
                       (typeof eventData.venue === 'string' ? eventData.venue : 'Main Hall') ||

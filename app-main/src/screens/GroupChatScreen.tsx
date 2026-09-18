@@ -63,7 +63,7 @@ export default function GroupChatScreen({ navigation, route }: GroupChatScreenPr
   const [onlineCount, setOnlineCount] = useState(0);
   const [typingUsers, setTypingUsers] = useState<string[]>([]);
   const [replyingTo, setReplyingTo] = useState<{ id: string; text: string; userName: string } | null>(null);
-  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [typingTimeout, setTypingTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const [filteredMessages, setFilteredMessages] = useState<GroupMessage[]>([]);

@@ -68,7 +68,7 @@ export default function PrivateChatScreen({ navigation, route }: PrivateChatScre
   const [recipientTyping, setRecipientTyping] = useState(false);
   const [isOnline, setIsOnline] = useState(false);
   const [replyingTo, setReplyingTo] = useState<{ id: string; text: string; userName: string } | null>(null);
-  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
+  const [typingTimeout, setTypingTimeout] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const [filteredMessages, setFilteredMessages] = useState<PrivateMessage[]>([]);
@@ -367,11 +367,19 @@ try {
           
           <View style={styles.headerInfo}>
             <View style={styles.recipientInfo}>
-              <Avatar.Image
-                size={40}
-                source={recipientPhotoURL ? { uri: recipientPhotoURL } : undefined}
-                style={styles.recipientAvatar}
-              />
+            {recipientPhotoURL ? (
+                <Avatar.Image
+                  size={40}
+                  source={{ uri: recipientPhotoURL }}
+                  style={styles.recipientAvatar}
+                />
+              ) : (
+                <Avatar.Text
+                  size={40}
+                  label={recipientName ? recipientName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : '?'}
+                  style={styles.recipientAvatar}
+                />
+              )}
               <View style={styles.recipientDetails}>
                 <Text style={styles.recipientName}>{recipientName}</Text>
                 <Text style={styles.recipientStatus}>

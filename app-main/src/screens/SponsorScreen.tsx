@@ -290,10 +290,10 @@ useEffect(() => {
       </View>
 
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Header Section */}
-        <View style={styles.headerContainer}>
-          <Text style={styles.headerTitle}>Our Amazing Sponsors</Text>
-          <Text style={styles.headerSubtitle}>
+               {/* Header Section */}
+               <View style={styles.headerContainer}>
+          <Text style={styles.sectionTitle}>Our Amazing Sponsors</Text>
+          <Text style={styles.sectionSubtitle}>
             Thank you to our sponsors who make this event possible
           </Text>
         </View>
@@ -546,14 +546,14 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     paddingTop: 20,
   },
-  headerTitle: {
+  sectionTitle: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#ffffff',
     marginBottom: 8,
     textAlign: 'center',
   },
-  headerSubtitle: {
+  sectionSubtitle: {
     fontSize: 16,
     color: '#ffffff',
     opacity: 0.8,

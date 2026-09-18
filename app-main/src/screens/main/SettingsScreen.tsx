@@ -122,9 +122,10 @@ export const SettingsScreen: React.FC = () => {
             );
         } catch (error) {
             console.error('Error in handleTestNotification:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Unknown error';
             Alert.alert(
                 'Error',
-                `Failed to send test notification: ${error.message || 'Unknown error'}`,
+                `Failed to send test notification: ${errorMessage}`,
                 [{ text: 'OK', onPress: () => setTestingNotification(false) }]
             );
         }
@@ -147,8 +148,8 @@ export const SettingsScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-           <LinearGradient
-                colors={['#6D3FE0', '#5A2FC2']}
+                     <LinearGradient
+                colors={['#5A4485', '#3d2d5c']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.header}
@@ -188,7 +189,7 @@ export const SettingsScreen: React.FC = () => {
                     <View style={styles.card}>
                         <View style={styles.settingRow}>
                             <View style={styles.settingInfo}>
-                            <Ionicons name="ticket" size={24} color="#6D3FE0" />
+                            <Ionicons name="ticket" size={24} color="#5A4485" />
                                 <View style={styles.settingText}>
                                     <Text style={styles.settingLabel}>Ticket Updates</Text>
                                     <Text style={styles.settingDescription}>
@@ -202,7 +203,7 @@ export const SettingsScreen: React.FC = () => {
                                     setTicketNotifications(value);
                                     saveSetting(SETTINGS_KEYS.TICKET_NOTIFICATIONS, value);
                                 }}
-                                trackColor={{ false: '#e2e8f0', true: '#6D3FE0' }}
+                                trackColor={{ false: '#e2e8f0', true: '#5A4485' }}
                                 thumbColor={ticketNotifications ? '#fff' : '#cbd5e0'}
                             />
                         </View>
@@ -211,7 +212,7 @@ export const SettingsScreen: React.FC = () => {
 
                         <View style={styles.settingRow}>
                             <View style={styles.settingInfo}>
-                                <Ionicons name="time" size={24} color="#f093fb" />
+                                <Ionicons name="time" size={24} color="#A82C60"/>
                                 <View style={styles.settingText}>
                                     <Text style={styles.settingLabel}>Event Reminders</Text>
                                     <Text style={styles.settingDescription}>
@@ -225,7 +226,7 @@ export const SettingsScreen: React.FC = () => {
                                     setEventReminders(value);
                                     saveSetting(SETTINGS_KEYS.EVENT_REMINDERS, value);
                                 }}
-                                trackColor={{ false: '#e2e8f0', true: '#f093fb' }}
+                                trackColor={{ false: '#e2e8f0', true: '#A82C60' }}
                                 thumbColor={eventReminders ? '#fff' : '#cbd5e0'}
                             />
                         </View>
@@ -283,8 +284,8 @@ export const SettingsScreen: React.FC = () => {
                         onPress={handleTestNotification}
                         disabled={testingNotification}
                     >
-                        <LinearGradient
-                            colors={['#6D3FE0', '#5A2FC2']}
+                             <LinearGradient
+                            colors={['#5A4485', '#3d2d5c']}
                             style={styles.testButtonGradient}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
@@ -304,7 +305,7 @@ export const SettingsScreen: React.FC = () => {
                     <View style={styles.card}>
                         <TouchableOpacity style={styles.settingRow}>
                             <View style={styles.settingInfo}>
-                            <Ionicons name="person" size={24} color="#6D3FE0" />
+                            <Ionicons name="person" size={24} color="#5A4485"/>
                                 <View style={styles.settingText}>
                                     <Text style={styles.settingLabel}>Edit Profile</Text>
                                 </View>
@@ -316,7 +317,7 @@ export const SettingsScreen: React.FC = () => {
 
                         <TouchableOpacity style={styles.settingRow}>
                             <View style={styles.settingInfo}>
-                                <Ionicons name="lock-closed" size={24} color="#f093fb" />
+                                <Ionicons name="lock-closed" size={24} color="#A82C60" />
                                 <View style={styles.settingText}>
                                     <Text style={styles.settingLabel}>Change Password</Text>
                                 </View>
@@ -408,7 +409,7 @@ const styles = StyleSheet.create({
         width: 64,
         height: 64,
         borderRadius: 32,
-        backgroundColor: '#6D3FE0',
+        backgroundColor: '#5A4485',
         justifyContent: 'center',
         alignItems: 'center',
     },

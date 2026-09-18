@@ -93,7 +93,7 @@ export const FavoritesScreen: React.FC = () => {
     };
 
     const handleEventPress = (event: Event) => {
-        navigation.navigate('EventDetail' as never, { eventId: event.id } as never);
+        (navigation as any).navigate('EventDetail', { eventId: event.id });
     };
 
     if (loading) {

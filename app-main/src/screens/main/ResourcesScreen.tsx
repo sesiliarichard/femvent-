@@ -47,7 +47,7 @@ export const ResourcesScreen: React.FC = () => {
         return (
             <SafeAreaView style={styles.container} edges={['top']}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#667eea" />
+                    <ActivityIndicator size="large" color="#5A4485" />
                 </View>
             </SafeAreaView>
         );
@@ -55,7 +55,7 @@ export const ResourcesScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-            <LinearGradient colors={['#667eea', '#764ba2']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
+                        <LinearGradient colors={['#5A4485', '#3d2d5c']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
                 <View style={styles.headerContent}>
                     <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                         <Ionicons name="arrow-back" size={24} color="#fff" />
@@ -79,7 +79,7 @@ export const ResourcesScreen: React.FC = () => {
                     {resources.map((res) => (
                         <TouchableOpacity key={res.id} style={styles.card} onPress={() => handleOpen(res)} activeOpacity={0.7}>
                             <View style={styles.iconCircle}>
-                                <Ionicons name={typeIcon[res.type]} size={22} color="#667eea" />
+                                <Ionicons name={typeIcon[res.type]} size={22} color="#5A4485" />
                             </View>
                             <View style={{ flex: 1, marginLeft: 14 }}>
                                 <Text style={styles.resourceTitle}>{res.title}</Text>
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
         shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.06, shadowRadius: 6, elevation: 2,
     },
     iconCircle: {
-        width: 44, height: 44, borderRadius: 14, backgroundColor: '#e0e7ff',
+        width: 44, height: 44, borderRadius: 14, backgroundColor: '#f4f1f9',
         justifyContent: 'center', alignItems: 'center',
     },
     resourceTitle: { fontSize: 15, fontWeight: '700', color: '#1a1a1a' },

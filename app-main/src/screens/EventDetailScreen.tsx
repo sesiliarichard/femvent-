@@ -303,10 +303,10 @@ useEffect(() => {
     };
   })
 
-    .sort((a, b) => {
-      if (!a.rawDate || !b.rawDate) return 0;
-      return a.rawDate.getTime() - b.rawDate.getTime();
-    });
+  .sort((a: any, b: any) => {
+    if (!a.rawDate || !b.rawDate) return 0;
+    return a.rawDate.getTime() - b.rawDate.getTime();
+  });
 
   const headerOpacity = scrollY.interpolate({
     inputRange: [0, 100],
@@ -500,7 +500,7 @@ useEffect(() => {
             </View>
 
             <View style={styles.scheduleList}>
-              {scheduleItems.map((item, index) => (
+            {scheduleItems.map((item: any, index: number) => (
                 <TouchableOpacity
                   key={item.id}
                   style={styles.scheduleItemContainer}

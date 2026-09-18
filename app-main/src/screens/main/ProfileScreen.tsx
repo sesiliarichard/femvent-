@@ -139,21 +139,21 @@ export const ProfileScreen: React.FC = () => {
         label: 'Upcoming',
         value: ticketStats.upcoming,
         icon: 'event-available',
-        gradient: ['#6D3FE0', '#5A2FC2'],
+        gradient: ['#5A4485', '#3d2d5c'],
       },
       {
         id: 'tickets',
         label: 'Tickets',
         value: ticketStats.total,
         icon: 'confirmation-number',
-        gradient: ['#f093fb', '#f5576c'],
+        gradient: ['#A82C60', '#8F2451'],
       },
       {
         id: 'pending',
         label: 'Pending',
         value: ticketStats.pending,
         icon: 'hourglass-top',
-        gradient: ['#4facfe', '#00f2fe'],
+        gradient: ['#E36C54', '#D1573F'],
       },
     ];
   }, [ticketStats]);
@@ -178,7 +178,7 @@ export const ProfileScreen: React.FC = () => {
     title: string,
     description: string,
     onPress: () => void,
-    iconColor: string = '#6D3FE0'
+    iconColor: string = '#5A4485'
   ) => (
     <TouchableOpacity
       style={styles.menuItem}
@@ -206,7 +206,7 @@ export const ProfileScreen: React.FC = () => {
       >
         {/* Header with Gradient */}
         <LinearGradient
-          colors={['#6D3FE0', '#5A2FC2']}
+          colors={['#5A4485', '#3d2d5c']}
           style={styles.header}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
@@ -250,7 +250,7 @@ export const ProfileScreen: React.FC = () => {
           <View style={styles.sectionHeader}>
             <View style={styles.sectionTitleContainer}>
               <View style={styles.sectionIconCircle}>
-              <Ionicons name="person" size={20} color="#6D3FE0" />
+              <Ionicons name="person" size={20} color="#5A4485" />
               </View>
               <Text style={styles.sectionTitle}>Account</Text>
             </View>
@@ -269,12 +269,12 @@ export const ProfileScreen: React.FC = () => {
                 <Divider style={styles.divider} />
               </>
             )}
-            {renderMenuItem(
+                      {renderMenuItem(
               'person-circle-outline',
               'Edit Profile',
               'Update your personal information',
                () => navigation.navigate('EditProfile' as never),
-              '#6D3FE0'
+              '#5A4485'
             )}
             <Divider style={styles.divider} />
             {renderMenuItem(
@@ -282,7 +282,7 @@ export const ProfileScreen: React.FC = () => {
               'Payment History',
               'View your transaction history',
               handlePaymentHistory,
-              '#f093fb'
+              '#A82C60'
             )}
           </Surface>
         </View>
@@ -292,7 +292,7 @@ export const ProfileScreen: React.FC = () => {
           <View style={styles.section}>
             <Surface style={styles.becomeHostCard} elevation={3}>
             <LinearGradient
-                colors={['#6D3FE0', '#5A2FC2']}
+                colors={['#5A4485', '#3d2d5c']}
                 style={styles.becomeHostGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -310,7 +310,7 @@ export const ProfileScreen: React.FC = () => {
                   activeOpacity={0.8}
                 >
                   <Text style={styles.becomeHostButtonText}>Apply Now</Text>
-                  <Ionicons name="arrow-forward" size={18} color="#6D3FE0" />
+                  <Ionicons name="arrow-forward" size={18} color="#5A4485" />
                 </TouchableOpacity>
               </LinearGradient>
             </Surface>
@@ -412,19 +412,19 @@ export const ProfileScreen: React.FC = () => {
           <View style={styles.sectionHeader}>
             <View style={styles.sectionTitleContainer}>
               <View style={styles.sectionIconCircle}>
-              <Ionicons name="settings" size={20} color="#6D3FE0" />
+              <Ionicons name="settings" size={20} color="#5A4485" />
               </View>
               <Text style={styles.sectionTitle}>Settings</Text>
             </View>
           </View>
 
           <Surface style={styles.card} elevation={2}>
-            {renderMenuItem(
+          {renderMenuItem(
               'heart',
               'Favorites',
               'View your saved events',
               () => navigation.navigate('Favorites' as never),
-              '#ff6b6b'
+              '#E36C54'
             )}
             <Divider style={styles.divider} />
             {renderMenuItem(
@@ -432,7 +432,7 @@ export const ProfileScreen: React.FC = () => {
               'Notifications',
               'Manage notification preferences',
               () => navigation.navigate('Settings' as never),
-              '#f093fb'
+              '#A82C60'
             )}
             <Divider style={styles.divider} />
             {renderMenuItem(
@@ -451,7 +451,7 @@ export const ProfileScreen: React.FC = () => {
                   ]
                 );
               },
-              '#6D3FE0'
+              '#5A4485'
             )}
             <Divider style={styles.divider} />
             {renderMenuItem(
@@ -492,6 +492,9 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 10,
   },
+  profileHeader: {
+    alignItems: 'center',
+  },
   headerContent: {
     alignItems: 'center',
     paddingTop: 20,
@@ -520,9 +523,10 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: '#fff',
   },
-  avatarLabel: {
+  avatarText: {
     fontSize: 40,
     fontWeight: '700',
+    color: '#fff',
   },
   userName: {
     fontSize: 28,
@@ -536,6 +540,21 @@ const styles = StyleSheet.create({
     color: 'rgba(255,255,255,0.9)',
     marginBottom: 16,
     fontWeight: '500',
+  },
+  hostBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 16,
+    gap: 6,
+  },
+  hostBadgeText: {
+    color: '#fff',
+    fontSize: 13,
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   roleContainer: {
     marginBottom: 8,
@@ -716,7 +735,7 @@ const styles = StyleSheet.create({
   becomeHostButtonText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#6D3FE0',
+    color: '#5A4485',
   },
   applicationStatus: {
     padding: 18,

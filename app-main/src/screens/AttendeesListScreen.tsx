@@ -106,11 +106,15 @@ export default function AttendeesListScreen({ navigation, route }: AttendeesList
       onPress={() => startPrivateChat(item)}
     >
       <View style={styles.attendeeInfo}>
-        <Avatar.Image
-          size={50}
-          source={item.photoURL ? { uri: item.photoURL } : undefined}
-          style={styles.avatar}
-        />
+      {item.photoURL ? (
+          <Avatar.Image size={50} source={{ uri: item.photoURL }} style={styles.avatar} />
+        ) : (
+          <Avatar.Text
+            size={50}
+            label={item.name ? item.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : '?'}
+            style={styles.avatar}
+          />
+        )}
         <View style={styles.attendeeDetails}>
           <Text style={styles.attendeeName}>{item.name}</Text>
           <Text style={styles.attendeeEmail}>{item.email}</Text>
@@ -517,6 +521,10 @@ const styles = StyleSheet.create({
   },
   activeNavItem: {
     backgroundColor: '#f4f1f9',
+  },
+  activeNavLabel: {
+    color: '#5A4485',
+    fontWeight: '600',
   },
 });
 

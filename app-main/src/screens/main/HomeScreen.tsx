@@ -421,8 +421,8 @@ export const HomeScreen: React.FC = () => {
 
                 {item.category && (
                   <View style={styles.eventCategoryBadge}>
-                    <LinearGradient
-                      colors={categories.find(c => c.id === item.category)?.gradient || ['#667eea', '#764ba2']}
+                                        <LinearGradient
+                      colors={(categories.find(c => c.id === item.category)?.gradient || ['#667eea', '#764ba2']) as [string, string]}
                       style={styles.categoryBadgeGradient}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
@@ -1207,7 +1207,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
     padding: 9,
     borderRadius: 20,
-    backdropFilter: 'blur(10px)',
+    
   },
   eventCardContent: {
     padding: 18,

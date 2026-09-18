@@ -213,8 +213,8 @@ export const EventsScreen: React.FC = () => {
               </View>
               {item.category && (
                   <View style={styles.categoryBadge}>
-                    <LinearGradient
-                     colors={categories.find(c => c.id === item.category)?.gradient || ['#6D3FE0', '#5A2FC2']}
+                                        <LinearGradient
+                     colors={(categories.find(c => c.id === item.category)?.gradient || ['#6D3FE0', '#5A2FC2']) as [string, string]}
                       style={styles.categoryBadgeGradient}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
@@ -313,9 +313,9 @@ export const EventsScreen: React.FC = () => {
         onPress={() => setSelectedCategory(item.id)}
         activeOpacity={0.7}
       >
-        {selected ? (
+               {selected ? (
           <LinearGradient
-            colors={item.gradient}
+            colors={item.gradient as [string, string]}
             style={styles.categoryChip}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
@@ -643,7 +643,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.5)',
     padding: 10,
     borderRadius: 22,
-    backdropFilter: 'blur(10px)',
   },
   cardContent: {
     padding: 18,
