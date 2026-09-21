@@ -1,22 +1,35 @@
-import * as Notifications from 'expo-notifications';
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
+import type * as NotificationsType from 'expo-notifications';
 
-// Configure notification behavior
-Notifications.setNotificationHandler({
-    handleNotification: async () => ({
-        shouldShowAlert: true,
-        shouldPlaySound: true,
-        shouldSetBadge: true,
-        shouldShowBanner: true,
-        shouldShowList: true,
-    }),
-});
+const isExpoGo = Constants.appOwnership === 'expo';
 
-/**
- * Request notification permissions
- */
+// expo-notifications' native module registers a push-token listener as a
+// side effect of simply being imported. On Android in Expo Go (SDK 53+)
+// that throws the "runtime not ready" error immediately — so we avoid
+// importing the module at all in Expo Go, and only require() it lazily
+// in a dev build / standalone build.
+const Notifications: typeof NotificationsType | null = isExpoGo
+    ? null
+    : require('expo-notifications');
+
+if (Notifications) {
+    Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+            shouldShowAlert: true,
+            shouldPlaySound: true,
+            shouldSetBadge: true,
+            shouldShowBanner: true,
+            shouldShowList: true,
+        }),
+    });
+}
+
 export const requestNotificationPermissions = async (): Promise<boolean> => {
+    if (!Notifications) {
+        console.log('Skipping notification permissions: not supported in Expo Go (SDK 53+)');
+        return false;
+    }
     try {
         const { status: existingStatus } = await Notifications.getPermissionsAsync();
         let finalStatus = existingStatus;
@@ -38,10 +51,10 @@ export const requestNotificationPermissions = async (): Promise<boolean> => {
     }
 };
 
-/**
- * Get Expo push token for sending notifications
- */
 export const getExpoPushToken = async (): Promise<string | null> => {
+    if (!Notifications) {
+        return null;
+    }
     try {
         const hasPermission = await requestNotificationPermissions();
         if (!hasPermission) {
@@ -60,18 +73,18 @@ export const getExpoPushToken = async (): Promise<string | null> => {
     }
 };
 
-/**
- * Send a local notification (for immediate feedback)
- */
 export const sendLocalNotification = async (
     title: string,
     body: string,
     data?: any
 ): Promise<void> => {
+    if (!Notifications) {
+        console.log('Skipping local notification: not supported in Expo Go (SDK 53+)');
+        return;
+    }
     try {
         console.log('Attempting to send notification:', title);
 
-        // Don't await - Expo Go SDK 53 promise may hang
         Notifications.scheduleNotificationAsync({
             content: {
                 title,
@@ -79,12 +92,11 @@ export const sendLocalNotification = async (
                 data,
                 sound: true,
             },
-            trigger: null, // Send immediately
+            trigger: null,
         }).then(id => console.log('Notification scheduled:', id))
             .catch(err => console.error('Notification error:', err));
 
         console.log('Notification initiated');
-        // Resolve immediately after scheduling
         return Promise.resolve();
     } catch (error) {
         console.error('Error sending local notification:', error);
@@ -92,9 +104,6 @@ export const sendLocalNotification = async (
     }
 };
 
-/**
- * Send ticket confirmation notification
- */
 export const sendTicketConfirmationNotification = async (
     eventTitle: string,
     ticketId: string
@@ -106,9 +115,6 @@ export const sendTicketConfirmationNotification = async (
     );
 };
 
-/**
- * Send check-in success notification
- */
 export const sendCheckInNotification = async (
     eventTitle: string
 ): Promise<void> => {
@@ -119,16 +125,15 @@ export const sendCheckInNotification = async (
     );
 };
 
-/**
- * Send event reminder notification
- */
 export const scheduleEventReminder = async (
     eventTitle: string,
     eventDate: Date,
     eventId: string
 ): Promise<void> => {
+    if (!Notifications) {
+        return;
+    }
     try {
-        // Schedule notification 1 hour before event
         const reminderTime = new Date(eventDate.getTime() - 60 * 60 * 1000);
 
         if (reminderTime > new Date()) {
@@ -139,7 +144,10 @@ export const scheduleEventReminder = async (
                     data: { eventId, type: 'event_reminder' },
                     sound: true,
                 },
-                trigger: { type: 'date', date: reminderTime } as const,
+                trigger: {
+                    type: Notifications.SchedulableTriggerInputTypes.DATE,
+                    date: reminderTime,
+                },
             });
         }
     } catch (error) {
@@ -147,10 +155,10 @@ export const scheduleEventReminder = async (
     }
 };
 
-/**
- * Cancel all notifications for a specific event
- */
 export const cancelEventNotifications = async (eventId: string): Promise<void> => {
+    if (!Notifications) {
+        return;
+    }
     try {
         const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
 
@@ -164,15 +172,25 @@ export const cancelEventNotifications = async (eventId: string): Promise<void> =
     }
 };
 
-/**
- * Setup notification listeners
- * Call this in your App.tsx or main component
- */
+export const dismissAllNotifications = async (): Promise<void> => {
+    if (!Notifications) {
+        return;
+    }
+    try {
+        await Notifications.dismissAllNotificationsAsync();
+    } catch (error) {
+        console.error('Error dismissing notifications:', error);
+    }
+};
+
 export const setupNotificationListeners = (
-    onNotificationReceived?: (notification: Notifications.Notification) => void,
-    onNotificationTapped?: (response: Notifications.NotificationResponse) => void
+    onNotificationReceived?: (notification: NotificationsType.Notification) => void,
+    onNotificationTapped?: (response: NotificationsType.NotificationResponse) => void
 ) => {
-    // Listen for notifications received while app is foregrounded
+    if (!Notifications) {
+        return () => {};
+    }
+
     const receivedSubscription = Notifications.addNotificationReceivedListener(
         (notification) => {
             console.log('Notification received:', notification);
@@ -180,7 +198,6 @@ export const setupNotificationListeners = (
         }
     );
 
-    // Listen for user tapping on notifications
     const responseSubscription = Notifications.addNotificationResponseReceivedListener(
         (response) => {
             console.log('Notification tapped:', response);

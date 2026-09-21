@@ -44,8 +44,8 @@ import { AuthProvider, useAuth } from './src/services/AuthContext';
 import { LoginScreen } from './src/screens/auth/LoginScreen';
 import { ForgotPasswordScreen } from './src/screens/auth/ForgotPasswordScreen';
 import { OnboardingScreen, hasSeenOnboarding } from './src/screens/OnboardingScreen';
-import { setupNotificationListeners, requestNotificationPermissions } from './src/services/notifications';
-import * as Notifications from 'expo-notifications';
+import { setupNotificationListeners, requestNotificationPermissions, dismissAllNotifications } from './src/services/notifications';
+import Constants from 'expo-constants';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -92,10 +92,8 @@ function MainTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-          if (route.name === 'Home') {
-            iconName = 'home';
-          } else if (route.name === 'Events') {
+          let iconName: keyof typeof MaterialIcons.glyphMap = 'home';
+          if (route.name === 'Events') {
             iconName = 'event';
           } else if (route.name === 'Tickets') {
             iconName = 'confirmation-number';
@@ -104,6 +102,7 @@ function MainTabs() {
           }
           return <MaterialIcons name={iconName} size={size} color={color} />;
         },
+
         tabBarActiveTintColor: '#6D3FE0',
         tabBarInactiveTintColor: '#a89fc2',
       })}
@@ -134,7 +133,7 @@ function MainDrawer() {
 
 function AppNavigator() {
   const { user, loading } = useAuth();
-  const navigationRef = React.useRef<any>();
+   const navigationRef = React.useRef<any>(null);
   const [onboardingChecked, setOnboardingChecked] = React.useState(false);
   const [showOnboarding, setShowOnboarding] = React.useState(false);
 
@@ -145,17 +144,21 @@ function AppNavigator() {
     });
   }, []);
 
-  // Request notification permissions when user logs in
+ // Request notification permissions when user logs in
+  // (Expo Go on SDK 53+ doesn't support remote push notifications — skip there)
   React.useEffect(() => {
-    if (user) {
+    if (user && Constants.appOwnership !== 'expo') {
       requestNotificationPermissions();
       // Clear any old notifications
-      Notifications.dismissAllNotificationsAsync();
+      dismissAllNotifications();
     }
   }, [user]);
 
-  // Setup notification listeners
+   // Setup notification listeners
+  // (skip in Expo Go on SDK 53+ — push notifications aren't supported there)
   React.useEffect(() => {
+    if (Constants.appOwnership === 'expo') return;
+
     const cleanup = setupNotificationListeners(
       (notification) => {
         // Notification received while app is foregrounded
@@ -163,8 +166,12 @@ function AppNavigator() {
       },
       (response) => {
         // User tapped on notification
-        const { type, ticketId, eventId } = response.notification.request.content.data;
-
+        const data = response.notification.request.content.data as {
+          type?: string;
+          ticketId?: string;
+          eventId?: string;
+        };
+        const { type, ticketId, eventId } = data;
         if (navigationRef.current) {
           if (type === 'ticket_confirmed' && ticketId) {
             navigationRef.current.navigate('TicketDetail', { ticketId });
@@ -195,7 +202,7 @@ function AppNavigator() {
             <Stack.Screen name="Main" component={MainDrawer} />
             <Stack.Screen
               name="EventDetail"
-              component={EventDetailScreen}
+              component={EventDetailScreen as any}
               options={{ headerShown: false }}
             />
             <Stack.Screen
@@ -230,7 +237,7 @@ function AppNavigator() {
             />
             <Stack.Screen
               name="SpeakerDetail"
-              component={SpeakerDetailScreen}
+              component={SpeakerDetailScreen as any}
               options={{ headerShown: false }}
             />
             <Stack.Screen
