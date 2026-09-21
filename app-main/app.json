@@ -31,7 +31,11 @@
       "favicon": "./assets/femvents-icon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      "@react-native-community/datetimepicker",
+      "@sentry/react-native",
+      "expo-sharing",
+      "expo-status-bar"
     ],
     "extra": {
       "eas": {

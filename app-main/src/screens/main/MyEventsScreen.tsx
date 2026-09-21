@@ -12,12 +12,12 @@ import { useCurrentEvent } from '../../services/EventContext';
 interface RegisteredEvent {
     ticketId: string;
     ticketType: string;
+    ticketStatus: string;
     eventId: string;
     title: string;
     eventDate: string | null;
     location: string | null;
 }
-
 export const MyEventsScreen: React.FC = () => {
     const navigation = useNavigation();
     const { user } = useAuth();
@@ -34,9 +34,9 @@ export const MyEventsScreen: React.FC = () => {
         try {
             const { data, error } = await supabase
                 .from('tickets')
-                .select('id, ticket_type, event_id, events(id, title, event_date, location)')
+                .select('id, ticket_type, status, event_id, events(id, title, event_date, location)')
                 .eq('user_id', user!.id)
-                .eq('status', 'confirmed');
+                .in('status', ['confirmed', 'pending']);
 
             if (error) throw error;
 
@@ -45,12 +45,12 @@ export const MyEventsScreen: React.FC = () => {
                 .map((row: any) => ({
                     ticketId: row.id,
                     ticketType: row.ticket_type,
+                    ticketStatus: row.status,
                     eventId: row.events.id,
                     title: row.events.title,
                     eventDate: row.events.event_date,
                     location: row.events.location,
                 }));
-
             setEvents(mapped);
 
             // Auto-select if exactly one registered event
@@ -110,14 +110,19 @@ export const MyEventsScreen: React.FC = () => {
                                 onPress={() => selectEvent(event)}
                                 activeOpacity={0.7}
                             >
-                                <View style={styles.cardIcon}>
-                                    <Ionicons name="checkmark-circle" size={22} color="#43e97b" />
+                       <View style={styles.cardIcon}>
+                                    <Ionicons
+                                        name={event.ticketStatus === 'confirmed' ? 'checkmark-circle' : 'time-outline'}
+                                        size={22}
+                                        color={event.ticketStatus === 'confirmed' ? '#43e97b' : '#f59e0b'}
+                                    />
                                 </View>
                                 <View style={{ flex: 1 }}>
                                     <Text style={styles.eventTitle}>{event.title}</Text>
                                     <Text style={styles.eventMeta}>
                                         {event.ticketType}
                                         {event.location ? ` · ${event.location}` : ''}
+                                        {event.ticketStatus !== 'confirmed' ? ' · Pending approval' : ''}
                                     </Text>
                                 </View>
                                 <Ionicons name="chevron-forward" size={20} color="#999" />

@@ -71,8 +71,19 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
                             </Text>
                         </View>
                     )}
-                    <Text style={styles.userName}>{user?.name || 'Attendee'}</Text>
+                     <Text style={styles.userName}>{user?.name || 'Attendee'}</Text>
                     <Text style={styles.userEmail}>{user?.email}</Text>
+                    <TouchableOpacity
+                        style={styles.currentEventBadge}
+                        onPress={() => go('MyEvents')}
+                        activeOpacity={0.7}
+                    >
+                        <Ionicons name="calendar" size={13} color="#D7CBEC" />
+                        <Text style={styles.currentEventBadgeText} numberOfLines={1}>
+                            {currentEvent ? currentEvent.title : 'No event selected'}
+                        </Text>
+                        <Ionicons name="chevron-down" size={13} color="#D7CBEC" />
+                    </TouchableOpacity>
                 </View>
 
                 <ScrollView
@@ -167,6 +178,24 @@ const styles = StyleSheet.create({
     userEmail: {
         fontSize: 13,
         color: 'rgba(255,255,255,0.8)',
+    },
+    currentEventBadge: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        marginTop: 10,
+        alignSelf: 'flex-start',
+        maxWidth: '100%',
+        backgroundColor: 'rgba(255,255,255,0.12)',
+        borderRadius: 12,
+        paddingVertical: 6,
+        paddingHorizontal: 10,
+    },
+    currentEventBadgeText: {
+        fontSize: 12,
+        fontWeight: '600',
+        color: '#fff',
+        flexShrink: 1,
     },
     body: {
         flex: 1,

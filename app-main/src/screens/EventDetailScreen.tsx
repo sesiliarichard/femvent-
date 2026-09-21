@@ -22,6 +22,7 @@ import {
 } from 'react-native-paper';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { useAuth } from '../services/AuthContext';
+import { useCurrentEvent } from '../services/EventContext';
 import { registerForEvent, checkEventRegistration } from '../services/registration';
 import { supabase } from '../services/supabase';
 import { EventSplashScreen } from '../components/EventSplashScreen';
@@ -47,6 +48,7 @@ export default function EventDetailScreen({ route, navigation }: EventDetailScre
   const [loading, setLoading] = useState(true);
   const [showSplash, setShowSplash] = useState(false);
   const { user } = useAuth();
+  const { setCurrentEvent } = useCurrentEvent();
   const [isRegistered, setIsRegistered] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [isFavorited, setIsFavorited] = useState(false);
@@ -161,6 +163,9 @@ useEffect(() => {
         try {
           const registered = await checkEventRegistration(event.id, user.id);
           setIsRegistered(registered);
+          if (registered) {
+            await setCurrentEvent({ id: event.id, title: event.title });
+          }
 
           // Set attendee count from event data (same for all users)
           setAttendeeCount({
@@ -204,6 +209,7 @@ useEffect(() => {
       });
 
       setIsRegistered(true);
+      await setCurrentEvent({ id: event.id, title: event.title });
       // Note: Attendee count will be updated when admin confirms payment on web
       // We don't update it here because ticket is pending
 

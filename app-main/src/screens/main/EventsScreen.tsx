@@ -85,16 +85,16 @@ export const EventsScreen: React.FC = () => {
     }
     try {
       const { data, error } = await supabase
-        .from('tickets')
-        .select('event_id, events(*)')
-        .eq('user_id', user.id)
-        .eq('status', 'confirmed');
+      .from('tickets')
+      .select('event_id, status, events(*)')
+      .eq('user_id', user.id)
+      .in('status', ['confirmed', 'pending']);
 
-      if (error) throw error;
+    if (error) throw error;
 
-      const normalized = (data || [])
-        .filter((row: any) => row.events)
-        .map((row: any) => normalizeEvent(row.events));
+    const normalized = (data || [])
+      .filter((row: any) => row.events)
+      .map((row: any) => ({ ...normalizeEvent(row.events), ticketStatus: row.status }));
 
       normalized.sort((a, b) => {
         const aDate = a.date ? new Date(a.date).getTime() : Number.MAX_SAFE_INTEGER;
@@ -239,6 +239,12 @@ export const EventsScreen: React.FC = () => {
         </ImageBackground>
         
         <View style={styles.cardContent}>
+          {item.ticketStatus === 'pending' && (
+            <View style={styles.pendingBadge}>
+              <Ionicons name="time-outline" size={12} color="#92400e" />
+              <Text style={styles.pendingBadgeText}>Pending approval</Text>
+            </View>
+          )}
           <Text style={styles.eventTitle} numberOfLines={2}>
             {item.title}
           </Text>
@@ -654,6 +660,24 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     letterSpacing: -0.3,
     lineHeight: 26,
+  },
+  pendingBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-start',
+    gap: 4,
+    backgroundColor: '#fffbeb',
+    borderWidth: 1,
+    borderColor: '#fde68a',
+    borderRadius: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    marginBottom: 10,
+  },
+  pendingBadgeText: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#92400e',
   },
   eventDescription: {
     fontSize: 15,

@@ -20,8 +20,6 @@ interface EventSummary {
     currency?: string;
 }
 
-type AuthMode = "login" | "signup";
-
 export default function RegisterPage() {
     const { id } = useParams<{ id: string }>();
     const router = useRouter();
@@ -33,10 +31,9 @@ export default function RegisterPage() {
     const [hostMethods, setHostMethods] = useState<Array<{ provider: string; instructions?: any }>>([]);
 
     const [session, setSession] = useState<any>(null);
-    const [authMode, setAuthMode] = useState<AuthMode>("login");
+    const [showLoginInstead, setShowLoginInstead] = useState(false);
     const [authEmail, setAuthEmail] = useState("");
     const [authPassword, setAuthPassword] = useState("");
-    const [authName, setAuthName] = useState("");
     const [authError, setAuthError] = useState("");
     const [authLoading, setAuthLoading] = useState(false);
 
@@ -115,57 +112,70 @@ export default function RegisterPage() {
     const ticketOptions = ticketTypes;
     const selectedTicket = ticketOptions.find((t) => t.id === selectedTicketId) || ticketOptions[0];
 
-    const handleAuth = async (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setAuthError("");
         setAuthLoading(true);
         try {
-            if (authMode === "signup") {
-                const { data, error } = await supabase.auth.signUp({
-                    email: authEmail,
-                    password: authPassword,
-                });
-                if (error) throw error;
-                if (data.user) {
-                    await supabase.from("users").insert({
-                        id: data.user.id,
-                        name: authName,
-                        email: authEmail,
-                        role: "attendee",
-                        status: "active",
-                    });
-                }
-            } else {
-                const { error } = await supabase.auth.signInWithPassword({
-                    email: authEmail,
-                    password: authPassword,
-                });
-                if (error) throw error;
-            }
+            const { error } = await supabase.auth.signInWithPassword({
+                email: authEmail,
+                password: authPassword,
+            });
+            if (error) throw error;
         } catch (err: any) {
-            setAuthError(err.message || "Authentication failed");
+            setAuthError(err.message || "Login failed");
         } finally {
             setAuthLoading(false);
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    // Creates the account inline as part of registering, if the person isn't
+    // already logged in. Returns the user to register the ticket against.
+    const ensureAccount = async () => {
+        if (session?.user) return session.user;
+
+        const { data, error } = await supabase.auth.signUp({
+            email: authEmail,
+            password: authPassword,
+        });
+        if (error) throw error;
+        if (!data.user) throw new Error("Could not create your account. Please try again.");
+
+        const { error: insertError } = await supabase.from("users").insert({
+            id: data.user.id,
+            name: fullName,
+            email: authEmail,
+            phone,
+            company: organization,
+            job_title: jobTitle,
+            role: "attendee",
+            status: "active",
+        });
+        if (insertError) throw insertError;
+
+        return data.user;
+    };
+
+   const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!session?.user) return;
         setSubmitError("");
         setSubmitting(true);
 
         try {
-            const { error: profileError } = await supabase
-                .from("users")
-                .update({
-                    name: fullName,
-                    phone,
-                    company: organization,
-                    job_title: jobTitle,
-                })
-                .eq("id", session.user.id);
-            if (profileError) throw profileError;
+            const activeUser = await ensureAccount();
+
+            if (session?.user) {
+                const { error: profileError } = await supabase
+                    .from("users")
+                    .update({
+                        name: fullName,
+                        phone,
+                        company: organization,
+                        job_title: jobTitle,
+                    })
+                    .eq("id", activeUser.id);
+                if (profileError) throw profileError;
+            }
 
             if (selectedTicket.price > 0) {
                 if (!hostHasPayout) {
@@ -196,9 +206,9 @@ export default function RegisterPage() {
                         body: JSON.stringify({
                             eventId: id,
                             amount: selectedTicket.price,
-                            email: session.user.email,
+                            email: activeUser.email,
                             name: fullName,
-                            userId: session.user.id,
+                            userId: activeUser.id,
                             ticketTypeName: selectedTicket.name,
                         }),
                     });
@@ -222,9 +232,9 @@ export default function RegisterPage() {
                             body: JSON.stringify({
                                 eventId: id,
                                 amount: selectedTicket.price,
-                                email: session.user.email,
+                                email: activeUser.email,
                                 name: fullName,
-                                userId: session.user.id,
+                                userId: activeUser.id,
                                 ticketTypeName: selectedTicket.name,
                             }),
                         }
@@ -248,9 +258,9 @@ export default function RegisterPage() {
                             body: JSON.stringify({
                                 eventId: id,
                                 amount: selectedTicket.price,
-                                email: session.user.email,
+                                email: activeUser.email,
                                 name: fullName,
-                                userId: session.user.id,
+                                userId: activeUser.id,
                                 ticketTypeName: selectedTicket.name,
                             }),
                         }
@@ -274,7 +284,7 @@ export default function RegisterPage() {
                                 eventId: id,
                                 provider: selectedPaymentMethod,
                                 amount: selectedTicket.price,
-                                userId: session.user.id,
+                                userId: activeUser.id,
                             }),
                         }
                     );
@@ -298,9 +308,9 @@ export default function RegisterPage() {
                    const { data: newTicket, error } = await supabase
                    .from("tickets")
                    .insert({
-                       event_id: id,
-                       user_id: session.user.id,
-                       status: "confirmed",
+                    event_id: id,
+                    user_id: activeUser.id,
+                    status: "confirmed",
                        ticket_type: selectedTicket.name,
                        payment_amount: selectedTicket.price,
                        payment_method: "free",
@@ -311,23 +321,23 @@ export default function RegisterPage() {
                if (error) throw error;
    
                fetch("/api/send-email", {
-                   method: "POST",
-                   headers: { "Content-Type": "application/json" },
-                   body: JSON.stringify({
-                       to: session.user.email,
-                       templateId: "registration-confirmation",
-                       templateData: {
-                           recipientName: fullName,
-                           eventTitle: event?.title ?? '',
-                           eventDate: new Date().toLocaleDateString(),
-                           ticketType: selectedTicket.name,
-                           ticketId: newTicket?.id,
-                           eventId: id,
-                           userId: session.user.id,
-                           qrCodeId: newTicket?.qr_code_id,
-                       },
-                   }),
-               }).catch((err) => console.error("Email send failed:", err));
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    to: activeUser.email,
+                    templateId: "registration-confirmation",
+                    templateData: {
+                        recipientName: fullName,
+                        eventTitle: event?.title ?? '',
+                        eventDate: new Date().toLocaleDateString(),
+                        ticketType: selectedTicket.name,
+                        ticketId: newTicket?.id,
+                        eventId: id,
+                        userId: activeUser.id,
+                        qrCodeId: newTicket?.qr_code_id,
+                    },
+                }),
+            }).catch((err) => console.error("Email send failed:", err));
             setSuccess(true);
         } catch (err: any) {
             setSubmitError(err.message || "Failed to complete registration");
@@ -337,10 +347,11 @@ export default function RegisterPage() {
     };
 
     const handleAzamPaySubmit = async () => {
-        if (!session?.user || !azamPhone) return;
+        if (!azamPhone) return;
         setSubmitting(true);
         setAzamStatus(null);
         try {
+            const activeUser = await ensureAccount();
             const res = await fetch(
                 `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-azampay-checkout`,
                 {
@@ -351,14 +362,13 @@ export default function RegisterPage() {
                         amount: selectedTicket.price,
                         phoneNumber: azamPhone,
                         provider: azamProvider,
-                        email: session.user.email,
+                        email: activeUser.email,
                         name: fullName,
-                        userId: session.user.id,
+                        userId: activeUser.id,
                         ticketTypeName: selectedTicket.name,
                     }),
                 }
             );
-
             const data = await res.json();
             if (!res.ok || !data.success) {
                 throw new Error(data.error || "Failed to start mobile money payment");
@@ -462,42 +472,10 @@ export default function RegisterPage() {
                 <h1 className="mt-2 text-3xl font-bold text-[#2E1F45]">{event.title}</h1>
             </div>
 
-            {!session ? (
+            {!session && showLoginInstead ? (
                 <div className="rounded-3xl border border-[#D9C9E0] bg-white p-6 shadow-lg">
-                    <div className="mb-6 flex gap-2">
-                        <button
-                            onClick={() => setAuthMode("login")}
-                            className={`flex-1 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                                authMode === "login"
-                                    ? "bg-[#2E1F45] text-[#FBF3FA]"
-                                    : "bg-[#F3F1F8] text-[#5C4A6B]"
-                            }`}
-                        >
-                            Log In
-                        </button>
-                        <button
-                            onClick={() => setAuthMode("signup")}
-                            className={`flex-1 rounded-full px-4 py-2 text-sm font-semibold transition-colors ${
-                                authMode === "signup"
-                                    ? "bg-[#2E1F45] text-[#FBF3FA]"
-                                    : "bg-[#F3F1F8] text-[#5C4A6B]"
-                            }`}
-                        >
-                            Create Account
-                        </button>
-                    </div>
-
-                    <form onSubmit={handleAuth} className="flex flex-col gap-4">
-                        {authMode === "signup" && (
-                            <input
-                                type="text"
-                                placeholder="Full Name"
-                                value={authName}
-                                onChange={(e) => setAuthName(e.target.value)}
-                                required
-                                className="rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
-                            />
-                        )}
+                    <h2 className="mb-4 text-lg font-semibold text-[#2E1F45]">Log In</h2>
+                    <form onSubmit={handleLogin} className="flex flex-col gap-4">
                         <input
                             type="email"
                             placeholder="Email"
@@ -512,7 +490,6 @@ export default function RegisterPage() {
                             value={authPassword}
                             onChange={(e) => setAuthPassword(e.target.value)}
                             required
-                            minLength={6}
                             className="rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
                         />
                         {authError && <p className="text-sm text-red-500">{authError}</p>}
@@ -521,19 +498,50 @@ export default function RegisterPage() {
                             disabled={authLoading}
                             className="rounded-full bg-[#9B1F5C] px-6 py-3 text-sm font-semibold text-[#FBF3FA] shadow-lg disabled:opacity-60 hover:bg-[#7A1745] transition-colors"
                         >
-                            {authLoading
-                                ? "Please wait..."
-                                : authMode === "signup"
-                                ? "Create Account & Continue"
-                                : "Log In & Continue"}
+                            {authLoading ? "Logging in..." : "Log In"}
                         </button>
                     </form>
+                    <button
+                        type="button"
+                        onClick={() => setShowLoginInstead(false)}
+                        className="mt-4 text-sm font-semibold text-[#9B1F5C] underline"
+                    >
+                        ← Back to registration
+                    </button>
                 </div>
             ) : (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                     <div className="rounded-3xl border border-[#D9C9E0] bg-white p-6 shadow-lg">
                         <h2 className="mb-4 text-lg font-semibold text-[#2E1F45]">Your Details</h2>
                         <div className="flex flex-col gap-4">
+                            {!session && (
+                                <>
+                                    <input
+                                        type="email"
+                                        placeholder="Email"
+                                        value={authEmail}
+                                        onChange={(e) => setAuthEmail(e.target.value)}
+                                        required
+                                        className="rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
+                                    />
+                                    <input
+                                        type="password"
+                                        placeholder="Password (min 6 characters)"
+                                        value={authPassword}
+                                        onChange={(e) => setAuthPassword(e.target.value)}
+                                        required
+                                        minLength={6}
+                                        className="rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowLoginInstead(true)}
+                                        className="self-start text-xs font-semibold text-[#9B1F5C] underline"
+                                    >
+                                        Already have an account? Log in instead
+                                    </button>
+                                </>
+                            )}
                             <input
                                 type="text"
                                 placeholder="Full Name"
