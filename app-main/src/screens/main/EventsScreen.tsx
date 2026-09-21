@@ -42,7 +42,7 @@ export const EventsScreen: React.FC = () => {
  
 
   const categories = [
-    { id: 'all', name: 'All', icon: 'apps', gradient: ['#6D3FE0', '#5A2FC2'] },
+    { id: 'all', name: 'All', icon: 'apps', gradient: ['#5A4485', '#3d2d5c'] },
     { id: 'technology', name: 'Tech', icon: 'laptop', gradient: ['#f093fb', '#f5576c'] },
     { id: 'music', name: 'Music', icon: 'music-note', gradient: ['#4facfe', '#00f2fe'] },
     { id: 'business', name: 'Business', icon: 'business-center', gradient: ['#43e97b', '#38f9d7'] },
@@ -339,7 +339,7 @@ export const EventsScreen: React.FC = () => {
     return (
       <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.loadingContainer}>
-      <ActivityIndicator size="large" color="#6D3FE0" />
+      <ActivityIndicator size="large" color="#5A4485"/>
       <Text style={styles.loadingText}>Loading events...</Text>
       </View>
       </SafeAreaView>
@@ -352,7 +352,7 @@ export const EventsScreen: React.FC = () => {
       
       {/* Header */}
       <LinearGradient
-        colors={['#6D3FE0', '#5A2FC2']}
+        colors={['#5A4485', '#3d2d5c']}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
         style={styles.header}
@@ -409,8 +409,8 @@ export const EventsScreen: React.FC = () => {
           <RefreshControl 
             refreshing={refreshing} 
             onRefresh={onRefresh} 
-           colors={['#6D3FE0']}
-            tintColor="#6D3FE0"
+             colors={['#5A4485']}
+            tintColor="#5A4485"
           />
         }
         ListEmptyComponent={
@@ -429,7 +429,7 @@ export const EventsScreen: React.FC = () => {
               onPress={() => setSelectedCategory('all')}
             >
               <LinearGradient
-                colors={['#6D3FE0', '#5A2FC2']}
+                colors={['#5A4485', '#3d2d5c']}
                 style={styles.emptyButtonGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -613,7 +613,7 @@ const styles = StyleSheet.create({
   dateDay: {
     fontSize: 20,
     fontWeight: '800',
-    color: '#6D3FE0',
+    color: '#5A4485',
   },
   dateMonth: {
     fontSize: 11,
@@ -694,7 +694,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   hostAvatar: {
-    backgroundColor: '#6D3FE0',
+    backgroundColor: '#5A4485',
   },
   hostName: {
     fontSize: 14,
@@ -710,7 +710,7 @@ const styles = StyleSheet.create({
   },
   priceText: {
     fontSize: 15,
-    color: '#6D3FE0',
+    color: '#5A4485',
     fontWeight: '800',
   },
   cardActions: {

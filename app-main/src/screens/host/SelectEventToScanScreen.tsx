@@ -75,17 +75,17 @@ export const SelectEventToScanScreen: React.FC = () => {
     };
 
     const handleSelectEvent = (event: Event) => {
-        navigation.navigate('QRScanner' as never, {
+        (navigation as any).navigate('QRScanner', {
             eventId: event.id,
             eventTitle: event.title,
-        } as never);
+        });
     };
 
     if (loading) {
         return (
             <SafeAreaView style={styles.container} edges={['top']}>
                 <View style={styles.loadingContainer}>
-                    <ActivityIndicator size="large" color="#667eea" />
+                    <ActivityIndicator size="large" color="#5A4485" />
                     <Text style={styles.loadingText}>Loading your events...</Text>
                 </View>
             </SafeAreaView>
@@ -94,8 +94,8 @@ export const SelectEventToScanScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-            <LinearGradient
-                colors={['#667eea', '#764ba2']}
+                       <LinearGradient
+                colors={['#5A4485', '#3d2d5c']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.header}
@@ -135,8 +135,8 @@ export const SelectEventToScanScreen: React.FC = () => {
                                 onPress={() => handleSelectEvent(event)}
                                 activeOpacity={0.7}
                             >
-                                <LinearGradient
-                                    colors={['#667eea', '#764ba2']}
+                                 <LinearGradient
+                                    colors={['#5A4485', '#3d2d5c']}
                                     start={{ x: 0, y: 0 }}
                                     end={{ x: 1, y: 1 }}
                                     style={styles.eventGradient}
@@ -152,7 +152,7 @@ export const SelectEventToScanScreen: React.FC = () => {
                                     </Text>
                                     <View style={styles.eventDetails}>
                                         <View style={styles.eventDetailRow}>
-                                            <Ionicons name="calendar" size={16} color="#667eea" />
+                                            <Ionicons name="calendar" size={16} color="#5A4485" />
                                             <Text style={styles.eventDetailText}>
                                                 {event.date.toLocaleDateString('en-US', {
                                                     month: 'short',
@@ -162,7 +162,7 @@ export const SelectEventToScanScreen: React.FC = () => {
                                             </Text>
                                         </View>
                                         <View style={styles.eventDetailRow}>
-                                            <Ionicons name="location" size={16} color="#f093fb" />
+                                            <Ionicons name="location" size={16} color="#A82C60" />
                                             <Text style={styles.eventDetailText} numberOfLines={1}>
                                                 {event.location}
                                             </Text>

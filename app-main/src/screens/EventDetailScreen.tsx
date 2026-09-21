@@ -369,7 +369,7 @@ useEffect(() => {
         >
           <View style={styles.heroContent}>
             <View style={styles.heroBadge}>
-              <Ionicons name="calendar" size={14} color="#6366f1" />
+            <Ionicons name="calendar" size={14} color="#5A4485" />
               <Text style={styles.heroBadgeText}>{event.category || 'EVENT'}</Text>
             </View>
             <Text style={styles.heroTitle}>{event.title}</Text>
