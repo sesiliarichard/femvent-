@@ -13,31 +13,48 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    await supabaseAdmin
-      .from('payment_accounts')
-      .update({ status: 'inactive' })
-      .eq('user_id', userId)
-      .in('provider', ['flutterwave']);
+    if (enabled === false) {
+      const { error } = await supabaseAdmin
+        .from('payment_accounts')
+        .update({ status: 'inactive' })
+        .eq('user_id', userId)
+        .eq('provider', 'pesapal');
 
-    const { error } = await supabaseAdmin
+      if (error) throw error;
+      return res.status(200).json({ success: true });
+    }
+
+    const { data: existing, error: findError } = await supabaseAdmin
       .from('payment_accounts')
-      .upsert(
-        {
+      .select('id')
+      .eq('user_id', userId)
+      .eq('provider', 'pesapal')
+      .maybeSingle();
+
+    if (findError) throw findError;
+
+    if (existing) {
+      const { error: updateError } = await supabaseAdmin
+        .from('payment_accounts')
+        .update({ status: 'active', display_label: 'Pesapal' })
+        .eq('id', existing.id);
+      if (updateError) throw updateError;
+    } else {
+      const { error: insertError } = await supabaseAdmin
+        .from('payment_accounts')
+        .insert({
           user_id: userId,
           provider: 'pesapal',
-          status: enabled === false ? 'inactive' : 'active',
-          external_account_id: null,
-          display_label: 'Pesapal — Card & Mobile Money (East/Southern Africa + international cards)',
+          status: 'active',
+          display_label: 'Pesapal',
           meta: {},
-        },
-        { onConflict: 'user_id,provider' }
-      );
-
-    if (error) throw error;
+        });
+      if (insertError) throw insertError;
+    }
 
     return res.status(200).json({ success: true });
   } catch (error: any) {
-    console.error('Error toggling Pesapal:', error);
+    console.error('Error enabling Pesapal:', error);
     return res.status(500).json({ error: error?.message || String(error) });
   }
 }
