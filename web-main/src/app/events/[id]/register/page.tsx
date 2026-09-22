@@ -20,6 +20,12 @@ interface EventSummary {
     currency?: string;
 }
 
+type Step = "ticket" | "email" | "password-new" | "password-return" | "details";
+
+const STEP_ORDER: Step[] = ["ticket", "email", "password-new", "details"];
+const bandColors = ["#2E1F45", "#9B1F5C", "#E36C54"];
+const barcodeHeights = [60, 100, 40, 80, 55, 100, 30, 70, 90, 45, 100, 60];
+
 export default function RegisterPage() {
     const { id } = useParams<{ id: string }>();
     const router = useRouter();
@@ -31,7 +37,8 @@ export default function RegisterPage() {
     const [hostMethods, setHostMethods] = useState<Array<{ provider: string; instructions?: any }>>([]);
 
     const [session, setSession] = useState<any>(null);
-    const [showLoginInstead, setShowLoginInstead] = useState(false);
+    const [step, setStep] = useState<Step>("ticket");
+
     const [authEmail, setAuthEmail] = useState("");
     const [authPassword, setAuthPassword] = useState("");
     const [authError, setAuthError] = useState("");
@@ -94,7 +101,6 @@ export default function RegisterPage() {
             if (tiers && tiers.length > 0) {
                 setTicketTypes(tiers);
             } else {
-                // Fallback for events with no configured tiers yet
                 setTicketTypes([
                     {
                         id: "general",
@@ -112,8 +118,40 @@ export default function RegisterPage() {
     const ticketOptions = ticketTypes;
     const selectedTicket = ticketOptions.find((t) => t.id === selectedTicketId) || ticketOptions[0];
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
+    const currentStepIndex = () => {
+        if (step === "password-return") return STEP_ORDER.indexOf("password-new");
+        return STEP_ORDER.indexOf(step === "details" ? "details" : step);
+    };
+
+    // --- Step 1: Ticket -> Step 2 (or straight to Details if already logged in) ---
+    const handleContinueFromTicket = () => {
+        setStep(session?.user ? "details" : "email");
+    };
+
+    // --- Step 2: Email -> checks the users table, branches new vs returning ---
+    const handleContinueFromEmail = async () => {
+        setAuthError("");
+        if (!authEmail) {
+            setAuthError("Please enter your email.");
+            return;
+        }
+        setAuthLoading(true);
+        try {
+            const { data } = await supabase
+                .from("users")
+                .select("id")
+                .eq("email", authEmail)
+                .maybeSingle();
+            setStep(data ? "password-return" : "password-new");
+        } catch (err: any) {
+            setAuthError(err.message || "Something went wrong, please try again.");
+        } finally {
+            setAuthLoading(false);
+        }
+    };
+
+    // --- Step 3b: Returning user logs in directly ---
+    const handleLoginContinue = async () => {
         setAuthError("");
         setAuthLoading(true);
         try {
@@ -122,15 +160,29 @@ export default function RegisterPage() {
                 password: authPassword,
             });
             if (error) throw error;
+            setStep("details");
         } catch (err: any) {
-            setAuthError(err.message || "Login failed");
+            setAuthError(err.message || "Login failed. Check your password and try again.");
         } finally {
             setAuthLoading(false);
         }
     };
 
-    // Creates the account inline as part of registering, if the person isn't
-    // already logged in. Returns the user to register the ticket against.
+    // --- Step 3a: New user sets name + password, account is created at final submit ---
+    const handleContinueFromNewAccount = () => {
+        setAuthError("");
+        if (!fullName || !authPassword) {
+            setAuthError("Please fill in your name and a password.");
+            return;
+        }
+        if (authPassword.length < 6) {
+            setAuthError("Password must be at least 6 characters.");
+            return;
+        }
+        setStep("details");
+    };
+
+    // Creates the account at final submission time, if the person isn't already logged in.
     const ensureAccount = async () => {
         if (session?.user) return session.user;
 
@@ -156,7 +208,7 @@ export default function RegisterPage() {
         return data.user;
     };
 
-   const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitError("");
         setSubmitting(true);
@@ -193,13 +245,11 @@ export default function RegisterPage() {
                 }
 
                 if (selectedPaymentMethod === "azampay") {
-                    // AzamPay has its own dedicated form/button below — nothing to do here
                     setSubmitting(false);
                     return;
                 }
 
                 if (selectedPaymentMethod === "flutterwave") {
-                    // Paid tier — send to Flutterwave, ticket gets created by the webhook after payment
                     const res = await fetch("/api/payments/create-checkout", {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -223,7 +273,6 @@ export default function RegisterPage() {
                 }
 
                 if (selectedPaymentMethod === "crypto") {
-                    // Crypto — hosted NOWPayments checkout, auto-confirmed via webhook
                     const cryptoRes = await fetch(
                         `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-crypto-checkout`,
                         {
@@ -304,23 +353,22 @@ export default function RegisterPage() {
                 }
             }
 
-                   // Free tier — create the ticket immediately, no payment needed
-                   const { data: newTicket, error } = await supabase
-                   .from("tickets")
-                   .insert({
+            const { data: newTicket, error } = await supabase
+                .from("tickets")
+                .insert({
                     event_id: id,
                     user_id: activeUser.id,
                     status: "confirmed",
-                       ticket_type: selectedTicket.name,
-                       payment_amount: selectedTicket.price,
-                       payment_method: "free",
-                       qr_code_id: crypto.randomUUID(),
-                   })
-                   .select()
-                   .single();
-               if (error) throw error;
-   
-               fetch("/api/send-email", {
+                    ticket_type: selectedTicket.name,
+                    payment_amount: selectedTicket.price,
+                    payment_method: "free",
+                    qr_code_id: crypto.randomUUID(),
+                })
+                .select()
+                .single();
+            if (error) throw error;
+
+            fetch("/api/send-email", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -369,6 +417,7 @@ export default function RegisterPage() {
                     }),
                 }
             );
+
             const data = await res.json();
             if (!res.ok || !data.success) {
                 throw new Error(data.error || "Failed to start mobile money payment");
@@ -398,7 +447,7 @@ export default function RegisterPage() {
         );
     }
 
-  if (success) {
+    if (success) {
         return (
             <main className="mx-auto flex max-w-2xl flex-col items-center gap-6 px-6 py-32 text-center">
                 <div className="text-5xl">✅</div>
@@ -409,7 +458,7 @@ export default function RegisterPage() {
                     </p>
                     <p className="mt-1 text-xl font-bold text-[#2E1F45]">{event.title}</p>
                     <p className="mt-4 text-sm text-[#5C4A6B]">
-                        Your ticket is saved to your account ({session?.user?.email}). To see your
+                        Your ticket is saved to your account ({authEmail || "your email"}). To see your
                         QR ticket and event details, open the FemVents app and log in with this
                         same email and password — no need to create a new account there. We've
                         also sent a confirmation to your email.
@@ -463,8 +512,10 @@ export default function RegisterPage() {
         );
     }
 
+    const stepIdx = currentStepIndex();
+
     return (
-        <main className="mx-auto flex max-w-2xl flex-col gap-8 px-6 pb-20">
+        <main className="mx-auto flex max-w-2xl flex-col gap-8 px-6 pb-20 pt-10">
             <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9B1F5C]">
                     Registering for
@@ -472,84 +523,221 @@ export default function RegisterPage() {
                 <h1 className="mt-2 text-3xl font-bold text-[#2E1F45]">{event.title}</h1>
             </div>
 
-            {!session && showLoginInstead ? (
-                <div className="rounded-3xl border border-[#D9C9E0] bg-white p-6 shadow-lg">
-                    <h2 className="mb-4 text-lg font-semibold text-[#2E1F45]">Log In</h2>
-                    <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <div className="flex gap-1.5">
+                {STEP_ORDER.map((_, i) => (
+                    <div
+                        key={i}
+                        className={`h-1 flex-1 rounded-full ${i <= stepIdx ? "bg-[#9B1F5C]" : "bg-[#D9C9E0]"}`}
+                    />
+                ))}
+            </div>
+
+            {/* Step 1: Ticket */}
+            {step === "ticket" && (
+                <div className="flex flex-col gap-4">
+                    <div>
+                        <h2 className="px-1 text-lg font-semibold text-[#2E1F45]">Choose your ticket</h2>
+                        <p className="px-1 text-xs text-[#8A7A97]">Step 1 of 4 — no account needed yet.</p>
+                    </div>
+                    {ticketOptions.map((option, index) => {
+                        const isSelected = (selectedTicketId || ticketOptions[0].id) === option.id;
+                        const bandColor = bandColors[index % bandColors.length];
+                        return (
+                            <label
+                                key={option.id}
+                                className={`block cursor-pointer overflow-hidden rounded-2xl border-2 bg-white shadow-md transition-colors ${
+                                    isSelected ? "border-[#9B1F5C]" : "border-transparent"
+                                }`}
+                            >
+                                <input
+                                    type="radio"
+                                    name="ticket"
+                                    className="sr-only"
+                                    checked={isSelected}
+                                    onChange={() => setSelectedTicketId(option.id)}
+                                />
+                                <div
+                                    className="flex items-center justify-between px-5 py-3 text-xs font-bold uppercase tracking-wide text-white"
+                                    style={{ backgroundColor: bandColor }}
+                                >
+                                    <span>Ticket type</span>
+                                    <span>{option.name}</span>
+                                </div>
+                                <div className="px-5 pb-2 pt-4">
+                                    <div className="flex items-baseline justify-between">
+                                        <span className="text-lg font-extrabold capitalize text-[#2E1F45]">
+                                            {option.name}
+                                        </span>
+                                        <span className="text-xl font-extrabold text-[#2E1F45]">
+                                            {option.price > 0 ? `$${option.price}` : "$0"}
+                                        </span>
+                                    </div>
+                                    {option.description ? (
+                                        <p className="mt-2 text-xs leading-relaxed text-[#8A7A97]">
+                                            {option.description}
+                                        </p>
+                                    ) : (
+                                        <p className="mt-2 text-xs italic leading-relaxed text-[#c4b8cf]">
+                                            No description added yet
+                                        </p>
+                                    )}
+                                </div>
+                                <div className="mt-4 flex items-center px-1">
+                                    <div className="-ml-2 h-4 w-4 rounded-full bg-[#FBF3FA]" />
+                                    <div className="flex-1 border-t-2 border-dashed border-[#D9C9E0]" />
+                                    <div className="-mr-2 h-4 w-4 rounded-full bg-[#FBF3FA]" />
+                                </div>
+                                <div className="flex items-center justify-between px-5 pb-4 pt-3">
+                                    <div className="flex h-6 items-end gap-[2px] opacity-30">
+                                        {barcodeHeights.map((h, i) => (
+                                            <div key={i} className="w-[2px] bg-[#2E1F45]" style={{ height: `${h}%` }} />
+                                        ))}
+                                    </div>
+                                    <span
+                                        className={`whitespace-nowrap rounded-full px-4 py-2 text-xs font-bold ${
+                                            isSelected ? "bg-[#9B1F5C] text-white" : "bg-[#D9C9E0] text-[#5C4A6B]"
+                                        }`}
+                                    >
+                                        {isSelected ? "Selected" : "Select"}
+                                    </span>
+                                </div>
+                            </label>
+                        );
+                    })}
+                    <button
+                        type="button"
+                        onClick={handleContinueFromTicket}
+                        className="rounded-full bg-[#9B1F5C] px-6 py-4 text-sm font-semibold text-[#FBF3FA] shadow-lg hover:bg-[#7A1745] transition-colors"
+                    >
+                        Continue
+                    </button>
+                </div>
+            )}
+
+            {/* Step 2: Email */}
+            {step === "email" && (
+                <div className="flex flex-col gap-4">
+                    <div className="rounded-3xl border border-[#D9C9E0] bg-white p-6 shadow-lg">
+                        <h2 className="text-lg font-semibold text-[#2E1F45]">What's your email?</h2>
+                        <p className="mt-1 mb-4 text-xs text-[#8A7A97]">
+                            Step 2 of 4 — we'll check if you've registered with us before.
+                        </p>
                         <input
                             type="email"
-                            placeholder="Email"
+                            placeholder="you@email.com"
                             value={authEmail}
                             onChange={(e) => setAuthEmail(e.target.value)}
-                            required
-                            className="rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
+                            className="w-full rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
                         />
+                        {authError && <p className="mt-3 text-sm text-red-500">{authError}</p>}
+                        <button
+                            type="button"
+                            onClick={handleContinueFromEmail}
+                            disabled={authLoading}
+                            className="mt-4 w-full rounded-full bg-[#9B1F5C] px-6 py-3 text-sm font-semibold text-[#FBF3FA] shadow-lg disabled:opacity-60 hover:bg-[#7A1745] transition-colors"
+                        >
+                            {authLoading ? "Checking..." : "Continue"}
+                        </button>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setStep("ticket")}
+                        className="self-start text-sm font-semibold text-[#9B1F5C] underline"
+                    >
+                        ← Back
+                    </button>
+                </div>
+            )}
+
+            {/* Step 3a: New account */}
+            {step === "password-new" && (
+                <div className="flex flex-col gap-4">
+                    <div className="rounded-3xl border border-[#D9C9E0] bg-white p-6 shadow-lg">
+                        <span className="mb-3 inline-block rounded-full bg-[#F9E5F0] px-3 py-1 text-xs font-bold text-[#7A1745]">
+                            New here
+                        </span>
+                        <h2 className="text-lg font-semibold text-[#2E1F45]">Set a password</h2>
+                        <p className="mt-1 mb-4 text-xs text-[#8A7A97]">
+                            This is the only account step — use it to view your ticket and log into the FemVents app later.
+                        </p>
+                        <input
+                            type="text"
+                            placeholder="Full name"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            className="mb-3 w-full rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
+                        />
+                        <input
+                            type="password"
+                            placeholder="Password (min 6 characters)"
+                            value={authPassword}
+                            onChange={(e) => setAuthPassword(e.target.value)}
+                            className="w-full rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
+                        />
+                        {authError && <p className="mt-3 text-sm text-red-500">{authError}</p>}
+                        <button
+                            type="button"
+                            onClick={handleContinueFromNewAccount}
+                            className="mt-4 w-full rounded-full bg-[#9B1F5C] px-6 py-3 text-sm font-semibold text-[#FBF3FA] shadow-lg hover:bg-[#7A1745] transition-colors"
+                        >
+                            Continue
+                        </button>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setStep("email")}
+                        className="self-start text-sm font-semibold text-[#9B1F5C] underline"
+                    >
+                        ← Back
+                    </button>
+                </div>
+            )}
+
+            {/* Step 3b: Returning user */}
+            {step === "password-return" && (
+                <div className="flex flex-col gap-4">
+                    <div className="rounded-3xl border border-[#D9C9E0] bg-white p-6 shadow-lg">
+                        <span className="mb-3 inline-block rounded-full bg-[#F9E5F0] px-3 py-1 text-xs font-bold text-[#7A1745]">
+                            Welcome back
+                        </span>
+                        <h2 className="text-lg font-semibold text-[#2E1F45]">Enter your password</h2>
+                        <p className="mt-1 mb-4 text-xs text-[#8A7A97]">
+                            {authEmail} already has a FemVents account.
+                        </p>
                         <input
                             type="password"
                             placeholder="Password"
                             value={authPassword}
                             onChange={(e) => setAuthPassword(e.target.value)}
-                            required
-                            className="rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
+                            className="w-full rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
                         />
-                        {authError && <p className="text-sm text-red-500">{authError}</p>}
+                        {authError && <p className="mt-3 text-sm text-red-500">{authError}</p>}
                         <button
-                            type="submit"
+                            type="button"
+                            onClick={handleLoginContinue}
                             disabled={authLoading}
-                            className="rounded-full bg-[#9B1F5C] px-6 py-3 text-sm font-semibold text-[#FBF3FA] shadow-lg disabled:opacity-60 hover:bg-[#7A1745] transition-colors"
+                            className="mt-4 w-full rounded-full bg-[#9B1F5C] px-6 py-3 text-sm font-semibold text-[#FBF3FA] shadow-lg disabled:opacity-60 hover:bg-[#7A1745] transition-colors"
                         >
-                            {authLoading ? "Logging in..." : "Log In"}
+                            {authLoading ? "Logging in..." : "Log in and continue"}
                         </button>
-                    </form>
+                    </div>
                     <button
                         type="button"
-                        onClick={() => setShowLoginInstead(false)}
-                        className="mt-4 text-sm font-semibold text-[#9B1F5C] underline"
+                        onClick={() => setStep("email")}
+                        className="self-start text-sm font-semibold text-[#9B1F5C] underline"
                     >
-                        ← Back to registration
+                        ← Not you? Use a different email
                     </button>
                 </div>
-            ) : (
+            )}
+
+            {/* Step 4: Details + payment */}
+            {step === "details" && (
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                     <div className="rounded-3xl border border-[#D9C9E0] bg-white p-6 shadow-lg">
-                        <h2 className="mb-4 text-lg font-semibold text-[#2E1F45]">Your Details</h2>
+                        <h2 className="mb-1 text-lg font-semibold text-[#2E1F45]">A few more details</h2>
+                        <p className="mb-4 text-xs text-[#8A7A97]">Step 4 of 4 — just for the event, nothing to do with your login.</p>
                         <div className="flex flex-col gap-4">
-                            {!session && (
-                                <>
-                                    <input
-                                        type="email"
-                                        placeholder="Email"
-                                        value={authEmail}
-                                        onChange={(e) => setAuthEmail(e.target.value)}
-                                        required
-                                        className="rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
-                                    />
-                                    <input
-                                        type="password"
-                                        placeholder="Password (min 6 characters)"
-                                        value={authPassword}
-                                        onChange={(e) => setAuthPassword(e.target.value)}
-                                        required
-                                        minLength={6}
-                                        className="rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowLoginInstead(true)}
-                                        className="self-start text-xs font-semibold text-[#9B1F5C] underline"
-                                    >
-                                        Already have an account? Log in instead
-                                    </button>
-                                </>
-                            )}
-                            <input
-                                type="text"
-                                placeholder="Full Name"
-                                value={fullName}
-                                onChange={(e) => setFullName(e.target.value)}
-                                required
-                                className="rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
-                            />
                             <input
                                 type="tel"
                                 placeholder="Phone Number"
@@ -588,43 +776,6 @@ export default function RegisterPage() {
                         </div>
                     </div>
 
-                    <div className="rounded-3xl border border-[#D9C9E0] bg-white shadow-lg overflow-hidden">
-                        <div className="bg-[#2E1F45] px-6 py-4">
-                            <h2 className="text-base font-bold text-[#FBF3FA]">Choose amount</h2>
-                        </div>
-                        <div className="flex flex-col gap-3 p-6">
-                            {ticketOptions.map((option) => (
-                                <label
-                                    key={option.id}
-                                    className={`flex cursor-pointer items-start justify-between gap-4 rounded-xl border-2 p-4 transition-colors ${
-                                        (selectedTicketId || ticketOptions[0].id) === option.id
-                                            ? "border-[#9B1F5C] bg-[#F9E5F0]"
-                                            : "border-[#D9C9E0] hover:border-[#B9A9C4]"
-                                    }`}
-                                >
-                                    <div className="flex items-start gap-3">
-                                        <input
-                                            type="radio"
-                                            name="ticket"
-                                            className="mt-1"
-                                            checked={(selectedTicketId || ticketOptions[0].id) === option.id}
-                                            onChange={() => setSelectedTicketId(option.id)}
-                                        />
-                                        <div>
-                                            <div className="text-sm font-bold text-[#2E1F45]">
-                                                {option.name} {option.price > 0 ? `— $${option.price}` : "— Free"}
-                                            </div>
-                                            {option.description && (
-                                                <div className="text-xs text-[#8A7A97] mt-1">
-                                                    {option.description}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </label>
-                            ))}
-                        </div>
-                    </div>
                     {selectedTicket.price > 0 && hostMethods.length > 0 && (
                         <div className="rounded-3xl border border-[#D9C9E0] bg-white p-6 shadow-lg">
                             <h2 className="mb-4 text-lg font-semibold text-[#2E1F45]">Payment Method</h2>
@@ -702,7 +853,7 @@ export default function RegisterPage() {
                             {submitError}
                         </p>
                     )}
-                    
+
                     {selectedPaymentMethod !== "azampay" && (
                         <button
                             type="submit"
@@ -712,6 +863,14 @@ export default function RegisterPage() {
                             {submitting ? "Processing..." : "Complete Registration"}
                         </button>
                     )}
+
+                    <button
+                        type="button"
+                        onClick={() => setStep(session?.user ? "ticket" : "password-new")}
+                        className="self-start text-sm font-semibold text-[#9B1F5C] underline"
+                    >
+                        ← Back
+                    </button>
                 </form>
             )}
         </main>
