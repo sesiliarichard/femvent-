@@ -16,7 +16,8 @@
     "pdfkit": "^0.20.2",
     "qrcode": "^1.5.4",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "resend": "^6.28.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
