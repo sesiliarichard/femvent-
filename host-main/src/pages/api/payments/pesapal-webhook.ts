@@ -147,78 +147,44 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                   if (ticketError) throw ticketError;
               
                   try {
-                    const recipientEmail = ticket.guest_email;
-                    
+                    let recipientEmail = ticket.guest_email;
+                    let recipientName = ticket.guest_name || 'there';
+
+                    if (ticket.user_id) {
+                      const { data: registeredUser } = await supabaseAdmin
+                        .from('users')
+                        .select('email, name')
+                        .eq('id', ticket.user_id)
+                        .maybeSingle();
+                      if (registeredUser) {
+                        recipientEmail = registeredUser.email;
+                        recipientName = registeredUser.name || recipientName;
+                      }
+                    }
+
       if (recipientEmail && ticket.event) {
-        const eventUrl = `https://femvents.core23lab.org/events/${ticket.event_id}`;
-        await sendEmail({
-          to: recipientEmail,
-          subject: `Your ticket for ${ticket.event.title}`,
-          body: `Thanks for registering! Your payment of $${ticket.payment_amount} was confirmed for ${ticket.event.title}. View your event: ${eventUrl}`,
-          html: `
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#EDE7ED; padding:48px 16px;">
-            <tr>
-              <td align="center">
-                <table role="presentation" width="560" cellpadding="0" cellspacing="0" style="max-width:560px; background:#FBF3FA; padding:40px 32px; border-radius:4px;">
-                  <tr>
-                    <td style="font-family:Arial,Helvetica,sans-serif; font-size:13px; font-weight:700; letter-spacing:2px; color:#9B1F5C; padding-bottom:28px;">FEMVENTS</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#ffffff; border:1px solid #D9C9E0; border-radius:2px;">
-                        <tr>
-                          <td style="padding:28px 28px 24px;">
-                            <p style="margin:0 0 6px; font-family:Arial,Helvetica,sans-serif; font-size:12px; font-weight:700; color:#9B1F5C;">Ticket confirmed</p>
-                            <p style="margin:0 0 20px; font-family:Arial,Helvetica,sans-serif; font-size:26px; font-weight:800; color:#2E1F45; line-height:1.15;">${ticket.event.title}</p>
-                            <table role="presentation" cellpadding="0" cellspacing="0">
-                              <tr>
-                                <td style="padding-right:28px;">
-                                  <p style="margin:0 0 4px; font-family:Arial,Helvetica,sans-serif; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#8A7A97;">Date</p>
-                                  <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:600; color:#2E1F45;">${ticket.event.event_date ? new Date(ticket.event.event_date).toLocaleDateString() : 'TBD'}</p>
-                                </td>
-                                <td>
-                                  <p style="margin:0 0 4px; font-family:Arial,Helvetica,sans-serif; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#8A7A97;">Venue</p>
-                                  <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:600; color:#2E1F45;">${ticket.event.venue || 'TBD'}</p>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style="padding:0 28px;">
-                            <div style="border-top:2px dashed #D9C9E0; height:0; line-height:0; font-size:0;">&nbsp;</div>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style="padding:22px 28px 28px;">
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                              <tr>
-                                <td>
-                                  <p style="margin:0 0 2px; font-family:Arial,Helvetica,sans-serif; font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:1px; color:#8A7A97;">Amount paid</p>
-                                  <p style="margin:0; font-family:Arial,Helvetica,sans-serif; font-size:20px; font-weight:800; color:#2E1F45;">$${ticket.payment_amount}</p>
-                                </td>
-                                <td align="right">
-                                  <a href="${eventUrl}" style="display:inline-block; background:#E8743B; color:#ffffff; text-decoration:none; font-family:Arial,Helvetica,sans-serif; font-weight:700; font-size:14px; padding:13px 26px; border-radius:999px;">View event details</a>
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td style="padding-top:26px; font-family:Arial,Helvetica,sans-serif; font-size:14px; color:#5C4A6B; line-height:1.6;">
-                      See you there — bring this email or your account login for check-in.
-                    </td>
-                  </tr>
-                </table>
-              </td>
-            </tr>
-          </table>
-          `,
-                  });
-                }
+        const attendeeSiteUrl = process.env.NEXT_PUBLIC_ATTENDEE_SITE_URL || 'https://femvents.core23lab.org';
+        await fetch(`${attendeeSiteUrl}/api/send-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: recipientEmail,
+            templateId: 'registration-confirmation',
+            templateData: {
+              recipientName,
+              eventTitle: ticket.event.title,
+              eventDate: ticket.event.event_date ? new Date(ticket.event.event_date).toLocaleDateString() : 'TBD',
+              eventLocation: ticket.event.venue || '',
+              ticketType: ticket.ticket_type,
+              ticketId: ticket.id,
+              eventId: ticket.event_id,
+              userId: ticket.user_id,
+              qrCodeId: ticket.qr_code_id || `qr_${ticket.id}`,
+            },
+          }),
+        });
+      }
+  
               } catch (emailError) {
                 console.error('Confirmation email failed (payment still confirmed):', emailError);
               }

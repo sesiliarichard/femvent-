@@ -11,13 +11,21 @@ export default function PaymentStatusPage() {
 
   const flwStatus = searchParams?.get('status');
   const transactionId = searchParams?.get('transaction_id');
+  const isPesapal = searchParams?.get('pesapal') === '1';
+  const pesapalOrderId = searchParams?.get('order_id');
+
+  // Flutterwave signals success via ?status=successful; Pesapal has no status
+  // param on redirect at all — it always sends back ?pesapal=1&order_id=..., and
+  // the real payment status has to be looked up (which the polling below does).
+  const isRecognizedSuccess = isPesapal || flwStatus === 'successful';
+  const pollKey = isPesapal ? pesapalOrderId : transactionId;
 
   const [ticket, setTicket] = useState<any>(null);
   const [checking, setChecking] = useState(true);
   const [timedOut, setTimedOut] = useState(false);
 
   useEffect(() => {
-    if (flwStatus !== 'successful' || !transactionId) {
+    if (!isRecognizedSuccess || !pollKey) {
       setChecking(false);
       return;
     }
@@ -28,7 +36,8 @@ export default function PaymentStatusPage() {
     const poll = async () => {
       attempts++;
       try {
-        const res = await fetch(`/api/payments/status?transactionId=${transactionId}`);
+        const query = isPesapal ? `orderId=${pollKey}` : `transactionId=${pollKey}`;
+        const res = await fetch(`/api/payments/status?${query}`);
         const data = await res.json();
 
         if (data.found) {
@@ -50,16 +59,16 @@ export default function PaymentStatusPage() {
     };
 
     poll();
-  }, [flwStatus, transactionId]);
+  }, [isRecognizedSuccess, pollKey, isPesapal]);
 
-  if (flwStatus !== 'successful') {
+  if (!isRecognizedSuccess) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
         <div className="bg-white rounded-3xl shadow-lg p-10 max-w-md w-full text-center">
           <div className="text-5xl mb-4">❌</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Payment Not Completed</h1>
           <p className="text-gray-600 mb-6">
-            Your payment was {flwStatus || 'not completed'}. No charge was made.
+            {flwStatus ? `Your payment was ${flwStatus}.` : 'Your payment could not be completed.'} No charge was made.
           </p>
           <button
             onClick={() => router.push(`/events/${eventId}`)}
