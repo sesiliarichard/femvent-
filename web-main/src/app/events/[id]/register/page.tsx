@@ -41,6 +41,7 @@ export default function RegisterPage() {
 
     const [authEmail, setAuthEmail] = useState("");
     const [authPassword, setAuthPassword] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [authError, setAuthError] = useState("");
     const [authLoading, setAuthLoading] = useState(false);
 
@@ -667,13 +668,22 @@ export default function RegisterPage() {
                             onChange={(e) => setFullName(e.target.value)}
                             className="mb-3 w-full rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
                         />
-                        <input
-                            type="password"
-                            placeholder="Password (min 6 characters)"
-                            value={authPassword}
-                            onChange={(e) => setAuthPassword(e.target.value)}
-                            className="w-full rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
-                        />
+                                              <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password (min 6 characters)"
+                                value={authPassword}
+                                onChange={(e) => setAuthPassword(e.target.value)}
+                                className="w-full rounded-xl border border-[#D9C9E0] px-4 py-3 pr-12 text-sm"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#9B1F5C]"
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </button>
+                        </div>
                         {authError && <p className="mt-3 text-sm text-red-500">{authError}</p>}
                         <button
                             type="button"
@@ -704,13 +714,22 @@ export default function RegisterPage() {
                         <p className="mt-1 mb-4 text-xs text-[#8A7A97]">
                             {authEmail} already has a FemVents account.
                         </p>
-                        <input
-                            type="password"
-                            placeholder="Password"
-                            value={authPassword}
-                            onChange={(e) => setAuthPassword(e.target.value)}
-                            className="w-full rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Password"
+                                value={authPassword}
+                                onChange={(e) => setAuthPassword(e.target.value)}
+                                className="w-full rounded-xl border border-[#D9C9E0] px-4 py-3 pr-12 text-sm"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-[#9B1F5C]"
+                            >
+                                {showPassword ? "Hide" : "Show"}
+                            </button>
+                        </div>
                         {authError && <p className="mt-3 text-sm text-red-500">{authError}</p>}
                         <button
                             type="button"
