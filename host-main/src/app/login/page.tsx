@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 
 // Impressive event images for slideshow
@@ -21,9 +22,24 @@ export default function LoginPage() {
   const [error, setError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const { signIn, signInWithGoogle, userProfile, loading: authLoading } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
   const router = useRouter();
 
+  const checkHostAccess = async (): Promise<boolean> => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session?.user) return false;
+
+    const { data: profile } = await supabase
+      .from('users')
+      .select('role, subscription_status')
+      .eq('id', session.user.id)
+      .maybeSingle();
+
+    return (
+      profile?.role === 'admin' ||
+      (profile?.role === 'host' && profile?.subscription_status === 'active')
+    );
+  };
   // Auto-rotate slideshow every 5 seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -39,20 +55,9 @@ export default function LoginPage() {
 
     try {
       await signIn(email, password);
-      
-      // Wait for AuthContext to refresh userProfile (it may be fetched asynchronously)
-      const start = Date.now();
-      const waitForProfile = async () => {
-        while ((authLoading || !userProfile) && Date.now() - start < 5000) {
-          // eslint-disable-next-line no-await-in-loop
-          await new Promise((res) => setTimeout(res, 200));
-        }
-      };
 
-      await waitForProfile();
-
-      // Check if user is a host (role or approved application)
-      if (userProfile?.role === 'host' || userProfile?.hostApplication?.status === 'approved') {
+      const isHost = await checkHostAccess();
+      if (isHost) {
         router.push('/dashboard');
       } else {
         setError('Access denied. Only hosts can access this platform.');
@@ -71,18 +76,8 @@ export default function LoginPage() {
     try {
       await signInWithGoogle();
 
-      // Wait for profile to populate
-      const start = Date.now();
-      const waitForProfile = async () => {
-        while ((authLoading || !userProfile) && Date.now() - start < 5000) {
-          // eslint-disable-next-line no-await-in-loop
-          await new Promise((res) => setTimeout(res, 200));
-        }
-      };
-
-      await waitForProfile();
-
-      if (userProfile?.role === 'host' || userProfile?.hostApplication?.status === 'approved') {
+      const isHost = await checkHostAccess();
+      if (isHost) {
         router.push('/dashboard');
       } else {
         setError('Access denied. Only hosts can access this platform.');
