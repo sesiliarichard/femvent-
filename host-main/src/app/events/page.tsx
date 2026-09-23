@@ -8,6 +8,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import React, { useEffect, useMemo, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { apiPath } from '@/lib/apiPath';
 
 export default function Events() {
   const { userProfile } = useAuth();
@@ -118,7 +119,7 @@ function EventsContent({ userProfile }: { userProfile: any }) {
     if (!confirmed) return;
 
     try {
-      const res = await fetch('/api/events/delete', {
+      const res = await fetch(apiPath('/api/events/delete'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: userProfile?.id, eventId: id }),

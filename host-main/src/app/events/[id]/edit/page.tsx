@@ -9,6 +9,7 @@ import DashboardLayout from '@/components/DashboardLayout';
 import { useAuth } from '@/contexts/AuthContext';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { apiPath } from '@/lib/apiPath';
 
 interface Speaker { name: string; title: string; company: string; bio: string; photoURL?: string; }
 interface AgendaItem { time: Date; title: string; description: string; speaker: string; duration: string; }
@@ -357,7 +358,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
       if (!confirm('Are you sure you want to delete this event? This will permanently remove all data for this event and cannot be undone.')) return;
       setSaving(true);
       try {
-        const res = await fetch('/api/events/delete', {
+        const res = await fetch(apiPath('/api/events/delete'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: userProfile?.id, eventId }),

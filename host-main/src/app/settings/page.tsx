@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { logger } from '@/lib/logger';
+import { apiPath } from '@/lib/apiPath';
 
 export default function Settings() {
   const { userProfile } = useAuth();
@@ -63,7 +64,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
     if (!userProfile?.id) return;
     setLoadingAccounts(true);
     try {
-      const res = await fetch(`/api/payments/list-accounts?userId=${userProfile.id}`);
+      const res = await fetch(`${apiPath('/api/payments/list-accounts')}?userId=${userProfile.id}`);
       const data = await res.json();
       if (res.ok) setConnectedAccounts(data.accounts || []);
     } catch (err) {
@@ -77,7 +78,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
     if (!userProfile?.id) return;
     setLoadingHistory(true);
     try {
-      const res = await fetch(`/api/payments/history?userId=${userProfile.id}`);
+      const res = await fetch(`${apiPath('/api/payments/history')}?userId=${userProfile.id}`);
       const data = await res.json();
       if (res.ok) setHistoryItems(data.history || []);
     } catch (err) {
@@ -99,7 +100,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
     }
     setDeletingProvider(provider);
     try {
-      const res = await fetch('/api/payments/delete-account', {
+      const res = await fetch(apiPath('/api/payments/delete-account'), {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: userProfile.id, provider }),
@@ -123,7 +124,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
     const loadBanks = async () => {
       setLoadingBanks(true);
       try {
-        const res = await fetch(`/api/payments/banks?country=${payoutData.country}`);
+        const res = await fetch(`${apiPath('/api/payments/banks')}?country=${payoutData.country}`);
         const data = await res.json();
         setBankOptions(data.banks || []);
       } catch (err) {
@@ -151,7 +152,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
           setSavingPayout(false);
           return;
         }
-        const res = await fetch('/api/payments/create-subaccount', {
+        const res = await fetch(apiPath('/api/payments/create-subaccount'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -173,7 +174,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
           setSavingPayout(false);
           return;
         }
-        const res = await fetch('/api/payments/create-wise-account', {
+        const res = await fetch(apiPath('/api/payments/create-wise-account'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: userProfile.id, wiseEmail }),
@@ -187,7 +188,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
           setSavingPayout(false);
           return;
         }
-        const res = await fetch('/api/payments/create-crypto-account', {
+        const res = await fetch(apiPath('/api/payments/create-crypto-account'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: userProfile.id, cryptoAddress, cryptoNetwork }),
@@ -196,7 +197,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
         if (!res.ok) throw new Error(data.error || 'Failed to save wallet address');
         setPayoutStatus('Wallet connected! You\'ll now receive ticket payments in crypto.');
       } else if (payoutMethod === 'azampay') {
-        const res = await fetch('/api/payments/create-azampay-account', {
+        const res = await fetch(apiPath('/api/payments/create-azampay-account'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: userProfile.id, enabled: true }),
@@ -205,7 +206,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
         if (!res.ok) throw new Error(data.error || 'Failed to enable AzamPay');
         setPayoutStatus('AzamPay enabled! Buyers can now pay via mobile money or bank transfer.');
       } else if (payoutMethod === 'pesapal') {
-        const res = await fetch('/api/payments/create-pesapal-account', {
+        const res = await fetch(apiPath('/api/payments/create-pesapal-account'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ userId: userProfile.id, enabled: true }),
@@ -228,7 +229,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
           })
           .eq('id', userProfile.id);
 
-        const res = await fetch('/api/payments/create-manual-payout', {
+          const res = await fetch(apiPath('/api/payments/create-manual-payout'), {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
