@@ -114,10 +114,24 @@ function EventsContent({ userProfile }: { userProfile: any }) {
 
   const removeEvent = async (id: string, title: string) => {
     if (!id) return;
-    const confirmed = window.confirm(`Delete "${title}"? This action cannot be undone.`);
+    const confirmed = window.confirm(`Delete "${title}"? This will permanently remove all data for this event and cannot be undone.`);
     if (!confirmed) return;
-    const { error } = await supabase.from('events').delete().eq('id', id);
-    if (error) console.error('Error deleting event:', error);
+
+    try {
+      const res = await fetch('/api/events/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: userProfile?.id, eventId: id }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(`Failed to delete: ${data.error}`);
+        return;
+      }
+      setEvents((prev) => prev.filter((e) => e.id !== id));
+    } catch (err: any) {
+      alert(`Failed to delete: ${err.message}`);
+    }
   };
 
   const stats = useMemo(() => {

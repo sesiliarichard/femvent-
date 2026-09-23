@@ -353,16 +353,23 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
         setSaving(false);
       }
     };
-
     const handleDelete = async () => {
-      if (!confirm('Are you sure you want to delete this event? This cannot be undone.')) return;
+      if (!confirm('Are you sure you want to delete this event? This will permanently remove all data for this event and cannot be undone.')) return;
       setSaving(true);
       try {
-        const { error } = await supabase.from('events').delete().eq('id', eventId);
-        if (error) throw error;
+        const res = await fetch('/api/events/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: userProfile?.id, eventId }),
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          alert(`Failed to delete: ${data.error}`);
+          return;
+        }
         router.push('/events');
-      } catch (error) {
-        alert('Failed to delete event. Please try again.');
+      } catch (error: any) {
+        alert(`Failed to delete event: ${error.message}`);
       } finally {
         setSaving(false);
       }

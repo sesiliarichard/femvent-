@@ -37,7 +37,7 @@ export default function PaymentSettingsPage() {
   const loadAccounts = async () => {
     if (!user?.id) return;
     try {
-      const res = await fetch(`/api/payments/list-accounts?userId=${user.id}`);
+      const res = await fetch(`/host/api/payments/list-accounts?userId=${user.id}`);
       const data = await res.json();
       if (res.ok) setAccounts(data.accounts || []);
     } finally {
@@ -54,13 +54,13 @@ export default function PaymentSettingsPage() {
 
   const handleDisconnect = async (provider: string) => {
     if (provider === 'azampay' || provider === 'pesapal') {
-      await fetch(`/api/payments/create-${provider}-account`, {
+      await fetch(`/host/api/payments/create-${provider}-account`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user?.id, enabled: false }),
       });
     } else {
-      await fetch(`/api/payments/delete-account`, {
+      await fetch(`/host/api/payments/delete-account`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId: user?.id, provider }),
@@ -168,7 +168,7 @@ function FlutterwaveForm({ userId, onConnected }: { userId?: string; onConnected
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch('/api/payments/banks?country=TZ')
+    fetch('/host/api/payments/banks?country=TZ')
       .then((r) => r.json())
       .then((d) => setBanks(d.banks || []))
       .catch(() => setError('Failed to load banks'));
@@ -180,7 +180,7 @@ function FlutterwaveForm({ userId, onConnected }: { userId?: string; onConnected
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch('/api/payments/create-subaccount', {
+      const res = await fetch('/host/api/payments/create-subaccount', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -233,7 +233,7 @@ function ManualForm({ userId, onConnected }: { userId?: string; onConnected: () 
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch('/api/payments/create-manual-payout', {
+      const res = await fetch('/host/api/payments/create-manual-payout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, bankName, accountNumber, accountName, instructions }),
@@ -272,7 +272,7 @@ function AzamPayForm({ userId, onConnected }: { userId?: string; onConnected: ()
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch('/api/payments/create-azampay-account', {
+      const res = await fetch('/host/api/payments/create-azampay-account', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, enabled: true }),
@@ -310,7 +310,7 @@ function PesapalForm({ userId, onConnected }: { userId?: string; onConnected: ()
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch('/api/payments/create-pesapal-account', {
+      const res = await fetch('/host/api/payments/create-pesapal-account', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, enabled: true }),
@@ -350,7 +350,7 @@ function WiseForm({ userId, onConnected }: { userId?: string; onConnected: () =>
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch('/api/payments/create-wise-account', {
+      const res = await fetch('/host/api/payments/create-wise-account', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, wiseEmail }),
@@ -389,7 +389,7 @@ function CryptoForm({ userId, onConnected }: { userId?: string; onConnected: () 
     setSubmitting(true);
     setError(null);
     try {
-      const res = await fetch('/api/payments/create-crypto-account', {
+      const res = await fetch('/host/api/payments/create-crypto-account', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, cryptoAddress, cryptoNetwork }),
