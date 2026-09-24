@@ -39,9 +39,11 @@ export default function PaymentStatusPage() {
     const maxAttempts = 10;
 
     const poll = async () => {
-      // DPO has no webhook — actively verify with DPO before polling our own
-      // status endpoint, otherwise the ticket/payment rows never get confirmed.
-      if (isDpo && attempts === 0) {
+      // DPO has no webhook — actively verify with DPO on every attempt (not just
+      // the first), since DPO may take a few seconds after redirect to actually
+      // settle the transaction. Calling it once and giving up if it says
+      // "pending" means we'd never notice it confirming moments later.
+      if (isDpo) {
         try {
           await fetch(`${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/dpo-verify?orderId=${pollKey}`);
         } catch (err) {
