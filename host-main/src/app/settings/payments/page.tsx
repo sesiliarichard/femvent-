@@ -20,6 +20,7 @@ interface PaymentAccount {
 const PROVIDER_META: Record<string, { name: string; blurb: string; comingSoon?: boolean }> = {
   azampay: { name: 'AzamPay (Mobile Money & Bank)', blurb: 'Buyers pay instantly via M-Pesa, Tigo Pesa, Airtel Money, HaloPesa, or bank transfer. Best for Tanzania & Rwanda.' },
   pesapal: { name: 'Pesapal (Card & Mobile Money)', blurb: 'Buyers pay by card or mobile money across East/Southern Africa. No account details needed — settled to you separately.' },
+  dpo: { name: 'DPO Pay (Visa, Mastercard & Mobile Money)', blurb: 'Buyers pay by Visa, Mastercard, or mobile money. Works across East, Southern, and West Africa. No account details needed — settled to you separately.' },
   crypto: { name: 'Crypto (USDT)', blurb: 'Buyers pay with cryptocurrency. Works for buyers anywhere in the world.' },
   manual: { name: 'Manual bank transfer', blurb: 'Works anywhere. Buyers pay you directly and you confirm the ticket.' },
   wise: { name: 'Wise', blurb: 'For organizers who already use Wise to receive international transfers.' },
@@ -32,7 +33,7 @@ export default function PaymentSettingsPage() {
   const { user } = useAuth();
   const [accounts, setAccounts] = useState<PaymentAccount[]>([]);
   const [loadingAccounts, setLoadingAccounts] = useState(true);
-  const [activeForm, setActiveForm] = useState<'flutterwave' | 'manual' | 'azampay' | 'wise' | 'crypto' | 'pesapal' | null>(null);
+  const [activeForm, setActiveForm] = useState<'flutterwave' | 'manual' | 'azampay' | 'wise' | 'crypto' | 'pesapal' | 'dpo' | null>(null);
 
   const loadAccounts = async () => {
     if (!user?.id) return;
@@ -53,7 +54,7 @@ export default function PaymentSettingsPage() {
     accounts.find((a) => a.provider === provider && a.status === 'active');
 
   const handleDisconnect = async (provider: string) => {
-    if (provider === 'azampay' || provider === 'pesapal') {
+    if (provider === 'azampay' || provider === 'pesapal' || provider === 'dpo') {
       await fetch(`/host/api/payments/create-${provider}-account`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -115,7 +116,7 @@ export default function PaymentSettingsPage() {
                     </div>
                   ) : (
                     <button
-                    onClick={() => setActiveForm(isOpen ? null : (provider as 'flutterwave' | 'manual' | 'azampay' | 'wise' | 'crypto' | 'pesapal'))}
+                    onClick={() => setActiveForm(isOpen ? null : (provider as 'flutterwave' | 'manual' | 'azampay' | 'wise' | 'crypto' | 'pesapal' | 'dpo'))}
                       style={{
                         fontSize: 14,
                         fontWeight: 600,
@@ -143,6 +144,9 @@ export default function PaymentSettingsPage() {
                 )}
                 {isOpen && provider === 'pesapal' && (
                  <PesapalForm userId={user?.id} onConnected={() => { setActiveForm(null); loadAccounts(); }} />
+                 )}
+                {isOpen && provider === 'dpo' && (
+                 <DPOForm userId={user?.id} onConnected={() => { setActiveForm(null); loadAccounts(); }} />
                  )}
                 {isOpen && provider === 'wise' && (
                   <WiseForm userId={user?.id} onConnected={() => { setActiveForm(null); loadAccounts(); }} />
@@ -334,6 +338,43 @@ function PesapalForm({ userId, onConnected }: { userId?: string; onConnected: ()
       {error && <p style={{ color: '#b91c1c', fontSize: 13 }}>{error}</p>}
       <button onClick={handleEnable} disabled={submitting} style={submitButtonStyle}>
         {submitting ? 'Enabling...' : 'Enable Pesapal'}
+      </button>
+    </div>
+  );
+}
+function DPOForm({ userId, onConnected }: { userId?: string; onConnected: () => void }) {
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleEnable = async () => {
+    if (!userId) return;
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch('/host/api/payments/create-dpo-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, enabled: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Failed to enable');
+        return;
+      }
+      onConnected();
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div style={{ marginTop: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <p style={{ fontSize: 13, color: '#666' }}>
+        No account details needed — payments go through our platform, and payouts are settled to you separately.
+      </p>
+      {error && <p style={{ color: '#b91c1c', fontSize: 13 }}>{error}</p>}
+      <button onClick={handleEnable} disabled={submitting} style={submitButtonStyle}>
+        {submitting ? 'Enabling...' : 'Enable DPO Pay'}
       </button>
     </div>
   );

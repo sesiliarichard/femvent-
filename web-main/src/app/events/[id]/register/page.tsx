@@ -99,25 +99,18 @@ export default function RegisterPage() {
                 .eq("is_active", true)
                 .order("sort_order", { ascending: true });
 
-            if (tiers && tiers.length > 0) {
-                setTicketTypes(tiers);
-            } else {
-                setTicketTypes([
-                    {
-                        id: "general",
-                        name: "General Admission",
-                        price: data?.price || 0,
-                        currency: data?.currency || "USD",
-                    },
-                ]);
-            }
+                if (tiers && tiers.length > 0) {
+                    setTicketTypes(tiers);
+                } else {
+                    setTicketTypes([]);
+                }
 
             setLoadingEvent(false);
         })();
     }, [id]);
 
     const ticketOptions = ticketTypes;
-    const selectedTicket = ticketOptions.find((t) => t.id === selectedTicketId) || ticketOptions[0];
+    const selectedTicket = ticketOptions.find((t) => t.id === selectedTicketId) || ticketOptions[0] || null;
 
     const currentStepIndex = () => {
         if (step === "password-return") return STEP_ORDER.indexOf("password-new");
@@ -126,9 +119,9 @@ export default function RegisterPage() {
 
     // --- Step 1: Ticket -> Step 2 (or straight to Details if already logged in) ---
     const handleContinueFromTicket = () => {
+        if (!selectedTicket) return;
         setStep(session?.user ? "details" : "email");
     };
-
     // --- Step 2: Email -> checks the users table, branches new vs returning ---
     const handleContinueFromEmail = async () => {
         setAuthError("");
@@ -212,6 +205,12 @@ export default function RegisterPage() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSubmitError("");
+
+        if (!selectedTicket) {
+            setSubmitError("Please go back and select a ticket type.");
+            return;
+        }
+
         setSubmitting(true);
 
         try {
@@ -540,6 +539,13 @@ export default function RegisterPage() {
                         <h2 className="px-1 text-lg font-semibold text-[#2E1F45]">Choose your ticket</h2>
                         <p className="px-1 text-xs text-[#8A7A97]">Step 1 of 4 — no account needed yet.</p>
                     </div>
+                    {ticketOptions.length === 0 && (
+                        <div className="rounded-2xl border border-[#D9C9E0] bg-white p-6 text-center shadow-md">
+                            <p className="text-sm text-[#5C4A6B]">
+                                Registration isn't open yet for this event — the organizer hasn't published any ticket types.
+                            </p>
+                        </div>
+                    )}
                     {ticketOptions.map((option, index) => {
                         const isSelected = (selectedTicketId || ticketOptions[0].id) === option.id;
                         const bandColor = bandColors[index % bandColors.length];
@@ -605,10 +611,11 @@ export default function RegisterPage() {
                             </label>
                         );
                     })}
-                    <button
+                                    <button
                         type="button"
                         onClick={handleContinueFromTicket}
-                        className="rounded-full bg-[#9B1F5C] px-6 py-4 text-sm font-semibold text-[#FBF3FA] shadow-lg hover:bg-[#7A1745] transition-colors"
+                        disabled={!selectedTicket}
+                        className="rounded-full bg-[#9B1F5C] px-6 py-4 text-sm font-semibold text-[#FBF3FA] shadow-lg hover:bg-[#7A1745] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                         Continue
                     </button>

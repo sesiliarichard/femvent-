@@ -55,6 +55,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         ? { paypalEmail: a.meta?.paypalEmail }
         : a.provider === 'azampay'
         ? {}
+        : a.provider === 'dpo'
+        ? {}
         : null,
     }));
 
