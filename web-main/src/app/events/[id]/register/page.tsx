@@ -297,7 +297,6 @@ export default function RegisterPage() {
                     window.location.href = cryptoData.sessionUrl;
                     return;
                 }
-
                 if (selectedPaymentMethod === "pesapal") {
                     const pesapalRes = await fetch(
                         `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-pesapal-checkout`,
@@ -321,6 +320,32 @@ export default function RegisterPage() {
                     }
 
                     window.location.href = pesapalData.sessionUrl;
+                    return;
+                }
+
+                if (selectedPaymentMethod === "dpo") {
+                    const dpoRes = await fetch(
+                        `${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/create-dpo-checkout`,
+                        {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                eventId: id,
+                                amount: selectedTicket.price,
+                                email: activeUser.email,
+                                name: fullName,
+                                userId: activeUser.id,
+                                ticketTypeName: selectedTicket.name,
+                            }),
+                        }
+                    );
+
+                    const dpoData = await dpoRes.json();
+                    if (!dpoRes.ok || !dpoData.sessionUrl) {
+                        throw new Error(dpoData.error || "Failed to start payment");
+                    }
+
+                    window.location.href = dpoData.sessionUrl;
                     return;
                 }
                 if (["wise", "manual"].includes(selectedPaymentMethod)) {
@@ -807,13 +832,14 @@ export default function RegisterPage() {
                             <h2 className="mb-4 text-lg font-semibold text-[#2E1F45]">Payment Method</h2>
                             <div className="flex flex-col gap-2">
                                 {hostMethods.map((m) => {
-                                  const labels: Record<string, string> = {
+                                 const labels: Record<string, string> = {
                                     flutterwave: "Card / Flutterwave",
                                     crypto: "Crypto (USDT)",
                                     azampay: "Mobile Money (AzamPay)",
                                     pesapal: "Card / Mobile Money (Pesapal)",
                                     wise: "Wise Transfer",
                                     manual: "Bank Transfer",
+                                    dpo: "Visa / Mastercard / Mobile Money (DPO)",
                                 };
                                     return (
                                         <label
