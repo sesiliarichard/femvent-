@@ -47,7 +47,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
   const [loadingBanks, setLoadingBanks] = useState(false);
   const [savingPayout, setSavingPayout] = useState(false);
   const [payoutStatus, setPayoutStatus] = useState<string | null>(null);
-  const [payoutMethod, setPayoutMethod] = useState<'flutterwave' | 'wise' | 'crypto' | 'manual' | 'azampay' | 'pesapal'>('flutterwave');
+  const [payoutMethod, setPayoutMethod] = useState<'flutterwave' | 'wise' | 'crypto' | 'manual' | 'azampay' | 'pesapal' | 'dpo'>('flutterwave');
   const [wiseEmail, setWiseEmail] = useState('');
   const [cryptoAddress, setCryptoAddress] = useState('');
   const [cryptoNetwork, setCryptoNetwork] = useState('USDT-TRC20');
@@ -214,6 +214,15 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Failed to enable Pesapal');
         setPayoutStatus('Pesapal enabled! Buyers can now pay via card or mobile money.');
+      } else if (payoutMethod === 'dpo') {
+        const res = await fetch(apiPath('/api/payments/create-dpo-account'), {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: userProfile.id, enabled: true }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed to enable DPO Pay');
+        setPayoutStatus('DPO Pay enabled! Buyers can now pay via Visa, Mastercard, or mobile money.');
       } else {
         if (!payoutData.bankCode || !payoutData.accountNumber || !payoutData.accountName) {
           setPayoutStatus('Please fill in all payout fields.');
@@ -818,8 +827,8 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                           <button
                             type="button"
                             onClick={() => {
-                              if (['manual', 'wise', 'crypto', 'flutterwave', 'azampay', 'pesapal'].includes(acc.provider)) {
-                                setPayoutMethod(acc.provider as 'manual' | 'wise' | 'crypto' | 'flutterwave' | 'azampay' | 'pesapal');
+                              if (['manual', 'wise', 'crypto', 'flutterwave', 'azampay', 'pesapal', 'dpo'].includes(acc.provider)) {
+                                setPayoutMethod(acc.provider as 'manual' | 'wise' | 'crypto' | 'flutterwave' | 'azampay' | 'pesapal' | 'dpo');
                               }
                             }}
                             className="px-4 py-2 rounded-xl bg-white border border-gray-200 text-gray-700 text-sm font-bold hover:border-primary-300 transition-colors"
@@ -851,6 +860,7 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                     { id: 'manual', label: 'Bank Wire', icon: <svg className="inline-block w-4 h-4 mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m3-6H15m-1.5 3H15m-1.5 3H15M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" /></svg> },
                     { id: 'azampay', label: 'AzamPay', icon: <svg className="inline-block w-4 h-4 mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.5 1.5H8.25A2.25 2.25 0 006 3.75v16.5a2.25 2.25 0 002.25 2.25h7.5A2.25 2.25 0 0018 20.25V3.75a2.25 2.25 0 00-2.25-2.25H13.5m-3 0V3h3V1.5m-3 0h3m-3 18.75h3" /></svg> },
                     { id: 'pesapal', label: 'Pesapal', icon: <svg className="inline-block w-4 h-4 mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582" /></svg> },
+                    { id: 'dpo', label: 'DPO Pay', icon: <svg className="inline-block w-4 h-4 mr-1.5 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z" /></svg> },
                   ].map((m) => (
                     <button
                       key={m.id}
@@ -1011,11 +1021,23 @@ function SettingsContent({ userProfile }: { userProfile: any }) {
                 </div>
               )}
 
-              {payoutMethod === 'pesapal' && (
+{payoutMethod === 'pesapal' && (
                 <div className="p-6 bg-gray-50 border border-gray-100 rounded-xl space-y-3">
                   <div>
                     <p className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-1">Pesapal</p>
                     <p className="text-sm text-gray-500">Buyers can pay by Visa, Mastercard, Amex, or mobile money — works for local buyers across East/Southern Africa and international cardholders anywhere.</p>
+                  </div>
+                  <p className="text-sm text-gray-500">
+                    No account details needed here — payments are processed through FemVents' platform account, and your revenue is settled to you separately.
+                  </p>
+                </div>
+              )}
+
+              {payoutMethod === 'dpo' && (
+                <div className="p-6 bg-gray-50 border border-gray-100 rounded-xl space-y-3">
+                  <div>
+                    <p className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-1">DPO Pay</p>
+                    <p className="text-sm text-gray-500">Buyers can pay by Visa, Mastercard, or mobile money — works across East, Southern, and West Africa.</p>
                   </div>
                   <p className="text-sm text-gray-500">
                     No account details needed here — payments are processed through FemVents' platform account, and your revenue is settled to you separately.
