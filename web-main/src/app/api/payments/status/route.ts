@@ -21,10 +21,27 @@ export async function GET(req: NextRequest) {
         .eq('meta->>order_id', orderId)
         .maybeSingle();
 
-      if (paymentError) throw paymentError;
+      // TEMPORARY DEBUG — remove once we've diagnosed this
+      console.log('DEBUG status.ts:', {
+        orderId,
+        payment,
+        paymentError,
+        supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+        keyPrefix: process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(0, 20),
+        keyLength: process.env.SUPABASE_SERVICE_ROLE_KEY?.length,
+      });
+
+      if (paymentError) {
+        // TEMPORARY — surface the real error instead of throwing generically
+        return NextResponse.json({ found: false, debugError: paymentError }, { status: 200 });
+      }
 
       if (!payment || payment.status !== 'confirmed') {
-        return NextResponse.json({ found: false });
+        return NextResponse.json({
+          found: false,
+          debugPayment: payment,
+          debugOrderId: orderId,
+        });
       }
 
       paymentId = payment.id;
