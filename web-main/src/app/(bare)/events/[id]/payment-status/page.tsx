@@ -13,12 +13,17 @@ export default function PaymentStatusPage() {
   const transactionId = searchParams?.get('transaction_id');
   const isPesapal = searchParams?.get('pesapal') === '1';
   const pesapalOrderId = searchParams?.get('order_id');
+  const isDpo = searchParams?.get('dpo') === '1';
+  const dpoOrderId = searchParams?.get('order_id');
 
   // Flutterwave signals success via ?status=successful; Pesapal has no status
   // param on redirect at all — it always sends back ?pesapal=1&order_id=..., and
   // the real payment status has to be looked up (which the polling below does).
-  const isRecognizedSuccess = isPesapal || flwStatus === 'successful';
-  const pollKey = isPesapal ? pesapalOrderId : transactionId;
+  // DPO is the same — no status param — but unlike Pesapal, DPO has no webhook,
+  // so nothing confirms the payment in the background. We have to actively call
+  // dpo-verify ourselves before polling, see the effect below.
+  const isRecognizedSuccess = isPesapal || isDpo || flwStatus === 'successful';
+  const pollKey = isPesapal ? pesapalOrderId : isDpo ? dpoOrderId : transactionId;
 
   const [ticket, setTicket] = useState<any>(null);
   const [checking, setChecking] = useState(true);
@@ -34,9 +39,19 @@ export default function PaymentStatusPage() {
     const maxAttempts = 10;
 
     const poll = async () => {
+      // DPO has no webhook — actively verify with DPO before polling our own
+      // status endpoint, otherwise the ticket/payment rows never get confirmed.
+      if (isDpo && attempts === 0) {
+        try {
+          await fetch(`${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/dpo-verify?orderId=${pollKey}`);
+        } catch (err) {
+          console.error('Error verifying DPO payment:', err);
+        }
+      }
+
       attempts++;
       try {
-        const query = isPesapal ? `orderId=${pollKey}` : `transactionId=${pollKey}`;
+        const query = isPesapal || isDpo ? `orderId=${pollKey}` : `transactionId=${pollKey}`;
         const res = await fetch(`/api/payments/status?${query}`);
         const data = await res.json();
 
@@ -59,7 +74,7 @@ export default function PaymentStatusPage() {
     };
 
     poll();
-  }, [isRecognizedSuccess, pollKey, isPesapal]);
+  }, [isRecognizedSuccess, pollKey, isPesapal, isDpo]);
 
   if (!isRecognizedSuccess) {
     return (
