@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(req: NextRequest) {
   const transactionId = req.nextUrl.searchParams.get('transactionId');
   const orderId = req.nextUrl.searchParams.get('orderId');
