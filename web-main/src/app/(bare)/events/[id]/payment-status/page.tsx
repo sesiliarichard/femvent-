@@ -28,6 +28,7 @@ export default function PaymentStatusPage() {
   const [ticket, setTicket] = useState<any>(null);
   const [checking, setChecking] = useState(true);
   const [timedOut, setTimedOut] = useState(false);
+  const [debugLog, setDebugLog] = useState<string[]>([]); // TEMPORARY
 
   useEffect(() => {
     if (!isRecognizedSuccess || !pollKey) {
@@ -38,16 +39,15 @@ export default function PaymentStatusPage() {
     let attempts = 0;
     const maxAttempts = 10;
 
-    const poll = async () => {
-      // DPO has no webhook — actively verify with DPO on every attempt (not just
-      // the first), since DPO may take a few seconds after redirect to actually
-      // settle the transaction. Calling it once and giving up if it says
-      // "pending" means we'd never notice it confirming moments later.
+   const poll = async () => {
+      let verifyResult = 'skipped';
       if (isDpo) {
         try {
-          await fetch(`${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/dpo-verify?orderId=${pollKey}`);
+          const vRes = await fetch(`${process.env.NEXT_PUBLIC_HOST_APP_URL}/api/payments/dpo-verify?orderId=${pollKey}`);
+          const vData = await vRes.json();
+          verifyResult = vData.status || JSON.stringify(vData);
         } catch (err) {
-          console.error('Error verifying DPO payment:', err);
+          verifyResult = 'error: ' + String(err);
         }
       }
 
@@ -56,6 +56,12 @@ export default function PaymentStatusPage() {
         const query = isPesapal || isDpo ? `orderId=${pollKey}` : `transactionId=${pollKey}`;
         const res = await fetch(`/api/payments/status?${query}`);
         const data = await res.json();
+
+        // TEMPORARY DEBUG
+        setDebugLog((prev) => [
+          ...prev,
+          `attempt ${attempts}: verify=${verifyResult} | status.found=${data.found} | status.debugPayment=${JSON.stringify(data.debugPayment)}`,
+        ]);
 
         if (data.found) {
           setTicket(data.ticket);
@@ -101,9 +107,10 @@ export default function PaymentStatusPage() {
   if (checking) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
-        <div className="text-center">
+        <div className="text-center max-w-xl">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-500 mx-auto mb-4"></div>
           <p className="text-gray-600 font-medium">Confirming your payment...</p>
+          <pre className="text-left text-xs mt-6 bg-white p-4 rounded-lg overflow-auto max-h-80">{debugLog.join('\n')}</pre>
         </div>
       </main>
     );
@@ -118,6 +125,7 @@ export default function PaymentStatusPage() {
           <p className="text-gray-600">
             Your payment succeeded, but we're still finalizing your ticket. Check your email shortly, or refresh this page.
           </p>
+          <pre className="text-left text-xs mt-6 bg-gray-50 p-4 rounded-lg overflow-auto max-h-80">{debugLog.join('\n')}</pre>
         </div>
       </main>
     );
