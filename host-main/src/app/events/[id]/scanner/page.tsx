@@ -97,14 +97,17 @@ function QRScannerContent() {
                 fps: 10,
                 qrbox: { width: 300, height: 300 },
                 aspectRatio: 1.0,
+                videoConstraints: {
+                    facingMode: { ideal: 'environment' },
+                },
             },
             false
         );
-
+        
         scanner.render(onScanSuccess, onScanError);
         scannerRef.current = scanner;
     };
-    
+
     const onScanSuccess = async (decodedText: string) => {
         if (scanning) return;
 
