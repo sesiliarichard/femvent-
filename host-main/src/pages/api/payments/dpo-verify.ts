@@ -67,9 +67,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(200).json({ status: 'pending', explanation: resultExplanation });
     }
 
-    await supabaseAdmin.from('payments').update({ status: 'confirmed' }).eq('id', payment.id);
+    const { error: paymentUpdateError } = await supabaseAdmin
+    .from('payments')
+    .update({ status: 'confirmed' })
+    .eq('id', payment.id);
 
-    const { data: ticket, error: ticketError } = await supabaseAdmin
+  if (paymentUpdateError) {
+    console.error('DPO payment update failed:', paymentUpdateError);
+    return res.status(500).json({ error: 'Failed to confirm payment', debugUpdateError: paymentUpdateError });
+  }
+
+  const { data: ticket, error: ticketError } = await supabaseAdmin
       .from('tickets')
       .update({ status: 'confirmed', confirmed_at: new Date().toISOString() })
       .eq('payment_id', payment.id)
