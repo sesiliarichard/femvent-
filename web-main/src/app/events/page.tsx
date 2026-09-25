@@ -13,7 +13,7 @@ const workSans = Work_Sans({
   variable: "--font-work-sans",
 });
 
-const filters = ["All", "Trending", "Hybrid", "In-person", "Virtual"];
+const filters = ["All", "Emerging conversations", "Hybrid", "In-person", "Virtual"];
 
 const tagColors: Record<string, { bg: string; text: string }> = {
   orange: { bg: "bg-[#FBEAE0]", text: "text-[#8A3E1A]" },
@@ -82,12 +82,12 @@ export default async function EventsPage() {
     <main className={`${fontVars} bg-[#FBF3FA]`}>
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-6 pt-16 pb-10">
-        <h1 className={`${heading} font-bold text-4xl sm:text-[42px] leading-[1.1] text-[#2E1F45] max-w-2xl`}>
-          Find amazing events near you
+      <h1 className={`${heading} font-bold text-4xl sm:text-[42px] leading-[1.1] text-[#2E1F45] max-w-2xl`}>
+          Find where feminist movements are gathering
         </h1>
         <p className={`${body} text-[#5C4A6B] max-w-xl mt-4 text-[15px] leading-relaxed`}>
-          Browse upcoming festivals, workshops, concerts, networking events, and more. Filter by category and
-          location to find exactly what you&apos;re looking for.
+          Browse gatherings, organizing spaces, learning circles, and convenings. Filter by issue and
+          location to find where movements are meeting.
         </p>
         <div className="flex flex-wrap gap-2.5 mt-7">
           {filters.map((filter, index) => (
@@ -150,9 +150,9 @@ export default async function EventsPage() {
 
         <aside className="border border-[#D9C9E0] rounded-sm p-6 bg-white sticky top-6">
           <p className={`${heading} italic text-[13px] text-[#8A7A96] mb-1.5`}>Browse by city</p>
-          <h2 className={`${heading} font-bold text-lg text-[#2E1F45] mb-1.5`}>Find events in your city</h2>
+          <h2 className={`${heading} font-bold text-lg text-[#2E1F45] mb-1.5`}>Find gatherings in your city</h2>
           <p className={`${body} text-[13px] text-[#5C4A6B] mb-5`}>
-            Check out what&apos;s happening in major cities across Africa.
+            Check out where feminist movements are gathering across Africa.
           </p>
           <div>
             {destinations.map((city: any, index: number) => (
@@ -167,9 +167,9 @@ export default async function EventsPage() {
 
       {/* Categories */}
       <section className="mx-auto max-w-6xl px-6 pb-16">
-        <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-1.5`}>Browse by interest</h2>
+      <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-1.5`}>Browse by movement and issue</h2>
         <p className={`${body} text-[#5C4A6B] max-w-xl mb-8 text-sm`}>
-          Find events that match your interests, from music and art to business and wellness.
+          Find gatherings organized around the issues feminist movements are working on.
         </p>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {categories.map((category: any, index: number) => {
