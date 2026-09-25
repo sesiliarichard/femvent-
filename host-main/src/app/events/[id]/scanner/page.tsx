@@ -82,6 +82,15 @@ function QRScannerContent() {
     const initializeScanner = () => {
         if (scannerRef.current) return;
 
+        // The qr-reader div may not be painted into the DOM yet on first
+        // render — wait a tick and retry if it isn't there yet, instead of
+        // crashing.
+        const el = document.getElementById('qr-reader');
+        if (!el) {
+            setTimeout(initializeScanner, 50);
+            return;
+        }
+
         const scanner = new Html5QrcodeScanner(
             'qr-reader',
             {
@@ -95,7 +104,7 @@ function QRScannerContent() {
         scanner.render(onScanSuccess, onScanError);
         scannerRef.current = scanner;
     };
-
+    
     const onScanSuccess = async (decodedText: string) => {
         if (scanning) return;
 
