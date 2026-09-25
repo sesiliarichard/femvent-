@@ -35,8 +35,7 @@ export async function GET(req: NextRequest) {
         // TEMPORARY — surface the real error instead of throwing generically
         return NextResponse.json({ found: false, debugError: paymentError }, { status: 200 });
       }
-
-      if (!payment || payment.status !== 'confirmed') {
+      if (!payment || payment.status !== 'completed') {
         return NextResponse.json({
           found: false,
           debugPayment: payment,

@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(404).json({ error: 'Payment record not found' });
     }
 
-    if (payment.status === 'confirmed') {
+    if (payment.status === 'completed') {
       return res.status(200).json({ status: 'confirmed', duplicate: true });
     }
 
@@ -69,9 +69,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const { error: paymentUpdateError } = await supabaseAdmin
     .from('payments')
-    .update({ status: 'confirmed' })
+    .update({ status: 'completed' })
     .eq('id', payment.id);
-
+    
   if (paymentUpdateError) {
     console.error('DPO payment update failed:', paymentUpdateError);
     return res.status(500).json({ error: 'Failed to confirm payment', debugUpdateError: paymentUpdateError });
