@@ -18,7 +18,7 @@ export interface EmailOptions {
 export async function sendEmail(options: EmailOptions): Promise<boolean> {
     try {
         const { data, error } = await resend.emails.send({
-            from: `${process.env.APP_NAME || 'FemVents'} <onboarding@resend.dev>`,
+            from: `${process.env.APP_NAME || 'FemVents'} <notifications@femvents.core23lab.org>`,
             to: options.to,
             subject: options.subject,
             text: options.body,

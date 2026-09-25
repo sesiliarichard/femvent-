@@ -71,23 +71,62 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .from('payments')
     .update({ status: 'completed' })
     .eq('id', payment.id);
-    
+
   if (paymentUpdateError) {
     console.error('DPO payment update failed:', paymentUpdateError);
     return res.status(500).json({ error: 'Failed to confirm payment', debugUpdateError: paymentUpdateError });
   }
 
-  const { data: ticket, error: ticketError } = await supabaseAdmin
+   const { data: ticket, error: ticketError } = await supabaseAdmin
       .from('tickets')
       .update({ status: 'confirmed', confirmed_at: new Date().toISOString() })
       .eq('payment_id', payment.id)
-      .select()
+      .select('*, event:events(title, event_date, venue)')
       .single();
 
     if (ticketError) throw ticketError;
 
-    // TODO: send confirmation email here, same pattern as pesapal-webhook.ts,
-    // once checkout + verify are confirmed working in sandbox.
+    try {
+      let recipientEmail = ticket.guest_email;
+      let recipientName = ticket.guest_name || 'there';
+
+      if (ticket.user_id) {
+        const { data: registeredUser } = await supabaseAdmin
+          .from('users')
+          .select('email, name')
+          .eq('id', ticket.user_id)
+          .maybeSingle();
+        if (registeredUser) {
+          recipientEmail = registeredUser.email;
+          recipientName = registeredUser.name || recipientName;
+        }
+      }
+
+      if (recipientEmail && ticket.event) {
+        const attendeeSiteUrl = process.env.NEXT_PUBLIC_ATTENDEE_SITE_URL || 'https://femvents.core23lab.org';
+        await fetch(`${attendeeSiteUrl}/api/send-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            to: recipientEmail,
+            templateId: 'registration-confirmation',
+            templateData: {
+              recipientName,
+              eventTitle: ticket.event.title,
+              eventDate: ticket.event.event_date ? new Date(ticket.event.event_date).toLocaleDateString() : 'TBD',
+              eventLocation: ticket.event.venue || '',
+              ticketType: ticket.ticket_type,
+              ticketId: ticket.id,
+              eventId: ticket.event_id,
+              userId: ticket.user_id,
+              qrCodeId: ticket.qr_code_id || `qr_${ticket.id}`,
+            },
+          }),
+        });
+      }
+    } catch (emailError) {
+      console.error('DPO confirmation email failed (payment still confirmed):', emailError);
+    }
 
     return res.status(200).json({ status: 'confirmed', ticket });
   } catch (error: any) {
