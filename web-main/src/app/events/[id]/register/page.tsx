@@ -232,7 +232,7 @@ export default function RegisterPage() {
             if (selectedTicket.price > 0) {
                 if (!hostHasPayout) {
                     setSubmitError(
-                        "This host hasn't finished setting up payment collection yet, so paid tickets aren't available right now. Please check back soon or contact the organizer."
+                        "This host hasn't finished setting up payment collection yet, so paid tickets aren't available right now. Please check back soon or contact the host."
                     );
                     setSubmitting(false);
                     return;
@@ -459,7 +459,7 @@ export default function RegisterPage() {
     if (loadingEvent) {
         return (
             <main className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-6 py-32 text-center">
-                <p className="text-[#8A7A97]">Loading event...</p>
+                <p className="text-[#8A7A97]">Loading gathering...</p>
             </main>
         );
     }
@@ -467,7 +467,7 @@ export default function RegisterPage() {
     if (!event) {
         return (
             <main className="mx-auto flex max-w-2xl flex-col items-center gap-4 px-6 py-32 text-center">
-                <p className="text-[#2E1F45] font-semibold">Event not found</p>
+                <p className="text-[#2E1F45] font-semibold">Gathering not found</p>
             </main>
         );
     }
@@ -476,7 +476,7 @@ export default function RegisterPage() {
         return (
             <main className="mx-auto flex max-w-2xl flex-col items-center gap-6 px-6 py-32 text-center">
                 <div className="text-5xl">✅</div>
-                <h1 className="text-3xl font-bold text-[#2E1F45]">You're Registered!</h1>
+                <h1 className="text-3xl font-bold text-[#2E1F45]">You're joining this gathering!</h1>
                 <div className="w-full rounded-3xl border border-[#D9C9E0] bg-white p-6 shadow-lg text-left">
                     <p className="text-xs font-semibold uppercase tracking-wide text-[#9B1F5C]">
                         {selectedTicket.name}
@@ -484,7 +484,7 @@ export default function RegisterPage() {
                     <p className="mt-1 text-xl font-bold text-[#2E1F45]">{event.title}</p>
                     <p className="mt-4 text-sm text-[#5C4A6B]">
                         Your ticket is saved to your account ({authEmail || "your email"}). To see your
-                        QR ticket and event details, open the FemVents app and log in with this
+                        QR ticket and gathering details, open the FemVents app and log in with this
                         same email and password — no need to create a new account there. We've
                         also sent a confirmation to your email.
                     </p>
@@ -505,7 +505,7 @@ export default function RegisterPage() {
                     <p className="mt-1 text-xl font-bold text-[#2E1F45]">{event.title}</p>
                     <p className="mt-4 text-sm text-[#5C4A6B]">
                         Send <strong>${selectedTicket.price}</strong> using the details below. Your
-                        ticket will be confirmed once the organizer verifies your payment — keep
+                        ticket will be confirmed once the host verifies your payment — keep
                         your reference number handy.
                     </p>
                     {pendingOrder.provider === "crypto" && (
@@ -543,7 +543,7 @@ export default function RegisterPage() {
         <main className="mx-auto flex max-w-2xl flex-col gap-8 px-6 pb-20 pt-10">
             <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.3em] text-[#9B1F5C]">
-                    Registering for
+                 Joining
                 </p>
                 <h1 className="mt-2 text-3xl font-bold text-[#2E1F45]">{event.title}</h1>
             </div>
@@ -561,13 +561,13 @@ export default function RegisterPage() {
             {step === "ticket" && (
                 <div className="flex flex-col gap-4">
                     <div>
-                        <h2 className="px-1 text-lg font-semibold text-[#2E1F45]">Choose your ticket</h2>
+                        <h2 className="px-1 text-lg font-semibold text-[#2E1F45]">Choose how you'd like to join</h2>
                         <p className="px-1 text-xs text-[#8A7A97]">Step 1 of 4 — no account needed yet.</p>
                     </div>
                     {ticketOptions.length === 0 && (
                         <div className="rounded-2xl border border-[#D9C9E0] bg-white p-6 text-center shadow-md">
                             <p className="text-sm text-[#5C4A6B]">
-                                Registration isn't open yet for this event — the organizer hasn't published any ticket types.
+                            Registration isn't open yet for this gathering — the host hasn't published any participation options.
                             </p>
                         </div>
                     )}
@@ -592,7 +592,7 @@ export default function RegisterPage() {
                                     className="flex items-center justify-between px-5 py-3 text-xs font-bold uppercase tracking-wide text-white"
                                     style={{ backgroundColor: bandColor }}
                                 >
-                                    <span>Ticket type</span>
+                                    <span>Participation</span>
                                     <span>{option.name}</span>
                                 </div>
                                 <div className="px-5 pb-2 pt-4">
@@ -787,7 +787,7 @@ export default function RegisterPage() {
                 <form onSubmit={handleSubmit} className="flex flex-col gap-6">
                     <div className="rounded-3xl border border-[#D9C9E0] bg-white p-6 shadow-lg">
                         <h2 className="mb-1 text-lg font-semibold text-[#2E1F45]">A few more details</h2>
-                        <p className="mb-4 text-xs text-[#8A7A97]">Step 4 of 4 — just for the event, nothing to do with your login.</p>
+                        <p className="mb-4 text-xs text-[#8A7A97]">Step 4 of 4 — just for this gathering, nothing to do with your login.</p>
                         <div className="flex flex-col gap-4">
                             <input
                                 type="tel"
@@ -798,14 +798,14 @@ export default function RegisterPage() {
                             />
                             <input
                                 type="text"
-                                placeholder="Organization"
+                                placeholder="Organization or collective (optional)"
                                 value={organization}
                                 onChange={(e) => setOrganization(e.target.value)}
                                 className="rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
                             />
                             <input
                                 type="text"
-                                placeholder="Job Title"
+                                placeholder="Role (optional)"
                                 value={jobTitle}
                                 onChange={(e) => setJobTitle(e.target.value)}
                                 className="rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
@@ -818,7 +818,7 @@ export default function RegisterPage() {
                                 className="rounded-xl border border-[#D9C9E0] px-4 py-3 text-sm"
                             />
                             <textarea
-                                placeholder="Dietary requirements (optional)"
+                                placeholder="Access or dietary needs (optional)"
                                 value={dietary}
                                 onChange={(e) => setDietary(e.target.value)}
                                 rows={3}

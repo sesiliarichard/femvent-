@@ -42,7 +42,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-16 px-6 pb-20">
       <PageHero
-        highlight={event.category || "🎉 Event"}
+        highlight={event.category || "Gathering"}
         title={event.title}
         description={event.description}
         action={
@@ -50,7 +50,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
             href={`/events/${id}/register`}
             className="inline-block rounded-full bg-gradient-to-r from-rose-500 to-pink-500 px-8 py-3 text-sm font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5"
           >
-            Register Now →
+           Join this gathering →
           </Link>
         }
       />
@@ -58,7 +58,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
       <section className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <div className="flex flex-col gap-6">
           <article className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
-            <SectionHeading eyebrow="About this event" title="Event Details" />
+            <SectionHeading eyebrow="About this gathering" title="Why we're gathering" />
             <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-gray-600">
               {event.description}
             </p>
@@ -66,7 +66,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
 
           {speakers.length > 0 && (
             <article className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
-              <SectionHeading eyebrow="Who's speaking" title="Speakers" />
+              <SectionHeading  eyebrow="Who's involved" title="Speakers and facilitators"/>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 {speakers.map((speaker, index) => (
                   <div
@@ -85,7 +85,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
 
           {agenda.length > 0 && (
             <article className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
-              <SectionHeading eyebrow="What to expect" title="Agenda Highlights" />
+              <SectionHeading eyebrow="How we'll gather" title="Agenda" />
               <div className="mt-4 flex flex-col gap-3">
                 {agenda.map((item, index) => (
                   <div
@@ -109,7 +109,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
         </div>
 
         <aside className="h-fit rounded-3xl border border-purple-100 bg-gradient-to-br from-purple-50/50 to-pink-50/50 p-6 shadow-lg sticky top-24">
-          <SectionHeading eyebrow="Event Info" title="📋 Quick facts" />
+          <SectionHeading eyebrow="Gathering info" title="Quick facts"/>
           <div className="mt-6 flex flex-col gap-4">
             <div>
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
@@ -140,7 +140,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
                   Capacity
                 </p>
                 <p className="mt-1 text-sm font-medium text-gray-900">
-                  {event.tickets_sold || 0} / {event.capacity} registered
+                  {event.tickets_sold || 0} / {event.capacity} participants
                 </p>
               </div>
             )}
@@ -149,7 +149,7 @@ export default async function EventDetailPage({ params }: EventPageProps) {
             href={`/events/${id}/register`}
             className="mt-6 block rounded-full bg-gradient-to-r from-rose-500 to-pink-500 px-6 py-3 text-center text-sm font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5"
           >
-            Register Now →
+            Join this gathering →
           </Link>
         </aside>
       </section>

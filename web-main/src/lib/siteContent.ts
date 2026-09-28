@@ -43,10 +43,10 @@ export async function getSiteContent(): Promise<{
     ];
 
     const DEFAULT_WORKFLOW = [
-      "Upload your event details and images",
-      "Set up ticket types and pricing",
-      "Publish and share your event link",
-      "Track ticket sales and check in attendees on event day",
+      "Describe your gathering: why you're gathering, who it's for, and how people can join",
+      "Add access and participation details: languages, accessibility, and any support available",
+      "Publish your gathering and share the link with your community",
+      "Welcome participants and follow up after the gathering",
     ];
 
 return {
@@ -74,10 +74,10 @@ return {
       { id: 'pro', name: 'Pro', price: '$149/mo', description: 'Advanced automation, analytics, and premium support.', badge: 'Built for full-scale operations' },
     ];
     const DEFAULT_WORKFLOW = [
-      "Upload your event details and images",
-      "Set up ticket types and pricing",
-      "Publish and share your event link",
-      "Track ticket sales and check in attendees on event day",
+      "Describe your gathering: why you're gathering, who it's for, and how people can join",
+      "Add access and participation details: languages, accessibility, and any support available",
+      "Publish your gathering and share the link with your community",
+      "Welcome participants and follow up after the gathering",
     ];
     return { home: {}, about: {}, organizersHero: {}, howItWorks: DEFAULT_WORKFLOW, pricingPlans: DEFAULT_PLANS, ...defaults };
   }

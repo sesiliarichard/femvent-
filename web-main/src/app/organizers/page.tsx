@@ -62,10 +62,10 @@ const planFeatures: Record<string, { label: string; value: string }[]> = {
 export default async function OrganizersPage() {
   const { organizerSpotlights, impactStats, pricingPlans, organizersHero, howItWorks } = await getSiteContent();
 
-  const heroTitle = organizersHero.title || "Professional tools for event creators";
+  const heroTitle = organizersHero.title || "Host a feminist gathering";
   const heroDescription =
     organizersHero.description ||
-    "Everything you need to create, promote, and manage your events. From ticket sales to attendee check-in, we've got you covered.";
+    "Tools for convening with care: share your gathering, welcome participants, and keep participation accessible. Free to use.";
 
   const fontVars = `${spaceGrotesk.variable} ${workSans.variable}`;
   const heading = "font-[family-name:var(--font-space-grotesk)]";
@@ -75,7 +75,7 @@ export default async function OrganizersPage() {
     <main className={`${fontVars} bg-[#FBF3FA]`}>
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-6 pt-16 pb-10">
-        <p className={`${heading} font-medium text-[13px] text-[#9B1F5C] mb-3.5`}>For Organizers</p>
+        <p className={`${heading} font-medium text-[13px] text-[#9B1F5C] mb-3.5`}>For Hosts</p>
         <h1 className={`${heading} font-bold text-4xl sm:text-[42px] leading-[1.1] text-[#2E1F45] max-w-2xl`}>
           {heroTitle}
         </h1>
@@ -83,7 +83,7 @@ export default async function OrganizersPage() {
         <div className="flex flex-wrap gap-3 mt-7">
           <a href={`${process.env.NEXT_PUBLIC_HOST_APP_URL}/signup`}>
             <button className={`${heading} font-bold text-sm bg-[#2E1F45] text-[#FBF3FA] px-6 py-3.5 rounded-sm`}>
-              Get started
+            Host a gathering
             </button>
           </a>
           <button className={`${heading} font-bold text-sm bg-transparent text-[#2E1F45] border border-[#D9C9E0] px-6 py-3.5 rounded-sm`}>
@@ -130,9 +130,9 @@ export default async function OrganizersPage() {
       {/* How it works — light background, colored step cards */}
       <section className="mx-auto max-w-6xl px-6 pb-16">
         <p className={`${heading} font-medium text-[13px] text-[#9B1F5C] mb-3.5`}>How it works</p>
-        <h2 className={`${heading} font-bold text-2xl text-[#2E1F45]`}>Simple tools for professional results</h2>
+        <h2 className={`${heading} font-bold text-2xl text-[#2E1F45]`}>Simple tools for convening with care</h2>
         <p className={`${body} text-[#5C4A6B] max-w-xl mt-2.5 mb-9 text-sm`}>
-          Create and manage events with tools designed to keep your team organized and your attendees happy.
+        Share your gathering and welcome participants with tools designed around access, care and consent.
         </p>
         <div className="grid gap-4 sm:grid-cols-2">
           {howItWorks.map((step, index) => {

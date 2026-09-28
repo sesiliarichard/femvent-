@@ -21,7 +21,7 @@ export default function OrganizerSignupPage() {
     event.preventDefault();
 
     if (!formData.fullName || !formData.companyName || !formData.companyAddress || !formData.email) {
-      setError('Please fill in your name, company name, address, and email.');
+      setError('Please fill in your name, collective or organization name, location, and email.');
       return;
     }
 
@@ -63,9 +63,9 @@ export default function OrganizerSignupPage() {
   return (
     <main className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-orange-50 px-6 py-20">
       <div className="mx-auto max-w-4xl rounded-[2rem] border border-rose-100 bg-white p-8 shadow-xl shadow-rose-100/70">
-        <h1 className="text-4xl font-black tracking-tight text-gray-900">Become a host and start creating events</h1>
+        <h1 className="text-4xl font-black tracking-tight text-gray-900">Host a gathering on FemVents</h1>
         <p className="mt-3 text-lg text-gray-600">
-          Create your organizer profile and continue into the host dashboard.
+        Tell us about you or your collective, then continue into the host dashboard. Hosting on FemVents is free.
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 grid gap-6">
@@ -88,31 +88,31 @@ export default function OrganizerSignupPage() {
                 type="email"
                 value={formData.email}
                 onChange={(event) => handleChange('email', event.target.value)}
-                placeholder="you@company.com"
+                placeholder="you@example.org"
                 className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-rose-400 focus:bg-white"
               />
             </label>
           </div>
 
           <label className="text-sm font-medium text-gray-700">
-            Company name
+          Collective or organization name
             <input
               required
               value={formData.companyName}
               onChange={(event) => handleChange('companyName', event.target.value)}
-              placeholder="Lumo Events"
+              placeholder="Your collective or organization"
               className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-rose-400 focus:bg-white"
             />
           </label>
 
           <label className="text-sm font-medium text-gray-700">
-            Company address
+          Location
             <textarea
               required
               rows={3}
               value={formData.companyAddress}
               onChange={(event) => handleChange('companyAddress', event.target.value)}
-              placeholder="Street, city, country"
+              placeholder="City and country"
               className="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-rose-400 focus:bg-white"
             />
           </label>

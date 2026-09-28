@@ -97,7 +97,7 @@ export default function PaymentStatusPage() {
             onClick={() => router.push(`/events/${eventId}`)}
             className="rounded-full bg-gradient-to-r from-rose-500 to-pink-500 px-6 py-3 text-sm font-semibold text-white shadow-lg"
           >
-            Back to Event
+            Back to Gathering
           </button>
         </div>
       </main>
@@ -155,7 +155,7 @@ export default function PaymentStatusPage() {
 
         <div className="text-left bg-gray-50 rounded-xl p-4 space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-gray-500">Ticket Type</span>
+            <span className="text-gray-500">Participation</span>
             <span className="font-semibold text-gray-900">{ticket.ticket_type}</span>
           </div>
           <div className="flex justify-between">

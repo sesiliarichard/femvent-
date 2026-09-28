@@ -61,7 +61,7 @@ export default async function SupportPage() {
         <p className={`${heading} font-medium text-[13px] text-[#9B1F5C] mb-3.5`}>Support</p>
         <h1 className={`${heading} font-bold text-4xl leading-[1.1] text-[#2E1F45]`}>We&apos;re here to help</h1>
         <p className={`${body} text-[#5C4A6B] max-w-md mt-4 text-[15px] leading-relaxed`}>
-          Get help with your events, account, or technical issues. Our support team is available to answer your
+        Get help with hosting a gathering, joining one, or using FemVents. We're here to answer your
           questions.
         </p>
         <div className="flex flex-wrap gap-3 mt-7">

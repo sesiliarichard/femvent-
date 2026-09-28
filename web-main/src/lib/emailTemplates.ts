@@ -42,7 +42,7 @@ const baseTemplate = (content: string) => `
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .header {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #9B1F5C 0%, #4A3B78 100%);
       color: white;
       padding: 30px 20px;
       text-align: center;
@@ -51,17 +51,17 @@ const baseTemplate = (content: string) => `
     .content { padding: 30px 20px; }
     .greeting { font-size: 18px; margin-bottom: 20px; color: #333; }
     .event-card {
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background: linear-gradient(135deg, #FBF3FA 0%, #F3D9EE 100%);
       border-radius: 8px;
       padding: 20px;
       margin: 20px 0;
-      border-left: 4px solid #667eea;
+      border-left: 4px solid #9B1F5C;
     }
-    .event-title { font-size: 22px; font-weight: 700; color: #667eea; margin: 0 0 10px 0; }
+    .event-title { font-size: 22px; font-weight: 700; color: #9B1F5C; margin: 0 0 10px 0; }
     .event-detail { margin: 8px 0; }
     .cta-button {
       display: inline-block;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #9B1F5C 0%, #4A3B78 100%);
       color: white;
       padding: 14px 32px;
       text-decoration: none;
@@ -75,7 +75,7 @@ const baseTemplate = (content: string) => `
       content: attr(data-step);
       position: absolute; left: 0; top: 0;
       width: 20px; height: 20px; border-radius: 50%;
-      background: #667eea; color: white;
+      background: #9B1F5C; color: white;
       font-size: 12px; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
     }
@@ -89,7 +89,7 @@ const baseTemplate = (content: string) => `
   <div class="email-container">
     ${content}
     <div class="footer">
-      <p>© ${new Date().getFullYear()} FemVents — Experiences engineered for bold communities</p>
+      <p>© ${new Date().getFullYear()} FemVents — Where feminist movements gather</p>
     </div>
   </div>
 </body>
@@ -99,20 +99,20 @@ const baseTemplate = (content: string) => `
 export const registrationConfirmationTemplate: EmailTemplate = {
     id: 'registration-confirmation',
     name: 'Registration Confirmation',
-    subject: "You're registered for {{eventTitle}}!",
+    subject: "You're joining {{eventTitle}}",
     html: (data) => baseTemplate(`
     <div class="header">
-      <h1>✅ You're Registered!</h1>
+      <h1>You're joining this gathering</h1>
     </div>
     <div class="content">
       <p class="greeting">Hi ${data.recipientName},</p>
-      <p>Your registration is confirmed. Here are your details:</p>
+      <p>Your place is confirmed. Here are the details:</p>
 
       <div class="event-card">
         <h2 class="event-title">${data.eventTitle}</h2>
         <div class="event-detail">📅 <strong>Date:</strong> ${data.eventDate}</div>
         ${data.eventLocation ? `<div class="event-detail">📍 <strong>Location:</strong> ${data.eventLocation}</div>` : ''}
-        ${data.ticketType ? `<div class="event-detail">🎫 <strong>Ticket:</strong> ${data.ticketType}</div>` : ''}
+        ${data.ticketType ? `<div class="event-detail">🎫 <strong>Participation:</strong> ${data.ticketType}</div>` : ''}
       </div>
 
        <p><strong>Your QR ticket is above</strong> — a downloadable PDF version is also attached to this email. Present either one at check-in.</p>
@@ -124,7 +124,7 @@ export const registrationConfirmationTemplate: EmailTemplate = {
         </center>
       ` : ''}
 
-      <p>See you there!</p>
+      <p>We look forward to gathering with you.</p>
       <p>— The FemVents Team</p>
     </div>
   `),

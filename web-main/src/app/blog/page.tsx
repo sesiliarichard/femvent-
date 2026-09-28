@@ -31,12 +31,12 @@ export default async function BlogPage() {
     <main className={`${fontVars} bg-[#FBF3FA]`}>
       {/* Hero */}
       <section className="mx-auto max-w-3xl px-6 pt-16 pb-10">
-        <p className={`${heading} font-medium text-[13px] text-[#9B1F5C] mb-3.5`}>Blog</p>
+        <p className={`${heading} font-medium text-[13px] text-[#9B1F5C] mb-3.5`}>Movement Notes</p>
         <h1 className={`${heading} font-bold text-4xl leading-[1.15] text-[#2E1F45] max-w-xl`}>
-          Tips and stories from the FemVents community
+        Stories, practice notes and reflections from feminist movements
         </h1>
         <p className={`${body} text-[#5C4A6B] max-w-lg mt-4 text-[15px] leading-relaxed`}>
-          Learn from successful event organizers and stay updated on trends in the African events scene.
+        Field notes, convening tools and conversations from feminist organizers, shared as part of the commons.
         </p>
       </section>
 
