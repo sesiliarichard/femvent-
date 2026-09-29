@@ -21,16 +21,16 @@ interface SupportContent {
 
 const DEFAULTS: SupportContent = {
   faq: [
-    { question: "How do I create an event on FemVents?", answer: "Download the app, create an organizer account, and fill in your event details including date, location, and ticket prices. You can publish your event in minutes." },
-    { question: "Can I create private or invite-only events?", answer: "Yes. You can set up password-protected events, send direct invitations, or create events that don't appear in public searches." },
-    { question: "What currencies do you support for payments?", answer: "We support USD, KES, NGN, ZAR, and other major African currencies. Payouts are processed within 3-5 business days after your event." },
-    { question: "Can I promote my event through social media?", answer: "Absolutely. Share your event directly to Facebook, Instagram, Twitter, and WhatsApp from the app." },
+    { question: "Is FemVents free to use?", answer: "Yes. There are no fees to discover gatherings, share opportunities, or connect with movements. If you value the platform, you can make an optional donation. Giving never affects your access or visibility." },
+    { question: "How do I host a gathering on FemVents?", answer: "Sign up as a host, then describe your gathering: why you're gathering, who it's for, and how people can join. You can publish it in minutes. If you need help, contact us and we'll support you." },
+    { question: "Can I host a private or invite-only gathering?", answer: "Yes. You can set up password-protected gatherings, send direct invitations, or keep a gathering out of public searches." },
+    { question: "How can I help shape FemVents?", answer: "Tell us what you need, what's missing, and what you'd like us to build through the Shape FemVents form. You can answer anonymously and skip any question." },
   ],
   supportTopics: [
-    { title: "Getting Started", items: ["Download FemVents on iOS / Android", "Host onboarding checklist", "Migrating existing attendees"], image: "" },
-    { title: "Ticketing & Access", items: ["Dynamic pricing tiers", "Group passes & bulk imports", "On-site scanning playbook"], image: "" },
-    { title: "Marketing & Growth", items: ["Smart audiences", "Promo codes + referral loops", "Attribution dashboards"], image: "" },
-    { title: "Finance & Compliance", items: ["Supported currencies", "Settlement schedules", "KYC / AML overview"], image: "" },
+    { title: "Getting Started", items: ["Download FemVents on iOS / Android", "Host onboarding guide", "Sharing your gathering"], image: "" },
+    { title: "Access & Participation", items: ["Adding accessibility details", "Languages and interpretation", "Supporting participants"], image: "" },
+    { title: "Care, Privacy & Safety", items: ["Setting a code of conduct", "Privacy and consent guidance", "Reporting a concern"], image: "" },
+    { title: "Shape FemVents", items: ["Share your feedback", "Join a feedback conversation", "Support the commons"], image: "" },
   ],
 };
 

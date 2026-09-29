@@ -17,9 +17,9 @@ interface BlogContent {
 
 const DEFAULTS: BlogContent = {
   blogPosts: [
-    { title: "How to Create Events People Actually Want to Attend", excerpt: "Tips from successful event organizers on creating memorable experiences that keep people coming back.", author: "Sarah Johnson", date: "Jan 20, 2026", image: "" },
-    { title: "Event Trends We're Seeing in 2026", excerpt: "From hybrid events to community-focused gatherings, here's what's working for organizers this year.", author: "Michael Ochieng", date: "Jan 12, 2026", image: "" },
-    { title: "Success Story: How Bloom Gatherings Grew Their Events", excerpt: "Learn how one organizer went from small local meetups to hosting events across three cities in under a year.", author: "FemVents Team", date: "Jan 5, 2026", image: "" },
+    { title: "How We Gather: Notes on Feminist Convening", excerpt: "Practice notes on facilitation, care, and building gatherings that are accessible and safe.", author: "FemVents Team", date: "Coming soon", image: "" },
+    { title: "After the Gathering: What Comes Next", excerpt: "How gatherings become collaborations, campaigns, and lasting relationships.", author: "FemVents Team", date: "Coming soon", image: "" },
+    { title: "Convening Tools: Agendas, Access, and Safer-Space Guidelines", excerpt: "Templates and methods shared by feminist organizers for hosting with care.", author: "FemVents Team", date: "Coming soon", image: "" },
   ],
 };
 

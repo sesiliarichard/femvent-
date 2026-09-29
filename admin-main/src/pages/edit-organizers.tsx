@@ -35,7 +35,6 @@ interface OrganizersContent {
   heroTitle: string;
   heroDescription: string;
   organizerSpotlights: OrganizerSpotlight[];
-  pricingPlans: PricingPlan[];
   howItWorks: string[];
   impactStats: ImpactStat[];
 }
@@ -74,30 +73,17 @@ const DEFAULT_FEATURES: Record<string, PlanFeature[]> = {
 };
 
 const DEFAULTS: OrganizersContent = {
-  heroTitle: "Professional tools for event creators",
-  heroDescription: "Everything you need to create, promote, and manage your events. From ticket sales to attendee check-in, we've got you covered.",
-  organizerSpotlights: [
-    { name: "Nova Stage Collective", focus: "Music and nightlife events", stat: "36 sold-out shows", blurb: "Using FemVents for ticket sales and check-in, Nova Stage has seen more repeat attendees and smoother event operations.", image: "" },
-    { name: "Elevate Studio", focus: "Corporate retreats and workshops", stat: "4.9 ★ rating", blurb: "With custom branding and easy payment processing, Elevate Studio manages multi-country events without the usual headaches.", image: "" },
-    { name: "Bloom Gatherings", focus: "Markets and pop-up events", stat: "120+ vendors", blurb: "Vendor registration, instant payouts, and real-time sales tracking have made Bloom's festival circuit much easier to manage.", image: "" },
-  ],
-  pricingPlans: [
-    { id: 'starter', name: 'Starter', price: '$29/mo', description: 'For new organizers launching their first event.', badge: 'Best for first-time hosts', features: DEFAULT_FEATURES.starter },
-    { id: 'growth', name: 'Growth', price: '$79/mo', description: 'For growing communities managing more than one event.', badge: 'Popular for scaling teams', features: DEFAULT_FEATURES.growth },
-    { id: 'pro', name: 'Pro', price: '$149/mo', description: 'Advanced automation, analytics, and premium support.', badge: 'Built for full-scale operations', features: DEFAULT_FEATURES.pro },
-  ],
+  heroTitle: "Host a feminist gathering",
+  heroDescription: "Tools for convening with care: share your gathering, welcome participants, and keep participation accessible. Free to use.",
+  organizerSpotlights: [],
   howItWorks: [
-    "Upload your event details and images",
-    "Set up ticket types and pricing",
-    "Publish and share your event link",
-    "Track ticket sales and check in attendees on event day",
+    "Describe your gathering: why you're gathering, who it's for, and how people can join",
+    "Add access and participation details: languages, accessibility, and any support available",
+    "Publish your gathering and share the link with your community",
+    "Welcome participants and follow up after the gathering",
   ],
-  impactStats: [
-    { label: "Communities activated", value: "210+", detail: "across 12 countries" },
-    { label: "Tickets issued", value: "1.2M", detail: "with 82% retention" },
-    { label: "Avg. NPS", value: "67", detail: "across hosts & guests" },
-    { label: "Campaign lift", value: "3.4x", detail: "vs. generic ads" },
-  ],
+  impactStats: [],
+
 };
 
 export default function EditOrganizersPage() {
@@ -124,7 +110,6 @@ export default function EditOrganizersPage() {
           heroTitle: data.content.organizersHero?.title || DEFAULTS.heroTitle,
           heroDescription: data.content.organizersHero?.description || DEFAULTS.heroDescription,
           organizerSpotlights: data.content.organizerSpotlights || DEFAULTS.organizerSpotlights,
-          pricingPlans: data.content.pricingPlans || DEFAULTS.pricingPlans,
           howItWorks: data.content.howItWorks || DEFAULTS.howItWorks,
           impactStats: data.content.impactStats || DEFAULTS.impactStats,
         });
@@ -149,7 +134,6 @@ export default function EditOrganizersPage() {
         ...(existing?.content || {}),
         organizersHero: { title: content.heroTitle, description: content.heroDescription },
         organizerSpotlights: content.organizerSpotlights,
-        pricingPlans: content.pricingPlans,
         howItWorks: content.howItWorks,
         impactStats: content.impactStats,
       };
@@ -175,20 +159,6 @@ export default function EditOrganizersPage() {
     const updated = [...content.organizerSpotlights];
     updated[i] = { ...updated[i], [field]: value };
     setContent({ ...content, organizerSpotlights: updated });
-  };
-
-  const updatePlan = (i: number, field: 'id' | 'name' | 'price' | 'description' | 'badge', value: string) => {
-    const updated = [...content.pricingPlans];
-    updated[i] = { ...updated[i], [field]: value };
-    setContent({ ...content, pricingPlans: updated });
-  };
-
-  const updatePlanFeature = (planIndex: number, featureIndex: number, field: keyof PlanFeature, value: string) => {
-    const updated = [...content.pricingPlans];
-    const features = [...(updated[planIndex].features || [])];
-    features[featureIndex] = { ...features[featureIndex], [field]: value };
-    updated[planIndex] = { ...updated[planIndex], features };
-    setContent({ ...content, pricingPlans: updated });
   };
 
   const updateStep = (i: number, value: string) => {
@@ -260,57 +230,6 @@ export default function EditOrganizersPage() {
         </div>
       </div>
 
-      {/* Pricing Plans */}
-      <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
-        <div className="px-6 py-3.5 bg-secondary-600 text-white font-extrabold text-sm">Pricing Plans (3 plans)</div>
-        <div className="p-6 space-y-4">
-          {content.pricingPlans.map((plan, i) => (
-            <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3">
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Plan {i + 1} — ID</label>
-              <input type="text" value={plan.id} onChange={(e) => updatePlan(i, 'id', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Name</label>
-              <input type="text" value={plan.name} onChange={(e) => updatePlan(i, 'name', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Price</label>
-                  <input type="text" value={plan.price} onChange={(e) => updatePlan(i, 'price', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Badge</label>
-                  <input type="text" value={plan.badge} onChange={(e) => updatePlan(i, 'badge', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
-                </div>
-              </div>
-              <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Description</label>
-              <textarea value={plan.description} onChange={(e) => updatePlan(i, 'description', e.target.value)} rows={2} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
-
-              <div className="border-t border-gray-200 pt-3">
-                <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Feature breakdown (shown on the pricing cards)</p>
-                <div className="space-y-2">
-                  {(plan.features || []).map((feature, fi) => (
-                    <div key={fi} className="grid grid-cols-[100px_1fr] gap-2">
-                      <input
-                        type="text"
-                        value={feature.label}
-                        onChange={(e) => updatePlanFeature(i, fi, 'label', e.target.value)}
-                        placeholder="Label"
-                        className="px-2 py-1.5 border border-gray-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-primary-500"
-                      />
-                      <input
-                        type="text"
-                        value={feature.value}
-                        onChange={(e) => updatePlanFeature(i, fi, 'value', e.target.value)}
-                        placeholder="Value"
-                        className="px-2 py-1.5 border border-gray-200 rounded-lg text-xs outline-none focus:ring-2 focus:ring-primary-500"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
-          <p className="text-xs text-gray-400 italic">The plan with id "growth" shows the "Most popular" badge on the live page.</p>
-        </div>
-      </div>
 
       {/* How It Works */}
       <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">

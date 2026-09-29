@@ -23,6 +23,30 @@ interface VenueAddress {
   latitude?: number;
   longitude?: number;
 }
+interface AccessInfo {
+  languages?: string[];
+  interpretation?: boolean;
+  captions?: boolean;
+  wheelchair_accessible?: boolean;
+  online_participation?: boolean;
+  childcare?: boolean;
+  transport_support?: boolean;
+  scholarships_available?: boolean;
+  cost_notes?: string;
+  notes?: string;
+}
+interface CareSafety {
+  code_of_conduct_url?: string;
+  safeguarding_contact?: string;
+  photography_policy?: string;
+  recording_policy?: string;
+}
+interface PrivacyInfo {
+  participant_names_public?: boolean;
+  location_disclosed_after_registration?: boolean;
+  registration_data_retained?: boolean;
+  notes?: string;
+}
 interface EventData {
   title: string;
   description: string;
@@ -39,6 +63,11 @@ interface EventData {
   speakers: Speaker[];
   agenda: AgendaItem[];
   partners: Partner[];
+  audienceDescription: string;
+  accessInfo: AccessInfo;
+  careSafety: CareSafety;
+  privacyInfo: PrivacyInfo;
+  afterGathering: string;
 }
 
 interface TicketTier {
@@ -48,7 +77,23 @@ interface TicketTier {
   price: string;
 }
 
-type TabType = 'Basic' | 'Tickets' | 'Speakers' | 'Agenda' | 'Partners';
+type TabType = 'Basic' | 'Access' | 'Tickets' | 'Speakers' | 'Agenda' | 'Partners';
+
+const accessChecklist: Array<{ key: keyof AccessInfo; label: string }> = [
+  { key: 'interpretation', label: 'Interpretation provided' },
+  { key: 'captions', label: 'Captions available' },
+  { key: 'wheelchair_accessible', label: 'Wheelchair accessible' },
+  { key: 'online_participation', label: 'Online participation option' },
+  { key: 'childcare', label: 'Childcare available' },
+  { key: 'transport_support', label: 'Transport support' },
+  { key: 'scholarships_available', label: 'Scholarships / fee waivers' },
+];
+
+const privacyChecklist: Array<{ key: keyof PrivacyInfo; label: string }> = [
+  { key: 'participant_names_public', label: 'Participant names may be visible to others' },
+  { key: 'location_disclosed_after_registration', label: 'Exact location is shared only after registration' },
+  { key: 'registration_data_retained', label: 'Registration details are retained after the gathering' },
+];
 
 export default function EditEventPage() {
   const { userProfile } = useAuth();
@@ -73,6 +118,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
     title: '', description: '', posterURL: null, type: 'Conference', multiDay: false,
     startAt: new Date(), endAt: new Date(), venue: '', capacity: '', priceText: '', registrationUrl: '',
     speakers: [], agenda: [], partners: [],
+    audienceDescription: '', accessInfo: {}, careSafety: {}, privacyInfo: {}, afterGathering: '',
   });
   const [activeTab, setActiveTab] = useState<TabType>('Basic');
   const [uploading, setUploading] = useState(false);
@@ -106,6 +152,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
 
   const tabs: { id: TabType; label: string; icon: React.ReactNode }[] = [
     { id: 'Basic', label: 'Basic Info', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg> },
+    { id: 'Access', label: 'Access & Care', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg> },
     { id: 'Tickets', label: 'Tickets', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h2a2 2 0 002-2 1 1 0 112 0 2 2 0 002 2h2a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2h-2a2 2 0 00-2 2 1 1 0 11-2 0 2 2 0 00-2-2z" /></svg> },
     { id: 'Speakers', label: 'Speakers', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" /></svg> },
     { id: 'Agenda', label: 'Agenda', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg> },
@@ -146,6 +193,11 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
           speakers: Array.isArray(data.speakers) ? data.speakers : [],
           agenda: Array.isArray(data.agenda) ? data.agenda.map((it: any) => ({ ...it, time: it.time ? new Date(it.time) : new Date() })) : [],
           partners: Array.isArray(data.partners) ? data.partners : [],
+          audienceDescription: data.audience_description || '',
+          accessInfo: data.access_info || {},
+          careSafety: data.care_safety || {},
+          privacyInfo: data.privacy_info || {},
+          afterGathering: data.after_gathering || '',
         });
 
         const { data: tiers } = await supabase
@@ -325,6 +377,11 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
           speakers: eventData.speakers.map(s => ({ ...s })),
           agenda: eventData.agenda.map(a => ({ ...a, time: a.time.toISOString() })),
           partners: eventData.partners.map(p => ({ ...p })),
+          audience_description: eventData.audienceDescription || null,
+          access_info: eventData.accessInfo,
+          care_safety: eventData.careSafety,
+          privacy_info: eventData.privacyInfo,
+          after_gathering: eventData.afterGathering || null,
         })
         .eq('id', eventId);
 
@@ -775,6 +832,139 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
                     <p className="text-red-500 text-xs mt-1.5 font-semibold">{errors.registrationUrl}</p>
                   )}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'Access' && (
+            <div className="space-y-7">
+              <div>
+                <h3 className="text-lg font-extrabold text-gray-900 mb-1">Who is this gathering for?</h3>
+                <p className="text-sm text-gray-500 mb-3">Public, affinity-based, invite-only, a specific community — help people know if this is for them.</p>
+                <textarea
+                  value={eventData.audienceDescription}
+                  onChange={(e) => updateEventData({ audienceDescription: e.target.value })}
+                  rows={3}
+                  className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-gray-900 font-medium placeholder-gray-400"
+                  placeholder="e.g. Open to all feminist organizers, or: For young feminists (18-30) in East Africa"
+                />
+              </div>
+
+              <div>
+                <h3 className="text-lg font-extrabold text-gray-900 mb-3">Access & participation</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4">
+                  {accessChecklist.map(({ key, label }) => (
+                    <label key={key} className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 cursor-pointer hover:border-primary-300">
+                      <input
+                        type="checkbox"
+                        checked={!!eventData.accessInfo[key]}
+                        onChange={(e) =>
+                          updateEventData({ accessInfo: { ...eventData.accessInfo, [key]: e.target.checked } })
+                        }
+                      />
+                      <span className="text-sm font-medium text-gray-700">{label}</span>
+                    </label>
+                  ))}
+                </div>
+                <input
+                  type="text"
+                  placeholder="Languages (comma-separated, e.g. English, Kiswahili, French)"
+                  value={eventData.accessInfo.languages?.join(', ') || ''}
+                  onChange={(e) =>
+                    updateEventData({
+                      accessInfo: {
+                        ...eventData.accessInfo,
+                        languages: e.target.value.split(',').map((s) => s.trim()).filter(Boolean),
+                      },
+                    })
+                  }
+                  className="w-full mb-3 px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-gray-900 font-medium placeholder-gray-400"
+                />
+                <input
+                  type="text"
+                  placeholder="Cost notes (e.g. 'Free, donations welcome' or 'Scholarships available on request')"
+                  value={eventData.accessInfo.cost_notes || ''}
+                  onChange={(e) => updateEventData({ accessInfo: { ...eventData.accessInfo, cost_notes: e.target.value } })}
+                  className="w-full mb-3 px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-gray-900 font-medium placeholder-gray-400"
+                />
+                <textarea
+                  placeholder="Any other access notes"
+                  value={eventData.accessInfo.notes || ''}
+                  onChange={(e) => updateEventData({ accessInfo: { ...eventData.accessInfo, notes: e.target.value } })}
+                  rows={2}
+                  className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-gray-900 font-medium placeholder-gray-400"
+                />
+              </div>
+
+              <div>
+                <h3 className="text-lg font-extrabold text-gray-900 mb-3">Care & safety</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <input
+                    type="url"
+                    placeholder="Code of conduct URL"
+                    value={eventData.careSafety.code_of_conduct_url || ''}
+                    onChange={(e) => updateEventData({ careSafety: { ...eventData.careSafety, code_of_conduct_url: e.target.value } })}
+                    className="px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-gray-900 font-medium placeholder-gray-400"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Safeguarding contact (name / email)"
+                    value={eventData.careSafety.safeguarding_contact || ''}
+                    onChange={(e) => updateEventData({ careSafety: { ...eventData.careSafety, safeguarding_contact: e.target.value } })}
+                    className="px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-gray-900 font-medium placeholder-gray-400"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Photography policy"
+                    value={eventData.careSafety.photography_policy || ''}
+                    onChange={(e) => updateEventData({ careSafety: { ...eventData.careSafety, photography_policy: e.target.value } })}
+                    className="px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-gray-900 font-medium placeholder-gray-400"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Recording policy"
+                    value={eventData.careSafety.recording_policy || ''}
+                    onChange={(e) => updateEventData({ careSafety: { ...eventData.careSafety, recording_policy: e.target.value } })}
+                    className="px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-gray-900 font-medium placeholder-gray-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-extrabold text-gray-900 mb-3">Privacy</h3>
+                <div className="space-y-3">
+                  {privacyChecklist.map(({ key, label }) => (
+                    <label key={key} className="flex items-center gap-2 rounded-xl border border-gray-200 px-4 py-3 cursor-pointer hover:border-primary-300">
+                      <input
+                        type="checkbox"
+                        checked={!!eventData.privacyInfo[key]}
+                        onChange={(e) =>
+                          updateEventData({ privacyInfo: { ...eventData.privacyInfo, [key]: e.target.checked } })
+                        }
+                      />
+                      <span className="text-sm font-medium text-gray-700">{label}</span>
+                    </label>
+                  ))}
+                  <textarea
+                    placeholder="Other privacy notes"
+                    value={eventData.privacyInfo.notes || ''}
+                    onChange={(e) => updateEventData({ privacyInfo: { ...eventData.privacyInfo, notes: e.target.value } })}
+                    rows={2}
+                    className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-gray-900 font-medium placeholder-gray-400"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-lg font-extrabold text-gray-900 mb-1">What happens afterward?</h3>
+                <p className="text-sm text-gray-500 mb-3">Network, working group, campaign, publication, next gathering — what comes next?</p>
+                <textarea
+                  value={eventData.afterGathering}
+                  onChange={(e) => updateEventData({ afterGathering: e.target.value })}
+                  rows={3}
+                  className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-gray-900 font-medium placeholder-gray-400"
+                  placeholder="e.g. Notes and resources shared with a private working group afterward"
+                />
               </div>
             </div>
           )}

@@ -26,39 +26,6 @@ const stepColors = [
   { border: "border-[#C98BC0]" },
 ];
 
-const planFeatures: Record<string, { label: string; value: string }[]> = {
-  starter: [
-    { label: "Events", value: "1 live event at a time" },
-    { label: "Ticketing", value: "Free & paid tickets" },
-    { label: "Check-in", value: "QR scanner" },
-    { label: "Team", value: "1 (you)" },
-    { label: "Marketing", value: "Basic email notifications" },
-    { label: "Analytics", value: "Basic sales dashboard" },
-    { label: "Automation", value: "—" },
-    { label: "Support", value: "Email support" },
-  ],
-  growth: [
-    { label: "Events", value: "Unlimited simultaneous events" },
-    { label: "Ticketing", value: "Discount codes, waitlists" },
-    { label: "Check-in", value: "QR scanner + check-in analytics" },
-    { label: "Team", value: "Up to 5 seats" },
-    { label: "Marketing", value: "Bulk email & SMS, affiliate tracking" },
-    { label: "Analytics", value: "Full sales & attendee analytics" },
-    { label: "Automation", value: "Basic email workflows" },
-    { label: "Support", value: "Priority email support" },
-  ],
-  pro: [
-    { label: "Events", value: "Unlimited + multi-day events" },
-    { label: "Ticketing", value: "Seating/seat maps, A/B testing" },
-    { label: "Check-in", value: "Advanced check-in + live analytics" },
-    { label: "Team", value: "Unlimited seats" },
-    { label: "Marketing", value: "Full email workflow automation" },
-    { label: "Analytics", value: "Custom reports, exportable data" },
-    { label: "Automation", value: "Tax calc, invoicing, virtual events (Zoom)" },
-    { label: "Support", value: "Dedicated priority support" },
-  ],
-};
-
 export default async function OrganizersPage() {
   const { organizerSpotlights, impactStats, pricingPlans, organizersHero, howItWorks } = await getSiteContent();
 
@@ -93,25 +60,27 @@ export default async function OrganizersPage() {
       </section>
 
       {/* Organizer spotlights */}
-      <section className="mx-auto max-w-6xl px-6 pb-16 grid gap-5 sm:grid-cols-2">
-        {organizerSpotlights.map((org: any, index: number) => (
-          <article key={org.name} className="border border-[#D9C9E0] rounded-sm overflow-hidden bg-white">
-            <img
-              src={org.image || spotlightImageFallbacks[index % spotlightImageFallbacks.length]}
-              alt={org.name}
-              className="w-full h-[150px] object-cover"
-            />
-            <div className="p-[22px]">
-              <p className={`${heading} font-medium text-xs text-[#8A7A96] uppercase tracking-wider`}>
-                {org.focus}
-              </p>
-              <h3 className={`${heading} font-bold text-xl text-[#2E1F45] mt-2`}>{org.name}</h3>
-              <p className={`${body} font-medium text-[13px] text-[#9B1F5C] mt-1.5`}>{org.stat}</p>
-              <p className={`${body} text-sm text-[#5C4A6B] mt-2.5`}>{org.blurb}</p>
-            </div>
-          </article>
-        ))}
-      </section>
+      {organizerSpotlights.length > 0 && (
+        <section className="mx-auto max-w-6xl px-6 pb-16 grid gap-5 sm:grid-cols-2">
+          {organizerSpotlights.map((org: any, index: number) => (
+            <article key={org.name} className="border border-[#D9C9E0] rounded-sm overflow-hidden bg-white">
+              <img
+                src={org.image || spotlightImageFallbacks[index % spotlightImageFallbacks.length]}
+                alt={org.name}
+                className="w-full h-[150px] object-cover"
+              />
+              <div className="p-[22px]">
+                <p className={`${heading} font-medium text-xs text-[#8A7A96] uppercase tracking-wider`}>
+                  {org.focus}
+                </p>
+                <h3 className={`${heading} font-bold text-xl text-[#2E1F45] mt-2`}>{org.name}</h3>
+                <p className={`${body} font-medium text-[13px] text-[#9B1F5C] mt-1.5`}>{org.stat}</p>
+                <p className={`${body} text-sm text-[#5C4A6B] mt-2.5`}>{org.blurb}</p>
+              </div>
+            </article>
+          ))}
+        </section>
+      )}
 
       <section className="mx-auto max-w-6xl px-6 pt-3 pb-16">
         <div className="bg-[#2E1F45] rounded-sm p-10 text-center">
@@ -149,18 +118,20 @@ export default async function OrganizersPage() {
         </div>
       </section>
 
-         {/* Impact stats */}
-         <section className="mx-auto max-w-6xl px-6 pb-20 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {impactStats.map((stat) => (
-          <div key={stat.label} className="bg-white border border-[#D9C9E0] rounded-sm p-5">
-            <p className={`${heading} font-medium text-[10.5px] uppercase tracking-wider text-[#8A7A96]`}>
-              {stat.label}
-            </p>
-            <p className={`${heading} font-bold text-[28px] mt-2.5 text-[#9B1F5C]`}>{stat.value}</p>
-            <p className={`${body} text-[13px] mt-1.5 text-[#5C4A6B]`}>{stat.detail}</p>
-          </div>
-        ))}
-      </section>
+      {/* Impact stats */}
+      {impactStats.length > 0 && (
+        <section className="mx-auto max-w-6xl px-6 pb-20 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {impactStats.map((stat) => (
+            <div key={stat.label} className="bg-white border border-[#D9C9E0] rounded-sm p-5">
+              <p className={`${heading} font-medium text-[10.5px] uppercase tracking-wider text-[#8A7A96]`}>
+                {stat.label}
+              </p>
+              <p className={`${heading} font-bold text-[28px] mt-2.5 text-[#9B1F5C]`}>{stat.value}</p>
+              <p className={`${body} text-[13px] mt-1.5 text-[#5C4A6B]`}>{stat.detail}</p>
+            </div>
+          ))}
+        </section>
+      )}
     </main>
   );
 }

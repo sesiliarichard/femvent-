@@ -1,4 +1,5 @@
 import { Space_Grotesk, Work_Sans } from "next/font/google";
+import Link from "next/link";
 import { brand } from "@/lib/content";
 import { getSiteContent } from "@/lib/siteContent";
 
@@ -199,7 +200,13 @@ export default async function Home() {
               </div>
             );
           })}
-        </div>
+              </div>
+        <Link
+          href="/principles"
+          className={`${heading} inline-flex items-center gap-1.5 font-bold text-sm text-[#9B1F5C] mt-6 hover:text-[#7A1745] transition-colors`}
+        >
+          Read our full Convening Principles →
+        </Link>
       </section>
       
       {/* Quote block */}

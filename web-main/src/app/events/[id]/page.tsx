@@ -8,6 +8,33 @@ interface EventPageProps {
   params: Promise<{ id: string }>;
 }
 
+interface AccessInfo {
+  languages?: string[];
+  interpretation?: boolean;
+  captions?: boolean;
+  wheelchair_accessible?: boolean;
+  online_participation?: boolean;
+  childcare?: boolean;
+  transport_support?: boolean;
+  scholarships_available?: boolean;
+  cost_notes?: string;
+  notes?: string;
+}
+
+interface CareSafety {
+  code_of_conduct_url?: string;
+  safeguarding_contact?: string;
+  photography_policy?: string;
+  recording_policy?: string;
+}
+
+interface PrivacyInfo {
+  participant_names_public?: boolean;
+  location_disclosed_after_registration?: boolean;
+  registration_data_retained?: boolean;
+  notes?: string;
+}
+
 async function getEvent(id: string) {
   const { data, error } = await supabase
     .from("events")
@@ -18,6 +45,16 @@ async function getEvent(id: string) {
   if (error || !data) return null;
   return data;
 }
+
+const accessChecklistLabels: Array<{ key: keyof AccessInfo; label: string }> = [
+  { key: "interpretation", label: "Interpretation provided" },
+  { key: "captions", label: "Captions available" },
+  { key: "wheelchair_accessible", label: "Wheelchair accessible" },
+  { key: "online_participation", label: "Online participation option" },
+  { key: "childcare", label: "Childcare available" },
+  { key: "transport_support", label: "Transport support" },
+  { key: "scholarships_available", label: "Scholarships / fee waivers available" },
+];
 
 export default async function EventDetailPage({ params }: EventPageProps) {
   const { id } = await params;
@@ -38,6 +75,33 @@ export default async function EventDetailPage({ params }: EventPageProps) {
   const venueCity = event.venue?.city || "";
   const speakers: Array<{ name?: string; title?: string }> = event.speakers || [];
   const agenda: Array<{ title?: string; time?: string }> = event.agenda || [];
+
+  const audienceDescription: string | undefined = event.audience_description;
+  const access: AccessInfo | undefined = event.access_info;
+  const careSafety: CareSafety | undefined = event.care_safety;
+  const privacy: PrivacyInfo | undefined = event.privacy_info;
+  const afterGathering: string | undefined = event.after_gathering;
+
+  const hasAccessContent =
+    access &&
+    (access.notes ||
+      access.cost_notes ||
+      (access.languages && access.languages.length > 0) ||
+      accessChecklistLabels.some(({ key }) => access[key] === true));
+
+  const hasCareSafetyContent =
+    careSafety &&
+    (careSafety.code_of_conduct_url ||
+      careSafety.safeguarding_contact ||
+      careSafety.photography_policy ||
+      careSafety.recording_policy);
+
+  const hasPrivacyContent =
+    privacy &&
+    (privacy.notes ||
+      privacy.participant_names_public !== undefined ||
+      privacy.location_disclosed_after_registration !== undefined ||
+      privacy.registration_data_retained !== undefined);
 
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-16 px-6 pb-20">
@@ -63,6 +127,119 @@ export default async function EventDetailPage({ params }: EventPageProps) {
               {event.description}
             </p>
           </article>
+
+          {audienceDescription && (
+            <article className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
+              <SectionHeading eyebrow="Participation" title="Who is this gathering for?" />
+              <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-gray-600">
+                {audienceDescription}
+              </p>
+            </article>
+          )}
+
+          {hasAccessContent && (
+            <article className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
+              <SectionHeading eyebrow="Participating with access needs" title="Access & participation" />
+              <div className="mt-4 flex flex-wrap gap-2">
+                {accessChecklistLabels
+                  .filter(({ key }) => access?.[key] === true)
+                  .map(({ key, label }) => (
+                    <span
+                      key={key}
+                      className="rounded-full bg-[#F3D9EE] px-3 py-1.5 text-xs font-medium text-[#7A1745]"
+                    >
+                      ✓ {label}
+                    </span>
+                  ))}
+              </div>
+              {access?.languages && access.languages.length > 0 && (
+                <p className="mt-3 text-sm text-gray-600">
+                  <span className="font-semibold text-gray-900">Languages: </span>
+                  {access.languages.join(", ")}
+                </p>
+              )}
+              {access?.cost_notes && (
+                <p className="mt-3 text-sm text-gray-600">
+                  <span className="font-semibold text-gray-900">Cost: </span>
+                  {access.cost_notes}
+                </p>
+              )}
+              {access?.notes && (
+                <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-gray-600">
+                  {access.notes}
+                </p>
+              )}
+            </article>
+          )}
+
+          {hasCareSafetyContent && (
+            <article className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
+              <SectionHeading eyebrow="Gathering with care" title="Care & safety" />
+              <div className="mt-4 flex flex-col gap-3 text-sm text-gray-600">
+                {careSafety?.code_of_conduct_url && (
+                  <p>
+                    <span className="font-semibold text-gray-900">Code of conduct: </span>
+                    <a
+                      href={careSafety.code_of_conduct_url}
+                      className="text-[#9B1F5C] underline"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Read it here
+                    </a>
+                  </p>
+                )}
+                {careSafety?.safeguarding_contact && (
+                  <p>
+                    <span className="font-semibold text-gray-900">Safeguarding contact: </span>
+                    {careSafety.safeguarding_contact}
+                  </p>
+                )}
+                {careSafety?.photography_policy && (
+                  <p>
+                    <span className="font-semibold text-gray-900">Photography policy: </span>
+                    {careSafety.photography_policy}
+                  </p>
+                )}
+                {careSafety?.recording_policy && (
+                  <p>
+                    <span className="font-semibold text-gray-900">Recording policy: </span>
+                    {careSafety.recording_policy}
+                  </p>
+                )}
+              </div>
+            </article>
+          )}
+
+          {hasPrivacyContent && (
+            <article className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
+              <SectionHeading eyebrow="Before you join" title="Privacy" />
+              <div className="mt-4 flex flex-col gap-2 text-sm text-gray-600">
+                {privacy?.participant_names_public !== undefined && (
+                  <p>
+                    {privacy.participant_names_public
+                      ? "Participant names may be visible to others at this gathering."
+                      : "Participant names are kept private."}
+                  </p>
+                )}
+                {privacy?.location_disclosed_after_registration !== undefined && (
+                  <p>
+                    {privacy.location_disclosed_after_registration
+                      ? "The exact location is shared after you register."
+                      : "The location is public."}
+                  </p>
+                )}
+                {privacy?.registration_data_retained !== undefined && (
+                  <p>
+                    {privacy.registration_data_retained
+                      ? "Your registration details are retained by the host."
+                      : "Your registration details are not retained after the gathering."}
+                  </p>
+                )}
+                {privacy?.notes && <p className="whitespace-pre-line">{privacy.notes}</p>}
+              </div>
+            </article>
+          )}
 
           {speakers.length > 0 && (
             <article className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
@@ -104,6 +281,15 @@ export default async function EventDetailPage({ params }: EventPageProps) {
                   </div>
                 ))}
               </div>
+            </article>
+          )}
+
+          {afterGathering && (
+            <article className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
+              <SectionHeading eyebrow="Beyond this gathering" title="What happens afterward?" />
+              <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-gray-600">
+                {afterGathering}
+              </p>
             </article>
           )}
         </div>

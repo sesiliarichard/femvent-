@@ -31,24 +31,23 @@ interface EventsContent {
 
 const DEFAULTS: EventsContent = {
   categories: [
-    { title: "Concerts & Nightlife", copy: "Live sets, DJ residencies, rooftop sunsets, and late-night stories.", image: "" },
-    { title: "Business & Tech", copy: "Summits, pitch nights, founder circles, and product debuts.", image: "" },
-    { title: "Wellness & Lifestyle", copy: "Retreats, mindful mornings, fitness pop-ups, and spa residencies.", image: "" },
-    { title: "Arts & Culture", copy: "Gallery openings, film premieres, poetry lounges, and theatre.", image: "" },
-    { title: "Food & Beverage", copy: "Chef tables, tasting flights, cocktail labs, and food truck rallies.", image: "" },
-    { title: "Community & Impact", copy: "Give-back drives, learning labs, mentorship cohorts, and more.", image: "" },
+    { title: "Organizing", copy: "Movement building, campaigns, collective action, and strategy spaces.", image: "" },
+    { title: "Bodily autonomy", copy: "Rights, health, and choice: learning circles, convenings, and actions.", image: "" },
+    { title: "Feminist tech", copy: "Power, data, AI, and digital rights through a feminist lens.", image: "" },
+    { title: "Climate justice", copy: "Land, water, ecology, and the feminist politics of the climate crisis.", image: "" },
+    { title: "Economic justice", copy: "Labour, care work, livelihoods, and alternative economies.", image: "" },
+    { title: "Queer liberation", copy: "Community, safety, joy, and organizing for queer freedom.", image: "" },
   ],
   featuredEvents: [
-    { title: "Tech Founders Summit", city: "Nairobi", date: "Feb 15 • 09:00 EAT", summary: "A two-day conference for startup founders and investors.", tags: ["Business", "Networking", "Tech"], image: "" },
-    { title: "Midnight Sessions", city: "Lagos", date: "Feb 28 • 22:00 WAT", summary: "Live music and DJ sets under the stars.", tags: ["Music", "Nightlife", "18+"], image: "" },
-    { title: "Wellness Weekend", city: "Kigali", date: "Mar 8 • 08:00 CAT", summary: "Three days of yoga, meditation, and healthy living.", tags: ["Wellness", "Retreat", "Limited"], image: "" },
-    { title: "Art & Design Fair", city: "Cape Town", date: "Mar 22 • 11:00 SAST", summary: "Local artists showcase their work at this weekend marketplace.", tags: ["Art", "Shopping", "Weekend"], image: "" },
+    { title: "Feminist Tech Learning Circle", city: "Online", date: "Date to be announced", summary: "A space to explore gender, power, and technology together, and to share tools and strategies.", tags: ["Feminist tech", "Virtual"], image: "" },
+    { title: "Bodily Autonomy Convening", city: "Nairobi", date: "Date to be announced", summary: "A gathering for organizers working on bodily autonomy to exchange knowledge and plan together.", tags: ["Bodily autonomy", "In-person"], image: "" },
+    { title: "Care and Rest: A Feminist Healing Space", city: "Kigali", date: "Date to be announced", summary: "An accessible gathering centred on collective care, rest, and solidarity.", tags: ["Care", "Hybrid"], image: "" },
   ],
   destinations: [
-    { city: "Nairobi", stat: "48 upcoming events" },
-    { city: "Lagos", stat: "62 upcoming events" },
-    { city: "Kigali", stat: "21 upcoming events" },
-    { city: "Cape Town", stat: "35 upcoming events" },
+    { city: "Nairobi", stat: "Feminist gatherings and collectives" },
+    { city: "Lagos", stat: "Feminist gatherings and collectives" },
+    { city: "Kigali", stat: "Feminist gatherings and collectives" },
+    { city: "Cape Town", stat: "Feminist gatherings and collectives" },
   ],
 };
 
@@ -237,14 +236,14 @@ export default function EditEventsPage() {
         </div>
       </div>
 
-      {/* Featured Events */}
+      {/* Featured Gatherings */}
       <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
-        <div className="px-6 py-3.5 bg-primary-600 text-white font-extrabold text-sm">Featured Events</div>
+        <div className="px-6 py-3.5 bg-primary-600 text-white font-extrabold text-sm">Featured Gatherings</div>
         <div className="p-6 space-y-4">
           {content.featuredEvents.map((event, i) => (
             <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3">
               <div className="flex justify-between items-start">
-                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Event {i + 1} — Title</label>
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide">Gathering {i + 1} — Title</label>
                 <button onClick={() => removeEvent(i)} className="text-xs text-secondary-600 font-bold hover:opacity-70">Remove</button>
               </div>
               <input type="text" value={event.title} onChange={(e) => updateEvent(i, 'title', e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500" />
@@ -268,7 +267,7 @@ export default function EditEventsPage() {
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500"
               />
               <ImageUploadWidget
-                label="Event Image"
+                label="Gathering Image"
                 value={event.image}
                 onChange={(url) => updateEvent(i, 'image', url)}
                 folder="events"
@@ -276,7 +275,7 @@ export default function EditEventsPage() {
             </div>
           ))}
           <button onClick={addEvent} className="w-full py-2.5 border-2 border-dashed border-gray-200 rounded-xl text-sm font-bold text-gray-500 hover:border-primary-400 hover:text-primary-600 transition-colors">
-            + Add event
+          + Add gathering
           </button>
         </div>
       </div>
