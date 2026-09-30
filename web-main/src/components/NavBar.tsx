@@ -5,8 +5,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { navLinks, brand } from "@/lib/content";
 
+const communityLinks = [
+  { href: "/principles", label: "Principles" },
+  { href: "/shape", label: "Shape FemVents" },
+];
+
 export default function NavBar() {
   const [open, setOpen] = useState(false);
+  const allLinks = [...navLinks, ...communityLinks];
   const pathname = usePathname();
   const isRegistrationPage = /^\/events\/[^/]+\/register/.test(pathname);
 
@@ -42,8 +48,8 @@ export default function NavBar() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6 md:py-4">
         {logo}
 
-        <nav className="hidden gap-6 text-sm font-medium text-[#5C4A6B] md:flex">
-          {navLinks.map((link) => (
+        <nav className="hidden gap-5 text-sm font-medium text-[#5C4A6B] md:flex">
+        {allLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -87,8 +93,8 @@ export default function NavBar() {
 
       {open && (
         <div className="border-t border-[#EDE2F0] bg-[#FBF3FA]/95 px-4 pb-4 pt-2 shadow-sm md:hidden">
-          <nav className="flex flex-col gap-2 text-sm font-medium text-[#5C4A6B]">
-            {navLinks.map((link) => (
+                   <nav className="flex flex-col gap-2 text-sm font-medium text-[#5C4A6B]">
+                   {allLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
