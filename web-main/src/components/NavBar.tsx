@@ -8,6 +8,7 @@ import { navLinks, brand } from "@/lib/content";
 const communityLinks = [
   { href: "/principles", label: "Principles" },
   { href: "/shape", label: "Shape FemVents" },
+  { href: "/support", label: "Support" },
 ];
 
 export default function NavBar() {
@@ -48,8 +49,8 @@ export default function NavBar() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6 md:py-4">
         {logo}
 
-        <nav className="hidden gap-4 text-sm font-medium text-[#5C4A6B] lg:flex">
-        {allLinks.map((link) => (
+        <nav className="hidden items-center gap-5 text-sm font-medium text-[#5C4A6B] lg:flex">
+        {navLinks.map((link) => (
             <Link
               key={link.href}
               href={link.href}
@@ -59,6 +60,31 @@ export default function NavBar() {
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#9B1F5C] group-hover:w-full transition-all duration-300" />
             </Link>
           ))}
+
+          <div className="relative group">
+            <button
+              type="button"
+              aria-haspopup="true"
+              className="inline-flex items-center gap-1 transition hover:text-[#9B1F5C] group-focus-within:text-[#9B1F5C]"
+            >
+              Community
+              <span aria-hidden="true" className="text-[10px]">▾</span>
+            </button>
+            <div className="invisible absolute left-0 top-full z-50 pt-3 opacity-0 transition group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100">
+              <div className="min-w-[200px] rounded-md border border-[#D9C9E0] bg-white p-2 shadow-md">
+                {communityLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    onClick={(e) => e.currentTarget.blur()}
+                    className="block rounded px-3 py-2 hover:bg-[#F3D9EE] hover:text-[#9B1F5C]"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </div>
         </nav>
 
         <div className="flex items-center gap-3">
