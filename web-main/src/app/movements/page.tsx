@@ -16,6 +16,9 @@ const workSans = Work_Sans({
 
 const logoFallbackColors = ["#E8743B", "#9B1F5C", "#4A3B78", "#C9508A"];
 
+// To replace the banner photo, change this link (or use your own file, e.g. "/images/movements-hero.jpg")
+const bannerImage = "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=1600&q=80";
+
 async function getMovements() {
   const { data, error } = await supabase
     .from("movements")
@@ -44,6 +47,18 @@ export default async function MovementsPage() {
           Find out who else is organizing around the issues you care about — and connect across
           places, languages, and movements.
         </p>
+      </section>
+
+      {/* Photo banner */}
+      <section className="mx-auto max-w-6xl px-6 pb-10">
+        <div className="relative h-[200px] sm:h-[300px] overflow-hidden rounded-sm">
+          <img
+            src={bannerImage}
+            alt="Collectives and movements organizing together"
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-[#2E1F45]/15" />
+        </div>
       </section>
 
       {/* Grid */}

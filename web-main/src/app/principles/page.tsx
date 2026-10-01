@@ -49,6 +49,10 @@ const colorMap: Record<string, { bg: string; text: string; border: string }> = {
   lavender: { bg: "bg-[#F3D9EE]", text: "text-[#7A1745]", border: "border-[#C98BC0]" },
 };
 
+// To replace a photo, change its link (or use your own file, e.g. "/images/principles-banner.jpg")
+const bannerImage = "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=1600&q=80";
+const sideImage = "https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1000&q=80";
+
 const principleThemes = [
   "Access",
   "Movement building",
@@ -79,6 +83,17 @@ export default function PrinciplesPage() {
         </p>
       </section>
 
+      {/* Photo banner */}
+      <section className="mx-auto max-w-6xl px-6 pb-16">
+        <div className="h-[200px] sm:h-[320px] overflow-hidden rounded-sm">
+          <img
+            src={bannerImage}
+            alt="People gathered in conversation"
+            className="h-full w-full object-cover"
+          />
+        </div>
+      </section>
+
       {/* Core statement */}
       <section className="bg-[#2E1F45]">
         <div className="mx-auto max-w-2xl px-6 py-16">
@@ -94,15 +109,22 @@ export default function PrinciplesPage() {
         </div>
       </section>
 
-      {/* Plural feminisms */}
-      <section className="mx-auto max-w-3xl px-6 py-16">
-        <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-4`}>Many feminisms, one commons</h2>
-        <p className={`${body} text-[#5C4A6B] text-[15px] leading-relaxed max-w-2xl`}>
-          FemVents welcomes multiple feminisms, contexts, languages, identities, and political
-          traditions. There is no single feminism, and we don&apos;t ask hosts to prove their
-          politics match ours. What we do ask is that hosts uphold a few shared commitments — not as
-          a checklist to pass, but as the baseline for what it means to gather with care.
-        </p>
+      {/* Plural feminisms: text and photo in two columns */}
+      <section className="mx-auto max-w-6xl px-6 py-16 grid gap-10 md:grid-cols-2 md:items-center">
+        <div>
+          <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-4`}>Many feminisms, one commons</h2>
+          <p className={`${body} text-[#5C4A6B] text-[15px] leading-relaxed max-w-2xl`}>
+            FemVents welcomes multiple feminisms, contexts, languages, identities, and political
+            traditions. There is no single feminism, and we don&apos;t ask hosts to prove their
+            politics match ours. What we do ask is that hosts uphold a few shared commitments — not as
+            a checklist to pass, but as the baseline for what it means to gather with care.
+          </p>
+        </div>
+        <img
+          src={sideImage}
+          alt="Community members in discussion"
+          className="w-full h-[240px] md:h-[340px] object-cover rounded-sm"
+        />
       </section>
 
       {/* Commitments */}

@@ -97,6 +97,7 @@ interface EventData {
   careSafety: CareSafety;
   privacyInfo: PrivacyInfo;
   afterGathering: string;
+  archiveVisibility: 'public' | 'community' | 'participants' | 'none';
 }
 
 type TabType = 'Basic' | 'Access' | 'Tickets' | 'Speakers' | 'Agenda' | 'Partners';
@@ -151,6 +152,7 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
     careSafety: {},
     privacyInfo: {},
     afterGathering: '',
+    archiveVisibility: 'public',
   });
 
   const [activeTab, setActiveTab] = useState<TabType>('Basic');
@@ -442,6 +444,7 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
           care_safety: eventData.careSafety,
           privacy_info: eventData.privacyInfo,
           after_gathering: eventData.afterGathering || null,
+          archive_visibility: eventData.archiveVisibility,
         })
         .select()
         .single();
@@ -538,6 +541,7 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
           care_safety: eventData.careSafety,
           privacy_info: eventData.privacyInfo,
           after_gathering: eventData.afterGathering || null,
+          archive_visibility: eventData.archiveVisibility,
         })
         .select()
         .single();
@@ -1104,6 +1108,23 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
                   className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-gray-900 font-medium placeholder-gray-400"
                   placeholder="e.g. Notes and resources shared with a private working group afterward"
                 />
+              </div>
+
+              <div>
+                <h3 className="text-lg font-extrabold text-gray-900 mb-1">Who can see this gathering's archive?</h3>
+                <p className="text-sm text-gray-500 mb-3">
+                  Controls visibility of the "What happens afterward" content above, after the gathering has passed.
+                </p>
+                <select
+                  value={eventData.archiveVisibility}
+                  onChange={(e) => handleFieldChange('archiveVisibility', e.target.value)}
+                  className="w-full px-5 py-3.5 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors text-gray-900 font-medium"
+                >
+                  <option value="public">Public — anyone can see it</option>
+                  <option value="community">Community only</option>
+                  <option value="participants">Participants only</option>
+                  <option value="none">No archive — don't keep this visible after the gathering</option>
+                </select>
               </div>
             </div>
           )}

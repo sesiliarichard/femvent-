@@ -27,7 +27,7 @@ const stepColors = [
 ];
 
 export default async function OrganizersPage() {
-  const { organizerSpotlights, impactStats, pricingPlans, organizersHero, howItWorks } = await getSiteContent();
+  const { organizerSpotlights, impactStats, organizersHero, howItWorks } = await getSiteContent();
 
   const heroTitle = organizersHero.title || "Host a feminist gathering";
   const heroDescription =

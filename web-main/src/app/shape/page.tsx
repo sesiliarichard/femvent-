@@ -15,6 +15,9 @@ const workSans = Work_Sans({
 // TODO: paste the embed src URL from Google Forms (Send → <> icon → copy the src="..." value)
 const GOOGLE_FORM_EMBED_URL = "";
 
+// To replace the banner photo, change this link (or use your own file, e.g. "/images/shape-banner.jpg")
+const bannerImage = "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80";
+
 export default function ShapePage() {
   const fontVars = `${spaceGrotesk.variable} ${workSans.variable}`;
   const heading = "font-[family-name:var(--font-space-grotesk)]";
@@ -42,6 +45,17 @@ export default function ShapePage() {
         <p className={`${body} text-[#9B1F5C] max-w-lg mt-4 text-sm font-semibold`}>
           You can answer anonymously. You do not need to answer every question.
         </p>
+      </section>
+
+      {/* Photo banner */}
+      <section className="mx-auto max-w-3xl px-6 pb-10">
+        <div className="h-[180px] sm:h-[260px] overflow-hidden rounded-sm">
+          <img
+            src={bannerImage}
+            alt="Community members sharing ideas"
+            className="h-full w-full object-cover"
+          />
+        </div>
       </section>
 
       {/* Form */}

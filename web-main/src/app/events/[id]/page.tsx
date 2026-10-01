@@ -81,6 +81,8 @@ export default async function EventDetailPage({ params }: EventPageProps) {
   const careSafety: CareSafety | undefined = event.care_safety;
   const privacy: PrivacyInfo | undefined = event.privacy_info;
   const afterGathering: string | undefined = event.after_gathering;
+  const archiveVisibility: "public" | "community" | "participants" | "none" =
+    event.archive_visibility || "public";
 
   const hasAccessContent =
     access &&
@@ -284,12 +286,33 @@ export default async function EventDetailPage({ params }: EventPageProps) {
             </article>
           )}
 
-          {afterGathering && (
+          {afterGathering && archiveVisibility === "none" && null}
+
+          {afterGathering && archiveVisibility === "public" && (
             <article className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
               <SectionHeading eyebrow="Beyond this gathering" title="What happens afterward?" />
               <p className="mt-4 whitespace-pre-line text-sm leading-relaxed text-gray-600">
                 {afterGathering}
               </p>
+            </article>
+          )}
+
+          {afterGathering && (archiveVisibility === "community" || archiveVisibility === "participants") && (
+            <article className="rounded-3xl border border-gray-100 bg-white p-6 shadow-lg">
+              <SectionHeading eyebrow="Beyond this gathering" title="What happens afterward?" />
+              <div className="mt-4 rounded-xl bg-gray-50 border border-gray-200 p-4 text-sm text-gray-600">
+                <p className="font-semibold text-gray-900 mb-1">
+                  {archiveVisibility === "community"
+                    ? "Visible to the FemVents community"
+                    : "Visible to participants of this gathering"}
+                </p>
+                <p>
+                  The host has limited who can see what came out of this gathering.{" "}
+                  {archiveVisibility === "community"
+                    ? "Log in to view this content."
+                    : "If you took part in this gathering, log in to view this content."}
+                </p>
+              </div>
             </article>
           )}
         </div>

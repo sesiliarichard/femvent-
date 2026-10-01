@@ -32,6 +32,9 @@ const typeColors: Record<string, { bg: string; text: string }> = {
   Other: { bg: "bg-[#F3F1F8]", text: "text-[#2E1F45]" },
 };
 
+// To replace the banner photo, change this link (or use your own file, e.g. "/images/opportunities-hero.jpg")
+const bannerImage = "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1600&q=80";
+
 async function getOpportunities() {
   const { data, error } = await supabase
     .from("opportunities")
@@ -60,6 +63,17 @@ export default async function OpportunitiesPage() {
           Fellowships, grants, travel funding, calls for papers, jobs, and more — opportunities
           shared by feminist organizers and movements.
         </p>
+      </section>
+
+      {/* Photo banner */}
+      <section className="mx-auto max-w-6xl px-6 pb-10">
+        <div className="h-[200px] sm:h-[300px] overflow-hidden rounded-sm">
+          <img
+            src={bannerImage}
+            alt="People learning and organizing together"
+            className="h-full w-full object-cover"
+          />
+        </div>
       </section>
 
       {/* List */}
