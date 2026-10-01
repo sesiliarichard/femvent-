@@ -39,13 +39,16 @@ export default function Footer() {
             </div>
           </div>
           <div>
-            <p className="text-sm font-semibold text-[#2E1F45]">Community</p>
+          <p className="text-sm font-semibold text-[#2E1F45]">Community</p>
             <div className="mt-3 flex flex-col gap-2 text-sm text-[#5C4A6B]">
               <Link href="/principles" className="hover:text-[#9B1F5C] transition-colors">
                 Our Convening Principles
               </Link>
               <Link href="/shape" className="hover:text-[#9B1F5C] transition-colors">
                 Shape FemVents
+              </Link>
+              <Link href="/support" className="hover:text-[#9B1F5C] transition-colors">
+                Support
               </Link>
             </div>
           </div>

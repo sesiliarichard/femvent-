@@ -48,7 +48,7 @@ export default function NavBar() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6 md:py-4">
         {logo}
 
-        <nav className="hidden gap-5 text-sm font-medium text-[#5C4A6B] md:flex">
+        <nav className="hidden gap-4 text-sm font-medium text-[#5C4A6B] lg:flex">
         {allLinks.map((link) => (
             <Link
               key={link.href}
@@ -62,15 +62,15 @@ export default function NavBar() {
         </nav>
 
         <div className="flex items-center gap-3">
-        <Link
-            href={`${process.env.NEXT_PUBLIC_HOST_APP_URL}/login`}
-            className="hidden text-sm font-medium text-[#5C4A6B] hover:text-[#2E1F45] md:inline-flex"
+          <Link
+            href="/organizers"
+            className="hidden text-sm font-bold text-[#9B1F5C] hover:text-[#7A1745] lg:inline-flex"
           >
-            Log in
+            Host a Gathering
           </Link>
           <Link
             href={`${process.env.NEXT_PUBLIC_HOST_APP_URL}/login`}
-            className="hidden rounded-full bg-[#9B1F5C] px-5 py-2 text-sm font-semibold text-[#FBF3FA] shadow-sm transition hover:bg-[#7A1745] md:inline-flex"
+           className="hidden rounded-full bg-[#9B1F5C] px-5 py-2 text-sm font-semibold text-[#FBF3FA] shadow-sm transition hover:bg-[#7A1745] lg:inline-flex"
           >
             Sign In
           </Link>
@@ -79,7 +79,7 @@ export default function NavBar() {
             type="button"
             aria-label="Toggle navigation"
             onClick={() => setOpen((prev) => !prev)}
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#D9C9E0] bg-white text-[#2E1F45] shadow-sm hover:border-[#9B1F5C] md:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[#D9C9E0] bg-white text-[#2E1F45] shadow-sm hover:border-[#9B1F5C] lg:hidden"
           >
             <span className="sr-only">Toggle menu</span>
             <div className="space-y-1.5">
@@ -92,7 +92,7 @@ export default function NavBar() {
       </div>
 
       {open && (
-        <div className="border-t border-[#EDE2F0] bg-[#FBF3FA]/95 px-4 pb-4 pt-2 shadow-sm md:hidden">
+        <div className="border-t border-[#EDE2F0] bg-[#FBF3FA]/95 px-4 pb-4 pt-2 shadow-sm lg:hidden">
                    <nav className="flex flex-col gap-2 text-sm font-medium text-[#5C4A6B]">
                    {allLinks.map((link) => (
               <Link
@@ -104,6 +104,13 @@ export default function NavBar() {
                 {link.label}
               </Link>
             ))}
+                     <Link
+              href="/organizers"
+              className="rounded-full px-3 py-2 font-semibold text-[#9B1F5C] hover:bg-[#F3D9EE]"
+              onClick={() => setOpen(false)}
+            >
+              Host a Gathering
+            </Link>
                        <Link
               href={`${process.env.NEXT_PUBLIC_HOST_APP_URL}/login`}
               className="mt-2 rounded-full bg-[#9B1F5C] px-4 py-2 text-center text-sm font-semibold text-[#FBF3FA]"

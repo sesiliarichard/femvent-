@@ -9,10 +9,10 @@ export const brand = {
 
 export const navLinks = [
   { label: "Gatherings", href: "/events" },
-  { label: "Host a Gathering", href: "/organizers" },
+  { label: "Movements", href: "/movements" },
+  { label: "Opportunities", href: "/opportunities" },
+  { label: "Stories & Resources", href: "/blog" },
   { label: "About", href: "/about" },
-  { label: "Movement Notes", href: "/blog" },
-  { label: "Support", href: "/support" },
 ];
 
 export const destinations = [
