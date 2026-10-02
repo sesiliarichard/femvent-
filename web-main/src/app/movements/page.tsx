@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Space_Grotesk, Work_Sans } from "next/font/google";
 import { supabase } from "@/lib/supabase";
+import { getSiteContent } from "@/lib/siteContent";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -16,8 +17,12 @@ const workSans = Work_Sans({
 
 const logoFallbackColors = ["#E8743B", "#9B1F5C", "#4A3B78", "#C9508A"];
 
-// To replace the banner photo, change this link (or use your own file, e.g. "/images/movements-hero.jpg")
-const bannerImage = "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=1600&q=80";
+// Default text and photo. Anything saved in Admin → Edit Movements Page replaces these.
+const D = {
+  title: "Movements & collectives",
+  intro: "Find out who else is organizing around the issues you care about — and connect across places, languages, and movements.",
+  bannerImage: "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=1600&q=80",
+};
 
 async function getMovements() {
   const { data, error } = await supabase
@@ -31,6 +36,11 @@ async function getMovements() {
 
 export default async function MovementsPage() {
   const movements = await getMovements();
+  const { movementsPage } = await getSiteContent();
+  const pg = {
+    ...D,
+    ...Object.fromEntries(Object.entries(movementsPage).filter(([, v]) => v !== "" && v != null)),
+  } as typeof D;
 
   const fontVars = `${spaceGrotesk.variable} ${workSans.variable}`;
   const heading = "font-[family-name:var(--font-space-grotesk)]";
@@ -41,11 +51,10 @@ export default async function MovementsPage() {
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-6 pt-16 pb-10">
         <h1 className={`${heading} font-bold text-4xl sm:text-[42px] leading-[1.1] text-[#2E1F45] max-w-2xl`}>
-          Movements &amp; collectives
+        {pg.title}
         </h1>
         <p className={`${body} text-[#5C4A6B] max-w-xl mt-4 text-[15px] leading-relaxed`}>
-          Find out who else is organizing around the issues you care about — and connect across
-          places, languages, and movements.
+        {pg.intro}
         </p>
       </section>
 
@@ -53,7 +62,7 @@ export default async function MovementsPage() {
       <section className="mx-auto max-w-6xl px-6 pb-10">
         <div className="relative h-[200px] sm:h-[300px] overflow-hidden rounded-sm">
           <img
-            src={bannerImage}
+            src={pg.bannerImage}
             alt="Collectives and movements organizing together"
             className="h-full w-full object-cover"
           />

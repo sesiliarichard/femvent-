@@ -155,9 +155,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, name?: string, options?: SignUpOptions) => {
     try {
-      // A plan means this signup is pending a subscription payment — never grant 'host' here.
-      // Host access is only granted by the payment webhook once payment is confirmed.
-      const role = options?.plan ? 'attendee' : options?.role ?? 'attendee';
+      const role = options?.role ?? 'attendee';
       const organizationName = options?.organizationName ?? null;
       const businessEmail = options?.businessEmail ?? email;
       const plan = options?.plan ?? null;

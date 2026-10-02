@@ -35,10 +35,7 @@ export default function LoginPage() {
       .eq('id', session.user.id)
       .maybeSingle();
 
-    return (
-      profile?.role === 'admin' ||
-      (profile?.role === 'host' && profile?.subscription_status === 'active')
-    );
+      return profile?.role === 'admin' || profile?.role === 'host';
   };
   // Auto-rotate slideshow every 5 seconds
   useEffect(() => {

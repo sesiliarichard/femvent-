@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Space_Grotesk, Work_Sans } from "next/font/google";
 import { supabase } from "@/lib/supabase";
+import { getSiteContent } from "@/lib/siteContent";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -32,8 +33,12 @@ const typeColors: Record<string, { bg: string; text: string }> = {
   Other: { bg: "bg-[#F3F1F8]", text: "text-[#2E1F45]" },
 };
 
-// To replace the banner photo, change this link (or use your own file, e.g. "/images/opportunities-hero.jpg")
-const bannerImage = "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1600&q=80";
+// Default text and photo. Anything saved in Admin → Edit Opportunities Page replaces these.
+const D = {
+  title: "Calls & opportunities",
+  intro: "Fellowships, grants, travel funding, calls for papers, jobs, and more — opportunities shared by feminist organizers and movements.",
+  bannerImage: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=1600&q=80",
+};
 
 async function getOpportunities() {
   const { data, error } = await supabase
@@ -47,6 +52,11 @@ async function getOpportunities() {
 
 export default async function OpportunitiesPage() {
   const opportunities = await getOpportunities();
+  const { opportunitiesPage } = await getSiteContent();
+  const pg = {
+    ...D,
+    ...Object.fromEntries(Object.entries(opportunitiesPage).filter(([, v]) => v !== "" && v != null)),
+  } as typeof D;
 
   const fontVars = `${spaceGrotesk.variable} ${workSans.variable}`;
   const heading = "font-[family-name:var(--font-space-grotesk)]";
@@ -57,11 +67,10 @@ export default async function OpportunitiesPage() {
       {/* Hero */}
       <section className="mx-auto max-w-6xl px-6 pt-16 pb-10">
         <h1 className={`${heading} font-bold text-4xl sm:text-[42px] leading-[1.1] text-[#2E1F45] max-w-2xl`}>
-          Calls &amp; opportunities
+        {pg.title}
         </h1>
         <p className={`${body} text-[#5C4A6B] max-w-xl mt-4 text-[15px] leading-relaxed`}>
-          Fellowships, grants, travel funding, calls for papers, jobs, and more — opportunities
-          shared by feminist organizers and movements.
+        {pg.intro}
         </p>
       </section>
 
@@ -69,7 +78,7 @@ export default async function OpportunitiesPage() {
       <section className="mx-auto max-w-6xl px-6 pb-10">
         <div className="h-[200px] sm:h-[300px] overflow-hidden rounded-sm">
           <img
-            src={bannerImage}
+            src={pg.bannerImage}
             alt="People learning and organizing together"
             className="h-full w-full object-cover"
           />

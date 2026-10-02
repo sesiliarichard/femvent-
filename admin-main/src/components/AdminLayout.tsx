@@ -14,7 +14,11 @@ import {
   LogOut,
   ChevronRight,
   CreditCard,
-  Briefcase
+  Briefcase,
+  Globe,
+  Award,
+  BookOpen,
+  MessageSquare
 } from 'lucide-react';
 const navigation = [
   { name: 'Dashboard', href: '/', icon: LayoutDashboard },
@@ -26,8 +30,12 @@ const navigation = [
   { name: 'Edit About Page', href: '/edit-about', icon: Users },
   { name: 'Edit Organizers Page', href: '/edit-organizers', icon: Briefcase },
   { name: 'Edit Events Page', href: '/edit-events', icon: Calendar },
+  { name: 'Edit Movements Page', href: '/edit-movements', icon: Globe },
+  { name: 'Edit Opportunities Page', href: '/edit-opportunities', icon: Award },
   { name: 'Edit Blog Page', href: '/edit-blog', icon: BarChart3 },
   { name: 'Edit Support Page', href: '/edit-support', icon: Bell },
+  { name: 'Edit Principles Page', href: '/edit-principles', icon: BookOpen },
+  { name: 'Edit Shape Page', href: '/edit-shape', icon: MessageSquare },
   { name: 'Moderation', href: '/moderation', icon: Shield },
   { name: 'Backup & Export', href: '/backup-export', icon: Database },
   { name: 'Notifications', href: '/notifications', icon: Bell },

@@ -12,8 +12,8 @@ const workSans = Work_Sans({
   variable: "--font-work-sans",
 });
 
-// TODO: paste the embed src URL from Google Forms (Send → <> icon → copy the src="..." value)
-const GOOGLE_FORM_EMBED_URL = "";
+const GOOGLE_FORM_EMBED_URL =
+  "https://docs.google.com/forms/d/e/1FAIpQLScxmQ8KmUqWBk1saFjRlCQMH1eSeaQlj3TMqduMGZvyALyfFg/viewform?embedded=true";
 
 // To replace the banner photo, change this link (or use your own file, e.g. "/images/shape-banner.jpg")
 const bannerImage = "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80";
