@@ -1,8 +1,24 @@
 import { Platform } from 'react-native';
 import Constants from 'expo-constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import type * as NotificationsType from 'expo-notifications';
 
 const isExpoGo = Constants.appOwnership === 'expo';
+
+const SETTINGS_KEYS = {
+    TICKET_NOTIFICATIONS: 'notifications_tickets',
+    EVENT_REMINDERS: 'notifications_reminders',
+    CHECK_IN_NOTIFICATIONS: 'notifications_checkin',
+};
+
+const isSettingEnabled = async (key: string): Promise<boolean> => {
+    try {
+        const value = await AsyncStorage.getItem(key);
+        return value === null ? true : value === 'true';
+    } catch {
+        return true;
+    }
+};
 
 // expo-notifications' native module registers a push-token listener as a
 // side effect of simply being imported. On Android in Expo Go (SDK 53+)
@@ -108,6 +124,9 @@ export const sendTicketConfirmationNotification = async (
     eventTitle: string,
     ticketId: string
 ): Promise<void> => {
+    const enabled = await isSettingEnabled(SETTINGS_KEYS.TICKET_NOTIFICATIONS);
+    if (!enabled) return;
+
     await sendLocalNotification(
         '🎫 Ticket Confirmed!',
         `Your ticket for "${eventTitle}" has been confirmed. Tap to view your QR code.`,
@@ -118,6 +137,9 @@ export const sendTicketConfirmationNotification = async (
 export const sendCheckInNotification = async (
     eventTitle: string
 ): Promise<void> => {
+    const enabled = await isSettingEnabled(SETTINGS_KEYS.CHECK_IN_NOTIFICATIONS);
+    if (!enabled) return;
+
     await sendLocalNotification(
         '✅ Checked In!',
         `You've successfully checked in to "${eventTitle}". Enjoy the event!`,
@@ -133,9 +155,11 @@ export const scheduleEventReminder = async (
     if (!Notifications) {
         return;
     }
+    const enabled = await isSettingEnabled(SETTINGS_KEYS.EVENT_REMINDERS);
+    if (!enabled) return;
+
     try {
         const reminderTime = new Date(eventDate.getTime() - 60 * 60 * 1000);
-
         if (reminderTime > new Date()) {
             await Notifications.scheduleNotificationAsync({
                 content: {
@@ -173,7 +197,7 @@ export const cancelEventNotifications = async (eventId: string): Promise<void> =
 };
 
 export const dismissAllNotifications = async (): Promise<void> => {
-    if (!Notifications) {
+    if (!Notifications || Platform.OS === 'web') {
         return;
     }
     try {

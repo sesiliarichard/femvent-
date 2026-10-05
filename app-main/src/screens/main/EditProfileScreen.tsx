@@ -47,6 +47,10 @@ export const EditProfileScreen: React.FC = () => {
 
     const handleSave = async () => {
         if (!user?.id) return;
+        if (!name.trim()) {
+            Alert.alert('Name Required', 'Please enter a name before saving.');
+            return;
+        }
 
         setLoading(true);
         try {

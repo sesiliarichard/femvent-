@@ -20,6 +20,7 @@ import {
 import { useAuth } from '../../services/AuthContext';
 import { theme } from '../../utils/theme';
 
+
 interface LoginScreenProps {
   navigation: any;
 }
@@ -116,6 +117,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
             <Paragraph style={styles.helperText}>
               Use the same email and password you set when registering for an event.
             </Paragraph>
+
           </Card.Content>
         </Card>
       </ScrollView>

@@ -57,10 +57,10 @@ export const HomeScreen: React.FC = () => {
   ];
 
   const quickActions = [
-    { id: '1', name: 'My Tickets', icon: 'confirmation-number', gradient: ['#FF6B6B', '#FF8E53'] },
-    { id: '2', name: 'Favorites', icon: 'bookmark', gradient: ['#4ECDC4', '#44A08D'] },
-    { id: '3', name: 'Schedule', icon: 'event', gradient: ['#45B7D1', '#3498DB'] },
-    { id: '4', name: 'Explore', icon: 'explore', gradient: ['#FFA07A', '#FF7F50'] },
+    { id: '1', name: 'My Tickets', icon: 'confirmation-number', gradient: ['#5A4485', '#3d2d5c'] },
+    { id: '2', name: 'Favorites', icon: 'bookmark', gradient: ['#A82C60', '#8F2451'] },
+    { id: '3', name: 'Schedule', icon: 'event', gradient: ['#E36C54', '#D1573F'] },
+    { id: '4', name: 'Explore', icon: 'explore', gradient: ['#7F77DD', '#534AB7'] },
   ];
 
   const normalizeEvent = (row: any) => {
@@ -215,6 +215,12 @@ export const HomeScreen: React.FC = () => {
     if (days > 0) return `${days}d ${hours}h`;
     if (hours > 0) return `${hours}h`;
     return 'Soon';
+  };
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Good morning';
+    if (hour < 18) return 'Good afternoon';
+    return 'Good evening';
   };
 
   const headerOpacity = scrollY.interpolate({
@@ -543,8 +549,8 @@ export const HomeScreen: React.FC = () => {
         >
           <View style={styles.headerContent}>
             <View style={styles.headerLeft}>
-              <Text style={styles.greeting}>
-                Hello, {user?.name?.split(' ')[0] || 'Guest'}! 👋
+               <Text style={styles.greeting}>
+                {getGreeting()}
               </Text>
               <Text style={styles.headerTitle}>Discover Events</Text>
             </View>
@@ -671,26 +677,8 @@ export const HomeScreen: React.FC = () => {
           />
         </View>
 
-        {/* View Mode Toggle */}
-        <View style={styles.viewModeContainer}>
-          <View style={styles.viewModeToggle}>
-            <TouchableOpacity
-              style={[styles.viewModeButton, viewMode === 'list' && styles.activeViewMode]}
-              onPress={() => setViewMode('list')}
-            >
-              <Ionicons name="list" size={20} color={viewMode === 'list' ? '#fff' : '#999'} />
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.viewModeButton, viewMode === 'grid' && styles.activeViewMode]}
-              onPress={() => setViewMode('grid')}
-            >
-              <Ionicons name="grid" size={20} color={viewMode === 'grid' ? '#fff' : '#999'} />
-            </TouchableOpacity>
-          </View>
-        </View>
-
-        {/* Events List */}
-        <View style={styles.section}>
+              {/* Events List */}
+              <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <View style={styles.sectionTitleContainer}>
               <View style={styles.sectionIconCircle}>
@@ -700,11 +688,20 @@ export const HomeScreen: React.FC = () => {
                 {selectedCategory === 'all' ? 'All Events' : `${categories.find(c => c.id === selectedCategory)?.name} Events`}
               </Text>
             </View>
-            {filteredEvents.length > 6 && (
-              <TouchableOpacity>
-                <Text style={styles.seeAllText}>See All →</Text>
+            <View style={styles.viewModeToggle}>
+              <TouchableOpacity
+                style={[styles.viewModeButton, viewMode === 'list' && styles.activeViewMode]}
+                onPress={() => setViewMode('list')}
+              >
+                <Ionicons name="list" size={18} color={viewMode === 'list' ? '#fff' : '#999'} />
               </TouchableOpacity>
-            )}
+              <TouchableOpacity
+                style={[styles.viewModeButton, viewMode === 'grid' && styles.activeViewMode]}
+                onPress={() => setViewMode('grid')}
+              >
+                <Ionicons name="grid" size={18} color={viewMode === 'grid' ? '#fff' : '#999'} />
+              </TouchableOpacity>
+            </View>
           </View>
 
           {filteredEvents.length > 0 ? (
@@ -967,6 +964,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end',
     padding: 18,
+    paddingBottom: 20,
   },
   featuredBadge: {
     position: 'absolute',
@@ -1093,17 +1091,12 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
 
-  viewModeContainer: {
-    paddingHorizontal: 20,
-  },
   viewModeToggle: {
     flexDirection: 'row',
-    alignSelf: 'flex-end',
     backgroundColor: '#fff',
-    borderRadius: 14,
-    padding: 4,
-    gap: 4,
-    marginVertical: 18,
+    borderRadius: 10,
+    padding: 3,
+    gap: 2,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
@@ -1111,9 +1104,9 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   viewModeButton: {
-    width: 42,
-    height: 42,
-    borderRadius: 10,
+    width: 30,
+    height: 30,
+    borderRadius: 7,
     justifyContent: 'center',
     alignItems: 'center',
   },

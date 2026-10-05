@@ -303,7 +303,10 @@ export const SettingsScreen: React.FC = () => {
                     <Text style={styles.sectionTitle}>Account</Text>
 
                     <View style={styles.card}>
-                        <TouchableOpacity style={styles.settingRow}>
+                    <TouchableOpacity
+                            style={styles.settingRow}
+                            onPress={() => navigation.navigate('EditProfile' as never)}
+                        >
                             <View style={styles.settingInfo}>
                             <Ionicons name="person" size={24} color="#5A4485"/>
                                 <View style={styles.settingText}>
@@ -315,7 +318,10 @@ export const SettingsScreen: React.FC = () => {
 
                         <View style={styles.divider} />
 
-                        <TouchableOpacity style={styles.settingRow}>
+                        <TouchableOpacity
+                            style={styles.settingRow}
+                            onPress={() => Alert.alert('Coming Soon', 'Password change will be available in a future update.')}
+                        >
                             <View style={styles.settingInfo}>
                                 <Ionicons name="lock-closed" size={24} color="#A82C60" />
                                 <View style={styles.settingText}>

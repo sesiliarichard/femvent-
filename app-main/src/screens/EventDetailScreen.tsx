@@ -383,7 +383,7 @@ useEffect(() => {
               <View style={styles.heroMetaItem}>
                 <Ionicons name="time-outline" size={16} color="rgba(255,255,255,0.9)" />
                 <Text style={styles.heroMetaText}>
-                  {event.startAt ? new Date(event.startAt.seconds * 1000).toLocaleDateString('en-US', {
+                  {event.startAt ? event.startAt.toLocaleDateString('en-US', {
                     month: 'short',
                     day: 'numeric'
                   }) : 'TBD'}
@@ -428,7 +428,7 @@ useEffect(() => {
                 <Ionicons name="calendar" size={24} color="#f59e0b" />
               </View>
               <Text style={styles.statValue}>
-                {event.startAt ? new Date(event.startAt.seconds * 1000).toLocaleDateString('en-US', {
+                {event.startAt ? event.startAt.toLocaleDateString('en-US', {
                   day: 'numeric'
                 }) : '—'}
               </Text>
@@ -554,8 +554,8 @@ useEffect(() => {
                 style={styles.quickNavItem}
                 onPress={() => navigation.navigate('Schedule', { eventId: event.id })}
               >
-                <View style={[styles.quickNavIcon, { backgroundColor: '#eff6ff' }]}>
-                  <Ionicons name="calendar-outline" size={24} color="#3b82f6" />
+                               <View style={[styles.quickNavIcon, { backgroundColor: '#5A4485' }]}>
+                  <Ionicons name="calendar-outline" size={24} color="#fff" />
                 </View>
                 <Text style={styles.quickNavLabel}>Full Schedule</Text>
               </TouchableOpacity>
@@ -564,8 +564,8 @@ useEffect(() => {
                 style={styles.quickNavItem}
                 onPress={() => navigation.navigate('SpeakersList', { eventId: event.id })}
               >
-                <View style={[styles.quickNavIcon, { backgroundColor: '#f0fdf4' }]}>
-                  <Ionicons name="people-outline" size={24} color="#22c55e" />
+                 <View style={[styles.quickNavIcon, { backgroundColor: '#A82C60' }]}>
+                  <Ionicons name="people-outline" size={24} color="#fff" />
                 </View>
                 <Text style={styles.quickNavLabel}>Speakers</Text>
               </TouchableOpacity>
@@ -574,8 +574,8 @@ useEffect(() => {
                 style={styles.quickNavItem}
                 onPress={() => navigation.navigate('Sponsor', { eventId: event.id })}
               >
-                <View style={[styles.quickNavIcon, { backgroundColor: '#fef3c7' }]}>
-                  <Ionicons name="business-outline" size={24} color="#f59e0b" />
+                <View style={[styles.quickNavIcon, { backgroundColor: '#E36C54' }]}>
+                  <Ionicons name="business-outline" size={24} color="#fff" />
                 </View>
                 <Text style={styles.quickNavLabel}>Partners</Text>
               </TouchableOpacity>
@@ -584,8 +584,8 @@ useEffect(() => {
                 style={styles.quickNavItem}
                 onPress={() => navigation.navigate('Chat', { eventId: event.id })}
               >
-                <View style={[styles.quickNavIcon, { backgroundColor: '#fce7f3' }]}>
-                  <Ionicons name="chatbubble-outline" size={24} color="#ec4899" />
+                <View style={[styles.quickNavIcon, { backgroundColor: '#7F77DD' }]}>
+                  <Ionicons name="chatbubble-outline" size={24} color="#fff" />
                 </View>
                 <Text style={styles.quickNavLabel}>Chat</Text>
               </TouchableOpacity>
@@ -594,8 +594,8 @@ useEffect(() => {
                 style={styles.quickNavItem}
                 onPress={() => navigation.navigate('Announcements', { eventId: event.id })}
               >
-                <View style={[styles.quickNavIcon, { backgroundColor: '#ede9fe' }]}>
-                  <Ionicons name="megaphone-outline" size={24} color="#7c3aed" />
+                <View style={[styles.quickNavIcon, { backgroundColor: '#C9507B' }]}>
+                  <Ionicons name="megaphone-outline" size={24} color="#fff" />
                 </View>
                 <Text style={styles.quickNavLabel}>Announcements</Text>
               </TouchableOpacity>
@@ -604,8 +604,8 @@ useEffect(() => {
                 style={styles.quickNavItem}
                 onPress={() => navigation.navigate('Exhibitors', { eventId: event.id })}
               >
-                <View style={[styles.quickNavIcon, { backgroundColor: '#e0f2fe' }]}>
-                  <Ionicons name="storefront-outline" size={24} color="#0284c7" />
+                <View style={[styles.quickNavIcon, { backgroundColor: '#8F2451' }]}>
+                  <Ionicons name="storefront-outline" size={24} color="#fff" />
                 </View>
                 <Text style={styles.quickNavLabel}>Exhibitors</Text>
               </TouchableOpacity>
@@ -614,8 +614,8 @@ useEffect(() => {
                 style={styles.quickNavItem}
                 onPress={() => navigation.navigate('VenueMap', { eventId: event.id })}
               >
-                <View style={[styles.quickNavIcon, { backgroundColor: '#fee2e2' }]}>
-                  <Ionicons name="map-outline" size={24} color="#dc2626" />
+                <View style={[styles.quickNavIcon, { backgroundColor: '#D1573F' }]}>
+                  <Ionicons name="map-outline" size={24} color="#fff" />
                 </View>
                 <Text style={styles.quickNavLabel}>Venue Map</Text>
               </TouchableOpacity>
@@ -624,8 +624,8 @@ useEffect(() => {
                 style={styles.quickNavItem}
                 onPress={() => navigation.navigate('Feedback', { eventId: event.id })}
               >
-                <View style={[styles.quickNavIcon, { backgroundColor: '#fef9c3' }]}>
-                  <Ionicons name="star-outline" size={24} color="#ca8a04" />
+                <View style={[styles.quickNavIcon, { backgroundColor: '#3d2d5c' }]}>
+                  <Ionicons name="star-outline" size={24} color="#fff" />
                 </View>
                 <Text style={styles.quickNavLabel}>Feedback</Text>
               </TouchableOpacity>

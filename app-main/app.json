@@ -28,7 +28,7 @@
       "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
-      "favicon": "./assets/femvents-icon.png"
+      "favicon": "./assets/femvents-icon1.png"
     },
     "plugins": [
       "expo-font",

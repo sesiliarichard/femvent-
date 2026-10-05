@@ -208,24 +208,14 @@ useEffect(() => {
      try {
        // Validate eventData and agenda
        if (!eventData) {
-         console.warn('No event data available, using sample schedule');
-         return sampleScheduleData;
-       }
-       
-       if (!eventData.agenda) {
-         console.warn('No agenda data available, using sample schedule');
-         return sampleScheduleData;
-       }
-
-       if (!Array.isArray(eventData.agenda)) {
-         console.error('Agenda is not an array:', typeof eventData.agenda);
-         return sampleScheduleData;
-       }
-
-       if (eventData.agenda.length === 0) {
-         console.warn('Agenda is empty, using sample schedule');
-         return sampleScheduleData;
-       }
+        console.warn('No event data available, using sample schedule');
+        return sampleScheduleData;
+      }
+      
+      if (!eventData.agenda || !Array.isArray(eventData.agenda) || eventData.agenda.length === 0) {
+        // Real event with no agenda yet — show empty, not fabricated sample content
+        return [];
+      }
        
        // Convert each agenda item with comprehensive error handling
        const convertedSessions: Session[] = [];
@@ -375,7 +365,7 @@ useEffect(() => {
             time: timeString,
             date: timeDate || undefined,
            duration: item.duration || '30 min',
-             type: (item.type || 'Session') as Session['type'],
+           type: (item.type || 'Workshop') as Session['type'],
             title: item.title || 'Untitled Session',
              speaker: item.speaker || item.speakers?.[0]?.name || 'TBA',
              location: eventData.venue?.name || 

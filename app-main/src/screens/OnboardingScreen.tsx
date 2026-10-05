@@ -87,9 +87,12 @@ export const OnboardingScreen: React.FC<OnboardingScreenProps> = ({ navigation }
   return (
     <LinearGradient colors={slide.colors} style={styles.container}>
       <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
-        <TouchableOpacity style={styles.skipButton} onPress={finishOnboarding}>
-          <Text style={styles.skipText}>Skip</Text>
-        </TouchableOpacity>
+      <View style={styles.topBar}>
+          <Text style={styles.logoText}>FemVents</Text>
+          <TouchableOpacity onPress={finishOnboarding}>
+            <Text style={styles.skipText}>Skip</Text>
+          </TouchableOpacity>
+        </View>
 
         <FlatList
           ref={flatListRef}
@@ -144,12 +147,21 @@ export const hasSeenOnboarding = async (): Promise<boolean> => {
 const styles = StyleSheet.create({
   container: { flex: 1 },
   safeArea: { flex: 1 },
-  skipButton: { alignSelf: 'flex-end', padding: 20 },
+  topBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
+  logoText: { color: '#fff', fontSize: 15, fontWeight: '600', letterSpacing: 0.3 },
   skipText: { color: 'rgba(255,255,255,0.85)', fontSize: 15, fontWeight: '600' },
   slide: { width, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 40 },
   iconCircle: {
     width: 140, height: 140, borderRadius: 70,
     backgroundColor: 'rgba(255,255,255,0.2)',
+    borderWidth: 2,
+    borderColor: 'rgba(227,108,84,0.65)',
     justifyContent: 'center', alignItems: 'center', marginBottom: 40,
   },
   title: { fontSize: 26, fontWeight: '800', color: '#fff', textAlign: 'center', marginBottom: 16 },

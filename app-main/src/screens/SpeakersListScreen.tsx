@@ -137,7 +137,9 @@ useEffect(() => {
       speaker?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       speaker?.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       speaker?.company?.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesSearch;
+    const matchesCategory =
+      selectedCategory === 'All' || speaker?.category === selectedCategory;
+    return matchesSearch && matchesCategory;
   });
 
   const categories = ['All', 'Keynote', 'Workshop', 'Panel'];

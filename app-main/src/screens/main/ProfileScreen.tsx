@@ -381,8 +381,8 @@ export const ProfileScreen: React.FC = () => {
             </View>
 
             <Surface style={styles.hostDashboardCard} elevation={3}>
-              <LinearGradient
-                colors={['#43e97b', '#38f9d7']}
+            <LinearGradient
+                colors={['#5A4485', '#3d2d5c']}
                 style={styles.hostDashboardGradient}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
@@ -820,7 +820,7 @@ const styles = StyleSheet.create({
   hostDashboardButtonText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#43e97b',
+    color: '#5A4485',
   },
   footer: {
     alignItems: 'center',

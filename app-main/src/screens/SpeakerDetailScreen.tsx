@@ -378,7 +378,7 @@ export default function SpeakerDetailScreen({ navigation, route }: SpeakerDetail
                       <View style={styles.sessionMetaItem}>
                         <Ionicons name="time-outline" size={16} color="#5A4485" />
                         <Text style={styles.sessionMetaText}>
-                          {session.time ? session.time.toLocaleTimeString('en-US', {
+                          {session.time ? new Date(session.time).toLocaleTimeString('en-US', {
                             hour: '2-digit',
                             minute: '2-digit',
                             hour12: true
