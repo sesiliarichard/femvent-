@@ -380,9 +380,12 @@ try {
                   style={styles.recipientAvatar}
                 />
               )}
-              <View style={styles.recipientDetails}>
+                  <View style={styles.recipientDetails}>
                 <Text style={styles.recipientName}>{recipientName}</Text>
-                <Text style={styles.recipientStatus}>
+                <Text style={[
+                  styles.recipientStatus,
+                  { color: recipientTyping ? '#5A4485' : isOnline ? '#10b981' : '#9ca3af' }
+                ]}>
                   {recipientTyping ? 'typing...' : isOnline ? 'Online' : 'Offline'}
                 </Text>
               </View>
@@ -593,7 +596,6 @@ const styles = StyleSheet.create({
   },
   recipientStatus: {
     fontSize: 14,
-    color: '#10b981',
     fontWeight: '500',
   },
   headerActions: {

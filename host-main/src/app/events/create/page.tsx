@@ -17,6 +17,7 @@ interface Speaker {
   company: string;
   bio: string;
   photoURL?: string;
+  category: string;
 }
 
 interface AgendaItem {
@@ -25,12 +26,21 @@ interface AgendaItem {
   description: string;
   speaker: string;
   duration: string;
+  type: string;
 }
 
 interface Partner {
   name: string;
   website: string;
   logoURL?: string;
+}
+
+interface Exhibitor {
+  name: string;
+  booth: string;
+  category: string;
+  description: string;
+  website?: string;
 }
 
 interface TicketTier {
@@ -92,6 +102,7 @@ interface EventData {
   speakers: Speaker[];
   agenda: AgendaItem[];
   partners: Partner[];
+  exhibitors: Exhibitor[];
   audienceDescription: string;
   accessInfo: AccessInfo;
   careSafety: CareSafety;
@@ -100,7 +111,7 @@ interface EventData {
   archiveVisibility: 'public' | 'community' | 'participants' | 'none';
 }
 
-type TabType = 'Basic' | 'Access' | 'Tickets' | 'Speakers' | 'Agenda' | 'Partners';
+type TabType = 'Basic' | 'Access' | 'Tickets' | 'Speakers' | 'Agenda' | 'Exhibitors' | 'Partners';
 
 const accessChecklist: Array<{ key: keyof AccessInfo; label: string }> = [
   { key: 'interpretation', label: 'Interpretation provided' },
@@ -147,6 +158,7 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
     speakers: [],
     agenda: [],
     partners: [],
+    exhibitors: [],
     audienceDescription: '',
     accessInfo: {},
     careSafety: {},
@@ -194,6 +206,7 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
     { id: 'Tickets', label: 'Tickets', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h2a2 2 0 002-2 1 1 0 112 0 2 2 0 002 2h2a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2h-2a2 2 0 00-2 2 1 1 0 11-2 0 2 2 0 00-2-2z" /></svg> },
     { id: 'Speakers', label: 'Speakers', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 18.75a6 6 0 006-6v-1.5m-6 7.5a6 6 0 01-6-6v-1.5m6 7.5v3.75m-3.75 0h7.5M12 15.75a3 3 0 01-3-3V4.5a3 3 0 116 0v8.25a3 3 0 01-3 3z" /></svg> },
     { id: 'Agenda', label: 'Agenda', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg> },
+    { id: 'Exhibitors', label: 'Exhibitors', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 21h19.5M3 7.5v12.75m6-12.75v12.75m6-12.75v12.75M3 7.5L12 3l9 4.5M3 7.5h18" /></svg> },
     { id: 'Partners', label: 'Partners', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z" /></svg> },
   ];
 
@@ -273,7 +286,7 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
   const addSpeaker = () => {
     setEventData(prev => ({
       ...prev,
-      speakers: [...prev.speakers, { name: '', title: '', company: '', bio: '' }]
+      speakers: [...prev.speakers, { name: '', title: '', company: '', bio: '', category: 'Keynote' }]
     }));
   };
 
@@ -319,7 +332,8 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
         title: '',
         description: '',
         speaker: '',
-        duration: ''
+        duration: '',
+        type: 'Workshop'
       }]
     }));
   };
@@ -360,6 +374,29 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
     setEventData(prev => ({
       ...prev,
       partners: prev.partners.filter((_, i) => i !== index)
+    }));
+  };
+
+  const addExhibitor = () => {
+    setEventData(prev => ({
+      ...prev,
+      exhibitors: [...prev.exhibitors, { name: '', booth: '', category: '', description: '', website: '' }]
+    }));
+  };
+
+  const updateExhibitor = (index: number, field: keyof Exhibitor, value: string) => {
+    setEventData(prev => ({
+      ...prev,
+      exhibitors: prev.exhibitors.map((ex, i) =>
+        i === index ? { ...ex, [field]: value } : ex
+      )
+    }));
+  };
+
+  const removeExhibitor = (index: number) => {
+    setEventData(prev => ({
+      ...prev,
+      exhibitors: prev.exhibitors.filter((_, i) => i !== index)
     }));
   };
 
@@ -439,6 +476,7 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
           speakers: eventData.speakers.map(s => ({ ...s })),
           agenda: eventData.agenda.map(a => ({ ...a, time: a.time.toISOString() })),
           partners: eventData.partners.map(p => ({ ...p })),
+          exhibitors: eventData.exhibitors.map(ex => ({ ...ex })),
           audience_description: eventData.audienceDescription || null,
           access_info: eventData.accessInfo,
           care_safety: eventData.careSafety,
@@ -448,7 +486,6 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
         })
         .select()
         .single();
-
         if (error) throw error;
 
         const duration = Date.now() - startTime;
@@ -536,6 +573,7 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
           speakers: eventData.speakers.map(s => ({ ...s })),
           agenda: eventData.agenda.map(a => ({ ...a, time: a.time.toISOString() })),
           partners: eventData.partners.map(p => ({ ...p })),
+          exhibitors: eventData.exhibitors.map(ex => ({ ...ex })),
           audience_description: eventData.audienceDescription || null,
           access_info: eventData.accessInfo,
           care_safety: eventData.careSafety,
@@ -1258,12 +1296,21 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
                           onChange={(e) => updateSpeaker(index, 'company', e.target.value)}
                           className="px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium placeholder-gray-400"
                         />
+                        <select
+                          value={speaker.category || 'Keynote'}
+                          onChange={(e) => updateSpeaker(index, 'category', e.target.value)}
+                          className="px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium"
+                        >
+                          <option value="Keynote">Keynote</option>
+                          <option value="Workshop">Workshop</option>
+                          <option value="Panel">Panel</option>
+                        </select>
                         <input
                           type="text"
                           placeholder="Bio"
                           value={speaker.bio}
                           onChange={(e) => updateSpeaker(index, 'bio', e.target.value)}
-                          className="px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium placeholder-gray-400"
+                          className="px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium placeholder-gray-400 md:col-span-2"
                         />
                       </div>
                     </div>
@@ -1382,6 +1429,26 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
                             className="px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium placeholder-gray-400"
                           />
                         </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <select
+                            value={item.type || 'Workshop'}
+                            onChange={(e) => updateAgendaItem(index, 'type', e.target.value)}
+                            className="px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium"
+                          >
+                            <option value="Keynote">Keynote</option>
+                            <option value="Workshop">Workshop</option>
+                            <option value="Panel">Panel</option>
+                            <option value="Networking">Networking</option>
+                            <option value="Break">Break</option>
+                          </select>
+                          <input
+                            type="text"
+                            placeholder="Duration (e.g., 60 min)"
+                            value={item.duration}
+                            onChange={(e) => updateAgendaItem(index, 'duration', e.target.value)}
+                            className="px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium placeholder-gray-400"
+                          />
+                        </div>
                         <textarea
                           placeholder="Session Description"
                           value={item.description}
@@ -1389,14 +1456,103 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
                           rows={3}
                           className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium placeholder-gray-400 resize-none"
                         />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+{activeTab === 'Exhibitors' && (
+            <div className="space-y-5">
+              <div className="flex justify-between items-center mb-6">
+                <div>
+                  <h3 className="text-lg font-extrabold text-gray-900">Exhibitors</h3>
+                  <p className="text-sm text-gray-500 mt-0.5">Add booths and exhibitors for your event</p>
+                </div>
+                <button
+                  onClick={addExhibitor}
+                  className="flex items-center gap-2 bg-secondary-500 hover:bg-secondary-600 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-colors"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                  </svg>
+                  <span>Add Exhibitor</span>
+                </button>
+              </div>
+
+              {eventData.exhibitors.length === 0 ? (
+                <div className="text-center py-14 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300">
+                  <div className="w-14 h-14 mx-auto mb-4 bg-primary-50 rounded-xl flex items-center justify-center">
+                    <svg className="w-7 h-7 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 21h19.5M3 7.5v12.75m6-12.75v12.75m6-12.75v12.75M3 7.5L12 3l9 4.5M3 7.5h18" /></svg>
+                  </div>
+                  <h3 className="text-base font-extrabold text-gray-900 mb-1">No exhibitors added yet</h3>
+                  <p className="text-sm text-gray-500 mb-5">Add exhibitors and their booth details</p>
+                  <button
+                    onClick={addExhibitor}
+                    className="bg-secondary-500 hover:bg-secondary-600 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors"
+                  >
+                    Add Your First Exhibitor
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-5">
+                  {eventData.exhibitors.map((ex, index) => (
+                    <div key={index} className="bg-gray-50 border border-gray-200 rounded-2xl p-6">
+                      <div className="flex justify-between items-center mb-5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 bg-primary-100 text-primary-700 rounded-xl flex items-center justify-center font-extrabold text-sm">
+                            {index + 1}
+                          </div>
+                          <h4 className="text-base font-extrabold text-gray-900">Exhibitor {index + 1}</h4>
+                        </div>
+                        <button
+                          onClick={() => removeExhibitor(index)}
+                          className="p-2.5 hover:bg-red-50 rounded-lg transition-colors"
+                        >
+                          <svg className="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <input
                           type="text"
-                          placeholder="Duration (e.g., 60 min)"
-                          value={item.duration}
-                          onChange={(e) => updateAgendaItem(index, 'duration', e.target.value)}
+                          placeholder="Exhibitor Name"
+                          value={ex.name}
+                          onChange={(e) => updateExhibitor(index, 'name', e.target.value)}
+                          className="px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium placeholder-gray-400"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Booth Number (e.g. A12)"
+                          value={ex.booth}
+                          onChange={(e) => updateExhibitor(index, 'booth', e.target.value)}
+                          className="px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium placeholder-gray-400"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Category (e.g. Technology, Food)"
+                          value={ex.category}
+                          onChange={(e) => updateExhibitor(index, 'category', e.target.value)}
+                          className="px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium placeholder-gray-400"
+                        />
+                        <input
+                          type="url"
+                          placeholder="Website (optional)"
+                          value={ex.website}
+                          onChange={(e) => updateExhibitor(index, 'website', e.target.value)}
                           className="px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium placeholder-gray-400"
                         />
                       </div>
+                      <textarea
+                        placeholder="Description"
+                        value={ex.description}
+                        onChange={(e) => updateExhibitor(index, 'description', e.target.value)}
+                        rows={3}
+                        className="w-full mt-4 px-4 py-3 rounded-lg border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 transition-colors font-medium placeholder-gray-400 resize-none"
+                      />
                     </div>
                   ))}
                 </div>

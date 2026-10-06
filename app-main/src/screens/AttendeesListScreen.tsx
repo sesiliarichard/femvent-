@@ -275,13 +275,17 @@ export default function AttendeesListScreen({ navigation, route }: AttendeesList
           <Text style={styles.bottomNavLabel}>Partners</Text>
         </TouchableOpacity>
         <TouchableOpacity 
-          style={[styles.bottomNavItem, styles.activeNavItem]}
+          style={styles.bottomNavItem}
           onPress={() => {
-            // Stay on attendees page
+            if (eventId) {
+              navigation.navigate('Chat', { eventId });
+            } else {
+              Alert.alert('Error', 'Event data not available');
+            }
           }}
         >
-          <Ionicons name="chatbubble" size={24} color="#5A4485" />
-          <Text style={[styles.bottomNavLabel, styles.activeNavLabel]}>Chat</Text>
+          <Ionicons name="chatbubble-outline" size={24} color="#9ca3af" />
+          <Text style={styles.bottomNavLabel}>Chat</Text>
         </TouchableOpacity>
       </View>
     </View>

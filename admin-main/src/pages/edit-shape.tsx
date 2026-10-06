@@ -11,6 +11,8 @@ interface PageContent {
   note: string;
   bannerImage: string;
   formUrl: string;
+  buttonText: string;
+  buttonNote: string;
 }
 
 const DEFAULTS: PageContent = {
@@ -20,7 +22,9 @@ const DEFAULTS: PageContent = {
   "intro2": "We don't want to decide what this platform should become without the people who will use it. This form is an invitation to tell us what would help you connect better, what is currently missing, what barriers you experience, and what you would like FemVents to become.",
   "note": "You can answer anonymously. You do not need to answer every question.",
   "bannerImage": "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1600&q=80",
-  "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLScxmQ8KmUqWBk1saFjRlCQMH1eSeaQlj3TMqduMGZvyALyfFg/viewform?embedded=true"
+  "formUrl": "https://docs.google.com/forms/d/e/1FAIpQLScxmQ8KmUqWBk1saFjRlCQMH1eSeaQlj3TMqduMGZvyALyfFg/viewform?embedded=true",
+  "buttonText": "Share your thoughts",
+  "buttonNote": "Opens in a new tab."
 };
 
 const inputCls = 'w-full px-3 py-2 border border-gray-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-primary-500';
@@ -139,8 +143,10 @@ export default function EditShapePage() {
         <ImageUploadWidget label="Banner photo" value={content.bannerImage} onChange={(url) => set('bannerImage', url)} folder="shape" />
       </Section>
 
-      <Section color="bg-secondary-500" title="Google Form">
-        <Field label="Google Form embed link (Send → <> icon → copy the src=&quot;...&quot; value). Leave empty to show the 'Form not connected yet' box." value={content.formUrl} onChange={(v) => set('formUrl', v)} />
+      <Section color="bg-secondary-500" title="Google Form button">
+        <Field label="Google Form link (the form's link from Send, or the embed link — either works). The button opens it in a new tab." value={content.formUrl} onChange={(v) => set('formUrl', v)} />
+        <Field label="Button text" value={content.buttonText} onChange={(v) => set('buttonText', v)} />
+        <Field label="Small line under the button (e.g. Opens in a new tab. It takes about 10 minutes.)" value={content.buttonNote} onChange={(v) => set('buttonNote', v)} />
       </Section>
 
 

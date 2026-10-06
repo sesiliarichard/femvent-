@@ -4,22 +4,25 @@ import {
   StyleSheet,
   ScrollView,
   Alert,
+  TouchableOpacity,
 } from 'react-native';
 import {
   Text,
   Card,
-  Title,
   Paragraph,
-  Button,
   TextInput,
   RadioButton,
   ActivityIndicator,
 } from 'react-native-paper';
+import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../services/AuthContext';
-import { theme } from '../utils/theme';
 import { supabase } from '../services/supabase';
 
 export const HostApplicationScreen: React.FC = () => {
+  const navigation = useNavigation();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [applicationData, setApplicationData] = useState({
@@ -99,10 +102,25 @@ export const HostApplicationScreen: React.FC = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <LinearGradient
+        colors={['#5A4485', '#3d2d5c']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <View style={styles.headerContent}>
+          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+            <Ionicons name="arrow-back" size={24} color="#fff" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Become a Host</Text>
+          <View style={{ width: 40 }} />
+        </View>
+      </LinearGradient>
+
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
       <Card style={styles.card}>
         <Card.Content>
-          <Title style={styles.title}>Become a Host</Title>
           <Paragraph style={styles.description}>
             Apply to become a host and start creating your own events. 
             After admin approval and payment processing, you'll get access to host features.
@@ -112,7 +130,7 @@ export const HostApplicationScreen: React.FC = () => {
 
       <Card style={styles.card}>
         <Card.Content>
-          <Title style={styles.sectionTitle}>Application Form</Title>
+          <Text style={styles.sectionTitle}>Application Form</Text>
           
           <TextInput
             label="Why do you want to become a host? *"
@@ -196,67 +214,114 @@ export const HostApplicationScreen: React.FC = () => {
             />
           )}
 
-          <Button
-            mode="contained"
+<TouchableOpacity
+            style={[styles.submitButton, loading && styles.submitButtonDisabled]}
             onPress={handleSubmitApplication}
             disabled={loading}
-            style={styles.submitButton}
           >
-            {loading ? <ActivityIndicator color="white" /> : 'Submit Application'}
-          </Button>
+            {loading ? (
+              <ActivityIndicator color="#fff" />
+            ) : (
+              <Text style={styles.submitButtonText}>Submit Application</Text>
+            )}
+          </TouchableOpacity>
         </Card.Content>
       </Card>
 
       <Card style={styles.card}>
         <Card.Content>
-          <Title style={styles.sectionTitle}>What happens next?</Title>
+          <Text style={styles.sectionTitle}>What happens next?</Text>
           <View style={styles.stepsList}>
             <View style={styles.step}>
-              <Text style={styles.stepNumber}>1</Text>
+              <View style={styles.stepIconCircle}>
+                <Text style={styles.stepNumber}>1</Text>
+              </View>
               <Text style={styles.stepText}>Admin reviews your application</Text>
             </View>
             <View style={styles.step}>
-              <Text style={styles.stepNumber}>2</Text>
+              <View style={styles.stepIconCircle}>
+                <Text style={styles.stepNumber}>2</Text>
+              </View>
               <Text style={styles.stepText}>Admin contacts you for payment</Text>
             </View>
             <View style={styles.step}>
-              <Text style={styles.stepNumber}>3</Text>
+              <View style={styles.stepIconCircle}>
+                <Text style={styles.stepNumber}>3</Text>
+              </View>
               <Text style={styles.stepText}>After payment, you become a host</Text>
             </View>
             <View style={styles.step}>
-              <Text style={styles.stepNumber}>4</Text>
+              <View style={styles.stepIconCircle}>
+                <Text style={styles.stepNumber}>4</Text>
+              </View>
               <Text style={styles.stepText}>Start creating and managing events</Text>
             </View>
           </View>
         </Card.Content>
       </Card>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: theme.colors.background,
+    backgroundColor: '#f8f9fa',
+  },
+  header: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 24,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 10,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#fff',
+  },
+  scrollView: {
+    flex: 1,
   },
   card: {
     margin: 16,
-    marginTop: 8,
-    elevation: 2,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    marginTop: 16,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+    elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
   },
   description: {
-    fontSize: 16,
-    color: theme.colors.onSurfaceVariant,
-    marginBottom: 16,
+    fontSize: 15,
+    color: '#666',
+    lineHeight: 22,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: '800',
+    color: '#1a1a1a',
     marginBottom: 16,
   },
   input: {
@@ -266,8 +331,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   radioLabel: {
-    fontSize: 16,
-    fontWeight: '500',
+    fontSize: 15,
+    fontWeight: '700',
+    color: '#1a1a1a',
     marginBottom: 8,
   },
   radioItem: {
@@ -277,30 +343,45 @@ const styles = StyleSheet.create({
   },
   submitButton: {
     marginTop: 16,
+    backgroundColor: '#5A4485',
+    borderRadius: 16,
+    paddingVertical: 16,
+    alignItems: 'center',
+  },
+  submitButtonDisabled: {
+    opacity: 0.7,
+  },
+  submitButtonText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#fff',
   },
   stepsList: {
-    marginTop: 16,
+    marginTop: 4,
   },
   step: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: 14,
+  },
+  stepIconCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#f4f1f9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
   },
   stepNumber: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    backgroundColor: theme.colors.primary,
-    color: 'white',
-    textAlign: 'center',
-    lineHeight: 24,
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginRight: 12,
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#5A4485',
   },
   stepText: {
     flex: 1,
     fontSize: 14,
-    color: theme.colors.onSurface,
+    color: '#1a1a1a',
+    fontWeight: '500',
   },
 });

@@ -69,6 +69,13 @@ export const MyEventsScreen: React.FC = () => {
         (navigation as any).navigate('Main', { screen: 'Tabs', params: { screen: 'Home' } });
     };
 
+    const formatEventDate = (dateStr: string | null) => {
+        if (!dateStr) return null;
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return null;
+        return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    };
+
     if (loading) {
         return (
             <SafeAreaView style={styles.container} edges={['top']}>
@@ -81,9 +88,24 @@ export const MyEventsScreen: React.FC = () => {
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
-                     <LinearGradient colors={['#5A4485', '#3d2d5c']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
-                <Text style={styles.headerTitle}>My Events</Text>
-                <Text style={styles.headerSubtitle}>Events you're registered for</Text>
+                                          <LinearGradient colors={['#5A4485', '#3d2d5c']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.header}>
+                <View style={styles.headerTop}>
+                    <View>
+                        <Text style={styles.headerTitle}>My Events</Text>
+                        <Text style={styles.headerSubtitle}>Events you're registered for</Text>
+                    </View>
+                    <View style={styles.headerIcon}>
+                        <Ionicons name="calendar" size={18} color="#fff" />
+                    </View>
+                </View>
+                {events.length > 0 && (
+                    <View style={styles.statPill}>
+                        <Ionicons name="ticket-outline" size={13} color="#fff" />
+                        <Text style={styles.statPillText}>
+                            {events.length} {events.length === 1 ? 'event' : 'events'}
+                        </Text>
+                    </View>
+                )}
             </LinearGradient>
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
@@ -104,29 +126,55 @@ export const MyEventsScreen: React.FC = () => {
                 ) : (
                     <View style={styles.listContainer}>
                         {events.map((event) => (
-                            <TouchableOpacity
-                                key={event.ticketId}
-                                style={styles.card}
-                                onPress={() => selectEvent(event)}
-                                activeOpacity={0.7}
-                            >
-                       <View style={styles.cardIcon}>
-                                    <Ionicons
-                                        name={event.ticketStatus === 'confirmed' ? 'checkmark-circle' : 'time-outline'}
-                                        size={22}
-                                        color={event.ticketStatus === 'confirmed' ? '#43e97b' : '#f59e0b'}
-                                    />
-                                </View>
-                                <View style={{ flex: 1 }}>
-                                    <Text style={styles.eventTitle}>{event.title}</Text>
-                                    <Text style={styles.eventMeta}>
-                                        {event.ticketType}
-                                        {event.location ? ` · ${event.location}` : ''}
-                                        {event.ticketStatus !== 'confirmed' ? ' · Pending approval' : ''}
-                                    </Text>
-                                </View>
-                                <Ionicons name="chevron-forward" size={20} color="#999" />
-                            </TouchableOpacity>
+                                 <TouchableOpacity
+                                 key={event.ticketId}
+                                 style={[
+                                     styles.card,
+                                     { borderLeftColor: event.ticketStatus === 'confirmed' ? '#43e97b' : '#f59e0b' }
+                                 ]}
+                                 onPress={() => selectEvent(event)}
+                                 activeOpacity={0.7}
+                             >
+                                 <View style={[
+                                     styles.cardIcon,
+                                     { backgroundColor: event.ticketStatus === 'confirmed' ? '#e8fbf0' : '#fef6e7' }
+                                 ]}>
+                                     <Ionicons
+                                         name={event.ticketStatus === 'confirmed' ? 'checkmark-circle' : 'time-outline'}
+                                         size={20}
+                                         color={event.ticketStatus === 'confirmed' ? '#10b981' : '#f59e0b'}
+                                     />
+                                 </View>
+                                 <View style={{ flex: 1 }}>
+                                     <Text style={styles.eventTitle}>{event.title}</Text>
+                                     <View style={styles.metaRow}>
+                                         {formatEventDate(event.eventDate) && (
+                                             <View style={styles.metaItem}>
+                                                 <Ionicons name="calendar-outline" size={12} color="#999" />
+                                                 <Text style={styles.metaText}>{formatEventDate(event.eventDate)}</Text>
+                                             </View>
+                                         )}
+                                         {event.location && (
+                                             <View style={styles.metaItem}>
+                                                 <Ionicons name="location-outline" size={12} color="#999" />
+                                                 <Text style={styles.metaText}>{event.location}</Text>
+                                             </View>
+                                         )}
+                                     </View>
+                                     <View style={[
+                                         styles.statusBadge,
+                                         { backgroundColor: event.ticketStatus === 'confirmed' ? '#e8fbf0' : '#fef6e7' }
+                                     ]}>
+                                         <Text style={[
+                                             styles.statusBadgeText,
+                                             { color: event.ticketStatus === 'confirmed' ? '#0a9463' : '#b45309' }
+                                         ]}>
+                                             {event.ticketStatus === 'confirmed' ? 'Confirmed' : 'Pending approval'}
+                                         </Text>
+                                     </View>
+                                 </View>
+                                 <Ionicons name="chevron-forward" size={18} color="#c7c7c7" />
+                             </TouchableOpacity>
                         ))}
                     </View>
                 )}
@@ -149,12 +197,29 @@ const styles = StyleSheet.create({
     listContainer: { padding: 20 },
     card: {
         flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 18,
-        padding: 16, marginBottom: 12,
+        padding: 16, marginBottom: 12, borderLeftWidth: 4,
         shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.08, shadowRadius: 8, elevation: 3,
     },
-    cardIcon: { marginRight: 14 },
-    eventTitle: { fontSize: 16, fontWeight: '800', color: '#1a1a1a' },
-    eventMeta: { fontSize: 13, color: '#666', marginTop: 2 },
+    headerTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start' },
+    headerIcon: {
+        width: 40, height: 40, borderRadius: 20, backgroundColor: 'rgba(255,255,255,0.18)',
+        justifyContent: 'center', alignItems: 'center',
+    },
+    statPill: {
+        flexDirection: 'row', alignItems: 'center', gap: 6, alignSelf: 'flex-start',
+        backgroundColor: 'rgba(255,255,255,0.15)', borderRadius: 14, paddingHorizontal: 12, paddingVertical: 6, marginTop: 14,
+    },
+    statPillText: { fontSize: 12, fontWeight: '600', color: '#fff' },
+    cardIcon: {
+        width: 42, height: 42, borderRadius: 14, marginRight: 12,
+        justifyContent: 'center', alignItems: 'center',
+    },
+    eventTitle: { fontSize: 15, fontWeight: '800', color: '#1a1a1a', marginBottom: 4 },
+    metaRow: { flexDirection: 'row', gap: 10, flexWrap: 'wrap' },
+    metaItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+    metaText: { fontSize: 12, color: '#777', fontWeight: '500' },
+    statusBadge: { alignSelf: 'flex-start', borderRadius: 8, paddingHorizontal: 9, paddingVertical: 3, marginTop: 6 },
+    statusBadgeText: { fontSize: 11, fontWeight: '700' },
     emptyContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 80, paddingHorizontal: 40, gap: 8 },
     emptyTitle: { fontSize: 18, fontWeight: '700', color: '#1a1a1a', marginTop: 8 },
     emptyDescription: { fontSize: 14, color: '#666', textAlign: 'center', marginBottom: 16 },

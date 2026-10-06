@@ -346,7 +346,7 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
             <View style={styles.eventInfo}>
               <Text style={styles.eventTitle}>{event?.title}</Text>
               <Text style={styles.eventDate}>
-                {event?.startAt ? new Date(event.startAt.seconds * 1000).toLocaleDateString() : 'Event Date'}
+                {event?.event_date ? new Date(event.event_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Event Date'}
               </Text>
             </View>
           </View>

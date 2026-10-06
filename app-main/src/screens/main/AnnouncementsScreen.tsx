@@ -4,7 +4,8 @@ import { Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { supabase } from '../../services/supabase';
 
 interface Announcement {
     id: string;
@@ -14,8 +15,6 @@ interface Announcement {
     priority: 'normal' | 'urgent';
 }
 
-/// No `announcements` table exists yet — this screen shows an empty state until one is built.
-const SAMPLE_ANNOUNCEMENTS: Announcement[] = [];
 const formatRelativeTime = (date: Date) => {
     const diffMs = Date.now() - date.getTime();
     const diffMins = Math.floor(diffMs / 60000);
@@ -27,14 +26,59 @@ const formatRelativeTime = (date: Date) => {
 
 export const AnnouncementsScreen: React.FC = () => {
     const navigation = useNavigation();
+    const route = useRoute<any>();
+    const eventId = route.params?.eventId;
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // TODO: replace with a real Supabase query once an `announcements` table exists
-        setAnnouncements(SAMPLE_ANNOUNCEMENTS);
-        setLoading(false);
-    }, []);
+        if (!eventId) {
+            setAnnouncements([]);
+            setLoading(false);
+            return;
+        }
+
+        const fetchAnnouncements = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('announcements')
+                    .select('*')
+                    .eq('event_id', eventId)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const mapped: Announcement[] = (data || []).map((row: any) => ({
+                    id: row.id,
+                    title: row.title || 'Announcement',
+                    body: row.body || '',
+                    createdAt: row.created_at ? new Date(row.created_at) : new Date(),
+                    priority: row.priority === 'urgent' ? 'urgent' : 'normal',
+                }));
+                setAnnouncements(mapped);
+            } catch (error) {
+                console.error('Error loading announcements:', error);
+                setAnnouncements([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchAnnouncements();
+
+        const channel = supabase
+            .channel(`announcements-${eventId}-${Date.now()}-${Math.random()}`)
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'announcements', filter: `event_id=eq.${eventId}` },
+                fetchAnnouncements
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [eventId]);
     
     if (loading) {
         return (

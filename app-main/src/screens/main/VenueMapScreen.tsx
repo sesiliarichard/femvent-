@@ -1,10 +1,11 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Linking, ActivityIndicator } from 'react-native';
 import { Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { supabase } from '../../services/supabase';
 
 interface VenueArea {
     id: string;
@@ -13,26 +14,76 @@ interface VenueArea {
     icon: keyof typeof Ionicons.glyphMap;
 }
 
-// TODO: replace with Supabase query once venue layout data exists
-const VENUE_AREAS: VenueArea[] = [
-    { id: '1', name: 'Main Auditorium', floor: 'Ground Floor', icon: 'mic-outline' },
-    { id: '2', name: 'Workshop Room A', floor: 'Ground Floor', icon: 'easel-outline' },
-    { id: '3', name: 'Workshop Room B', floor: '1st Floor', icon: 'easel-outline' },
-    { id: '4', name: 'Exhibitor Hall', floor: 'Ground Floor', icon: 'storefront-outline' },
-    { id: '5', name: 'Networking Lounge', floor: '1st Floor', icon: 'cafe-outline' },
-    { id: '6', name: 'Registration Desk', floor: 'Ground Floor', icon: 'clipboard-outline' },
-];
-
-const VENUE_ADDRESS = 'Arusha, Tanzania';
-const VENUE_NAME = 'Gendering AI Conference 2026';
-
 export const VenueMapScreen: React.FC = () => {
     const navigation = useNavigation();
+    const route = useRoute<any>();
+    const eventId = route.params?.eventId;
+
+    const [loading, setLoading] = useState(true);
+    const [venueName, setVenueName] = useState('Event Venue');
+    const [venueAddress, setVenueAddress] = useState('Location to be announced');
+    const [venueAreas, setVenueAreas] = useState<VenueArea[]>([]);
+
+    useEffect(() => {
+        if (!eventId) {
+            setLoading(false);
+            return;
+        }
+
+        const fetchVenue = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('events')
+                    .select('title, location, venue')
+                    .eq('id', eventId)
+                    .maybeSingle();
+
+                if (error) throw error;
+
+                if (data) {
+                    setVenueName(data.title || 'Event Venue');
+
+                    const venue = data.venue as any;
+                    const addressParts = [
+                        venue?.address?.street,
+                        venue?.address?.city || venue?.city,
+                        venue?.address?.country,
+                    ].filter(Boolean);
+
+                    setVenueAddress(
+                        addressParts.length > 0
+                            ? addressParts.join(', ')
+                            : data.location || 'Location to be announced'
+                    );
+
+                    // Venue areas/rooms data doesn't exist on the event model yet —
+                    // leave empty until that feature is built, rather than showing fake rooms.
+                    setVenueAreas([]);
+                }
+            } catch (error) {
+                console.error('Error loading venue:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchVenue();
+    }, [eventId]);
 
     const openDirections = () => {
-        const query = encodeURIComponent(VENUE_ADDRESS);
+        const query = encodeURIComponent(venueAddress);
         Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${query}`);
     };
+
+    if (loading) {
+        return (
+            <SafeAreaView style={styles.container} edges={['top']}>
+                <View style={styles.loadingContainer}>
+                    <ActivityIndicator size="large" color="#5A4485" />
+                </View>
+            </SafeAreaView>
+        );
+    }
 
     return (
         <SafeAreaView style={styles.container} edges={['top']}>
@@ -47,11 +98,11 @@ export const VenueMapScreen: React.FC = () => {
             </LinearGradient>
 
             <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-                <View style={styles.addressCard}>
+            <View style={styles.addressCard}>
                 <Ionicons name="location" size={22} color="#5A4485" />
                     <View style={{ flex: 1, marginLeft: 12 }}>
-                        <Text style={styles.venueName}>{VENUE_NAME}</Text>
-                        <Text style={styles.venueAddress}>{VENUE_ADDRESS}</Text>
+                        <Text style={styles.venueName}>{venueName}</Text>
+                        <Text style={styles.venueAddress}>{venueAddress}</Text>
                     </View>
                     <TouchableOpacity onPress={openDirections} style={styles.directionsButton}>
                         <Ionicons name="navigate" size={16} color="#fff" />
@@ -64,20 +115,22 @@ export const VenueMapScreen: React.FC = () => {
                     <Text style={styles.mapPlaceholderText}>Interactive map coming soon</Text>
                 </View>
 
-                <View style={styles.listContainer}>
-                    <Text style={styles.sectionTitle}>Areas & Rooms</Text>
-                    {VENUE_AREAS.map((area) => (
-                        <View key={area.id} style={styles.areaCard}>
-                            <View style={styles.areaIcon}>
-                            <Ionicons name={area.icon} size={20} color="#5A4485" />
+                {venueAreas.length > 0 && (
+                    <View style={styles.listContainer}>
+                        <Text style={styles.sectionTitle}>Areas & Rooms</Text>
+                        {venueAreas.map((area) => (
+                            <View key={area.id} style={styles.areaCard}>
+                                <View style={styles.areaIcon}>
+                                <Ionicons name={area.icon} size={20} color="#5A4485" />
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={styles.areaName}>{area.name}</Text>
+                                    <Text style={styles.areaFloor}>{area.floor}</Text>
+                                </View>
                             </View>
-                            <View style={{ flex: 1 }}>
-                                <Text style={styles.areaName}>{area.name}</Text>
-                                <Text style={styles.areaFloor}>{area.floor}</Text>
-                            </View>
-                        </View>
-                    ))}
-                </View>
+                        ))}
+                    </View>
+                )}
             </ScrollView>
         </SafeAreaView>
     );
@@ -85,6 +138,7 @@ export const VenueMapScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#f8f9fa' },
+    loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center' },
     header: {
         paddingHorizontal: 20, paddingTop: 20, paddingBottom: 24,
         borderBottomLeftRadius: 32, borderBottomRightRadius: 32,

@@ -4,7 +4,8 @@ import { Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { supabase } from '../../services/supabase';
 
 interface Exhibitor {
     id: string;
@@ -15,19 +16,50 @@ interface Exhibitor {
     website?: string;
 }
 
-// No `exhibitors` table exists yet — this screen shows an empty state until one is built.
-const SAMPLE_EXHIBITORS: Exhibitor[] = [];
 export const ExhibitorsScreen: React.FC = () => {
     const navigation = useNavigation();
+    const route = useRoute<any>();
+    const eventId = route.params?.eventId;
     const [exhibitors, setExhibitors] = useState<Exhibitor[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // TODO: replace with a real Supabase query once an `exhibitors` table exists
-        setExhibitors(SAMPLE_EXHIBITORS);
-        setLoading(false);
-    }, []);
+        if (!eventId) {
+            setExhibitors([]);
+            setLoading(false);
+            return;
+        }
 
+        const fetchExhibitors = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('events')
+                    .select('exhibitors')
+                    .eq('id', eventId)
+                    .maybeSingle();
+
+                if (error) throw error;
+
+                const rows = Array.isArray(data?.exhibitors) ? data.exhibitors : [];
+                const mapped: Exhibitor[] = rows.map((ex: any, index: number) => ({
+                    id: ex.id || `exhibitor-${index}`,
+                    name: ex.name || 'Exhibitor',
+                    booth: ex.booth || '—',
+                    category: ex.category || '',
+                    description: ex.description || '',
+                    website: ex.website || undefined,
+                }));
+                setExhibitors(mapped);
+            } catch (error) {
+                console.error('Error loading exhibitors:', error);
+                setExhibitors([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchExhibitors();
+    }, [eventId]);
     if (loading) {
         return (
             <SafeAreaView style={styles.container} edges={['top']}>

@@ -4,10 +4,15 @@ import { Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { supabase } from '../../services/supabase';
+import { useAuth } from '../../services/AuthContext';
 
 export const FeedbackScreen: React.FC = () => {
     const navigation = useNavigation();
+    const route = useRoute<any>();
+    const eventId = route.params?.eventId;
+    const { user } = useAuth();
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');
     const [submitting, setSubmitting] = useState(false);
@@ -19,11 +24,22 @@ export const FeedbackScreen: React.FC = () => {
             return;
         }
 
+        if (!eventId) {
+            Alert.alert('Error', 'Event information is not available.');
+            return;
+        }
+
         setSubmitting(true);
         try {
-            // TODO: replace with Supabase insert once a `feedback` table exists
-            // await supabase.from('feedback').insert({ event_id: eventId, user_id: user.id, rating, comment });
-            await new Promise((resolve) => setTimeout(resolve, 600));
+            const { error } = await supabase.from('feedback').insert({
+                event_id: eventId,
+                user_id: user?.id || null,
+                rating,
+                comment: comment.trim() || null,
+            });
+
+            if (error) throw error;
+
             setSubmitted(true);
         } catch (error) {
             console.error('Error submitting feedback:', error);
