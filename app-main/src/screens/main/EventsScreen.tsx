@@ -365,9 +365,9 @@ export const EventsScreen: React.FC = () => {
       >
         <View style={styles.headerContent}>
           <View>
-        <Text style={styles.headerTitle}>Browse Events</Text>
+          <Text style={styles.headerTitle}>Your Events</Text>
         <Text style={styles.headerSubtitle}>
-          {filteredEvents.length} events available
+          {filteredEvents.length} registered event{filteredEvents.length !== 1 ? 's' : ''}
         </Text>
           </View>
           <TouchableOpacity style={styles.filterButton}>
@@ -424,25 +424,29 @@ export const EventsScreen: React.FC = () => {
             <View style={styles.emptyIconCircle}>
               <Ionicons name="calendar-outline" size={60} color="#ccc" />
             </View>
-            <Text style={styles.emptyTitle}>No Events Found</Text>
-            <Text style={styles.emptySubtitle}>
-              {selectedCategory === 'all' 
-                ? 'No events available at the moment' 
-                : `No ${categories.find(c => c.id === selectedCategory)?.name} events found`}
+            <Text style={styles.emptyTitle}>
+              {selectedCategory === 'all' ? 'No Registered Events' : 'No Matches'}
             </Text>
-            <TouchableOpacity 
-              style={styles.emptyButton}
-              onPress={() => setSelectedCategory('all')}
-            >
-              <LinearGradient
-                colors={['#5A4485', '#3d2d5c']}
-                style={styles.emptyButtonGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
+            <Text style={styles.emptySubtitle}>
+              {selectedCategory === 'all'
+                ? 'Events you register for will appear here. Sign in with the same email you registered with.'
+                : `You have no ${categories.find(c => c.id === selectedCategory)?.name} events.`}
+            </Text>
+            {selectedCategory !== 'all' && (
+              <TouchableOpacity
+                style={styles.emptyButton}
+                onPress={() => setSelectedCategory('all')}
               >
-                <Text style={styles.emptyButtonText}>View All Events</Text>
-              </LinearGradient>
-            </TouchableOpacity>
+                <LinearGradient
+                  colors={['#5A4485', '#3d2d5c']}
+                  style={styles.emptyButtonGradient}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                >
+                  <Text style={styles.emptyButtonText}>Show All My Events</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            )}
           </View>
         }
       />

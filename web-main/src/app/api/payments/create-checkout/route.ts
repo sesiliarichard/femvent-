@@ -3,10 +3,25 @@ import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export async function POST(req: NextRequest) {
   try {
-    const { eventId, amount, email, name, userId, ticketTypeName } = await req.json();
+    const { eventId, email, name, userId, ticketTypeName } = await req.json();
 
-    if (!eventId || !amount || amount <= 0) {
-      return NextResponse.json({ error: 'eventId and a valid amount are required' }, { status: 400 });
+    if (!eventId || !ticketTypeName) {
+      return NextResponse.json({ error: 'eventId and ticketTypeName are required' }, { status: 400 });
+    }
+
+    // The price comes from the database, never from the browser
+    const { data: ticketType } = await supabaseAdmin
+      .from('ticket_types')
+      .select('price')
+      .eq('event_id', eventId)
+      .eq('name', ticketTypeName)
+      .eq('is_active', true)
+      .limit(1)
+      .maybeSingle();
+
+    const amount = Number(ticketType?.price);
+    if (!amount || amount <= 0) {
+      return NextResponse.json({ error: 'Ticket type not found' }, { status: 400 });
     }
     if (!email) {
       return NextResponse.json({ error: 'Customer email is required' }, { status: 400 });

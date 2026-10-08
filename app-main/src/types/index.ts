@@ -11,6 +11,7 @@ export interface User {
   instagram?: string;
   twitter?: string;
   facebook?: string;
+  stripeCustomerId?: string;
   hostApplication?: {
     status: 'pending' | 'approved' | 'rejected';
     appliedAt: Date;

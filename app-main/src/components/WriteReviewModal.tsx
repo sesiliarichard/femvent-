@@ -61,8 +61,8 @@ export const WriteReviewModal: React.FC<WriteReviewModalProps> = ({
         try {
             await submitReview(
                 eventId,
-                user.uid,
-                user.displayName || 'Anonymous',
+                user.id,
+                user.name || 'Anonymous',
                 user.photoURL,
                 rating,
                 reviewText.trim()

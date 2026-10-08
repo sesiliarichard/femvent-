@@ -87,8 +87,7 @@ export default function AttendeesListScreen({ navigation, route }: AttendeesList
   }, [eventId, user]);
 
   const filteredAttendees = attendees.filter(attendee =>
-    attendee.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    attendee.email.toLowerCase().includes(searchQuery.toLowerCase())
+    attendee.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const startPrivateChat = (attendee: Attendee) => {
@@ -117,7 +116,6 @@ export default function AttendeesListScreen({ navigation, route }: AttendeesList
         )}
         <View style={styles.attendeeDetails}>
           <Text style={styles.attendeeName}>{item.name}</Text>
-          <Text style={styles.attendeeEmail}>{item.email}</Text>
           <View style={styles.statusContainer}>
             <View style={[
               styles.statusBadge,

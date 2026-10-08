@@ -75,7 +75,8 @@ export const registerForEvent = async (registrationData: RegistrationData): Prom
       .from('tickets')
       .select('id')
       .eq('event_id', registrationData.eventId)
-      .eq('user_id', registrationData.userId);
+      .eq('user_id', registrationData.userId)
+      .in('status', ['confirmed', 'pending']);
 
     if (existingError) throw existingError;
     if (existingTickets && existingTickets.length > 0) {
@@ -175,14 +176,10 @@ export const subscribeToUserTickets = (
   // Initial fetch
   getUserTickets(userId).then(onUpdate).catch((error) => onError?.(error));
 
-  // Guard against duplicate subscriptions (e.g. React StrictMode double-invoking effects)
-  const existingChannel = supabase.getChannels().find((ch) => ch.topic === `realtime:tickets-${userId}`);
-  if (existingChannel) {
-    supabase.removeChannel(existingChannel);
-  }
-
+  // Unique name per subscriber: Profile and Tickets both subscribe for the same user,
+  // and a shared name makes one remove the other's channel.
   const channel = supabase
-    .channel(`tickets-${userId}`)
+    .channel(`tickets-${userId}-${Date.now()}-${Math.random()}`)
     .on(
       'postgres_changes',
       { event: '*', schema: 'public', table: 'tickets', filter: `user_id=eq.${userId}` },
@@ -209,8 +206,8 @@ export const checkEventRegistration = async (eventId: string, userId: string): P
       .from('tickets')
       .select('id')
       .eq('event_id', eventId)
-      .eq('user_id', userId);
-
+      .eq('user_id', userId)
+      .in('status', ['confirmed', 'pending']);
     if (error) throw error;
     return (data?.length || 0) > 0;
   } catch (error) {
@@ -221,74 +218,55 @@ export const checkEventRegistration = async (eventId: string, userId: string): P
 
 export const getEventAttendeesList = async (eventId: string): Promise<any[]> => {
   try {
+    // Respect the host's setting (Access & Care tab → "Participant names may be visible to others").
+    // Delete this block if you'd rather always show the list.
+    const { data: eventRow } = await supabase
+      .from('events')
+      .select('privacy_info')
+      .eq('id', eventId)
+      .maybeSingle();
+
+    if (!eventRow?.privacy_info?.participant_names_public) {
+      return [];
+    }
+
     const { data: ticketRows, error } = await supabase
       .from('tickets')
-      .select('*')
+      .select('user_id, status, created_at, user_name, user_photo_url')
       .eq('event_id', eventId)
-      .in('status', ['confirmed', 'pending']);
+      .eq('status', 'confirmed');
 
     if (error) throw error;
 
+    const userIds = Array.from(new Set((ticketRows || []).map((t: any) => t.user_id)));
+    const profiles: Record<string, any> = {};
+
+    if (userIds.length > 0) {
+      const { data: userRows } = await supabase
+        .from('users')
+        .select('id, name, photo_url')
+        .in('id', userIds);
+      (userRows || []).forEach((u: any) => {
+        profiles[u.id] = u;
+      });
+    }
+
+    const seen = new Set<string>();
     const attendees: any[] = [];
-    const processedUserIds = new Set<string>();
 
-    for (const ticketData of ticketRows || []) {
-      const userId = ticketData.user_id;
+    for (const t of ticketRows || []) {
+      if (seen.has(t.user_id)) continue;
+      seen.add(t.user_id);
 
-      if (processedUserIds.has(userId)) {
-        continue;
-      }
-
-      let attendee = {
-        id: userId,
-        name: `Attendee ${userId.slice(-4)}`,
-        email: '',
-        photoURL: null as string | null,
-        registrationDate: ticketData.created_at ? new Date(ticketData.created_at) : new Date(),
-        ticketStatus: ticketData.status,
-      };
-
-      try {
-        const { data: userRow, error: userError } = await supabase
-          .from('users')
-          .select('*')
-          .eq('id', userId)
-          .maybeSingle();
-
-        if (!userError && userRow) {
-          attendee.name = userRow.name || userRow.email?.split('@')[0] || `User ${userId.slice(-4)}`;
-          attendee.email = userRow.email || '';
-          attendee.photoURL = userRow.photo_url || null;
-        } else if (ticketData.user_name) {
-          attendee.name = ticketData.user_name;
-          attendee.email = ticketData.user_email || '';
-          attendee.photoURL = ticketData.user_photo_url || null;
-        } else {
-          try {
-            await supabase.from('users').insert({
-              id: userId,
-              name: `User ${userId.slice(-4)}`,
-              email: '',
-              role: 'attendee',
-              status: 'active',
-            });
-            console.log('Created basic user record for:', userId);
-            attendee.name = `User ${userId.slice(-4)}`;
-          } catch (createError) {
-            console.log('Could not create user record for:', userId);
-          }
-        }
-      } catch (error) {
-        console.log('Could not fetch user data for:', userId, '- using fallback');
-        if (ticketData.user_name) {
-          attendee.name = ticketData.user_name;
-          attendee.email = ticketData.user_email || '';
-          attendee.photoURL = ticketData.user_photo_url || null;
-        }
-      }
-
-      attendees.push(attendee);
-      processedUserIds.add(userId);
+      const profile = profiles[t.user_id];
+      attendees.push({
+        id: t.user_id,
+        name: profile?.name || t.user_name || `Attendee ${t.user_id.slice(-4)}`,
+        email: '', // never expose attendee emails to other attendees
+        photoURL: profile?.photo_url || t.user_photo_url || null,
+        registrationDate: t.created_at ? new Date(t.created_at) : new Date(),
+        ticketStatus: t.status,
+      });
     }
 
     return attendees;

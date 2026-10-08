@@ -31,6 +31,21 @@ export const FeedbackScreen: React.FC = () => {
 
         setSubmitting(true);
         try {
+            if (user?.id) {
+                const { data: existing } = await supabase
+                    .from('feedback')
+                    .select('id')
+                    .eq('event_id', eventId)
+                    .eq('user_id', user.id)
+                    .maybeSingle();
+
+                if (existing) {
+                    Alert.alert('Already submitted', 'You have already left feedback for this event.');
+                    setSubmitting(false);
+                    return;
+                }
+            }
+
             const { error } = await supabase.from('feedback').insert({
                 event_id: eventId,
                 user_id: user?.id || null,

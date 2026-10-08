@@ -114,14 +114,8 @@ export const MyEventsScreen: React.FC = () => {
                         <Ionicons name="calendar-outline" size={64} color="#cbd5e0" />
                         <Text style={styles.emptyTitle}>No registered events yet</Text>
                         <Text style={styles.emptyDescription}>
-                            Browse events and register to see them here.
+                            Events you register for will appear here. Sign in with the same email you used to register.
                         </Text>
-                        <TouchableOpacity
-                            style={styles.browseButton}
-                            onPress={() => (navigation as any).navigate('Events')}
-                        >
-                            <Text style={styles.browseButtonText}>Browse Events</Text>
-                        </TouchableOpacity>
                     </View>
                 ) : (
                     <View style={styles.listContainer}>

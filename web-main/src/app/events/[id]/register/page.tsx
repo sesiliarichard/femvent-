@@ -216,17 +216,35 @@ export default function RegisterPage() {
         try {
             const activeUser = await ensureAccount();
 
+            const { data: existingTickets } = await supabase
+                .from("tickets")
+                .select("id")
+                .eq("event_id", id)
+                .eq("user_id", activeUser.id)
+                .in("status", ["confirmed", "pending"])
+                .limit(1);
+
+            if (existingTickets && existingTickets.length > 0) {
+                setSubmitError("You're already registered for this gathering. Open the FemVents app to see your ticket.");
+                setSubmitting(false);
+                return;
+            }
+
             if (session?.user) {
-                const { error: profileError } = await supabase
-                    .from("users")
-                    .update({
-                        name: fullName,
-                        phone,
-                        company: organization,
-                        job_title: jobTitle,
-                    })
-                    .eq("id", activeUser.id);
-                if (profileError) throw profileError;
+                // Only overwrite fields the person actually filled in
+                const updates: Record<string, string> = {};
+                if (fullName.trim()) updates.name = fullName.trim();
+                if (phone.trim()) updates.phone = phone.trim();
+                if (organization.trim()) updates.company = organization.trim();
+                if (jobTitle.trim()) updates.job_title = jobTitle.trim();
+
+                if (Object.keys(updates).length > 0) {
+                    const { error: profileError } = await supabase
+                        .from("users")
+                        .update(updates)
+                        .eq("id", activeUser.id);
+                    if (profileError) throw profileError;
+                }
             }
 
             if (selectedTicket.price > 0) {
@@ -378,9 +396,14 @@ export default function RegisterPage() {
                 }
             }
 
-            const { data: newTicket, error } = await supabase
-                .from("tickets")
-                .insert({
+                       // Safety net: a paid ticket must never fall through to the free-ticket insert
+                       if (selectedTicket.price > 0) {
+                        throw new Error("That payment method isn't supported yet. Please choose another.");
+                    }
+        
+                    const { data: newTicket, error } = await supabase
+                        .from("tickets")
+                        .insert({
                     event_id: id,
                     user_id: activeUser.id,
                     status: "confirmed",
@@ -400,7 +423,7 @@ export default function RegisterPage() {
                     to: activeUser.email,
                     templateId: "registration-confirmation",
                     templateData: {
-                        recipientName: fullName,
+                        recipientName: fullName.trim() || 'there',
                         eventTitle: event?.title ?? '',
                         eventDate: new Date().toLocaleDateString(),
                         ticketType: selectedTicket.name,

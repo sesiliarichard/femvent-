@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { supabase } from './supabase';
-import type { User as SupabaseAuthUser } from '@supabase/supabase-js';
+import type { User as SupabaseAuthUser, Session } from '@supabase/supabase-js';
 import { User } from '../types';
 import { setUserContext, trackError } from '../utils/errorTracking';
 interface AuthContextType {
@@ -41,7 +41,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (userData) {
         const userObj: User = {
           id: authUser.id,
-          name: userData.name || '',
+          name: (userData.name || '').includes('@') ? userData.name.split('@')[0] : (userData.name || ''),
           email: userData.email || authUser.email || '',
           photoURL: userData.photo_url,
           role: userData.role || 'attendee',
@@ -99,22 +99,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const handleSession = async (session: Session | null) => {
       if (session?.user) {
-        loadUserProfile(session.user);
-      }
-      setLoading(false);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session?.user) {
-        loadUserProfile(session.user);
+        await loadUserProfile(session.user);
       } else {
         setUser(null);
         setFirebaseUser(null);
         setUserContext(null);
       }
       setLoading(false);
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }) => handleSession(session));
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      // Deferred on purpose: awaiting Supabase calls directly inside this callback can deadlock
+      setTimeout(() => handleSession(session), 0);
     });
 
     return () => subscription.unsubscribe();
@@ -187,7 +187,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           .update({
             name: updates.name,
             photo_url: updates.photoURL,
-            role: updates.role,
           })
           .eq('id', user.id);
         if (error) throw error;

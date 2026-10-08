@@ -629,6 +629,16 @@ useEffect(() => {
                 </View>
                 <Text style={styles.quickNavLabel}>Feedback</Text>
               </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.quickNavItem}
+                onPress={() => navigation.navigate('Resources', { eventId: event.id })}
+              >
+                <View style={[styles.quickNavIcon, { backgroundColor: '#7F77DD' }]}>
+                  <Ionicons name="folder-open-outline" size={24} color="#fff" />
+                </View>
+                <Text style={styles.quickNavLabel}>Resources</Text>
+              </TouchableOpacity>
             </View>
           </View>
           

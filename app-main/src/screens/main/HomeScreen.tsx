@@ -57,10 +57,10 @@ export const HomeScreen: React.FC = () => {
   ];
 
   const quickActions = [
-    { id: '1', name: 'My Tickets', icon: 'confirmation-number', gradient: ['#5A4485', '#3d2d5c'] },
-    { id: '2', name: 'Favorites', icon: 'bookmark', gradient: ['#A82C60', '#8F2451'] },
-    { id: '3', name: 'Schedule', icon: 'event', gradient: ['#E36C54', '#D1573F'] },
-    { id: '4', name: 'Explore', icon: 'explore', gradient: ['#7F77DD', '#534AB7'] },
+    { id: '1', name: 'My Tickets', icon: 'confirmation-number', gradient: ['#5A4485', '#3d2d5c'], screen: 'Tickets' },
+    { id: '2', name: 'Favorites', icon: 'bookmark', gradient: ['#A82C60', '#8F2451'], screen: 'Favorites' },
+    { id: '3', name: 'Schedule', icon: 'event', gradient: ['#E36C54', '#D1573F'], screen: 'Events' },
+    { id: '4', name: 'My Events', icon: 'event-note', gradient: ['#7F77DD', '#534AB7'], screen: 'Events' },
   ];
 
   const normalizeEvent = (row: any) => {
@@ -246,7 +246,18 @@ export const HomeScreen: React.FC = () => {
         },
       ]}
     >
-      <TouchableOpacity style={styles.quickActionItem} activeOpacity={0.7}>
+           <TouchableOpacity
+        style={styles.quickActionItem}
+        activeOpacity={0.7}
+        onPress={() => {
+          // Schedule belongs to one event: jump straight there if the user has just one
+          if (item.id === '3' && events.length === 1) {
+            (navigation as any).navigate('Schedule', { eventId: events[0].id });
+          } else {
+            (navigation as any).navigate(item.screen);
+          }
+        }}
+      >
         <LinearGradient
           colors={item.gradient}
           style={styles.quickActionGradient}

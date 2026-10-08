@@ -4,7 +4,8 @@ import { Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { supabase } from '../../services/supabase';
 
 interface Resource {
     id: string;
@@ -14,9 +15,6 @@ interface Resource {
     url: string;
 }
 
-// No `resources` table exists yet — this screen shows an empty state until one is built.
-const SAMPLE_RESOURCES: Resource[] = [];
-
 const typeIcon: Record<Resource['type'], keyof typeof Ionicons.glyphMap> = {
     pdf: 'document-text-outline',
     slides: 'easel-outline',
@@ -25,14 +23,59 @@ const typeIcon: Record<Resource['type'], keyof typeof Ionicons.glyphMap> = {
 
 export const ResourcesScreen: React.FC = () => {
     const navigation = useNavigation();
+    const route = useRoute<any>();
+    const eventId = route.params?.eventId;
     const [resources, setResources] = useState<Resource[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // TODO: replace with a real Supabase query once a `resources` table exists
-        setResources(SAMPLE_RESOURCES);
-        setLoading(false);
-    }, []);
+        if (!eventId) {
+            setResources([]);
+            setLoading(false);
+            return;
+        }
+
+        const fetchResources = async () => {
+            try {
+                const { data, error } = await supabase
+                    .from('resources')
+                    .select('*')
+                    .eq('event_id', eventId)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                const mapped: Resource[] = (data || []).map((row: any) => ({
+                    id: row.id,
+                    title: row.title || 'Resource',
+                    type: ['pdf', 'slides', 'link'].includes(row.type) ? row.type : 'link',
+                    size: row.size || undefined,
+                    url: row.url,
+                }));
+                setResources(mapped);
+            } catch (error) {
+                console.error('Error loading resources:', error);
+                setResources([]);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchResources();
+
+        const channel = supabase
+            .channel(`resources-${eventId}-${Date.now()}-${Math.random()}`)
+            .on(
+                'postgres_changes',
+                { event: '*', schema: 'public', table: 'resources', filter: `event_id=eq.${eventId}` },
+                fetchResources
+            )
+            .subscribe();
+
+        return () => {
+            supabase.removeChannel(channel);
+        };
+    }, [eventId]);
 
     const handleOpen = async (resource: Resource) => {
         const supported = await Linking.canOpenURL(resource.url);
