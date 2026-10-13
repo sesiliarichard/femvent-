@@ -29,7 +29,7 @@ const SETTINGS_KEYS = {
 
 export const SettingsScreen: React.FC = () => {
     const navigation = useNavigation();
-    const { user, signOut } = useAuth();
+    const { user, signOut, resetPassword } = useAuth();
 
     const [ticketNotifications, setTicketNotifications] = useState(true);
     const [eventReminders, setEventReminders] = useState(true);
@@ -320,7 +320,27 @@ export const SettingsScreen: React.FC = () => {
 
                         <TouchableOpacity
                             style={styles.settingRow}
-                            onPress={() => Alert.alert('Coming Soon', 'Password change will be available in a future update.')}
+                            onPress={() => {
+                                if (!user?.email) return;
+                                Alert.alert(
+                                    'Change password',
+                                    `We'll email a link to ${user.email} so you can choose a new password.`,
+                                    [
+                                        { text: 'Cancel', style: 'cancel' },
+                                        {
+                                            text: 'Send link',
+                                            onPress: async () => {
+                                                try {
+                                                    await resetPassword(user.email);
+                                                    Alert.alert('Check your email', 'Open the link we sent to choose a new password.');
+                                                } catch (e: any) {
+                                                    Alert.alert('Could not send link', e?.message || 'Please try again.');
+                                                }
+                                            },
+                                        },
+                                    ]
+                                );
+                            }}
                         >
                             <View style={styles.settingInfo}>
                                 <Ionicons name="lock-closed" size={24} color="#A82C60" />

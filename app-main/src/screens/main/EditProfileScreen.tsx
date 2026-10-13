@@ -16,7 +16,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../services/AuthContext';
-import { showImagePickerOptions, uploadProfilePhoto } from '../../services/media';
+import { pickAndUploadAvatar } from '../../services/avatar';
 
 export const EditProfileScreen: React.FC = () => {
     const navigation = useNavigation();
@@ -34,13 +34,18 @@ export const EditProfileScreen: React.FC = () => {
     const [photoUrl, setPhotoUrl] = useState(user?.photoURL || '');
 
     const handlePhotoPress = async () => {
-        const uri = await showImagePickerOptions();
-        if (uri && user?.id) {
+        if (!user?.id || uploading) return;
+        try {
             setUploading(true);
-            const downloadURL = await uploadProfilePhoto(uri, user.id);
-            if (downloadURL) {
-                setPhotoUrl(downloadURL);
+            const url = await pickAndUploadAvatar(user.id);
+            if (url) {
+                setPhotoUrl(url);
+                await refreshUser();
             }
+        } catch (error: any) {
+            console.error('Error uploading photo:', error);
+            Alert.alert('Upload failed', error?.message || 'Could not upload your photo. Please try again.');
+        } finally {
             setUploading(false);
         }
     };

@@ -432,10 +432,14 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
       if (!confirm('Are you sure you want to delete this event? This will permanently remove all data for this event and cannot be undone.')) return;
       setSaving(true);
       try {
+        const { data: sessionData } = await supabase.auth.getSession();
         const res = await fetch(apiPath('/api/events/delete'), {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: userProfile?.id, eventId }),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${sessionData.session?.access_token}`,
+          },
+          body: JSON.stringify({ eventId }),
         });
         const data = await res.json();
         if (!res.ok) {

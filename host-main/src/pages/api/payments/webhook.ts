@@ -43,12 +43,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const userId = meta.userId || null;
     const guestName = tx.customer?.name || null;
     const guestEmail = tx.customer?.email || null;
-
     if (!eventId) {
       console.error('No eventId in transaction meta:', tx);
       return res.status(400).json({ error: 'Missing eventId in transaction meta' });
     }
 
+    const ticketTypeName = meta.ticketTypeName || 'Standard';
+
+    const { data: ticketType } = await supabaseAdmin
+      .from('ticket_types')
+      .select('price, currency')
+      .eq('event_id', eventId)
+      .eq('name', ticketTypeName)
+      .limit(1)
+      .maybeSingle();
+
+    if (
+      !ticketType ||
+      Number(tx.amount) < Number(ticketType.price) ||
+      (tx.currency && tx.currency !== (ticketType.currency || 'USD'))
+    ) {
+      console.error('PAYMENT NEEDS REVIEW: amount/ticket mismatch', {
+        txId: tx.id, eventId, ticketTypeName, paid: tx.amount, currency: tx.currency,
+      });
+      return res.status(200).json({ received: true, flagged: true });
+    }
     // Avoid creating a duplicate ticket if Flutterwave retries the webhook
     const { data: existingTicket } = await supabaseAdmin
       .from('tickets')

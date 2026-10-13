@@ -1,7 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { getTicketPrice } from '@/lib/ticketPrice';
 
 const ALLOWED_ORIGIN = 'https://femvents.core23lab.org';
+
+// Sandbox by default. For real money, set both variables to AzamPay's live base URLs.
+const AZAMPAY_AUTH_URL = process.env.AZAMPAY_AUTH_URL || 'https://authenticator-sandbox.azampay.co.tz';
+const AZAMPAY_CHECKOUT_URL = process.env.AZAMPAY_CHECKOUT_URL || 'https://sandbox.azampay.co.tz';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
@@ -16,13 +21,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { eventId, amount, phoneNumber, provider, email, name, userId, ticketTypeName } = req.body;
+  const { eventId, phoneNumber, provider, email, name, userId, ticketTypeName } = req.body;
 
-  if (!eventId || !amount || amount <= 0) {
-    return res.status(400).json({ error: 'eventId and a valid amount are required' });
+  if (!eventId || !ticketTypeName) {
+    return res.status(400).json({ error: 'eventId and ticketTypeName are required' });
   }
   if (!phoneNumber || !provider) {
     return res.status(400).json({ error: 'phoneNumber and provider are required' });
+  }
+
+  const amount = await getTicketPrice(eventId, ticketTypeName);
+  if (!amount) {
+    return res.status(400).json({ error: 'Ticket type not found' });
   }
 
   try {

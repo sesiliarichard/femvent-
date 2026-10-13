@@ -28,6 +28,7 @@ import { supabase } from '../services/supabase';
 import { EventSplashScreen } from '../components/EventSplashScreen';
 import { WaitlistButton } from '../components/WaitlistButton';
 import { VenueLocationCard } from '../components/VenueLocationCard';
+import { FavoriteButton } from '../components/FavoriteButton';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -51,7 +52,6 @@ export default function EventDetailScreen({ route, navigation }: EventDetailScre
   const { setCurrentEvent } = useCurrentEvent();
   const [isRegistered, setIsRegistered] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
-  const [isFavorited, setIsFavorited] = useState(false);
   const [attendeeCount, setAttendeeCount] = useState({ total: 0, confirmed: 0, pending: 0 });
   const [expandedSchedule, setExpandedSchedule] = useState<number | null>(null);
   const insets = useSafeAreaInsets();
@@ -237,15 +237,7 @@ useEffect(() => {
     }
   };
 
-  const toggleFavorite = () => {
-    setIsFavorited(!isFavorited);
-    Alert.alert(
-      isFavorited ? 'Removed' : 'Added',
-      isFavorited
-        ? 'Event removed from favorites'
-        : 'Event added to your favorites'
-    );
-  };
+ 
 
   if (showSplash && event && !loading) {
     return (
@@ -344,16 +336,13 @@ useEffect(() => {
             <Text style={styles.headerTitle} numberOfLines={1}>{event.title}</Text>
           </View>
 
-          <TouchableOpacity
+          <FavoriteButton
+            eventId={event.id}
+            size={22}
+            color="#ef4444"
+            inactiveColor="#64748b"
             style={styles.headerButton}
-            onPress={toggleFavorite}
-          >
-            <Ionicons
-              name={isFavorited ? "heart" : "heart-outline"}
-              size={22}
-              color={isFavorited ? "#ef4444" : "#64748b"}
-            />
-          </TouchableOpacity>
+          />
         </View>
       </Animated.View>
 
@@ -469,7 +458,7 @@ useEffect(() => {
           <WaitlistButton
             eventId={event.id}
             eventTitle={event.title}
-            isSoldOut={event.soldOut || event.currentAttendees >= event.maxAttendees}
+            isSoldOut={event.soldOut || (event.maxAttendees > 0 && event.currentAttendees >= event.maxAttendees)}
           />
 
           {/* Venue Location Section */}

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { requireUser } from '@/lib/requireUser';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
@@ -7,16 +8,47 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
+        const user = await requireUser(req, res);
+        if (!user) return;
+
+        const eventId = String(req.query.id || '');
         const { attendeeIds, reason } = req.body;
 
+        if (!eventId) {
+            return res.status(400).json({ error: 'Event id is missing from the URL' });
+        }
         if (!attendeeIds || !Array.isArray(attendeeIds) || attendeeIds.length === 0) {
             return res.status(400).json({ error: 'Attendee IDs are required' });
+        }
+
+        // Only the event's host (or an admin) may refund its tickets
+        const { data: eventRow } = await supabaseAdmin
+            .from('events')
+            .select('host_id')
+            .eq('id', eventId)
+            .maybeSingle();
+
+        if (!eventRow) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        if (eventRow.host_id !== user.id) {
+            const { data: me } = await supabaseAdmin
+                .from('users')
+                .select('role')
+                .eq('id', user.id)
+                .maybeSingle();
+            if (me?.role !== 'admin') {
+                return res.status(403).json({ error: 'You do not have permission to refund these tickets' });
+            }
         }
 
         const { data: tickets, error: ticketsError } = await supabaseAdmin
             .from('tickets')
             .select('id, payment_id, amount, payment_amount')
-            .in('id', attendeeIds);
+            .in('id', attendeeIds)
+            .eq('event_id', eventId)
+            .in('status', ['confirmed', 'pending']);
 
         if (ticketsError) throw ticketsError;
 
@@ -73,6 +105,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             failed: attendeeIds.length - successCount,
             totalAmount,
             results,
+            note: 'Tickets were cancelled and marked refunded. No money was sent automatically: refund each buyer through your payment provider or bank.',
         });
     } catch (error: any) {
         console.error('Error processing refunds:', error);

@@ -7,11 +7,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { ticketId, organizerId } = req.body;
+  const { ticketId } = req.body;
 
-  if (!ticketId || !organizerId) {
-    return res.status(400).json({ error: 'ticketId and organizerId are required' });
+  if (!ticketId) {
+    return res.status(400).json({ error: 'ticketId is required' });
   }
+
+  // Who is calling? Taken from their login token, never from the request body
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token) {
+    return res.status(401).json({ error: 'Please log in' });
+  }
+  const { data: authData, error: authError } = await supabaseAdmin.auth.getUser(token);
+  if (authError || !authData.user) {
+    return res.status(401).json({ error: 'Please log in' });
+  }
+  const organizerId = authData.user.id;
 
   try {
     const { data: ticket, error: ticketError } = await supabaseAdmin
@@ -33,6 +44,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (ticket.status === 'confirmed') {
       return res.status(200).json({ alreadyConfirmed: true });
     }
+    if (ticket.status !== 'pending') {
+      return res.status(409).json({ error: `Ticket is ${ticket.status}, not pending` });
+    }
 
     const { error: updateError } = await supabaseAdmin
       .from('tickets')
@@ -46,7 +60,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Best-effort confirmation email — mirrors webhook.ts's approach
     try {
-      const recipientEmail = ticket.guest_email;
+      let recipientEmail = ticket.guest_email;
+      if (!recipientEmail && ticket.user_id) {
+        const { data: buyer } = await supabaseAdmin
+          .from('users')
+          .select('email')
+          .eq('id', ticket.user_id)
+          .maybeSingle();
+        recipientEmail = buyer?.email || null;
+      }
       if (recipientEmail && ticket.event) {
         await sendEmail({
           to: recipientEmail,

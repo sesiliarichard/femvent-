@@ -28,31 +28,36 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
   const { resetPassword } = useAuth();
 
   const handleResetPassword = async () => {
-    if (!email) {
+    const trimmed = email.trim();
+    if (!trimmed) {
       Alert.alert('Error', 'Please enter your email address');
       return;
     }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
       Alert.alert('Error', 'Please enter a valid email address');
       return;
     }
 
     setLoading(true);
     try {
-      await resetPassword(email);
+      await resetPassword(trimmed);
       Alert.alert(
-        'Password Reset Sent',
-        'Check your email for password reset instructions'
+        'Check your email',
+        'If an account exists for that address, we have sent a link to reset your password. The link opens in your browser. Afterwards, sign in here with your new password.',
+        [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
       );
     } catch (error: any) {
-      Alert.alert('Reset Failed', error.message || 'An error occurred');
+      const message = String(error?.message || '');
+      if (/rate limit|too many|security purposes/i.test(message)) {
+        Alert.alert('Please wait', 'A reset email was sent recently. Please wait a few minutes and try again.');
+      } else {
+        Alert.alert('Reset Failed', message || 'An error occurred');
+      }
     } finally {
       setLoading(false);
     }
   };
-
+  
   return (
     <KeyboardAvoidingView
       style={styles.container}

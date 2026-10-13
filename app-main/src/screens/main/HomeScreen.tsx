@@ -26,6 +26,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../services/AuthContext';
 import { supabase } from '../../services/supabase';
+import { FavoriteButton } from '../../components/FavoriteButton';
 
 const { width, height } = Dimensions.get('window');
 
@@ -36,7 +37,6 @@ export const HomeScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [viewMode, setViewMode] = useState('list');
   const [selectedCategory, setSelectedCategory] = useState('all');
 
@@ -160,18 +160,6 @@ export const HomeScreen: React.FC = () => {
     setRefreshing(true);
     await loadMyRegisteredEvents();
     setRefreshing(false);
-  };
-
-  const toggleFavorite = (eventId: string) => {
-    setFavorites(prev => {
-      const newFav = new Set(prev);
-      if (newFav.has(eventId)) {
-        newFav.delete(eventId);
-      } else {
-        newFav.add(eventId);
-      }
-      return newFav;
-    });
   };
 
   const filteredEvents = events.filter((event: any) => {
@@ -317,19 +305,13 @@ export const HomeScreen: React.FC = () => {
                 </View>
               )}
 
-              <TouchableOpacity
+<FavoriteButton
+                eventId={item.id}
+                size={22}
+                color="#FF6B6B"
+                inactiveColor="#fff"
                 style={styles.favoriteBadge}
-                onPress={() => toggleFavorite(item.id)}
-                activeOpacity={0.7}
-              >
-                <Animated.View>
-                  <Ionicons
-                    name={favorites.has(item.id) ? "heart" : "heart-outline"}
-                    size={22}
-                    color={favorites.has(item.id) ? "#FF6B6B" : "#fff"}
-                  />
-                </Animated.View>
-              </TouchableOpacity>
+              />
 
               <View style={styles.featuredContent}>
                 <Text style={styles.featuredTitle} numberOfLines={2}>
@@ -449,17 +431,13 @@ export const HomeScreen: React.FC = () => {
                   </View>
                 )}
 
-                <TouchableOpacity
+<FavoriteButton
+                  eventId={item.id}
+                  size={20}
+                  color="#FF6B6B"
+                  inactiveColor="#fff"
                   style={styles.eventFavButton}
-                  onPress={() => toggleFavorite(item.id)}
-                  activeOpacity={0.7}
-                >
-                  <Ionicons
-                    name={favorites.has(item.id) ? "heart" : "heart-outline"}
-                    size={20}
-                    color={favorites.has(item.id) ? "#FF6B6B" : "#fff"}
-                  />
-                </TouchableOpacity>
+                />
               </LinearGradient>
             </ImageBackground>
           </View>

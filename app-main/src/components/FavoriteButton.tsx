@@ -9,6 +9,7 @@ interface FavoriteButtonProps {
     eventId: string;
     size?: number;
     color?: string;
+    inactiveColor?: string;
     style?: any;
     onToggle?: (isFavorited: boolean) => void;
 }
@@ -17,12 +18,14 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
     eventId,
     size = 28,
     color = '#E36C54',
+    inactiveColor,
     style,
     onToggle,
 }) => {
     const { user } = useAuth();
     const [favorited, setFavorited] = useState(false);
     const [loading, setLoading] = useState(false);
+    const busy = React.useRef(false);
     const scaleValue = React.useRef(new Animated.Value(1)).current;
 
     useEffect(() => {
@@ -41,7 +44,8 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
     };
 
     const handlePress = async () => {
-        if (!user?.id || loading) return;
+        if (!user?.id || busy.current) return;
+        busy.current = true;
 
         // Haptic feedback
         try {
@@ -74,6 +78,7 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
             console.error('Error toggling favorite:', error);
         } finally {
             setLoading(false);
+            busy.current = false;
         }
     };
 
@@ -88,7 +93,7 @@ export const FavoriteButton: React.FC<FavoriteButtonProps> = ({
                 <Ionicons
                     name={favorited ? 'heart' : 'heart-outline'}
                     size={size}
-                    color={color}
+                    color={favorited ? color : (inactiveColor ?? color)}
                 />
             </Animated.View>
         </TouchableOpacity>

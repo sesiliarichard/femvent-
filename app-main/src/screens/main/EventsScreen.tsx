@@ -24,6 +24,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
+import { FavoriteButton } from '../../components/FavoriteButton';
 
 const { width } = Dimensions.get('window');
 
@@ -34,7 +35,6 @@ export const EventsScreen: React.FC = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const navigation: any = useNavigation();
   
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -152,17 +152,6 @@ export const EventsScreen: React.FC = () => {
     setRefreshing(false);
   };
 
-  const toggleFavorite = (eventId: string) => {
-    setFavorites(prev => {
-      const newFav = new Set(prev);
-      if (newFav.has(eventId)) {
-        newFav.delete(eventId);
-      } else {
-        newFav.add(eventId);
-      }
-      return newFav;
-    });
-  };
 
   const filteredEvents = events.filter(event => {
     const matchesSearch = event.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -224,17 +213,13 @@ export const EventsScreen: React.FC = () => {
                   </View>
               )}
             </View>
-              <TouchableOpacity 
+            <FavoriteButton
+                eventId={item.id}
+                size={22}
+                color="#FF6B6B"
+                inactiveColor="#fff"
                 style={styles.favoriteButton}
-                onPress={() => toggleFavorite(item.id)}
-                activeOpacity={0.7}
-              >
-                <Ionicons 
-                  name={favorites.has(item.id) ? "heart" : "heart-outline"} 
-                  size={22} 
-                  color={favorites.has(item.id) ? "#FF6B6B" : "#fff"} 
-                />
-              </TouchableOpacity>
+              />
           </LinearGradient>
         </ImageBackground>
         

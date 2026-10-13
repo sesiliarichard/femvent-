@@ -16,16 +16,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { eventId, amount, email, name, userId, ticketTypeName } = req.body;
+  const { eventId, email, name, userId, ticketTypeName } = req.body;
 
-  if (!eventId || !amount || amount <= 0) {
-    return res.status(400).json({ error: 'eventId and a valid amount are required' });
+  if (!eventId || !ticketTypeName) {
+    return res.status(400).json({ error: 'eventId and ticketTypeName are required' });
   }
   if (!email) {
     return res.status(400).json({ error: 'Customer email is required' });
   }
 
   try {
+    // The price comes from the database, never from the browser
+    const { data: ticketType } = await supabaseAdmin
+      .from('ticket_types')
+      .select('price')
+      .eq('event_id', eventId)
+      .eq('name', ticketTypeName)
+      .eq('is_active', true)
+      .limit(1)
+      .maybeSingle();
+
+    const amount = Number(ticketType?.price);
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: 'Ticket type not found' });
+    }
     const orderId = `femvents-${eventId}-${Date.now()}`;
     const origin = req.headers.origin || process.env.NEXT_PUBLIC_ATTENDEE_SITE_URL;
 

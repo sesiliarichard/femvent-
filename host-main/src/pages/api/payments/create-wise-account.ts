@@ -1,15 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { requireUser } from '@/lib/requireUser';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { userId, wiseEmail } = req.body;
+  const user = await requireUser(req, res);
+  if (!user) return;
+  const userId = user.id;
+
+  const { wiseEmail } = req.body;
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!userId || !wiseEmail || !emailRegex.test(wiseEmail)) {
+  if (!wiseEmail || !emailRegex.test(wiseEmail)) {
     return res.status(400).json({ error: 'A valid Wise account email is required' });
   }
 

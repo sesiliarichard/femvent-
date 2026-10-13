@@ -94,9 +94,9 @@ export const getFavoriteEventIds = async (userId: string): Promise<string[]> => 
             .select('event_id')
             .eq('user_id', userId);
 
-        if (error) throw error;
-
-        return (data || []).map((row) => row.event_id);
+            if (error) throw error;
+    
+            return (data || []).map((row) => row.event_id);
     } catch (error) {
         console.error('Error getting favorites:', error);
         return [];

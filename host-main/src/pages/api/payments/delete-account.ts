@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { requireUser } from '@/lib/requireUser';
 import { logPaymentAccountHistory } from '@/lib/paymentHistory';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -7,9 +8,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { userId, provider } = req.body;
+  const user = await requireUser(req, res);
+  if (!user) return;
+  const userId = user.id;
 
-  if (!userId || !provider) {
+  const { provider } = req.body;
+
+  if (!provider) {
     return res.status(400).json({ error: 'userId and provider are required' });
   }
 

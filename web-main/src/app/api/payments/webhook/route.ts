@@ -32,9 +32,29 @@ export async function POST(req: NextRequest) {
     const ticketTypeName = meta.ticketTypeName || 'Standard';
     const guestName = tx.customer?.name || null;
     const guestEmail = tx.customer?.email || null;
-
     if (!eventId) {
       return NextResponse.json({ error: 'Missing eventId in transaction meta' }, { status: 400 });
+    }
+
+    // The amount paid must cover the ticket price
+    const { data: ticketType } = await supabaseAdmin
+      .from('ticket_types')
+      .select('price, currency')
+      .eq('event_id', eventId)
+      .eq('name', ticketTypeName)
+      .limit(1)
+      .maybeSingle();
+
+    if (
+      !ticketType ||
+      Number(tx.amount) < Number(ticketType.price) ||
+      (tx.currency && tx.currency !== (ticketType.currency || 'USD'))
+    ) {
+      // The buyer HAS paid, so this needs a human: check logs, then refund or issue manually
+      console.error('PAYMENT NEEDS REVIEW: amount/ticket mismatch', {
+        txId: tx.id, eventId, ticketTypeName, paid: tx.amount, currency: tx.currency,
+      });
+      return NextResponse.json({ received: true, flagged: true }); // 200 so Flutterwave stops retrying
     }
 
     const { data: existingTicket } = await supabaseAdmin

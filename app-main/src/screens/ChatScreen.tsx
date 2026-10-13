@@ -89,15 +89,8 @@ export default function ChatScreen({ navigation, route }: ChatScreenProps) {
             setSessionCount((eventData as any).agenda?.length || 0);
           }
 
-          // Get real attendee count from tickets
-          const { data: ticketsData } = await supabase
-            .from('tickets')
-            .select('user_id')
-            .eq('event_id', eventId)
-            .in('status', ['confirmed', 'pending']);
-
-          const uniqueUserIds = new Set((ticketsData || []).map((t: any) => t.user_id));
-          setAttendeeCount(uniqueUserIds.size);
+              // Count comes from the event row, kept current by the tickets_sold trigger
+              setAttendeeCount((eventData as any)?.tickets_sold ?? 0);
 
           // Check if user is registered for this event
           if (user?.id) {

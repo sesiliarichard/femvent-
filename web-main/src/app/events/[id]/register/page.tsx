@@ -375,7 +375,7 @@ export default function RegisterPage() {
                             body: JSON.stringify({
                                 eventId: id,
                                 provider: selectedPaymentMethod,
-                                amount: selectedTicket.price,
+                                ticketTypeName: selectedTicket.name,
                                 userId: activeUser.id,
                             }),
                         }
@@ -401,20 +401,23 @@ export default function RegisterPage() {
                         throw new Error("That payment method isn't supported yet. Please choose another.");
                     }
         
-                    const { data: newTicket, error } = await supabase
-                        .from("tickets")
-                        .insert({
-                    event_id: id,
-                    user_id: activeUser.id,
-                    status: "confirmed",
-                    ticket_type: selectedTicket.name,
-                    payment_amount: selectedTicket.price,
-                    payment_method: "free",
-                    qr_code_id: crypto.randomUUID(),
-                })
-                .select()
-                .single();
-            if (error) throw error;
+                    const { data: sessionData } = await supabase.auth.getSession();
+                    const accessToken = sessionData.session?.access_token;
+                    if (!accessToken) {
+                        throw new Error("Please confirm your email address, then log in to finish registering.");
+                    }
+        
+                    const freeRes = await fetch("/api/register/free", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                        body: JSON.stringify({ eventId: id, ticketTypeName: selectedTicket.name }),
+                    });
+                    const freeData = await freeRes.json();
+                    if (!freeRes.ok) throw new Error(freeData.error || "Failed to complete registration");
+                    const newTicket = freeData.ticket;
 
             fetch("/api/send-email", {
                 method: "POST",

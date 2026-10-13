@@ -6,11 +6,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { userId, eventId } = req.body;
+  const { eventId } = req.body;
 
-  if (!userId || !eventId) {
-    return res.status(400).json({ error: 'userId and eventId are required' });
+  if (!eventId) {
+    return res.status(400).json({ error: 'eventId is required' });
   }
+
+  // Who is calling? Taken from their login token, never from the request body
+  const token = req.headers.authorization?.replace('Bearer ', '');
+  if (!token) {
+    return res.status(401).json({ error: 'Please log in' });
+  }
+  const { data: authData, error: authError } = await supabaseAdmin.auth.getUser(token);
+  if (authError || !authData.user) {
+    return res.status(401).json({ error: 'Please log in' });
+  }
+  const userId = authData.user.id;
 
   try {
     // Confirm this host actually owns the event before deleting anything

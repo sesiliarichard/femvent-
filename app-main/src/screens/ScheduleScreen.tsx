@@ -208,7 +208,7 @@ useEffect(() => {
      try {
        // Validate eventData and agenda
        if (!eventData) {
-        console.warn('No event data available, using sample schedule');
+        if (loading) return [];
         return sampleScheduleData;
       }
       

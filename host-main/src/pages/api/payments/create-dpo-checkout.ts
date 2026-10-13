@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { getTicketPrice } from '@/lib/ticketPrice';
 
 const ALLOWED_ORIGIN = 'https://femvents.core23lab.org';
 
@@ -54,13 +55,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(500).json({ error: 'DPO is not configured (missing company token or service type)' });
   }
 
-  const { eventId, amount, email, name, phone, userId, ticketTypeName } = req.body;
+  const { eventId, email, name, phone, userId, ticketTypeName } = req.body;
 
-  if (!eventId || !amount || amount <= 0) {
-    return res.status(400).json({ error: 'eventId and a valid amount are required' });
+  if (!eventId || !ticketTypeName) {
+    return res.status(400).json({ error: 'eventId and ticketTypeName are required' });
   }
   if (!email) {
     return res.status(400).json({ error: 'Customer email is required' });
+  }
+
+  const amount = await getTicketPrice(eventId, ticketTypeName);
+  if (!amount) {
+    return res.status(400).json({ error: 'Ticket type not found' });
   }
 
   const orderId = `femvents-${eventId}-${Date.now()}`;

@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { getTicketPrice } from '@/lib/ticketPrice';
 
 const ALLOWED_ORIGIN = 'https://femvents.core23lab.org';
 const PESAPAL_BASE = 'https://pay.pesapal.com/v3';
@@ -17,13 +18,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { eventId, amount, email, name, phone, userId, ticketTypeName } = req.body;
+  const { eventId, email, name, phone, userId, ticketTypeName } = req.body;
 
-  if (!eventId || !amount || amount <= 0) {
-    return res.status(400).json({ error: 'eventId and a valid amount are required' });
+  if (!eventId || !ticketTypeName) {
+    return res.status(400).json({ error: 'eventId and ticketTypeName are required' });
   }
   if (!email) {
     return res.status(400).json({ error: 'Customer email is required' });
+  }
+
+  const amount = await getTicketPrice(eventId, ticketTypeName);
+  if (!amount) {
+    return res.status(400).json({ error: 'Ticket type not found' });
   }
 
   try {

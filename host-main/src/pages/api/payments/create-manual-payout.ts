@@ -1,15 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 import { logPaymentAccountHistory } from '@/lib/paymentHistory';
+import { requireUser } from '@/lib/requireUser';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { userId, bankName, accountNumber, accountName, instructions } = req.body;
+  const user = await requireUser(req, res);
+  if (!user) return;
+  const userId = user.id;
 
-  if (!userId || !bankName || !accountNumber || !accountName) {
+  const { bankName, accountNumber, accountName, instructions } = req.body;
+
+  if (!bankName || !accountNumber || !accountName) {
     return res.status(400).json({ error: 'Missing required bank details' });
   }
 

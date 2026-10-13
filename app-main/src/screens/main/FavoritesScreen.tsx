@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     View,
     StyleSheet,
@@ -11,10 +11,10 @@ import { Text } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../services/AuthContext';
-import { subscribeToFavorites } from '../../services/favorites';
+import { subscribeToFavorites, getFavoriteEventIds } from '../../services/favorites';
 import { FavoriteButton } from '../../components/FavoriteButton';
 
 interface Event {
@@ -35,7 +35,10 @@ export const FavoritesScreen: React.FC = () => {
     const [favoriteIds, setFavoriteIds] = useState<string[]>([]);
 
     useEffect(() => {
-        if (!user?.id) return;
+        if (!user?.id) {
+            setLoading(false);
+            return;
+        }
 
         // Subscribe to favorites changes
         const unsubscribe = subscribeToFavorites(
@@ -65,7 +68,7 @@ export const FavoritesScreen: React.FC = () => {
           .select('*')
           .in('id', eventIds);
 
-      if (error) throw error;
+          if (error) throw error;
 
       const allEvents: Event[] = (data || []).map((row) => ({
           id: row.id,
@@ -86,6 +89,16 @@ export const FavoritesScreen: React.FC = () => {
             setRefreshing(false);
         }
     };
+
+    useFocusEffect(
+        useCallback(() => {
+            if (!user?.id) return;
+            getFavoriteEventIds(user.id).then((ids) => {
+                setFavoriteIds(ids);
+                loadFavoriteEvents(ids);
+            });
+        }, [user?.id])
+    );
 
     const handleRefresh = () => {
         setRefreshing(true);

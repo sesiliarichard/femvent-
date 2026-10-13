@@ -214,18 +214,41 @@ export const ProfileScreen: React.FC = () => {
           <View style={styles.profileHeader}>
             <View style={styles.headerContent}>
               {/* Profile Photo or Avatar */}
-              {user?.photoURL ? (
-                <Image
-                  source={{ uri: user.photoURL }}
-                  style={styles.profilePhoto}
-                />
-              ) : (
-                <View style={styles.avatar}>
-                  <Text style={styles.avatarText}>
-                    {user?.name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
-                  </Text>
+              <TouchableOpacity
+                activeOpacity={0.8}
+                onPress={() => navigation.navigate('EditProfile' as never)}
+                style={{ position: 'relative' }}
+              >
+                {user?.photoURL ? (
+                  <Image
+                    source={{ uri: user.photoURL }}
+                    style={styles.profilePhoto}
+                  />
+                ) : (
+                  <View style={styles.avatar}>
+                    <Text style={styles.avatarText}>
+                      {user?.name?.charAt(0).toUpperCase() || user?.email?.charAt(0).toUpperCase() || 'U'}
+                    </Text>
+                  </View>
+                )}
+                <View
+                  style={{
+                    position: 'absolute',
+                    bottom: 16,
+                    right: 0,
+                    width: 32,
+                    height: 32,
+                    borderRadius: 16,
+                    backgroundColor: '#E36C54',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    borderWidth: 2,
+                    borderColor: '#fff',
+                  }}
+                >
+                  <Ionicons name="camera" size={16} color="#fff" />
                 </View>
-              )}
+              </TouchableOpacity>
 
               <Text style={styles.userName}>{user?.name || 'User'}</Text>
               <Text style={styles.userEmail}>{user?.email}</Text>

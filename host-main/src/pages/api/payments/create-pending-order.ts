@@ -16,10 +16,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { eventId, provider, amount, userId, guestName, guestEmail } = req.body;
+  const { eventId, provider, userId, guestName, guestEmail, ticketTypeName } = req.body;
 
-  if (!eventId || !provider || !amount || amount <= 0) {
-    return res.status(400).json({ error: 'eventId, provider, and a valid amount are required' });
+  if (!eventId || !provider || !ticketTypeName) {
+    return res.status(400).json({ error: 'eventId, provider, and ticketTypeName are required' });
   }
 
   if (!['wise', 'crypto', 'manual'].includes(provider)) {
@@ -31,6 +31,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
+    // The price comes from the database, never from the browser
+    const { data: ticketType } = await supabaseAdmin
+      .from('ticket_types')
+      .select('price')
+      .eq('event_id', eventId)
+      .eq('name', ticketTypeName)
+      .eq('is_active', true)
+      .limit(1)
+      .maybeSingle();
+
+    const amount = Number(ticketType?.price);
+    if (!amount || amount <= 0) {
+      return res.status(400).json({ error: 'Ticket type not found' });
+    }
+
     // Confirm the organizer actually has this provider connected and active
     const { data: event, error: eventError } = await supabaseAdmin
       .from('events')
