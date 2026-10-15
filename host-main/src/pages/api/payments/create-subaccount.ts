@@ -1,14 +1,19 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
+import { requireUser } from '@/lib/requireUser';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { userId, accountBankCode, accountNumber, accountName, businessName, businessEmail, country } = req.body;
+  const user = await requireUser(req, res);
+  if (!user) return;
+  const userId = user.id;
 
-  if (!userId || !accountBankCode || !accountNumber || !accountName || !country) {
+  const { accountBankCode, accountNumber, accountName, businessName, businessEmail, country } = req.body;
+
+  if (!accountBankCode || !accountNumber || !accountName || !country) {
     return res.status(400).json({ error: 'Missing required payout details' });
   }
 
@@ -23,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         account_bank: accountBankCode,
         account_number: accountNumber,
         business_name: businessName || accountName,
-        business_email: businessEmail,
+        business_email: businessEmail || user.email,
         business_mobile: '',
         country: country,
         split_type: 'percentage',

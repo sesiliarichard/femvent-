@@ -3,6 +3,20 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardLayout from '@/components/DashboardLayout';
+import { supabase } from '@/lib/supabase';
+
+// This page calls full /host/api/... paths, so it sends the login token itself
+async function authedFetch(url: string, init: RequestInit = {}) {
+  const { data } = await supabase.auth.getSession();
+  const token = data.session?.access_token;
+  return fetch(url, {
+    ...init,
+    headers: {
+      ...(init.headers || {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+}
 
 interface Bank {
   id: number;

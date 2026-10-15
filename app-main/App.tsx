@@ -70,6 +70,7 @@ import { QRScannerScreen } from './src/screens/main/QRScannerScreen';
 import { SettingsScreen } from './src/screens/main/SettingsScreen';
 import { FavoritesScreen } from './src/screens/main/FavoritesScreen';
 import { EditProfileScreen } from './src/screens/main/EditProfileScreen';
+import { NotificationsScreen } from './src/screens/main/NotificationsScreen';
 
 import { ExhibitorsScreen } from './src/screens/main/ExhibitorsScreen';
 import { VenueMapScreen } from './src/screens/main/VenueMapScreen';
@@ -295,7 +296,8 @@ function AppNavigator() {
               component={EditProfileScreen}
               options={{ headerShown: false }}
             />
-            <Stack.Screen name="MyEvents" component={MyEventsScreen} options={{ headerShown: false }} />
+            <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
+           <Stack.Screen name="MyEvents" component={MyEventsScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Exhibitors" component={ExhibitorsScreen} options={{ headerShown: false }} />
             <Stack.Screen name="VenueMap" component={VenueMapScreen} options={{ headerShown: false }} />
             <Stack.Screen name="Announcements" component={AnnouncementsScreen} options={{ headerShown: false }} />

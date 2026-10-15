@@ -100,8 +100,8 @@ function EventAttendeesContent() {
           checkInStatus: ticketData.check_in_status || 'not-checked-in',
           checkInTime: ticketData.check_in_time ? new Date(ticketData.check_in_time) : undefined,
           userInfo: {
-            name: ticketData.attendee?.name || 'Unknown User',
-            email: ticketData.attendee?.email || 'No email',
+            name: ticketData.attendee?.name || ticketData.guest_name || ticketData.user_name || 'Unknown User',
+            email: ticketData.attendee?.email || ticketData.guest_email || ticketData.user_email || 'No email',
             phone: ticketData.attendee?.phone || '',
             company: ticketData.attendee?.company || '',
             jobTitle: ticketData.attendee?.job_title || '',
@@ -326,7 +326,12 @@ function EventAttendeesContent() {
 
     const csv = [
       headers.join(','),
-      ...rows.map(row => row.map(cell => `"${cell}"`).join(',')),
+      ...rows.map(row => row.map(cell => {
+        const text = String(cell ?? '');
+        // Attendees type their own names: neutralise anything a spreadsheet would run as a formula
+        const safe = /^[=+\-@\t\r]/.test(text) ? `'${text}` : text;
+        return `"${safe.replace(/"/g, '""')}"`;
+      }).join(',')),
     ].join('\n');
 
     const blob = new Blob([csv], { type: 'text/csv' });
@@ -1016,7 +1021,7 @@ function EventAttendeesContent() {
         onEmail={() => setShowBulkEmailModal(true)}
         onSMS={() => setShowBulkSMSModal(true)}
         onRefund={async () => {
-          if (!confirm(`Process refund for ${selectedAttendees.size} attendees?`)) return;
+          if (!confirm(`Cancel ${selectedAttendees.size} ticket(s) and mark them refunded? This does NOT send any money. You will need to refund each buyer yourself through your payment provider or bank.`)) return;
 
           const reason = prompt('Enter refund reason:');
           if (!reason) return;
@@ -1071,7 +1076,7 @@ function EventAttendeesContent() {
               await updateAttendeeCount(eventId);
             }
 
-            alert(`Refunded ${successCount} of ${selectedAttendeesData.length} tickets. Total: $${totalAmount}`);
+            alert(`Cancelled ${successCount} of ${selectedAttendeesData.length} tickets and marked them refunded ($${totalAmount} in total). No money has been sent yet: refund each buyer yourself.`);
             setSelectedAttendees(new Set());
           } catch (error) {
             console.error('Refund error:', error);

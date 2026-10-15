@@ -27,6 +27,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../../services/AuthContext';
 import { supabase } from '../../services/supabase';
 import { FavoriteButton } from '../../components/FavoriteButton';
+import { getUnreadCount, subscribeToNotifications } from '../../services/inbox';
 
 const { width, height } = Dimensions.get('window');
 
@@ -39,6 +40,7 @@ export const HomeScreen: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [viewMode, setViewMode] = useState('list');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
@@ -155,6 +157,16 @@ export const HomeScreen: React.FC = () => {
       }),
     ]).start();
   }, [events, fadeAnim, slideAnim]);
+
+  useEffect(() => {
+    if (!user?.id) {
+      setUnreadCount(0);
+      return;
+    }
+    const refresh = () => getUnreadCount(user.id).then(setUnreadCount);
+    refresh();
+    return subscribeToNotifications(user.id, refresh);
+  }, [user?.id]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -552,10 +564,17 @@ export const HomeScreen: React.FC = () => {
                 <Ionicons name="menu-outline" size={22} color="#5A4485" />
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.headerIconButton}>
+              <TouchableOpacity
+                style={styles.headerIconButton}
+                onPress={() => (navigation as any).navigate('Notifications')}
+              >
                 <View style={styles.iconButtonCircle}>
-                <Ionicons name="notifications-outline" size={22} color="#5A4485" />
-                  <Badge style={styles.notificationBadge} size={8} />
+                  <Ionicons name="notifications-outline" size={22} color="#5A4485" />
+                  {unreadCount > 0 && (
+                    <Badge style={styles.notificationBadge} size={16}>
+                      {unreadCount > 9 ? '9+' : unreadCount}
+                    </Badge>
+                  )}
                 </View>
               </TouchableOpacity>
               <TouchableOpacity style={styles.headerIconButton}>
