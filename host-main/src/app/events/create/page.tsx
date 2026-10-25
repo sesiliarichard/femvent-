@@ -476,7 +476,6 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
           speakers: eventData.speakers.map(s => ({ ...s })),
           agenda: eventData.agenda.map(a => ({ ...a, time: a.time.toISOString() })),
           partners: eventData.partners.map(p => ({ ...p })),
-          exhibitors: eventData.exhibitors.map(ex => ({ ...ex })),
           audience_description: eventData.audienceDescription || null,
           access_info: eventData.accessInfo,
           care_safety: eventData.careSafety,
@@ -516,10 +515,31 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
               price: Number(tier.price) || 0,
               currency: 'USD',
               sort_order: index,
+              is_active: true,
             }))
           );
           if (tiersError) {
             console.error('Error saving ticket tiers:', tiersError);
+            alert('Event saved, but ticket types failed to save: ' + tiersError.message);
+            return;
+          }
+        }
+
+        const validExhibitors = eventData.exhibitors.filter((ex) => ex.name && ex.name.trim() !== '');
+        if (validExhibitors.length > 0) {
+          const { error: exError } = await supabase.from('exhibitors').insert(
+            validExhibitors.map((ex) => ({
+              event_id: created.id,
+              name: ex.name,
+              booth: ex.booth || null,
+              category: ex.category || null,
+              description: ex.description || null,
+              website: ex.website || null,
+            }))
+          );
+          if (exError) {
+            console.error('Error saving exhibitors:', exError);
+            alert('Event created, but exhibitors failed to save: ' + exError.message);
           }
         }
 
@@ -573,7 +593,6 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
           speakers: eventData.speakers.map(s => ({ ...s })),
           agenda: eventData.agenda.map(a => ({ ...a, time: a.time.toISOString() })),
           partners: eventData.partners.map(p => ({ ...p })),
-          exhibitors: eventData.exhibitors.map(ex => ({ ...ex })),
           audience_description: eventData.audienceDescription || null,
           access_info: eventData.accessInfo,
           care_safety: eventData.careSafety,

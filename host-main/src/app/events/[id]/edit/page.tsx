@@ -198,7 +198,7 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
           speakers: Array.isArray(data.speakers) ? data.speakers : [],
           agenda: Array.isArray(data.agenda) ? data.agenda.map((it: any) => ({ ...it, time: it.time ? new Date(it.time) : new Date() })) : [],
           partners: Array.isArray(data.partners) ? data.partners : [],
-          exhibitors: Array.isArray(data.exhibitors) ? data.exhibitors : [],
+          exhibitors: [],
           audienceDescription: data.audience_description || '',
           accessInfo: data.access_info || {},
           careSafety: data.care_safety || {},
@@ -212,6 +212,25 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
           .select('id, name, description, price')
           .eq('event_id', eventId)
           .order('sort_order', { ascending: true });
+
+          const { data: exhibitorRows } = await supabase
+          .from('exhibitors')
+          .select('name, booth, category, description, website')
+          .eq('event_id', eventId)
+          .order('created_at', { ascending: true });
+
+        if (exhibitorRows && exhibitorRows.length > 0) {
+          setEventData((p) => ({
+            ...p,
+            exhibitors: exhibitorRows.map((r: any) => ({
+              name: r.name || '',
+              booth: r.booth || '',
+              category: r.category || '',
+              description: r.description || '',
+              website: r.website || '',
+            })),
+          }));
+        }
 
         if (tiers && tiers.length > 0) {
           setTicketTiers(
@@ -373,9 +392,9 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
         }),
       } : null;
 
-      const { error } = await supabase
-        .from('events')
-        .update({
+      const { data: updated, error } = await supabase
+      .from('events')
+      .update({
           title: eventData.title,
           description: eventData.description,
           poster_url: eventData.posterURL,
@@ -392,7 +411,6 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
           speakers: eventData.speakers.map(s => ({ ...s })),
           agenda: eventData.agenda.map(a => ({ ...a, time: a.time.toISOString() })),
           partners: eventData.partners.map(p => ({ ...p })),
-          exhibitors: eventData.exhibitors.map(ex => ({ ...ex })),
           audience_description: eventData.audienceDescription || null,
           access_info: eventData.accessInfo,
           care_safety: eventData.careSafety,
@@ -400,11 +418,20 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
           after_gathering: eventData.afterGathering || null,
           archive_visibility: eventData.archiveVisibility,
         })
-        .eq('id', eventId);
+        .eq('id', eventId)
+        .select('id');
 
         if (error) throw error;
+        if (!updated || updated.length === 0) {
+          throw new Error('The event was not updated. Your account may not be allowed to edit it (database permissions), or the event was not found.');
+        }
 
-        await supabase.from('ticket_types').delete().eq('event_id', eventId);
+        const { error: tiersDeleteError } = await supabase.from('ticket_types').delete().eq('event_id', eventId);
+        if (tiersDeleteError) {
+          console.error('Error clearing ticket tiers:', tiersDeleteError);
+          alert('Event saved, but ticket types could not be updated: ' + tiersDeleteError.message);
+          return;
+        }
 
         const validTiers = ticketTiers.filter((t) => t.name.trim() !== '');
         if (validTiers.length > 0) {
@@ -416,14 +443,46 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
               price: Number(tier.price) || 0,
               currency: 'USD',
               sort_order: index,
+              is_active: true,
             }))
           );
           if (tiersError) {
             console.error('Error saving ticket tiers:', tiersError);
+            alert('Event saved, but ticket types failed to save: ' + tiersError.message);
+            return;
+          }
+        }
+
+        const { error: exDeleteError } = await supabase.from('exhibitors').delete().eq('event_id', eventId);
+        if (exDeleteError) {
+          console.error('Error clearing exhibitors:', exDeleteError);
+          alert('Event saved, but exhibitors could not be updated: ' + exDeleteError.message);
+          return;
+        }
+
+        const validExhibitors = eventData.exhibitors.filter((ex) => ex.name && ex.name.trim() !== '');
+        if (validExhibitors.length > 0) {
+          const { error: exInsertError } = await supabase.from('exhibitors').insert(
+            validExhibitors.map((ex) => ({
+              event_id: eventId,
+              name: ex.name,
+              booth: ex.booth || null,
+              category: ex.category || null,
+              description: ex.description || null,
+              website: ex.website || null,
+            }))
+          );
+          if (exInsertError) {
+            console.error('Error saving exhibitors:', exInsertError);
+            alert('Event saved, but exhibitors failed to save: ' + exInsertError.message);
+            return;
           }
         }
 
         router.push('/events');
+      } catch (err: any) {
+        console.error('Save failed:', err);
+        alert('Save failed: ' + (err?.message || 'Unknown error'));
       } finally {
         setSaving(false);
       }
