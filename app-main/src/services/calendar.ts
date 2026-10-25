@@ -29,7 +29,9 @@ export const requestCalendarPermissions = async (): Promise<boolean> => {
  */
 export const getDefaultCalendar = async (): Promise<string | null> => {
     try {
-        const calendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
+        const allCalendars = await Calendar.getCalendarsAsync(Calendar.EntityTypes.EVENT);
+        // Only calendars the app is allowed to write to
+        const calendars = allCalendars.filter((cal) => cal.allowsModifications);
 
         // Try to find the primary calendar
         let defaultCalendar = calendars.find((cal) => cal.isPrimary);
@@ -83,7 +85,7 @@ export const addEventToCalendar = async (event: EventData): Promise<string | nul
             endDate: endDate,
             location: event.location,
             notes: event.description,
-            timeZone: 'UTC',
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
             alarms: [
                 { relativeOffset: -60 }, // 1 hour before
                 { relativeOffset: -1440 }, // 1 day before

@@ -3,6 +3,7 @@ import { sendEmail } from '@/lib/email';
 import { getTemplate, EmailTemplateData } from '@/lib/emailTemplates';
 import QRCode from 'qrcode';
 import PDFDocument from 'pdfkit';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 async function generateQrPng(payload: object): Promise<Buffer> {
     return QRCode.toBuffer(JSON.stringify(payload), {
@@ -106,7 +107,30 @@ async function generateTicketPdf(
 
 export async function POST(req: NextRequest) {
     try {
+        // --- Access control: internal servers (secret header) or a signed-in user (own email only) ---
+        const internalKey = process.env.INTERNAL_API_KEY;
+        const isInternal = !!internalKey && req.headers.get('x-internal-key') === internalKey;
+        let callerEmail: string | null = null;
+
+        if (!isInternal) {
+            const token = (req.headers.get('authorization') || '').replace(/^Bearer\s+/i, '');
+            if (!token) {
+                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            }
+            const { data: authData, error: authError } = await supabaseAdmin.auth.getUser(token);
+            if (authError || !authData?.user?.email) {
+                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            }
+            callerEmail = authData.user.email;
+        }
+
         const { to, templateId, templateData } = await req.json();
+
+        // Tickets (QR + PDF) may only be sent by our own servers, never on a user's request
+        if (!isInternal && templateId === 'registration-confirmation') {
+            return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+        }
+        const recipient = isInternal ? to : callerEmail;
 
         if (!to || !templateId) {
             return NextResponse.json(
@@ -175,7 +199,7 @@ export async function POST(req: NextRequest) {
         }
 
         const success = await sendEmail({
-            to,
+            to: recipient,
             subject: template.subject.replace('{{eventTitle}}', data.eventTitle),
             body: `You're registered for ${data.eventTitle}`,
             html: htmlBody,

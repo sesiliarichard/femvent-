@@ -26,6 +26,8 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
             attachments: options.attachments?.map((a) => ({
                 filename: a.filename,
                 content: a.content,
+                contentType: a.contentType,
+                contentId: a.cid,
             })),
         });
 

@@ -243,7 +243,7 @@ export const getEventAttendeesList = async (eventId: string): Promise<any[]> => 
 
     if (userIds.length > 0) {
       const { data: userRows } = await supabase
-        .from('users')
+      .from('public_profiles')
         .select('id, name, photo_url')
         .in('id', userIds);
       (userRows || []).forEach((u: any) => {
