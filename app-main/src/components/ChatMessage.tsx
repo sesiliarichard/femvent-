@@ -168,11 +168,19 @@ export default function ChatMessage({ message, isOwnMessage, currentUserId, onRe
   return (
     <View style={[styles.messageContainer, isOwnMessage ? styles.ownMessage : styles.otherMessage]}>
       {!isOwnMessage && (
-        <Avatar.Image
-          size={36}
-          source={message.userPhotoURL ? { uri: message.userPhotoURL } : undefined}
-          style={styles.messageAvatar}
-        />
+               message.userPhotoURL ? (
+                <Avatar.Image
+                  size={36}
+                  source={{ uri: message.userPhotoURL }}
+                  style={styles.messageAvatar}
+                />
+              ) : (
+                <Avatar.Text
+                  size={36}
+                  label={(message.userName || '?').charAt(0).toUpperCase()}
+                  style={styles.messageAvatar}
+                />
+              )
       )}
       {isOwnMessage && <View style={styles.avatarSpacer} />}
       <View style={[styles.messageContent, isOwnMessage && styles.ownMessageContent]}>

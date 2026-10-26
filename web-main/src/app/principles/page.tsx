@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Space_Grotesk, Work_Sans } from "next/font/google";
+import { getSiteContent } from "@/lib/siteContent";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -63,7 +64,12 @@ const principleThemes = [
   "Resistance",
 ];
 
-export default function PrinciplesPage() {
+export default async function PrinciplesPage() {
+  const { principles } = await getSiteContent();
+  const p = principles || {};
+  const items = (p.commitments?.length ? p.commitments : commitments) as Array<{ title: string; detail: string; color?: string }>;
+  const themes: string[] = (p.themes?.length ? p.themes : principleThemes).map((t: string) => t.trim()).filter(Boolean);
+  const colorOrder = ["orange", "magenta", "plum", "purple", "lavender"];
   const fontVars = `${spaceGrotesk.variable} ${workSans.variable}`;
   const heading = "font-[family-name:var(--font-space-grotesk)]";
   const body = "font-[family-name:var(--font-work-sans)]";
@@ -72,14 +78,12 @@ export default function PrinciplesPage() {
     <main className={`${fontVars} bg-[#FBF3FA]`}>
       {/* Hero */}
       <section className="mx-auto max-w-3xl px-6 pt-16 pb-10">
-        <p className={`${heading} font-medium text-[13px] text-[#9B1F5C] mb-3.5`}>Our Convening Principles</p>
+        <p className={`${heading} font-medium text-[13px] text-[#9B1F5C] mb-3.5`}>{p.eyebrow || "Our Convening Principles"}</p>
         <h1 className={`${heading} font-bold text-4xl sm:text-[42px] leading-[1.1] text-[#2E1F45]`}>
-          What makes a gathering feminist?
+        {p.title || "What makes a gathering feminist?"}
         </h1>
         <p className={`${body} text-[#5C4A6B] max-w-lg mt-4 text-[15px] leading-relaxed`}>
-          FemVents is feminist by design — but that shouldn&apos;t just be a claim we make about
-          ourselves. Here&apos;s what we mean by it, and what we ask of gatherings hosted on the
-          platform.
+        {p.intro || "FemVents is feminist by design — but that shouldn't just be a claim we make about ourselves. Here's what we mean by it, and what we ask of gatherings hosted on the platform."}
         </p>
       </section>
 
@@ -87,7 +91,7 @@ export default function PrinciplesPage() {
       <section className="mx-auto max-w-6xl px-6 pb-16">
         <div className="h-[200px] sm:h-[320px] overflow-hidden rounded-sm">
           <img
-            src={bannerImage}
+            src={p.bannerImage || bannerImage}
             alt="People gathered in conversation"
             className="h-full w-full object-cover"
           />
@@ -98,13 +102,10 @@ export default function PrinciplesPage() {
       <section className="bg-[#2E1F45]">
         <div className="mx-auto max-w-2xl px-6 py-16">
           <h2 className={`${heading} font-bold text-2xl leading-snug text-[#E8743B]`}>
-            Gatherings on FemVents should engage seriously with gendered power and contribute to
-            feminist learning, organizing, culture, solidarity, resistance, or collective wellbeing.
+          {p.statementHeading || "Gatherings on FemVents should engage seriously with gendered power and contribute to feminist learning, organizing, culture, solidarity, resistance, or collective wellbeing."}
           </h2>
           <p className={`${body} text-[#D9C9E0] mt-5 text-sm leading-relaxed`}>
-            This isn&apos;t a purity test, and it isn&apos;t about requiring everyone to agree with
-            one definition of feminism. It&apos;s a baseline: the gathering should be doing something
-            in service of feminist movements, not simply borrowing the language.
+          {p.statementBody || "This isn't a purity test, and it isn't about requiring everyone to agree with one definition of feminism. It's a baseline: the gathering should be doing something in service of feminist movements, not simply borrowing the language."}
           </p>
         </div>
       </section>
@@ -112,16 +113,13 @@ export default function PrinciplesPage() {
       {/* Plural feminisms: text and photo in two columns */}
       <section className="mx-auto max-w-6xl px-6 py-16 grid gap-10 md:grid-cols-2 md:items-center">
         <div>
-          <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-4`}>Many feminisms, one commons</h2>
+          <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-4`}>{p.pluralTitle || "Many feminisms, one commons"}</h2>
           <p className={`${body} text-[#5C4A6B] text-[15px] leading-relaxed max-w-2xl`}>
-            FemVents welcomes multiple feminisms, contexts, languages, identities, and political
-            traditions. There is no single feminism, and we don&apos;t ask hosts to prove their
-            politics match ours. What we do ask is that hosts uphold a few shared commitments — not as
-            a checklist to pass, but as the baseline for what it means to gather with care.
+          {p.pluralBody || "FemVents welcomes multiple feminisms, contexts, languages, identities, and political traditions. There is no single feminism, and we don't ask hosts to prove their politics match ours. What we do ask is that hosts uphold a few shared commitments — not as a checklist to pass, but as the baseline for what it means to gather with care."}.
           </p>
         </div>
         <img
-          src={sideImage}
+          src={p.sideImage || sideImage}
           alt="Community members in discussion"
           className="w-full h-[240px] md:h-[340px] object-cover rounded-sm"
         />
@@ -129,10 +127,10 @@ export default function PrinciplesPage() {
 
       {/* Commitments */}
       <section className="mx-auto max-w-6xl px-6 py-16">
-        <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-8`}>What we ask of every host</h2>
+        <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-8`}>{p.commitmentsTitle || "What we ask of every host"}</h2>
         <div className="flex flex-col gap-[3px]">
-          {commitments.map((item) => {
-            const c = colorMap[item.color];
+        {items.map((item, i) => {
+            const c = colorMap[item.color || colorOrder[i % colorOrder.length]];
             return (
               <div key={item.title} className={`bg-[#F6EEF7] border-l-4 ${c.border} px-6 py-6`}>
                 <h3 className={`${heading} font-bold text-lg text-[#2E1F45]`}>{item.title}</h3>
@@ -145,16 +143,14 @@ export default function PrinciplesPage() {
 
       {/* Rooted in feminist internet principles */}
       <section className="mx-auto max-w-3xl px-6 py-16">
-        <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-4`}>
-          Rooted in feminist internet principles
+      <h2 className={`${heading} font-bold text-2xl text-[#2E1F45] mb-4`}>
+      {p.rootedTitle || "Rooted in feminist internet principles"}
         </h2>
         <p className={`${body} text-[#5C4A6B] text-[15px] leading-relaxed max-w-2xl mb-6`}>
-          FemVents draws on established thinking about what feminist digital infrastructure looks
-          like — treating things like access, consent, privacy, and movement memory as design
-          questions, not afterthoughts.
+        {p.rootedBody || "FemVents draws on established thinking about what feminist digital infrastructure looks like — treating things like access, consent, privacy, and movement memory as design questions, not afterthoughts."}
         </p>
         <div className="flex flex-wrap gap-2.5">
-          {principleThemes.map((theme) => (
+        {themes.map((theme) => (
             <span
               key={theme}
               className={`${body} text-sm font-medium px-4 py-2 rounded-full bg-[#F3D9EE] text-[#7A1745]`}
@@ -169,17 +165,16 @@ export default function PrinciplesPage() {
       <section className="mx-auto max-w-2xl px-6 py-16">
         <div className="bg-[#4A3B78] rounded-sm p-10 text-center">
           <h2 className={`${heading} font-bold text-2xl text-[#FBF3FA]`}>
-            Have thoughts on these principles?
+          {p.ctaTitle || "Have thoughts on these principles?"}
           </h2>
           <p className={`${body} text-[#E8D9F0] max-w-md mx-auto mt-3 text-sm leading-relaxed`}>
-            These principles are meant to evolve with the community that uses FemVents. Tell us what
-            we&apos;re missing, or where we&apos;ve got it wrong.
+          {p.ctaBody || "These principles are meant to evolve with the community that uses FemVents. Tell us what we're missing, or where we've got it wrong."}
           </p>
           <Link
             href="/shape"
             className={`${heading} inline-block font-bold text-sm bg-[#E8743B] text-[#2E1F45] px-6 py-3.5 rounded-sm mt-6`}
           >
-            Shape FemVents
+           {p.ctaButton || "Shape FemVents"}
           </Link>
         </div>
       </section>

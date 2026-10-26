@@ -40,7 +40,7 @@ interface HomeContent {
 const DEFAULTS: HomeContent = {
   heroTitle: "Where feminist movements gather.",
   heroDescription: "FemVents is a platform for discovering, creating, and connecting around feminist events, gatherings, and organizing. We are building digital infrastructure that makes it easier for feminist organizers, collectives, movements, researchers, artists, activists, and communities to find one another — and to turn gatherings into connection, learning, solidarity, and collective action.",
-  heroImage: "",
+    heroImage: "https://images.unsplash.com/photo-1573164713988-8665fc963095?w=800&q=80",
   heroImageAlt: "Feminist organizers gathering at a FemVents event",
   moreThanTitle: "Making feminist gatherings visible, connected, and accessible",
   moreThanDescription: "Feminist organizing happens everywhere: in community halls and classrooms, online spaces and festivals, protests and reading groups, conferences and kitchen-table conversations. But these spaces can be difficult to discover beyond our immediate networks.",
@@ -56,9 +56,9 @@ const DEFAULTS: HomeContent = {
   callToAction: "Find a gathering. Create one. Build something together.",
   storyTitle: "FemVents began with a gathering.",
   storyBeats: [
-    { year: "2025", text: "We brought feminists together through Gendering AI, a gathering exploring gender, power, technology, and artificial intelligence. As we organized the convening, we encountered a challenge that felt familiar: feminist gatherings were happening everywhere, but there was no shared space to easily find them, connect across them, or make the organizing around them more visible.", image: "", imageAlt: "Gendering AI gathering" },
+    { year: "2025", text: "We brought feminists together through Gendering AI, a gathering exploring gender, power, technology, and artificial intelligence. As we organized the convening, we encountered a challenge that felt familiar: feminist gatherings were happening everywhere, but there was no shared space to easily find them, connect across them, or make the organizing around them more visible.", image: "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=500&q=80", imageAlt: "Gendering AI gathering"},
     { year: "2025", text: "Later that year, we began piloting the idea: what would it look like to create digital infrastructure specifically for feminist gatherings and organizing? Not simply another events platform, but a space shaped by how feminist communities actually gather, share knowledge, build relationships, and organize.", image: "", imageAlt: "Piloting the FemVents idea" },
-    { year: "2026", text: "We are taking that question back to the community. FemVents is being tested and shaped together with feminist organizers, collectives, movements, and communities. We want the people who will use FemVents to influence what it becomes: what it should make possible, what values it should uphold, and what feminist digital infrastructure should look like in practice.", image: "", imageAlt: "Community shaping FemVents" },
+    { year: "2026", text: "We are taking that question back to the community. FemVents is being tested and shaped together with feminist organizers, collectives, movements, and communities. We want the people who will use FemVents to influence what it becomes: what it should make possible, what values it should uphold, and what feminist digital infrastructure should look like in practice.", image: "https://images.unsplash.com/photo-1591115765373-5207764f72e7?w=500&q=80", imageAlt: "Community shaping FemVents" },
   ],
   stillBuildingLine: "We are still building. And we believe that is part of the story.",
   builtWithLine: "FemVents is not only being built for feminist communities. It is being built with them.",

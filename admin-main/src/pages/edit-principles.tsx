@@ -233,7 +233,7 @@ export default function EditPrinciplesPage() {
       <Section color="bg-accent-500" title="Rooted in feminist internet principles">
         <Field label="Title" value={content.rootedTitle} onChange={(v) => set('rootedTitle', v)} />
         <Field label="Paragraph" value={content.rootedBody} onChange={(v) => set('rootedBody', v)} rows={3} />
-        <Field label="Theme pills (comma separated)" value={content.themes.join(', ')} onChange={(v) => set('themes', v.split(',').map((t) => t.trim()).filter(Boolean))} />
+        <Field label="Theme pills (comma separated)" value={content.themes.join(', ')} onChange={(v) => set('themes', v.split(',').map((t) => t.trimStart()))}/>
       </Section>
 
       <Section color="bg-primary-600" title="Call to action (bottom)">

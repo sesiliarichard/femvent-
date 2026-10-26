@@ -173,6 +173,11 @@ export default function EditOrganizersPage() {
     setContent({ ...content, impactStats: updated });
   };
 
+  const addSpotlight = () => setContent({ ...content, organizerSpotlights: [...content.organizerSpotlights, { name: '', focus: '', stat: '', blurb: '', image: '' }] });
+  const removeLastSpotlight = () => setContent({ ...content, organizerSpotlights: content.organizerSpotlights.slice(0, -1) });
+  const addStat = () => setContent({ ...content, impactStats: [...content.impactStats, { label: '', value: '', detail: '' }] });
+  const removeLastStat = () => setContent({ ...content, impactStats: content.impactStats.slice(0, -1) });
+
   if (loading) {
     return (
       <AdminLayout>
@@ -207,7 +212,7 @@ export default function EditOrganizersPage() {
 
       {/* Organizer Stories */}
       <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
-        <div className="px-6 py-3.5 bg-accent-500 text-white font-extrabold text-sm">Organizer Stories (3 spotlight cards)</div>
+      <div className="px-6 py-3.5 bg-accent-500 text-white font-extrabold text-sm flex justify-between items-center"><span>Organizer Stories</span><span className="flex gap-2"><button onClick={removeLastSpotlight} className="text-xs font-bold bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg">− Remove last</button><button onClick={addSpotlight} className="text-xs font-bold bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg">+ Add</button></span></div>
         <div className="p-6 space-y-4">
           {content.organizerSpotlights.map((org, i) => (
             <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-3">
@@ -246,7 +251,7 @@ export default function EditOrganizersPage() {
 
       {/* Impact Stats */}
       <div className="bg-white rounded-2xl border border-gray-100 mb-5 overflow-hidden">
-        <div className="px-6 py-3.5 bg-secondary-500 text-white font-extrabold text-sm">Impact Stats (4 stats)</div>
+      <div className="px-6 py-3.5 bg-secondary-500 text-white font-extrabold text-sm flex justify-between items-center"><span>Impact Stats</span><span className="flex gap-2"><button onClick={removeLastStat} className="text-xs font-bold bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg">− Remove last</button><button onClick={addStat} className="text-xs font-bold bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg">+ Add</button></span></div>
         <div className="p-6 space-y-4">
           {content.impactStats.map((stat, i) => (
             <div key={i} className="border border-gray-200 rounded-xl p-4 space-y-2">

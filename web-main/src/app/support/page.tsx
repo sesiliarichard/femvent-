@@ -81,7 +81,7 @@ export default async function SupportPage() {
             <div
               key={topic.title}
               className="relative rounded-sm overflow-hidden min-h-[190px] bg-cover bg-center flex flex-col justify-end p-6"
-              style={{ backgroundImage: `url('${s.image}')` }}
+              style={{ backgroundImage: `url('${(topic as { image?: string }).image || s.image}')` }}
             >
               <div
                 className="absolute inset-0"

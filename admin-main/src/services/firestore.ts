@@ -429,7 +429,7 @@ export const getAnalyticsData = async () => {
     const totalUsers = users.length;
     const totalEvents = events.length;
     const totalRevenue = payments
-      .filter((p: any) => p.status === 'completed')
+    .filter((p: any) => p.status === 'succeeded')
       .reduce((sum: number, p: any) => sum + p.amount, 0);
 
     const userGrowth = users.reduce((acc: Record<string, number>, user: any) => {
@@ -441,7 +441,7 @@ export const getAnalyticsData = async () => {
     }, {});
 
     const revenueGrowth = payments
-      .filter((p: any) => p.status === 'completed')
+    .filter((p: any) => p.status === 'succeeded')
       .reduce((acc: Record<string, number>, payment: any) => {
         if (payment.createdAt) {
           const month = payment.createdAt.toISOString().slice(0, 7);
@@ -453,7 +453,7 @@ export const getAnalyticsData = async () => {
     const eventPerformance = events
       .map((event: any) => {
         const eventPayments = payments.filter(
-          (p: any) => p.meta?.eventId === event.id && p.status === 'completed'
+                  (p: any) => p.meta?.eventId === event.id && p.status === 'succeeded'
         );
         const revenue = eventPayments.reduce((sum: number, p: any) => sum + p.amount, 0);
         const attendeeCount = eventPayments.length;

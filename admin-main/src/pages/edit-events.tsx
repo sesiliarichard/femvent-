@@ -46,8 +46,10 @@ const DEFAULTS: EventsContent = {
   destinations: [
     { city: "Nairobi", stat: "Feminist gatherings and collectives" },
     { city: "Lagos", stat: "Feminist gatherings and collectives" },
-    { city: "Kigali", stat: "Feminist gatherings and collectives" },
     { city: "Cape Town", stat: "Feminist gatherings and collectives" },
+    { city: "Johannesburg", stat: "Feminist gatherings and collectives" },
+    { city: "Kigali", stat: "Feminist gatherings and collectives" },
+    { city: "Accra", stat: "Feminist gatherings and collectives" },
   ],
 };
 

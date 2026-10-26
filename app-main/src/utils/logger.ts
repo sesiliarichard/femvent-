@@ -2,8 +2,7 @@
  * Comprehensive Logging System for Events App (React Native)
  */
 
-import { collection, addDoc, Timestamp } from 'firebase/firestore';
-import { db } from '../services/firebase';
+import { supabase } from '../services/supabase';
 
 export type LogLevel = 'debug' | 'info' | 'warn' | 'error';
 
@@ -97,13 +96,26 @@ class Logger {
     if (!this.enableFirestoreLogging) return;
 
     try {
-      await addDoc(collection(db, 'applicationLogs'), {
-        ...entry,
-        timestamp: Timestamp.fromDate(entry.timestamp),
-        createdAt: Timestamp.now(),
+      const { error } = await supabase.from('application_logs').insert({
+        level: entry.level,
+        message: entry.message,
+        context: entry.context,
+        operation: entry.operation,
+        user_id: entry.userId,
+        user_email: entry.userEmail,
+        user_role: entry.userRole,
+        app: entry.app,
+        platform: entry.platform,
+        metadata: {
+          ...entry.metadata,
+          sessionId: entry.sessionId,
+          screen: entry.screen,
+          error: entry.error,
+        },
       });
+      if (error) throw error;
     } catch (error) {
-      console.error('Failed to log to Firestore:', error);
+      console.error('Failed to log to Supabase:', error);
     }
   }
 

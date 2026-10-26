@@ -131,12 +131,13 @@ export default function RegisterPage() {
         }
         setAuthLoading(true);
         try {
-            const { data } = await supabase
-                .from("users")
-                .select("id")
-                .eq("email", authEmail)
-                .maybeSingle();
-            setStep(data ? "password-return" : "password-new");
+            const res = await fetch("/api/auth/email-exists", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: authEmail.trim() }),
+            });
+            const { exists } = await res.json();
+            setStep(exists ? "password-return" : "password-new");
         } catch (err: any) {
             setAuthError(err.message || "Something went wrong, please try again.");
         } finally {
@@ -184,6 +185,18 @@ export default function RegisterPage() {
             email: authEmail,
             password: authPassword,
         });
+
+        // Email already has an account -> log in with it instead of failing
+        if (error && /already registered/i.test(error.message)) {
+            const { data: loginData, error: loginError } = await supabase.auth.signInWithPassword({
+                email: authEmail,
+                password: authPassword,
+            });
+            if (loginError) {
+                throw new Error("This email already has an account. Go back and enter your existing password.");
+            }
+            return loginData.user;
+        }
         if (error) throw error;
         if (!data.user) throw new Error("Could not create your account. Please try again.");
 
@@ -217,15 +230,22 @@ export default function RegisterPage() {
             const activeUser = await ensureAccount();
 
             const { data: existingTickets } = await supabase
-                .from("tickets")
-                .select("id")
-                .eq("event_id", id)
-                .eq("user_id", activeUser.id)
-                .in("status", ["confirmed", "pending"])
-                .limit(1);
+            .from("tickets")
+            .select("id, status, ticket_type, event_id")
+            .eq("event_id", id)
+            .eq("user_id", activeUser.id)
+            .in("status", ["confirmed", "pending"])
+            .limit(1);
+        console.log("Registering for event:", id, "| existing tickets:", existingTickets);
 
             if (existingTickets && existingTickets.length > 0) {
-                setSubmitError("You're already registered for this gathering. Open the FemVents app to see your ticket.");
+                const existing = existingTickets[0];
+                console.log("Existing ticket found:", existing);
+                setSubmitError(
+                    existing.status === "pending"
+                        ? "You already have a pending order for this gathering. Please complete that payment or contact the host."
+                        : "You're already registered for this gathering. Open the FemVents app to see your ticket."
+                );
                 setSubmitting(false);
                 return;
             }

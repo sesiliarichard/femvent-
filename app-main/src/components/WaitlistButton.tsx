@@ -48,11 +48,11 @@ export const WaitlistButton: React.FC<WaitlistButtonProps> = ({
         if (!user) return;
 
         try {
-            const status = await checkWaitlistStatus(eventId, user.uid);
+            const status = await checkWaitlistStatus(eventId, user.id);
             setOnWaitlist(status);
 
             if (status) {
-                const pos = await getWaitlistPosition(eventId, user.uid);
+                const pos = await getWaitlistPosition(eventId, user.id);
                 setPosition(pos);
             }
         } catch (error) {
@@ -70,9 +70,9 @@ export const WaitlistButton: React.FC<WaitlistButtonProps> = ({
         try {
             await joinWaitlist(
                 eventId,
-                user.uid,
+                user.id,
                 user.email || '',
-                user.displayName || 'Guest'
+                user.name || 'Guest'
             );
 
             Alert.alert(
@@ -102,7 +102,7 @@ export const WaitlistButton: React.FC<WaitlistButtonProps> = ({
                     onPress: async () => {
                         setLoading(true);
                         try {
-                            await leaveWaitlist(eventId, user.uid);
+                            await leaveWaitlist(eventId, user.id);
                             Alert.alert('Left Waitlist', 'You have been removed from the waitlist');
                             setOnWaitlist(null);
                             setPosition(0);

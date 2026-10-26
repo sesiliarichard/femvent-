@@ -185,3 +185,99 @@ const generateRecommendations = async (
             eventViews: behaviorRow.event_views || [],
             favoriteEvents: behaviorRow.favorite_events || [],
             registeredEvents: behaviorRow.registered_events || [],
+            searchHistory: behaviorRow.search_history || [],
+            categoryPreferences: behaviorRow.category_preferences || {},
+            lastUpdated: behaviorRow.last_updated || new Date().toISOString(),
+        };
+
+        // Upcoming, non-cancelled events
+        const { data: events, error: eventsError } = await supabase
+            .from('events')
+            .select('id, category, event_date, status')
+            .gte('event_date', new Date().toISOString())
+            .neq('status', 'cancelled');
+
+        if (eventsError) throw eventsError;
+
+        const upcoming = (events || []).filter((e: any) => e.status !== 'draft');
+        if (upcoming.length === 0) return [];
+
+        const registered = new Set(behavior.registeredEvents);
+        const favorites = new Set(behavior.favoriteEvents);
+        const viewedIds = behavior.eventViews.map((v) => v.eventId);
+
+        // Build category weights from views (1), favorites (3) and registrations (5)
+        const interactionIds = Array.from(
+            new Set([...viewedIds, ...behavior.favoriteEvents, ...behavior.registeredEvents])
+        );
+        const categoryWeights: Record<string, number> = { ...behavior.categoryPreferences };
+
+        if (interactionIds.length > 0) {
+            const { data: past, error: pastError } = await supabase
+                .from('events')
+                .select('id, category')
+                .in('id', interactionIds);
+
+            if (pastError) throw pastError;
+
+            const categoryById = new Map(
+                (past || []).map((e: any): [string, string] => [e.id, e.category])
+            );
+            const bump = (id: string, weight: number) => {
+                const category = categoryById.get(id);
+                if (category) categoryWeights[category] = (categoryWeights[category] || 0) + weight;
+            };
+
+            viewedIds.forEach((id) => bump(id, 1));
+            behavior.favoriteEvents.forEach((id) => bump(id, 3));
+            behavior.registeredEvents.forEach((id) => bump(id, 5));
+        }
+
+        const maxWeight = Math.max(1, ...Object.values(categoryWeights));
+
+        return upcoming
+            .filter((e: any) => !registered.has(e.id) && !favorites.has(e.id))
+            .map((e: any): Recommendation => {
+                const weight = categoryWeights[e.category] || 0;
+                return {
+                    eventId: e.id,
+                    score: weight / maxWeight,
+                    reason: weight > 0 ? 'Based on your interests' : 'Upcoming event',
+                };
+            })
+            .sort((a, b) => b.score - a.score)
+            .slice(0, 10);
+    } catch (error) {
+        console.error('Error generating recommendations:', error);
+        return [];
+    }
+};
+
+/**
+ * Fallback recommendations for new users
+ */
+const getPopularEvents = async (): Promise<Recommendation[]> => {
+    try {
+        const { data, error } = await supabase
+            .from('events')
+            .select('id, status')
+            .gte('event_date', new Date().toISOString())
+            .neq('status', 'cancelled')
+            .order('event_date', { ascending: true })
+            .limit(20);
+
+        if (error) throw error;
+
+        return (data || [])
+            .filter((e: any) => e.status !== 'draft')
+            .slice(0, 10)
+            .map((e: any): Recommendation => ({
+                eventId: e.id,
+                score: 0.5,
+                reason: 'Upcoming event',
+            }));
+    } catch (error) {
+        console.error('Error getting popular events:', error);
+        return [];
+    }
+};

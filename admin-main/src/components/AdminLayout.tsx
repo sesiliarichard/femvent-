@@ -25,7 +25,6 @@ const navigation = [
   { name: 'Users', href: '/users', icon: Users },
   { name: 'Events', href: '/events', icon: Calendar },
   { name: 'Payment Methods', href: '/payment-methods', icon: CreditCard },
-  { name: 'Website Content', href: '/site-content', icon: Settings },
   { name: 'Edit Home Page', href: '/edit-home', icon: LayoutDashboard },
   { name: 'Edit About Page', href: '/edit-about', icon: Users },
   { name: 'Edit Organizers Page', href: '/edit-organizers', icon: Briefcase },
