@@ -1,3 +1,4 @@
+import { connection } from 'next/server';
 import { supabase } from './supabase';
 import * as defaults from './content';
 
@@ -22,6 +23,8 @@ export async function getSiteContent(): Promise<{
   faq: typeof defaults.faq;
   supportTopics: typeof defaults.supportTopics;
 }> {
+  // Always read fresh content so admin edits appear on the live site.
+  await connection();
 
   try {
     const { data, error } = await supabase

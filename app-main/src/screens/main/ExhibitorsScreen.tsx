@@ -33,14 +33,15 @@ export const ExhibitorsScreen: React.FC = () => {
         const fetchExhibitors = async () => {
             try {
                 const { data, error } = await supabase
-                    .from('events')
-                    .select('exhibitors')
-                    .eq('id', eventId)
-                    .maybeSingle();
+                .from('exhibitors')
+                .select('*')
+                .eq('event_id', eventId)
+                .order('created_at', { ascending: true });
 
+                console.log('EXHIBITORS', eventId, JSON.stringify({ count: data?.length, error }));
                 if (error) throw error;
-
-                const rows = Array.isArray(data?.exhibitors) ? data.exhibitors : [];
+    
+                const rows = data || [];
                 const mapped: Exhibitor[] = rows.map((ex: any, index: number) => ({
                     id: ex.id || `exhibitor-${index}`,
                     name: ex.name || 'Exhibitor',

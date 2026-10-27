@@ -28,6 +28,7 @@ export const AnnouncementsScreen: React.FC = () => {
     const navigation = useNavigation();
     const route = useRoute<any>();
     const eventId = route.params?.eventId;
+    console.log('ANNOUNCEMENTS eventId:', eventId);
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
     const [loading, setLoading] = useState(true);
 

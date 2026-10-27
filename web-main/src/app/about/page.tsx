@@ -173,7 +173,7 @@ export default async function Home() {
       <section className="mx-auto max-w-6xl px-6 py-16">
         <h2 className={`${heading} font-bold text-2xl max-w-xl text-[#2E1F45] mb-3`}>{a.moreThanTitle}</h2>
         <p className={`${body} text-[#5C4A6B] max-w-xl mb-8 text-sm`}>{a.moreThanDescription}</p>
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-x-6 gap-y-12 md:gap-x-24 md:gap-y-24">
           {platformActions.map((item) => {
             const c = colorMap[item.color];
             return (

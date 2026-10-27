@@ -56,9 +56,23 @@ export const VenueMapScreen: React.FC = () => {
                             : data.location || 'Location to be announced'
                     );
 
-                    // Venue areas/rooms data doesn't exist on the event model yet —
-                    // leave empty until that feature is built, rather than showing fake rooms.
-                    setVenueAreas([]);
+                    const { data: areaRows, error: areaError } = await supabase
+                    .from('venue_areas')
+                    .select('*')
+                    .eq('event_id', eventId)
+                    .order('sort_order', { ascending: true })
+                    .order('created_at', { ascending: true });
+
+                if (areaError) throw areaError;
+
+                setVenueAreas(
+                    (areaRows || []).map((row: any) => ({
+                        id: row.id,
+                        name: row.name || 'Area',
+                        floor: row.floor || '',
+                        icon: (row.icon || 'location-outline') as keyof typeof Ionicons.glyphMap,
+                    }))
+                );
                 }
             } catch (error) {
                 console.error('Error loading venue:', error);
