@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { supabase } from '../../services/supabase';
+import { useCurrentEvent } from '../../services/EventContext';
 
 interface Announcement {
     id: string;
@@ -27,8 +28,8 @@ const formatRelativeTime = (date: Date) => {
 export const AnnouncementsScreen: React.FC = () => {
     const navigation = useNavigation();
     const route = useRoute<any>();
-    const eventId = route.params?.eventId;
-    console.log('ANNOUNCEMENTS eventId:', eventId);
+    const { currentEvent } = useCurrentEvent();
+    const eventId = route.params?.eventId ?? currentEvent?.id;
     const [announcements, setAnnouncements] = useState<Announcement[]>([]);
     const [loading, setLoading] = useState(true);
 

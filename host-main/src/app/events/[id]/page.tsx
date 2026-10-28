@@ -205,7 +205,13 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
               </div>
 
               {isEventOwner && (
-                <div className="flex flex-wrap gap-3">
+                                <div className="flex flex-wrap gap-3">
+                                <button
+                                  onClick={() => router.push(`/events/${eventId}/resources`)}
+                                  className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold text-sm hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 transition-colors"
+                                >
+                                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" /></svg><span>Resources</span>
+                                </button>
                   <button
                     onClick={() => router.push(`/events/${eventId}/announcements`)}
                     className="flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-5 py-2.5 rounded-xl font-bold text-sm hover:border-primary-300 hover:bg-primary-50 hover:text-primary-700 transition-colors"
@@ -345,27 +351,27 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                         <div className="w-11 h-11 bg-primary-600 rounded-xl flex items-center justify-center text-white flex-shrink-0"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" /></svg></div>
                         <div>
                           <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Start Date</p>
-                          <p className="text-sm font-bold text-gray-900">{formatDate(event.start_at)}</p>
+                          <p className="text-sm font-bold text-gray-900">{formatDate(event.event_date)}</p>
                         </div>
                       </div>
-                      {event.multi_day && event.end_at && (
+                      {event.multi_day && event.end_date && (
                         <div className="flex items-start gap-4 mt-4">
                           <div className="w-11 h-11 bg-secondary-500 rounded-xl flex items-center justify-center text-white flex-shrink-0"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3v18h18M6 3v12m6-12v8m6-8v4" /></svg></div>
                           <div>
                             <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">End Date</p>
-                            <p className="text-sm font-bold text-gray-900">{formatDate(event.end_at)}</p>
+                            <p className="text-sm font-bold text-gray-900">{formatDate(event.end_date)}</p>
                           </div>
                         </div>
                       )}
                     </div>
 
-                    {event.venue && (
+                    {(event.venue || event.location) && (
                       <div className="pb-5 border-b border-gray-100">
                         <div className="flex items-start gap-4">
                           <div className="w-11 h-11 bg-secondary-500 rounded-xl flex items-center justify-center text-white flex-shrink-0"><svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg></div>
                           <div>
                             <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">Location</p>
-                            <p className="text-sm font-bold text-gray-900">{event.venue?.name || event.venue}</p>
+                            <p className="text-sm font-bold text-gray-900">{event.venue?.name || event.location}</p>
                           </div>
                         </div>
                       </div>
@@ -383,14 +389,14 @@ export default function EventDetailPage({ params }: { params: Promise<{ id: stri
                       </div>
                     )}
 
-                    {event.price_options && event.price_options.length > 0 && (
+                     {event.price !== null && event.price !== undefined && (
                       <div className="pb-6 border-b-2 border-slate-100">
                         <div className="flex items-start gap-4">
                         <div className="w-12 h-12 bg-gradient-to-br from-amber-600 to-orange-600 rounded-xl flex items-center justify-center text-white shadow-lg flex-shrink-0"><svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg></div>
                           <div>
                             <p className="text-xs font-black text-slate-500 uppercase tracking-wide mb-1">Price</p>
                             <p className="text-sm font-bold text-slate-900">
-                              {event.price_options[0].price === 0 ? 'Free' : `$${event.price_options[0].price}`}
+                            {Number(event.price) === 0 ? 'Free' : `$${event.price}`}
                             </p>
                           </div>
                         </div>

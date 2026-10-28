@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { supabase } from '../../services/supabase';
+import { useCurrentEvent } from '../../services/EventContext';
 
 interface VenueArea {
     id: string;
@@ -17,7 +18,8 @@ interface VenueArea {
 export const VenueMapScreen: React.FC = () => {
     const navigation = useNavigation();
     const route = useRoute<any>();
-    const eventId = route.params?.eventId;
+    const { currentEvent } = useCurrentEvent();
+    const eventId = route.params?.eventId ?? currentEvent?.id;
 
     const [loading, setLoading] = useState(true);
     const [venueName, setVenueName] = useState('Event Venue');

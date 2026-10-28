@@ -6,6 +6,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { supabase } from '../../services/supabase';
+import { useCurrentEvent } from '../../services/EventContext';
 
 interface Exhibitor {
     id: string;
@@ -19,7 +20,8 @@ interface Exhibitor {
 export const ExhibitorsScreen: React.FC = () => {
     const navigation = useNavigation();
     const route = useRoute<any>();
-    const eventId = route.params?.eventId;
+    const { currentEvent } = useCurrentEvent();
+    const eventId = route.params?.eventId ?? currentEvent?.id;
     const [exhibitors, setExhibitors] = useState<Exhibitor[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -38,7 +40,7 @@ export const ExhibitorsScreen: React.FC = () => {
                 .eq('event_id', eventId)
                 .order('created_at', { ascending: true });
 
-                console.log('EXHIBITORS', eventId, JSON.stringify({ count: data?.length, error }));
+                
                 if (error) throw error;
     
                 const rows = data || [];

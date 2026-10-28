@@ -468,6 +468,7 @@ function CreateEventContent({ userProfile, router }: { userProfile: any; router:
           event_date: eventData.startAt.toISOString(),
           end_date: eventData.multiDay ? eventData.endAt.toISOString() : null,
           location: venueName,
+          venue: venueObject,
           capacity: capacityValue,
           price: priceValue,
           category: eventData.type || 'general',

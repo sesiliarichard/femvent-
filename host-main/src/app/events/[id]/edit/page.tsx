@@ -549,6 +549,12 @@ function EditEventContent({ userProfile, eventId, router }: { userProfile: any; 
                   Edit Event
                 </h1>
                 <p className="text-sm text-gray-500 mt-0.5">Update your event details</p>
+              <div className="flex items-center gap-4 mt-2">
+                <a href={`/host/events/${eventId}/resources`} className="text-sm font-bold text-primary-600 hover:underline">Resources →</a>
+                <a href={`/host/events/${eventId}/announcements`} className="text-sm font-bold text-primary-600 hover:underline">Announcements →</a>
+                <a href={`/host/events/${eventId}/venue-map`} className="text-sm font-bold text-primary-600 hover:underline">Venue Map →</a>
+                <a href={`/host/events/${eventId}/feedback`} className="text-sm font-bold text-primary-600 hover:underline">Feedback →</a>
+              </div>
               </div>
             </div>
             <div className="flex items-center gap-3">

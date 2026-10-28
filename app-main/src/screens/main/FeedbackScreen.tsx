@@ -6,12 +6,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { supabase } from '../../services/supabase';
+import { useCurrentEvent } from '../../services/EventContext';
 import { useAuth } from '../../services/AuthContext';
 
 export const FeedbackScreen: React.FC = () => {
     const navigation = useNavigation();
     const route = useRoute<any>();
-    const eventId = route.params?.eventId;
+    const { currentEvent } = useCurrentEvent();
+    const eventId = route.params?.eventId ?? currentEvent?.id;
     const { user } = useAuth();
     const [rating, setRating] = useState(0);
     const [comment, setComment] = useState('');

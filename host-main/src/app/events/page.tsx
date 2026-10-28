@@ -427,6 +427,13 @@ function EventsContent({ userProfile }: { userProfile: any }) {
                       </a>
                     </div>
 
+                    <a
+                      href={`/host/events/${item.id}/resources`}
+                      className="w-full flex items-center justify-center gap-2 bg-primary-50 text-primary-600 py-3 px-4 rounded-xl text-sm font-bold hover:bg-primary-100 transition-colors"
+                    >
+                      <span>Resources</span>
+                    </a>
+
                     <button
                       onClick={() => removeEvent(item.id, item.title)}
                       className="w-full flex items-center justify-center gap-2 bg-red-50 border border-red-200 text-red-600 py-3 px-4 rounded-xl text-sm font-bold hover:bg-red-100 transition-colors"

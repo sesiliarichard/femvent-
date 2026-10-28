@@ -97,22 +97,22 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
                         { icon: 'grid-outline', label: 'Browse events', onPress: () => go('Events') },
                         { icon: 'ticket-outline', label: 'My ticket', onPress: () => go('Tickets') },
                         { icon: 'time-outline', label: 'Agenda', onPress: () => go('Schedule', currentEvent ? { eventId: currentEvent.id } : undefined) },
-                        { icon: 'map-outline', label: 'Venue map', onPress: () => go('VenueMap') },
+                        { icon: 'map-outline', label: 'Venue map', onPress: () => go('VenueMap', currentEvent ? { eventId: currentEvent.id } : undefined) },
                     ])}
 
                     {renderSection('Discover', [
                         { icon: 'mic-outline', label: 'Speakers', onPress: () => go('SpeakersList', currentEvent ? { eventId: currentEvent.id } : undefined) },
                         { icon: 'storefront-outline', label: 'Sponsors', onPress: () => go('Sponsor', currentEvent ? { eventId: currentEvent.id } : undefined) },
-                        { icon: 'business-outline', label: 'Exhibitors', onPress: () => go('Exhibitors') },
+                        { icon: 'business-outline', label: 'Exhibitors', onPress: () => go('Exhibitors', currentEvent ? { eventId: currentEvent.id } : undefined) },
                     ])}
 
                     {renderSection('Engage', [
                         { icon: 'people-outline', label: 'Networking', onPress: () => go('AttendeesList', currentEvent ? { eventId: currentEvent.id } : undefined) },
                         { icon: 'heart-outline', label: 'Favorites', onPress: () => go('Favorites') },
                         { icon: 'notifications-outline', label: 'Notifications', onPress: () => go('Notifications') },
-                        { icon: 'megaphone-outline', label: 'Announcements', onPress: () => go('Announcements') },
-                        { icon: 'download-outline', label: 'Resources', onPress: () => go('Resources') },
-                        { icon: 'chatbubble-ellipses-outline', label: 'Feedback', onPress: () => go('Feedback') },
+                        { icon: 'megaphone-outline', label: 'Announcements', onPress: () => go('Announcements', currentEvent ? { eventId: currentEvent.id } : undefined) },
+                        { icon: 'download-outline', label: 'Resources', onPress: () => go('Resources', currentEvent ? { eventId: currentEvent.id } : undefined) },
+                        { icon: 'chatbubble-ellipses-outline', label: 'Feedback', onPress: () => go('Feedback', currentEvent ? { eventId: currentEvent.id } : undefined) },
                     ])}
 
                     {renderSection('Account', [
