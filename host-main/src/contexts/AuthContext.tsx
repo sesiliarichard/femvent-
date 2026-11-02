@@ -183,23 +183,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (error) throw error;
       if (!data.user) throw new Error('Signup did not return a user');
+      if (!data.session) {
+        throw new Error('Please confirm your email address, then log in.');
+      }
 
-      const profileRow = {
-        id: data.user.id,
-        name: name || email.split('@')[0],
-        email,
-        role,
-        status: 'active',
-        organization_name: organizationName,
-        business_email: businessEmail,
-        plan,
-        subscription_status: plan ? 'inactive' : null,
-      };
-      const { error: profileError } = await supabase
-        .from('users')
-        .upsert(profileRow, { onConflict: 'id' });
-      if (profileError) throw profileError;
-      setUserProfile(profileRow);
+      // The database trigger creates the profile row. Just read it.
+      let profile: any = null;
+      for (let i = 0; i < 5 && !profile; i++) {
+        const { data: row } = await supabase
+          .from('users')
+          .select('*')
+          .eq('id', data.user.id)
+          .maybeSingle();
+        profile = row;
+        if (!profile) await new Promise((r) => setTimeout(r, 300));
+      }
+      if (!profile) throw new Error('Your account was created but the profile is missing. Please log in again.');
+
+      setUser(data.user);
+      setUserProfile(profile);
 
       logger.logAuthEvent('sign_up_success', { email, userId: data.user.id, role, plan });
       return data.user.id;

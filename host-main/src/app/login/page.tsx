@@ -264,7 +264,7 @@ export default function LoginPage() {
         </div>
 
         <p className="mt-6 text-center text-xs text-gray-500">
-          © 2024 FemVents. Empowering Women Through Events.
+          © 2026 FemVents. Empowering Women Through Events.
         </p>
       </div>
       </div>

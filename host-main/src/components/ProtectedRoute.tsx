@@ -21,6 +21,7 @@ function ProtectedRouteInner({ children, requireAdmin }: ProtectedRouteProps) {
 
   useEffect(() => {
     const checkHostStatus = async () => {
+      if (!loading && user && !userProfile) return;
       if (!loading && user) {
         try {
           // If admin is required, strictly check for admin role
@@ -44,7 +45,7 @@ function ProtectedRouteInner({ children, requireAdmin }: ProtectedRouteProps) {
                 }
       
                         // Hosts need both the role AND an active subscription
-                        if (userProfile?.role === 'host' && userProfile?.subscription_status === 'active') {
+                        if (userProfile?.role === 'host') {
                           setIsHost(true);
                           setCheckingHost(false);
                           return;
@@ -60,7 +61,7 @@ function ProtectedRouteInner({ children, requireAdmin }: ProtectedRouteProps) {
                               .eq('id', user.id)
                               .maybeSingle();
         
-                            if (refreshed?.role === 'host' && refreshed?.subscription_status === 'active') {
+                              if (refreshed?.role === 'host') {
                               setIsHost(true);
                               setCheckingHost(false);
                             } else {
