@@ -65,7 +65,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             id: authUser.id,
             name: authUser.email?.split('@')[0],
             email: authUser.email,
-            role: 'attendee',
+            role: authUser.user_metadata?.role === 'host' ? 'host' : 'attendee',
             status: 'active',
           };
           const { error: insertError } = await supabase.from('users').insert(newProfile);
@@ -161,11 +161,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const plan = options?.plan ?? null;
 
       logger.logAuthEvent('sign_up_attempt', { email, role, plan });
-      const { data, error } = await supabase.auth.signUp({ email, password });
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { role } },
+      });
       if (error) throw error;
       if (!data.user) throw new Error('Signup did not return a user');
 
-      const { error: profileError } = await supabase.from('users').insert({
+      const profileRow = {
         id: data.user.id,
         name: name || email.split('@')[0],
         email,
@@ -175,8 +179,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         business_email: businessEmail,
         plan,
         subscription_status: plan ? 'inactive' : null,
-      });
+      };
+      const { error: profileError } = await supabase
+        .from('users')
+        .upsert(profileRow, { onConflict: 'id' });
       if (profileError) throw profileError;
+      setUserProfile(profileRow);
 
       logger.logAuthEvent('sign_up_success', { email, userId: data.user.id, role, plan });
       return data.user.id;
