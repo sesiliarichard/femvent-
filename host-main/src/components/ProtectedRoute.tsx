@@ -22,6 +22,9 @@ function ProtectedRouteInner({ children, requireAdmin }: ProtectedRouteProps) {
   useEffect(() => {
     const checkHostStatus = async () => {
       if (!loading && user && !userProfile) return;
+      console.log('[ProtectedRoute]', { loading, hasUser: !!user, role: userProfile?.role, status: userProfile?.subscription_status });
+      if (!loading && user && !userProfile) return;
+      if (!loading && user && !userProfile) return;
       if (!loading && user) {
         try {
           // If admin is required, strictly check for admin role
@@ -120,7 +123,11 @@ function ProtectedRouteInner({ children, requireAdmin }: ProtectedRouteProps) {
           </p>
           <div className="space-y-3">
             <p className="text-sm text-gray-500">
-              If you believe this is an error, please contact the administrator.
+            If you believe this is an error, please contact the administrator.
+              <br />
+              <span className="text-xs text-gray-400">
+                debug: role={String(userProfile?.role)} | sub={String(userProfile?.subscription_status)}
+              </span>
             </p>
             <button
               onClick={() => router.push('/login')}
