@@ -86,6 +86,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 return;
               }
             }
+            if (insertError.code === '23503') {
+              // Session belongs to a user that no longer exists in auth.users
+              await supabase.auth.signOut();
+              setUser(null);
+              setUserProfile(null);
+              return;
+            }
             throw insertError;
           }
 
@@ -164,7 +171,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
-        options: { data: { role } },
+        options: {
+          data: {
+            role,
+            name: name || email.split('@')[0],
+            organization_name: organizationName,
+            business_email: businessEmail,
+            plan,
+          },
+        },
       });
       if (error) throw error;
       if (!data.user) throw new Error('Signup did not return a user');
