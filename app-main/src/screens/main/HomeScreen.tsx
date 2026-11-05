@@ -23,7 +23,8 @@ import {
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { AppState } from 'react-native';
 import { useAuth } from '../../services/AuthContext';
 import { supabase } from '../../services/supabase';
 import { FavoriteButton } from '../../components/FavoriteButton';
@@ -128,7 +129,7 @@ export const HomeScreen: React.FC = () => {
 
     const channel = supabase
       .channel(`home-my-tickets-changes-${Date.now()}-${Math.random()}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets', filter: `user_id=eq.${user.id}` }, () => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => {
         loadMyRegisteredEvents();
       })
       .subscribe();
@@ -136,6 +137,21 @@ export const HomeScreen: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
+  }, [user?.id]);
+
+  // Reload when this screen is focused again
+  useFocusEffect(
+    React.useCallback(() => {
+      loadMyRegisteredEvents();
+    }, [user?.id])
+  );
+
+  // Reload when the app comes back from the background
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') loadMyRegisteredEvents();
+    });
+    return () => sub.remove();
   }, [user?.id]);
 
   useEffect(() => {

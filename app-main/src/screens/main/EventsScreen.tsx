@@ -20,7 +20,8 @@ import {
 } from 'react-native-paper';
 import { supabase } from '../../services/supabase';
 import { useAuth } from '../../services/AuthContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { AppState } from 'react-native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -116,7 +117,7 @@ export const EventsScreen: React.FC = () => {
 
     const channel = supabase
       .channel(`events-screen-my-tickets-${user.id}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets', filter: `user_id=eq.${user.id}` }, () => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => {
         loadMyRegisteredEvents();
       })
       .subscribe();
@@ -124,6 +125,19 @@ export const EventsScreen: React.FC = () => {
     return () => {
       supabase.removeChannel(channel);
     };
+  }, [user?.id]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadMyRegisteredEvents();
+    }, [user?.id])
+  );
+
+  useEffect(() => {
+    const sub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') loadMyRegisteredEvents();
+    });
+    return () => sub.remove();
   }, [user?.id]);
 
   useEffect(() => {

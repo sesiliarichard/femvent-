@@ -20,7 +20,8 @@ import { getUserTickets, subscribeToUserTickets } from '../../services/registrat
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { AppState } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types';
 
@@ -72,7 +73,22 @@ export const TicketsScreen: React.FC = () => {
     }
   };
 
-  const onRefresh = async () => {
+    // Reload when this screen is focused again
+    useFocusEffect(
+      React.useCallback(() => {
+        loadTickets();
+      }, [user?.id])
+    );
+  
+    // Reload when the app comes back from the background
+    useEffect(() => {
+      const sub = AppState.addEventListener('change', (state) => {
+        if (state === 'active') loadTickets();
+      });
+      return () => sub.remove();
+    }, [user?.id]);
+  
+    const onRefresh = async () => {
     setRefreshing(true);
     try {
       await loadTickets();

@@ -17,7 +17,7 @@ interface DrawerItem {
 export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props) => {
     const { navigation } = props;
     const { user, signOut } = useAuth();
-    const { currentEvent } = useCurrentEvent();
+    const { currentEvent, setCurrentEvent } = useCurrentEvent();
 
     const TAB_SCREENS = ['Home', 'Profile'];
 
@@ -32,7 +32,14 @@ export const CustomDrawerContent: React.FC<DrawerContentComponentProps> = (props
     const handleSignOut = () => {
         Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
             { text: 'Cancel', style: 'cancel' },
-            { text: 'Sign Out', onPress: signOut, style: 'destructive' },
+            {
+                text: 'Sign Out',
+                style: 'destructive',
+                onPress: async () => {
+                    await setCurrentEvent(null);
+                    await signOut();
+                },
+            },
         ]);
     };
 

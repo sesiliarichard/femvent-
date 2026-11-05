@@ -156,6 +156,7 @@ export const getUserTickets = async (userId: string): Promise<Ticket[]> => {
       .from('tickets')
       .select('*')
       .eq('user_id', userId)
+      .neq('status', 'cancelled')
       .order('created_at', { ascending: false });
 
     if (error) throw error;
@@ -182,7 +183,7 @@ export const subscribeToUserTickets = (
     .channel(`tickets-${userId}-${Date.now()}-${Math.random()}`)
     .on(
       'postgres_changes',
-      { event: '*', schema: 'public', table: 'tickets', filter: `user_id=eq.${userId}` },
+      { event: '*', schema: 'public', table: 'tickets' },
       async () => {
         try {
           const tickets = await getUserTickets(userId);

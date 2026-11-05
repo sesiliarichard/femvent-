@@ -21,7 +21,7 @@ interface RegisteredEvent {
 export const MyEventsScreen: React.FC = () => {
     const navigation = useNavigation();
     const { user } = useAuth();
-    const { setCurrentEvent } = useCurrentEvent();
+    const { currentEvent, setCurrentEvent } = useCurrentEvent();
     const [events, setEvents] = useState<RegisteredEvent[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -53,7 +53,12 @@ export const MyEventsScreen: React.FC = () => {
                 }));
             setEvents(mapped);
 
-            // Auto-select if exactly one registered event
+                        // Drop the saved event if the user no longer has a ticket for it
+                        if (currentEvent && !mapped.some((e) => e.eventId === currentEvent.id)) {
+                            await setCurrentEvent(null);
+                        }
+            
+                        // Auto-select if exactly one registered event
             if (mapped.length === 1) {
                 await selectEvent(mapped[0]);
             }

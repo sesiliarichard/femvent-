@@ -36,11 +36,12 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, ActivityIndicator, Alert, AppState } from 'react-native';
 import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 
 import { AuthProvider, useAuth } from './src/services/AuthContext';
+import { supabase } from './src/services/supabase';
 import { LoginScreen } from './src/screens/auth/LoginScreen';
 import { ForgotPasswordScreen } from './src/screens/auth/ForgotPasswordScreen';
 import { OnboardingScreen, hasSeenOnboarding } from './src/screens/OnboardingScreen';
@@ -133,8 +134,9 @@ function MainDrawer() {
 }
 
 function AppNavigator() {
-  const { user, loading } = useAuth();
-   const navigationRef = React.useRef<any>(null);
+  const { user, loading, signOut } = useAuth();
+  const navigationRef = React.useRef<any>(null);
+ const [accessChecked, setAccessChecked] = React.useState(false);
   const [onboardingChecked, setOnboardingChecked] = React.useState(false);
   const [showOnboarding, setShowOnboarding] = React.useState(false);
 
@@ -144,6 +146,68 @@ function AppNavigator() {
       setOnboardingChecked(true);
     });
   }, []);
+
+   // Only attendees registered for at least one event may use the app
+   React.useEffect(() => {
+    if (!user?.id) {
+      setAccessChecked(false);
+      return;
+    }
+
+    // Hosts and admins use the app without holding tickets
+    if (user.role === 'host' || user.role === 'admin') {
+      setAccessChecked(true);
+      return;
+    }
+
+    let cancelled = false;
+    setAccessChecked(false);
+
+    const checkAccess = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('tickets')
+          .select('id')
+          .eq('user_id', user.id)
+          .in('status', ['confirmed', 'pending'])
+          .limit(1);
+
+        if (cancelled) return;
+
+        // No registration left: block access (ignore errors so offline users are not kicked out)
+        if (!error && (!data || data.length === 0)) {
+          Alert.alert(
+            'Access removed',
+            'You are not registered for any event, so you cannot use this app. Register for an event on the website, then sign in again.'
+          );
+          await signOut();
+        }
+      } catch (e) {
+        console.warn('Access check failed:', e);
+      } finally {
+        if (!cancelled) setAccessChecked(true);
+      }
+    };
+
+    checkAccess();
+
+    const appStateSub = AppState.addEventListener('change', (state) => {
+      if (state === 'active') checkAccess();
+    });
+
+    const channel = supabase
+      .channel(`access-check-${user.id}-${Date.now()}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'tickets' }, () => {
+        checkAccess();
+      })
+      .subscribe();
+
+    return () => {
+      cancelled = true;
+      appStateSub.remove();
+      supabase.removeChannel(channel);
+    };
+  }, [user?.id, user?.role]);
 
  // Request notification permissions when user logs in
   // (Expo Go on SDK 53+ doesn't support remote push notifications — skip there)
@@ -186,7 +250,7 @@ function AppNavigator() {
     return cleanup;
   }, []);
 
-  if (loading || !onboardingChecked) {
+  if (loading || !onboardingChecked || (user && !accessChecked)) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#6D3FE0" />

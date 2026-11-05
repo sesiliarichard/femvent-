@@ -49,7 +49,7 @@ export default function EventDetailScreen({ route, navigation }: EventDetailScre
   const [loading, setLoading] = useState(true);
   const [showSplash, setShowSplash] = useState(false);
   const { user } = useAuth();
-  const { setCurrentEvent } = useCurrentEvent();
+  const { currentEvent, setCurrentEvent } = useCurrentEvent();
   const [isRegistered, setIsRegistered] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [attendeeCount, setAttendeeCount] = useState({ total: 0, confirmed: 0, pending: 0 });
@@ -165,6 +165,8 @@ useEffect(() => {
           setIsRegistered(registered);
           if (registered) {
             await setCurrentEvent({ id: event.id, title: event.title });
+          } else if (currentEvent?.id === event.id) {
+            await setCurrentEvent(null);
           }
 
           // Set attendee count from event data (same for all users)
